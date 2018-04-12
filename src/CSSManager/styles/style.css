@@ -1,0 +1,259 @@
+#dbl-prompt {
+  top: 2px;
+  font-weight: 150;
+  position: absolute;
+  transition: opacity 0.5s;
+}
+
+@keyframes loadMsg {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade {
+  0% { opacity: 0 };
+  100% { opacity: 1 };
+}
+
+.message:not(.message-sending) {
+  animation: loadMsg 0.6s;
+}
+
+.message-sending {
+  display: none;
+}
+
+[class*="contentSelected"]:not([class*="avatar"]) {
+    background-color: #e62727;
+    border-radius: 5px;
+}
+
+[class*="contentSelected"] svg[class*=icon] {
+  color: #000000;
+}
+
+.unread-23Kvxk,
+.guild.unread:before {
+  background-color: #e62727 !important;
+}
+
+.guild-inner {
+  background: transparent !important;
+}
+
+.container-3lnMWU {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.container-iksrDt, .container-3lnMWU {
+  background: transparent;
+  border: 1px #e62727 solid;
+  border-bottom: none;
+  transition: opacity 0.5s;
+}
+
+.channelTextArea-1HTP3C .innerEnabled-gLHeOL {
+  background: transparent !important;
+  border: 2px #e52626 solid;
+}
+
+.app {
+  background-image: url("https://c.wallhere.com/photos/02/49/Bleach_Kurosaki_Ichigo_Mugetsu_Final_Getsuga_Tenshou_anime-6232.png!d");
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+*[class*="scroller"]::-webkit-scrollbar {
+  width: 0.5em !important;
+}
+
+*[class*="scroller"]::-webkit-scrollbar-track-piece {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+*[class*="scroller"]::-webkit-scrollbar-thumb {
+    background-color: #e62727 !important;
+    border: none !important;
+}
+
+.activityText-258pdj strong {
+  color: #e62727;
+}
+
+.theme-dark .friends-table .scroller-wrap::-webkit-scrollbar-thumb, 
+.theme-dark .messages-wrapper .scroller-wrap::-webkit-scrollbar-thumb {
+    border: none;
+}
+
+.channels-3g2vYe {
+  background-color: rgba(0,0,0,0);
+}
+
+.container-RYiLUQ {
+  background-color: transparent;
+}
+
+.layers-20RVFW, .layer-kosS71, .container-2OU7Cz, .typing-3eiiL_ {
+  background: transparent !important;
+}
+
+.layers-20RVFW {
+  background: rgba(0,0,0, 0.625) !important;
+}
+
+.container-2OU7Cz {
+  background-color:  rgba(0,0,0,0);
+}
+
+.theme-dark .layer, .theme-dark .layers {
+  background: transparent;
+}
+
+.guilds-wrapper {
+  background: transparent;
+}
+
+.search-results-wrap, .membersWrap-3wRngy {
+  background: rgba(0, 0, 0, 0.55) !important;
+}
+
+
+.search-results-wrap .search-header,
+.search-result::after,
+.search-result::before,
+.channel-name,
+.search-results-wrap .search-result-message.hit {
+  background: transparent !important;
+}
+
+.hit {
+  box-shadow: 1px -5px 5px 2px rgba(0, 0, 0, 0.4),
+              1px 5px 5px 2px rgba(0, 0, 0, 0.4) !important;
+}
+
+.hljs {
+  position: relative;
+}
+
+.hljs ol {
+  list-style: none;
+  counter-reset: linenumbers;
+}
+
+.hljs ol li {
+  text-indent: -4ch;
+  margin-left: 3.5ch;
+  padding-left: 0.5ch;
+  border-left: 1px solid rgba(0,0,0,0.2);
+}
+
+.hljs ol li::before {
+  color: rgba(127,127,127,0.5);
+  display: inline-block;
+  width: 3ch;
+  margin-right: 0.5ch;
+  padding-right: 0.5ch;
+  text-align: right;
+  counter-increment: linenumbers;
+  content: counter(linenumbers);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+
+.theme-dark .chat form {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.theme-dark .chat > .content {
+  background-color: transparent;
+}
+
+.theme-dark .chat {
+  background-color: transparent;
+}
+
+.hljs, .markup pre {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+.theme-dark .friends-table, .theme-dark .messages-wrapper {
+  background-color: transparent;
+}
+.theme-dark .members-1bid1J {
+  background-color: transparent;
+}
+.theme-dark .title-qAcLxz {
+  background: transparent;
+  box-shadow: none;
+}
+.theme-dark #friends {
+  background-color: transparent;
+}
+.theme-dark .headerBar-cxbhPD {
+  background: transparent;
+}
+.theme-dark .ui-standard-sidebar-view .content-region {
+  background: transparent;
+}
+.theme-dark .ui-standard-sidebar-view .sidebar-region {
+  background: transparent;
+}
+.theme-dark .ui-standard-sidebar-view {
+  background: transparent;
+}
+
+.channels-3g2vYe {
+  transition: width 0.5s;
+}
+
+@media (max-width: 1000px) {
+  .channels-3g2vYe:not(:hover) {
+    width: 45px;
+  }
+
+  .channels-3g2vYe:not(:hover) .container-iksrDt {
+    opacity: 0;
+  }
+
+  .channels-3g2vYe .scroller-fzNley::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes success {
+  0% { background-color: rgba(0, 0, 0, 0.5) }
+  100% { background-color: rgba(35, 190, 96, 0.75); }
+}
+
+.success {
+  animation: success 0.4s;
+}
+
+.aethcord-copycode-btn {
+  color: #ffffff;
+  border-radius:4px;
+  border:none;
+
+  line-height:20px;
+  padding:0 10px;
+  cursor:pointer;
+  font-family:'Raleway', sans-serif;
+  font-size:0.8em;
+  text-transform:uppercase;
+  font-weight:bolder;
+
+  margin: 3px;
+  background:rgba(0,0,0,0.5);
+  position: absolute;
+  right: 0 !important;
+  bottom: 0 !important;
+}

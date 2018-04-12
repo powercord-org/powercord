@@ -1,0 +1,12 @@
+{
+  "extends": [ "semistandard" ],
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "script",
+    "browser": true
+  },
+  "globals": {
+    "_path": true,
+    "_fs": true
+  }
+}

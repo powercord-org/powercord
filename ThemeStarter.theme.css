@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans+Condensed');
+* {
+ font-family: 'IBM Plex Sans Condensed' !important;
+ }
+.app {
+	background-image: url("https://wallpaperstudio10.com/static/wpdb/wallpapers/1000x563/002549.jpg");
+	background-size: cover !important;
+	background-position: center !important;
+}
+.theme-dark .friends-table .scroller-wrap ::-webkit-scrollbar-track-piece, 
+.theme-dark .messages-wrapper .scroller-wrap ::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+    border-color: transparent;
+}
+.channels-3g2vYe {
+    background-color: rgba(0,0,0,0);
+}
+.container-RYiLUQ {
+    background-color:  transparent;
+}
+ /* fix not having a background image anymore */
+.layers-20RVFW, .layer-kosS71, .container-2OU7Cz, .typing-3eiiL_ {
+  background: transparent !important;
+}
+/* optionally adjust background brightness (0: original image, 1: black) */
+.layers-20RVFW {
+  background: rgba(0,0,0, 0.3) !important;
+}
+.container-2OU7Cz {
+    background-color:  rgba(0,0,0,0);
+}
+.theme-dark .layer, .theme-dark .layers {
+    background: transparent;
+}
+.guilds-wrapper {
+    background-color: transparent;
+}
+.theme-dark .chat form .typing {
+    background-color: transparent;
+}
+.theme-dark .chat form {
+    background-color: transparent;
+    box-shadow: none;
+}
+.theme-dark .chat>.content {
+    background-color: transparent;
+}
+.theme-dark .chat {
+    background-color: transparent;
+}
+
+.theme-dark .friends-table, .theme-dark .messages-wrapper {
+    background-color: transparent;
+}
+.theme-dark .members-1bid1J {
+    background-color: transparent;
+}
+.theme-dark .title-qAcLxz {
+    background: transparent;
+    box-shadow: none;
+}
+.theme-dark #friends {
+    background-color: transparent;
+}
+.theme-dark .headerBar-cxbhPD {
+    background: transparent;
+}
+.theme-dark .ui-standard-sidebar-view .content-region {
+    background: transparent;
+}
+.theme-dark .ui-standard-sidebar-view .sidebar-region {
+    background: transparent;
+}
+.theme-dark .ui-standard-sidebar-view {
+    background: transparent;
+}
