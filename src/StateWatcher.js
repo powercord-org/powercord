@@ -1,4 +1,9 @@
-const EventEmitter = require('eventemitter3');
+let EventEmitter;
+try {
+  EventEmitter = require('eventemitter3');
+} catch (_) {
+  EventEmitter = require('events');
+}
 
 module.exports = class StateWatcher extends EventEmitter {
   constructor () {
@@ -13,9 +18,7 @@ module.exports = class StateWatcher extends EventEmitter {
 
   async onMutation (mutations) {
     for (const mutation of mutations) {
-      if (!mutation.addedNodes[0]) {
-        continue;
-      }
+      if (!mutation.addedNodes[0]) continue;
 
       for (const node of Array.prototype.slice.call(mutation.addedNodes, 0).concat(mutation.removedNodes)) {
         if (!node.classList) continue;
