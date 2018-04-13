@@ -1,37 +1,21 @@
-const { readdirSync } = require('fs');
-const { watch } = require('chokidar');
-const { join, isAbsolute } = require('path');
+const { join } = require('path');
 
 const pluginDir = join(__dirname, 'plugins');
+const Store = require(join(__dirname, '..', 'Structures', 'Store'));
 
-module.exports = class PluginStore {
+module.exports = class PluginStore extends Store {
   constructor (main) {
-    this.main = main;
-    this.store = new Map();
-
-    this.setup();
+    super(main, pluginDir);
   }
 
-  async loadPlugin (filename) {
-    console.log(filename);
-    if (!isAbsolute(filename)) {
-      filename = join(pluginDir, filename);
-    }
-
-    if (this.store.has(filename)) {
-      console.log(this.store.get(filename));
-      this.store.get(filename).unload.call(this.main);
-      delete require.cache[require.resolve(filename)];
-    }
-
-    const plugin = require(filename);
-    this.store.set(filename, plugin);
-    plugin.init.call(this.main);
+  async addItem (path) {
+    const Plugin = new (require(path))(this.main);
+    this.store.set(path, Plugin);
+    Plugin.load();
   }
 
-  async setup () {
-    readdirSync(pluginDir).map(this.loadPlugin, this);
-    watch(pluginDir)
-      .on('change', this.loadPlugin.bind(this));
+  async removeItem (path) {
+    this.store.get(path).unload();
+    delete require.cache[require.resolve(path)];
   }
 };
