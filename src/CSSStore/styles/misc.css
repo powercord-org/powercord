@@ -1,0 +1,19 @@
+@keyframes fade {
+  0% { opacity: 0 };
+  100% { opacity: 1 };
+}
+
+#dbl-prompt { /* Used for the DBL plugin */
+  top: 2px;
+  font-weight: 150;
+  position: absolute;
+  transition: opacity 0.5s;
+}
+
+.activityText-258pdj strong { /* Red text on playing statuses */
+  color: #e62727;
+}
+
+.has-more * {
+  background: rgba(0, 0, 0, 0.8) !important;
+}

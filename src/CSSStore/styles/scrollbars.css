@@ -1,0 +1,22 @@
+*[class*="scroller"]::-webkit-scrollbar {
+  width: 0.5em !important;
+}
+
+*[class*="scroller"]::-webkit-scrollbar-track-piece {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+*[class*="scroller"]::-webkit-scrollbar-thumb {
+    background-color: #e62727 !important;
+    border: none !important;
+}
+
+.theme-dark .friends-table .scroller-wrap::-webkit-scrollbar-thumb, 
+.theme-dark .messages-wrapper .scroller-wrap::-webkit-scrollbar-thumb {
+    border: none;
+}
+
+.channels-3g2vYe .scroller-fzNley::-webkit-scrollbar {
+  display: none;
+}

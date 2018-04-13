@@ -1,0 +1,34 @@
+.search-results-wrap, .membersWrap-3wRngy {
+  background: rgba(0, 0, 0, 0.55) !important;
+}
+
+.search-results-wrap .search-header,
+.search-result::after,
+.search-result::before,
+.channel-name {
+  background: transparent !important;
+}
+
+.search-results-wrap .search-result-message.hit {
+  background: rgba(0, 0, 0, 0.5) !important;
+  border: rgba(230, 39, 39, 0.5) 1px solid !important;
+  box-shadow: 1px -2.5px 2.5px 1px rgba(230, 39, 39, 0.4),
+              1px  2.5px 2.5px 1px rgba(230, 39, 39, 0.4) !important;
+}
+
+.searchPopout-38pRYh {
+  background: rgba(0, 0, 0, 0.8) !important;
+}
+
+.searchQuery-3o17HL {
+  background: rgba(0, 0, 0, 0.8) !important;
+}
+
+.searchQuery-3o17HL span {
+  display: none;
+}
+
+.searchPopout-38pRYh .answer-9L5NhD {
+  color: rgb(230, 39, 39) !important;
+  font-weight: 450 !important;
+}

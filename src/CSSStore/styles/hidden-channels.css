@@ -1,0 +1,13 @@
+.channels-3g2vYe {
+  transition: width 0.4s 0.1s;
+}
+
+@media (max-width: 1000px) {
+  .channels-3g2vYe:not(:hover) {
+    width: 45px;
+  }
+
+  .channels-3g2vYe:not(:hover) .container-iksrDt {
+    opacity: 0;
+  }
+}

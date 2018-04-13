@@ -1,0 +1,17 @@
+[class*="contentSelected"]:not([class*="avatar"]) {
+  background-color: #e62727;
+  border-radius: 5px;
+}
+
+[class*="contentSelected"] svg[class*=icon] {
+color: #000000;
+}
+
+.unread-23Kvxk,
+.guild.unread:before {
+background-color: #e62727 !important;
+}
+
+.guild-inner {
+background: transparent !important;
+}

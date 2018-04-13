@@ -1,0 +1,12 @@
+.popout .recent-mentions-popout {
+  background: rgba(0, 0, 0, 0.6) !important;
+}
+
+.popout .recent-mentions-popout .message-group {
+  background: rgba(0, 0, 0, 0.8) !important;
+  border: rgba(230, 39, 39, 0.5) 1px solid !important;
+}
+
+.popout .recent-mentions-popout .header {
+  background: rgba(0, 0, 0, 0.8) !important;
+}
