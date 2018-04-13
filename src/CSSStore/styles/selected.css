@@ -4,14 +4,14 @@
 }
 
 [class*="contentSelected"] svg[class*=icon] {
-color: #000000;
+  color: #000000;
 }
 
 .unread-23Kvxk,
 .guild.unread:before {
-background-color: #e62727 !important;
+  background-color: #e62727 !important;
 }
 
 .guild-inner {
-background: transparent !important;
+  background: transparent !important;
 }
