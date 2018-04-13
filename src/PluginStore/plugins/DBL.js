@@ -7,6 +7,7 @@ module.exports = class DBL extends Plugin {
 
     this.ID = '325648177178869760';
     this.caseRegex = /#(\d+)/g;
+    this.inject = this.inject.bind(this);
   }
 
   async insertText (elem, text) {
@@ -54,10 +55,10 @@ module.exports = class DBL extends Plugin {
   }
 
   async load () {
-    this.main.StateWatcher.on('switchChannel', this.inject.bind(this));
+    this.main.StateWatcher.on('switchChannel', this.inject);
   }
 
   async unload () {
-    this.main.StateWatcher.removeListener('switchChannel', this.inject.bind(this));
+    this.main.StateWatcher.removeListener('switchChannel', this.inject);
   }
 };

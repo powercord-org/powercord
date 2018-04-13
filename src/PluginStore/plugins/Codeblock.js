@@ -4,6 +4,7 @@ const Plugin = require(join(__dirname, '..', '..', 'Structures', 'Plugin'));
 module.exports = class Codeblock extends Plugin {
   constructor (main) {
     super(main, 'Codeblock');
+    this.inject = this.inject.bind(this);
   }
 
   async inject (codeblock) {
@@ -33,10 +34,10 @@ module.exports = class Codeblock extends Plugin {
   }
 
   async load () {
-    this.main.StateWatcher.on('codeblock', this.inject.bind(this));
+    this.main.StateWatcher.on('codeblock', this.inject);
   }
 
   async unload () {
-    this.main.StateWatcher.removeListener('codeblock', this.inject.bind(this));
+    this.main.StateWatcher.removeListener('codeblock', this.inject);
   }
 };
