@@ -1,25 +1,18 @@
 const { join } = require('path');
-const Module = require('module');
+const { _extensions, _load } = require('module');
 const { readFileSync } = require('fs');
-// const electron = require('electron');
 
 const injection = join(__dirname, 'src', 'index');
 exports.inject = (appPath) => {
   const basePath = join(appPath, '..', 'app.asar');
-  // electron.app.getAppPath = () => basePath;
   const { main } = require(join(basePath, 'package.json'));
 
-  let mainWindowPatched = false;
+  const oldLoader = _extensions['.js'];
+  _extensions['.js'] = (mdl, filename) => {
+    let content = readFileSync(filename).toString();
 
-  const oldLoader = Module._extensions['.js'];
-  Module._extensions['.js'] = (mod, filename) => {
-    let content = readFileSync(filename, 'utf8');
-    const fname = filename.toLowerCase();
-
-    if (fname.endsWith('mainscreen.js')) {
-      mainWindowPatched = true;
-
-      if (content.match(/mainScreenPreload.js'\)/)) {
+    if (filename.endsWith('mainScreen.js')) {
+      if ((/mainScreenPreload.js'\)/).test(content)) {
         content = content.replace(
           /preload: .*\)/,
           `preload: '${injection}'`
@@ -30,14 +23,12 @@ exports.inject = (appPath) => {
           `webPreferences: { preload: '${injection}',`
         );
       }
+
+      _extensions['.js'] = oldLoader;
     }
 
-    if (mainWindowPatched) {
-      Module._extensions['.js'] = oldLoader;
-    }
-
-    return mod._compile(content, filename);
+    return mdl._compile(content, filename);
   };
 
-  Module._load(join(basePath, main), null, true);
+  _load(join(basePath, main), null, true);
 };
