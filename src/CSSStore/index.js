@@ -1,5 +1,5 @@
 const { readFileSync } = require('fs');
-const { join, sep, isAbsolute } = require('path');
+const { join, sep } = require('path');
 
 const Store = require(join(__dirname, '..', 'Structures', 'Store'));
 
@@ -25,7 +25,6 @@ module.exports = class CSSStore extends Store {
   }
 
   async addItem (path) {
-    console.log('add', path);
     const content = readFileSync(path);
     const id = this.getIDFromPath(path);
 
@@ -42,8 +41,6 @@ module.exports = class CSSStore extends Store {
   }
 
   async removeItem (path) {
-    console.log('remove', path);
-    
     this.parent.querySelector(`#${this.getIDFromPath(path)}`).remove();
   }
 
