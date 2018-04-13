@@ -1,8 +1,10 @@
 const ID = '325648177178869760';
 const caseRegex = /#(\d+)/g;
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-module.exports = async function DBLPlugin () {
-  this.StateWatcher.on('switchChannel', () => {
+const inject = async function () {
+  this.StateWatcher.on('switchChannel', async () => {
+    await sleep(1000);
     if (window.location.pathname.split('/').pop() === ID) {
       const prompt = (() => {
         const div = document.createElement('div');
@@ -16,7 +18,7 @@ module.exports = async function DBLPlugin () {
 
       document.querySelector('form').appendChild(prompt);
 
-      const cases = document.querySelectorAll('.embedAuthorName-29phCh');
+      const cases = document.querySelectorAll('.embedPill-3sYS1X:not([style*="rgb(65, 150, 247)"]) + .embedInner-t4ag7g .embedAuthorName-29phCh');
       const { innerHTML: lastCase } = cases[cases.length - 1];
       const caseNumber = `${lastCase.match(caseRegex)[0].slice(1)} `;
 
@@ -41,4 +43,15 @@ module.exports = async function DBLPlugin () {
       };
     }
   });
+};
+
+module.exports = {
+  async init () {
+    console.log('load 1234589');
+
+    // this.StateWatcher.on('switchChannel', inject.bind(this));
+  },
+  async unload () {
+    this.StateWatcher.removeListener('switchChannel', inject.bind(this));
+  }
 };

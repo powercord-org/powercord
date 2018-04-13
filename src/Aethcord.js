@@ -2,26 +2,25 @@
 const { remote: { app, getCurrentWebContents } } = require('electron');
 const { join } = require('path');
 const { readdirSync } = require('fs');
-const CSSManager = require(join(__dirname, 'CSSManager'));
+const CSSStore = require(join(__dirname, 'CSSStore'));
+const PluginStore = require(join(__dirname, 'PluginStore'));
 const StateWatcher = require(join(__dirname, 'StateWatcher.js'));
 
 module.exports = class Aethcord {
   constructor () {
     this.preload();
-    this.CSSManager = null;
     this.StateWatcher = null;
+    this.CSSStore = null;
+    this.PluginStore = null;
 
     this.init();
   }
 
   async init () {
     getCurrentWebContents().on('dom-ready', () => {
-      this.CSSManager = new CSSManager();
-      this.StateWatcher = new StateWatcher();
-
-      for (const plugin of readdirSync(join(__dirname, 'plugins'))) {
-        require(join(__dirname, 'plugins', plugin)).call(this);
-      }
+      this.StateWatcher = new StateWatcher(this);
+      this.CSSStore = new CSSStore(this);
+      this.PluginStore = new PluginStore(this);
     });
   }
 

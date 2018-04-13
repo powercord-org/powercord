@@ -4,18 +4,17 @@ const { join, sep, isAbsolute } = require('path');
 
 const CSSDir = join(__dirname, 'styles');
 
-module.exports = class CSSManager {
+module.exports = class CSSStore {
   constructor () {
     this.parent = document.createElement('div');
     this.parent.setAttribute('id', 'aethcord-css');
     document.head.appendChild(this.parent);
-    this.styles = new Map();
+    this.store = new Map();
 
-    readdirSync(CSSDir).map(this.loadFile, this);
-    this.setupListener();
+    this.setup();
   }
 
-  async loadFile (filename) {
+  async loadStyle (filename) {
     if (!isAbsolute(filename)) {
       filename = join(CSSDir, filename);
     }
@@ -25,8 +24,8 @@ module.exports = class CSSManager {
       .split(sep).pop()
       .split('.')[0];
 
-    if (!this.styles.get(filename)) {
-      this.styles.set(
+    if (!this.store.get(filename)) {
+      this.store.set(
         filename,
         this.parent.appendChild((() => {
           const style = document.createElement('style');
@@ -41,8 +40,9 @@ module.exports = class CSSManager {
     }
   }
 
-  async setupListener () {
+  async setup () {
+    readdirSync(CSSDir).map(this.loadStyle, this);
     watch(CSSDir)
-      .on('change', this.loadFile.bind(this));
+      .on('change', this.loadStyle.bind(this));
   }
 };
