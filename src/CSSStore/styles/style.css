@@ -212,7 +212,7 @@
 }
 
 .channels-3g2vYe {
-  transition: width 0.5s;
+  transition: width 0.4s 0.1s;
 }
 
 @media (max-width: 1000px) {
