@@ -11,11 +11,11 @@ module.exports = class PluginStore extends Store {
   async addItem (path) {
     const Plugin = new (require(path))(this.main);
     this.store.set(path, Plugin);
-    Plugin.load();
+    Plugin._load();
   }
 
   async removeItem (path) {
-    this.store.get(path).unload();
+    this.store.get(path)._unload();
     delete require.cache[require.resolve(path)];
   }
 };
