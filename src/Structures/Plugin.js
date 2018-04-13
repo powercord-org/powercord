@@ -5,13 +5,13 @@ module.exports = class Plugin {
   }
 
   log (...args) {
-    console.log(this.name, ...args);
+    console.log(`%c[${this.name}] %c${args.join(' ')}`, 'color: #7e0e46; font-size: 1.3em; font-weight: 700', '');
   }
 
   createElement (name, props) {
     const element = document.createElement(name);
     for (const prop in props) {
-      if (['style'].includes(prop)) {
+      if (['style', 'href'].includes(prop)) {
         element.setAttribute(prop, props[prop]);
       } else {
         element[prop] = props[prop];
