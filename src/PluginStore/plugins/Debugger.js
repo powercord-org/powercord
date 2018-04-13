@@ -8,6 +8,7 @@ module.exports = class Debugger extends Plugin {
 
   async onKeyDown (key) {
     if (key.key === 'D' && key.altKey) {
+      // eslint-disable-next-line no-debugger
       debugger;
     }
   }
