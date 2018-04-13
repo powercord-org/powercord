@@ -1,0 +1,11 @@
+.container-3lnMWU {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+  
+.container-iksrDt, .container-3lnMWU {
+  background: transparent;
+  border: 1px #e62727 solid;
+  border-bottom: none;
+  transition: opacity 0.5s;
+}
