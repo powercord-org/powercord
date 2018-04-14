@@ -6,8 +6,6 @@ If you for some reason want to use this anyways:
 ```bash
 git clone https://github.com/aetheryx/aethcord
 cd aethcord
-npm i --only=production
-chmod +x install.sh
 ./install.sh # follow instructions
 # fully reboot Discord client (no ctrl+r) and you're good
 ```  
