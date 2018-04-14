@@ -17,8 +17,29 @@ module.exports = class DBL extends Plugin {
     console.log(text);
   }
 
-  getLastCaseNumber () {
+  waitForMessages () {
+    return new Promise(resolve => {
+      const MO = new MutationObserver(mutations => {
+        for (const mutation of mutations) {
+          if (mutation.addedNodes[0] && mutation.addedNodes[0].classList && mutation.addedNodes[0].classList.contains('message-group')) {
+            MO.disconnect();
+            resolve();
+          }
+        }
+      });
+      MO.observe(document.querySelector('.messages.scroller'), {
+        childList: true,
+        subtree: true
+      });
+    });
+  }
+
+  async getLastCaseNumber () {
     const cases = document.querySelectorAll('.embedPill-3sYS1X:not([style*="rgb(65, 150, 247)"]) + .embedInner-t4ag7g .embedAuthorName-29phCh');
+    if (!cases[0]) {
+      await this.waitForMessages();
+      return this.getLastCaseNumber();
+    }
     const { innerHTML: lastCase } = cases[cases.length - 1];
     return `${lastCase.match(this.caseRegex)[0].slice(1)} `;
   }
@@ -35,7 +56,7 @@ module.exports = class DBL extends Plugin {
 
     document.querySelector('form').appendChild(prompt);
 
-    const caseNumber = this.getLastCaseNumber();
+    const caseNumber = await this.getLastCaseNumber();
 
     const ta = document.querySelector('textarea');
     ta.onkeyup = function (main, event) {
