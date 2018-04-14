@@ -9,6 +9,7 @@
     "node": true 
   },
   "globals": {
-    "webpackJsonp": true
+    "webpackJsonp": true,
+    "Aethcord": true
   }
 }
