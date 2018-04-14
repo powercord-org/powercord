@@ -8,13 +8,13 @@
 }
 
 *[class*="scroller"]::-webkit-scrollbar-thumb {
-    background-color: #e62727 !important;
-    border: none !important;
+  background-color: #e62727 !important;
+  border: none !important;
 }
 
 .theme-dark .friends-table .scroller-wrap::-webkit-scrollbar-thumb, 
 .theme-dark .messages-wrapper .scroller-wrap::-webkit-scrollbar-thumb {
-    border: none;
+  border: none;
 }
 
 .channels-3g2vYe .scroller-fzNley::-webkit-scrollbar {
