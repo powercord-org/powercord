@@ -1,7 +1,7 @@
 const { join } = require('path');
 
 const pluginDir = join(__dirname, 'plugins');
-const Store = require(join(__dirname, '..', 'Structures', 'Store'));
+const Store = require('aethcord/Structures/Store.js');
 
 module.exports = class PluginStore extends Store {
   constructor (main) {

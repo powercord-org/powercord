@@ -1,7 +1,7 @@
 const { readFileSync } = require('fs');
 const { join, sep } = require('path');
 
-const Store = require(join(__dirname, '..', 'Structures', 'Store'));
+const Store = require('aethcord/Structures/Store.js');
 
 const styleContainer = (() => {
   const div = document.createElement('div');

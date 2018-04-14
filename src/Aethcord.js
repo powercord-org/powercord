@@ -15,9 +15,9 @@ module.exports = class Aethcord {
 
   async init () {
     getCurrentWebContents().on('dom-ready', () => {
-      const StateWatcher = require(join(__dirname, 'StateWatcher.js'));
-      const CSSStore = require(join(__dirname, 'CSSStore'));
-      const PluginStore = require(join(__dirname, 'PluginStore'));
+      const StateWatcher = require('aethcord/Modules/StateWatcher');
+      const CSSStore = require('aethcord/Modules/CSSStore');
+      const PluginStore = require('aethcord/Modules/PluginStore');
 
       this.StateWatcher = new StateWatcher(this);
       this.CSSStore = new CSSStore(this);

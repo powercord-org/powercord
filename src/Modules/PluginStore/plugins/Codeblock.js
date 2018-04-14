@@ -1,5 +1,4 @@
-const { join } = require('path');
-const Plugin = require(join(__dirname, '..', '..', 'Structures', 'Plugin'));
+const Plugin = require('aethcord/Structures/Plugin.js');
 
 module.exports = class Codeblock extends Plugin {
   constructor (main) {

@@ -1,6 +1,5 @@
-const { join } = require('path');
-const Plugin = require(join(__dirname, '..', '..', '..', 'Structures', 'Plugin'));
-const findModule = require(join(__dirname, '..', '..', 'findModule.js'));
+const Plugin = require('aethcord/Structures/Plugin.js');
+const findModule = require('aethcord/Modules/findModule.js');
 
 const noop = () => {};
 
