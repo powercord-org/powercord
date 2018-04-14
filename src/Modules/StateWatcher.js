@@ -24,12 +24,22 @@ module.exports = class StateWatcher extends EventEmitter {
         if (!node.classList) continue;
 
         const codeblocks = node.querySelectorAll('code.hljs');
-        for (const codeblock of codeblocks) {
-          this.emit('codeblock', codeblock);
+        if (codeblocks[0]) {
+          for (const codeblock of codeblocks) {
+            this.emit('codeblock', codeblock);
+          }
+          break;
+        }
+
+        if (node.getAttribute('draggable') === 'true' && node.classList.contains('containerDefault-1bbItS')) {
+          this.emit('switchServer');
+          this.emit('switchChannel'); // A server switch also means a channel switch, but we're returning so it wouldn't be picked up
+          return;
         }
 
         if (node.classList.contains('channelTextArea-1HTP3C')) {
           this.emit('switchChannel');
+          return;
         }
       }
     }
