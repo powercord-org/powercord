@@ -14,7 +14,6 @@ module.exports = class DBL extends Plugin {
     elem.selectionStart = elem.value.length;
     elem.selectionEnd = elem.value.length;
     document.execCommand('insertText', false, text);
-    console.log(text);
   }
 
   waitForMessages () {
