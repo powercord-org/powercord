@@ -1,7 +1,8 @@
 
 const { remote: { app, getCurrentWebContents } } = require('electron');
 const { join } = require('path');
-const { readdirSync } = require('fs');
+const { readdirSync, readFileSync } = require('fs');
+const buble = require('buble');
 
 module.exports = class Aethcord {
   constructor () {
@@ -9,20 +10,37 @@ module.exports = class Aethcord {
     this.StateWatcher = null;
     this.CSSStore = null;
     this.PluginStore = null;
+    this.React = null;
+    this.ReactDOM = null;
 
-    this.init();
+    getCurrentWebContents().on('dom-ready', this.init.bind(this));
   }
 
   async init () {
-    getCurrentWebContents().on('dom-ready', () => {
-      const StateWatcher = require('aethcord/Modules/StateWatcher');
-      const CSSStore = require('aethcord/Modules/CSSStore');
-      const PluginStore = require('aethcord/Modules/PluginStore');
+    await this.hookReact();
 
-      this.StateWatcher = new StateWatcher(this);
-      this.CSSStore = new CSSStore(this);
-      this.PluginStore = new PluginStore(this);
-    });
+    const StateWatcher = require('aethcord/Modules/StateWatcher');
+    const CSSStore = require('aethcord/Modules/CSSStore');
+    const PluginStore = require('aethcord/Modules/PluginStore');
+
+    this.StateWatcher = new StateWatcher();
+    this.CSSStore = new CSSStore();
+    this.PluginStore = new PluginStore(this);
+    this.PluginStore.init();
+  }
+
+  async hookReact () {
+    const findModule = require('aethcord/Modules/findModule.js');
+
+    this.React = findModule(['createElement', 'Component']);
+    this.ReactDOM = findModule(['render', 'createPortal']);
+
+    require.extensions['.jsx'] = (mdl, path) => {
+      const { code } = buble.transform(readFileSync(path).toString(), {
+        jsx: 'Aethcord.React.createElement'
+      });
+      return mdl._compile(code, path);
+    };
   }
 
   preload () {
