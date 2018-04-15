@@ -8,14 +8,17 @@ module.exports = class PluginStore extends Store {
     super(main, pluginDir);
   }
 
+  async init () {
+    return Promise.all([...this.store.values()].map(g => g._load()));
+  }
+
   async addItem (path) {
     const Plugin = new (require(path))(this.main);
     this.store.set(path, Plugin);
-    Plugin._load();
   }
 
   async removeItem (path) {
-    this.store.get(path)._unload();
+    await this.store.get(path)._unload();
     delete require.cache[require.resolve(path)];
   }
 };

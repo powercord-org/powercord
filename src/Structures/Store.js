@@ -11,13 +11,13 @@ module.exports = class Store {
     this.setup();
   }
 
-  async handleItem (path) {
+  handleItem (path) {
     if (!isAbsolute(path)) { // file paths from chokidar are absolute, files from fs.readdirSync are not
       path = join(this.dir, path);
     }
 
     if (this.store.has(path)) {
-      await this.removeItem(path);
+      this.removeItem(path);
     }
 
     return this.addItem(path);
