@@ -6,7 +6,7 @@ module.exports = class Plugin {
   }
 
   log (...args) {
-    console.log(`%c[${this.name}] %c${args.join(' ')}`, 'color: #7e0e46; font-size: 1.3em; font-weight: 700', '');
+    console.log(`[${this.name}]`, ...args);
   }
 
   toggle () {
