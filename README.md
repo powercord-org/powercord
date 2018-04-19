@@ -11,4 +11,4 @@ cd aethcord
 ```  
 
 Said script isn't going to work on Windows, but if anyone feels up to it, feel free to PR a batch script / fixes needed for Windows.  
-Adittionally, feel free to use and adapt the project to your own personal liking, or ask any questions [here](https://discord.gg/Yphr6WG).  
+Additionally, feel free to use and adapt the project to your own personal liking, or ask any questions [here](https://discord.gg/Yphr6WG).  
