@@ -1,3 +1,16 @@
 module.exports = class Plugin {
-  get _ () { return 'go away' }
+  constructor (options) {
+    this.options = options;
+    this.ready = false;
+  }
+
+  _start () {
+    this.ready = true;
+    return this.start();
+  }
+
+  _stop () {
+    this.ready = false;
+    return this.stop();
+  }
 };
