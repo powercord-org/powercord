@@ -1,4 +1,4 @@
-const { readdir, mkdir, writeFile } = require('fs').promises;
+const { readdir, mkdir, writeFile, symlink } = require('fs').promises;
 const { join } = require('path');
 
 (async () => {
@@ -17,6 +17,8 @@ const { join } = require('path');
   );
   await mkdir(appDir);
 
+  await mkdir(join(__dirname, '..', 'node_modules'));
+
   await Promise.all([
     writeFile(
       join(appDir, 'index.js'),
@@ -25,6 +27,11 @@ const { join } = require('path');
     writeFile(
       join(appDir, 'package.json'),
       JSON.stringify({ main: 'index.js' })
+    ),
+    symlink(
+      join(__dirname, '..', 'src', '@ac'),
+      join(__dirname, '..', 'node_modules', '@ac'),
+      'dir'
     )
   ]);
 
