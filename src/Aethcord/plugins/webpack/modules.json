@@ -1,0 +1,8 @@
+{
+  "messages": [
+    "sendMessage",
+    "editMessage",
+    "deleteMessage",
+    "sendBotMessage"
+  ]
+}
