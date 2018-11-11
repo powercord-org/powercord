@@ -1,0 +1,20 @@
+{
+  "name": "aethcord",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "inject": "node injectors/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aetheryx/aethcord.git"
+  },
+  "keywords": [],
+  "author": "Aetheryx",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aetheryx/aethcord/issues"
+  },
+  "homepage": "https://github.com/aetheryx/aethcord#readme"
+}
