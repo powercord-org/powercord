@@ -1,12 +1,16 @@
 module.exports = class Plugin {
   constructor (options) {
-    this.options = options;
+    this.options = {
+      stage: 0,
+      dependencies: [],
+      ...options
+    };
     this.ready = false;
   }
 
-  _start () {
-    this.ready = true;
-    return this.start();
+  async _start () {
+    await this.start();
+    return (this.ready = true);
   }
 
   _stop () {

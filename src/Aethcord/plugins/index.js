@@ -1,3 +1,5 @@
+const sleep = require('@ac/sleep');
+
 const plugins = (() => {
   const plugins = {};
 
@@ -13,10 +15,19 @@ const plugins = (() => {
   return plugins;
 })();
 
-const startPlugins = (stage) => 
+const startPlugins = (stage) => Promise.all(
   Object.values(plugins)
     .filter(plugin => plugin.options.stage === stage)
-    .map(plugin => plugin._start());
+    .map(async (plugin) => {
+      while (!plugin.options.dependencies.every(pluginName => (
+        aethcord.plugins.get(pluginName).ready
+      ))) {
+        await sleep(5);
+      }
+
+      return plugin._start();
+    })
+);
 
 startPlugins(0);
 
