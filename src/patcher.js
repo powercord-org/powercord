@@ -8,6 +8,7 @@ class PatchedBrowserWindow extends BrowserWindow {
     if (opts.webPreferences && opts.webPreferences.preload) {
       process.env.originalPreload = opts.webPreferences.preload
       opts.webPreferences.preload = join(__dirname, 'preload');
+      opts.webPreferences.nodeIntegration = true;
     }
 
     return new BrowserWindow(opts);
