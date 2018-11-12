@@ -8,7 +8,7 @@ module.exports = class Commands extends Plugin {
     });
 
     this.commands = new Map([
-      [ 'echo', (args) => ({ isLocal: true, result: args.join(' ') }) ]
+      [ 'echo', (args) => ({ send: false, result: args.join(' ') }) ]
     ]);
   }
 
