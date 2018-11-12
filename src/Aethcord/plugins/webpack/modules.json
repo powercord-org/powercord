@@ -1,8 +1,17 @@
 {
-  "messages": [
+  "messages": [[
     "sendMessage",
     "editMessage",
-    "deleteMessage",
-    "sendBotMessage"
+    "deleteMessage"
+  ], [
+    "createMessage",
+    "createBotMessage",
+    "parse"
+  ]],
+
+  "channels": [
+    "getChannelId",
+    "getLastSelectedChannelId",
+    "getVoiceChannelId"
   ]
 }

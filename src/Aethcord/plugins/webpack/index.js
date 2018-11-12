@@ -7,6 +7,7 @@ module.exports = class Webpack extends Plugin {
     super({
       stage: 2
     });
+    this.modules = modules;
   }
 
   async start () {
@@ -14,7 +15,20 @@ module.exports = class Webpack extends Plugin {
 
     for (const mdl in modules) {
       const keys = modules[mdl];
-      this[mdl] = await this.getModule(m => keys.every(key => m[key]));
+      let target = {};
+
+      if (Array.isArray(keys[0])) {
+        for (const nestedKeys of keys) {
+          target = {
+            ...target,
+            ...await this.getModule(nestedKeys)
+          };
+        }
+      } else {
+        target = await this.getModule(keys);
+      }
+
+      this[mdl] = target;
     }
   }
 
@@ -33,6 +47,11 @@ module.exports = class Webpack extends Plugin {
   }
 
   async getModule (filter, unsuccessfulIterations = 0) {
+    if (Array.isArray(filter)) {
+      const keys = filter;
+      filter = m => keys.every(key => m[key]);
+    }
+
     if (unsuccessfulIterations > 16) {
       return null;
     }
