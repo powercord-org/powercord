@@ -1,5 +1,9 @@
-module.exports = class Plugin {
+const Events = require('events');
+
+module.exports = class Plugin extends Events {
   constructor (options) {
+    super();
+
     this.options = {
       stage: 0,
       dependencies: [],

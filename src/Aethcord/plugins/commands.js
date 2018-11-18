@@ -7,9 +7,56 @@ module.exports = class Commands extends Plugin {
       dependencies: [ 'webpack' ]
     });
 
-    this.commands = new Map([
-      [ 'echo', (args) => ({ send: false, result: args.join(' ') }) ]
-    ]);
+    this.commands = new Map(Object.entries({
+      help: {
+        name: 'help',
+        description: 'Gives you a list of commands or information on a specific command.',
+        usage: '/help [ commandName ]',
+        func: this.help.bind(this)
+      },
+      echo: {
+        name: 'echo',
+        description: 'Returns the specified arguments.',
+        usage: '/echo [ ...arguments ]',
+        func: (args) => ({
+          send: false,
+          result: args.join(' ')
+        })
+      }
+    }));
+  }
+
+  help ([ commandName ]) {
+    let result;
+    
+    if (!commandName) {
+      const getPropLength = (command) => {
+        if (!command.name) console.log(command);
+        return command.name.length;
+      };
+
+      const commands = [ ...this.commands.values() ];
+
+      const longestCommandName = getPropLength(
+        commands.sort((a, b) => getPropLength(b) - getPropLength(a))[0]
+      );
+      result = commands
+        .map(({ name, description }) =>
+          `\`${name.padEnd((longestCommandName * 2) - name.length, ' \u200b')} |\` \u200b \u200b*${description}*`
+        )
+        .join('\n');
+    } else {
+      const command = this.commands.get(commandName);
+      if (!command) {
+        result = `Command \`${commandName}\` not found.`;
+      } else {
+
+      }
+    }
+    return {
+      send: false,
+      result
+    };
   }
 
   async start () {
@@ -24,7 +71,8 @@ module.exports = class Commands extends Plugin {
       if (message.content.startsWith('/')) {
         const [ command, ...args ] = message.content.slice(1).split(' ');
         if (this.commands.has(command)) {
-          const result = await this.commands.get(command)(args, command);
+          const result = await this.commands.get(command).func(args);
+          if (!result) return;
           if (result.send) {
             message.content = result.result;
           } else {
@@ -40,8 +88,10 @@ module.exports = class Commands extends Plugin {
     })(this.oldSendMessage = messages.sendMessage);
   }
 
-  register (name, func) {
-    return this.commands.set(name, func);
+  register (name, description, usage, func) {
+    return this.commands.set(name, {
+      name, description, usage, func
+    });
   }
 
   async stop () {

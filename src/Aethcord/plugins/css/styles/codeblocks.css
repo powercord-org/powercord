@@ -1,0 +1,48 @@
+.aethcord-codeblock-copy-btn {
+  color: #ffffff;
+  border-radius: 4px;
+
+  line-height: 20px;
+  padding: 0 10px;
+  cursor: pointer;
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  font-weight: bolder;
+
+  margin: 3px;
+  background: rgba(0,0,0,0.5);
+  position: absolute;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+/* Attribution: noodlebox */
+
+.hljs {
+  position: relative;
+}
+
+.hljs ol {
+  list-style: none;
+  counter-reset: linenumbers;
+}
+
+.hljs ol li {
+  text-indent: -4ch;
+  margin-left: 3.5ch;
+  padding-left: 0.5ch;
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.hljs ol li::before {
+  color: rgba(127,127,127,0.5);
+  display: inline-block;
+  width: 3ch;
+  margin-right: 0.5ch;
+  padding-right: 0.5ch;
+  text-align: right;
+  counter-increment: linenumbers;
+  content: counter(linenumbers);
+  user-select: none;
+}

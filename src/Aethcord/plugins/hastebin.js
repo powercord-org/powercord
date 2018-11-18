@@ -1,5 +1,5 @@
 const Plugin = require('@ac/plugin');
-const { post } = require('@ac/http');
+const { get, post } = require('@ac/http');
 const { clipboard } = require('electron');
 
 module.exports = class Hastebin extends Plugin {
@@ -8,6 +8,8 @@ module.exports = class Hastebin extends Plugin {
       stage: 2,
       dependencies: [ 'commands' ]
     });
+
+    this.DOMAIN = 'https://haste.aetheryx.xyz';
   }
 
   start () {
@@ -15,24 +17,32 @@ module.exports = class Hastebin extends Plugin {
       .plugins.get('commands')
       .register(
         'hastebin',
+        'Lets you paste content to Hastebin.',
+        '/hastebin [ --send ] < --clipboard | FILE_URL >',
         async (args) => {
           const send = args.includes('--send')
             ? !!args.splice(args.indexOf('--send'), 1)
             : false;
 
-          const { body } = await post('https://haste.aetheryx.xyz/documents')
-            .set('Content-Type', 'application/x-www-form-urlencoded')
+          const { body } = await post(`${this.DOMAIN}/documents`)
             .send(
               args.includes('--clipboard')
                 ? clipboard.readText()
-                : 'ass' // todo: actually parse arguments :thinking:
+                : await this.parseArguments(args)
             );
 
           return {
             send,
-            result: `https://haste.aetheryx.xyz/${body.key}`
+            result: `${this.DOMAIN}/${body.key}`
           };
         }
       )
+  }
+
+  async parseArguments (args) {
+    const input = args.join(' ');
+    if (input.startsWith('https://cdn.discordapp.com/attachments')) {
+      return get(input).then(res => res.raw);
+    }
   }
 }

@@ -1,6 +1,6 @@
 // Loosely based on ED/DI injector
 
-const { BrowserWindow, app } = require('electron');
+const { BrowserWindow, app, session } = require('electron');
 const { join, dirname } = require('path');
 
 class PatchedBrowserWindow extends BrowserWindow {
@@ -8,7 +8,6 @@ class PatchedBrowserWindow extends BrowserWindow {
     if (opts.webPreferences && opts.webPreferences.preload) {
       process.env.originalPreload = opts.webPreferences.preload
       opts.webPreferences.preload = join(__dirname, 'preload');
-      opts.webPreferences.nodeIntegration = true;
     }
 
     return new BrowserWindow(opts);
@@ -16,6 +15,17 @@ class PatchedBrowserWindow extends BrowserWindow {
 }
 
 app.on('ready', () => {
+  session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
+    Object.keys(responseHeaders)
+      .filter(k => (/^content-security-policy/i).test(k))
+      .map(k => (delete responseHeaders[k]));
+
+    done({
+      responseHeaders,
+      cancel: false
+    });
+  });
+  
   const electronCacheEntry = require.cache[require.resolve('electron')];
   Object.defineProperty(electronCacheEntry, 'exports', {
     value: {

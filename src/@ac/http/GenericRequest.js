@@ -84,18 +84,20 @@ module.exports = class GenericRequest {
         res.once('error', reject);
 
         res.once('end', () => {
+          const raw = String(Buffer.concat(data));
+
           const result = {
+            raw,
             body: (() => {
-              const buf = Buffer.concat(data);
               if ((/application\/json/).test(res.headers['content-type'])) {
                 try {
-                  return JSON.parse(buf);
-                } catch (e) {
-                  return String(buf);
+                  return JSON.parse(raw);
+                } catch (_) {
+                  // fall through to raw
                 }
-              } else {
-                return String(buf);
               }
+
+              return raw;
             })(),
             ok: res.statusCode >= 200 && res.statusCode < 400,
             statusCode: res.statusCode,

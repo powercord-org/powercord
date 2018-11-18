@@ -32,7 +32,7 @@ const { join } = require('path');
       join(__dirname, '..', 'src', '@ac'),
       join(__dirname, '..', 'node_modules', '@ac'),
       'dir'
-    )
+    ).catch(() => {})
   ]);
 
   console.log('done');
