@@ -1,5 +1,6 @@
 const Plugin = require('@ac/plugin');
 const { createElement } = require('@ac/util');
+const { clipboard } = require('electron');
 
 module.exports = class Codeblocks extends Plugin {
   constructor () {
@@ -17,22 +18,26 @@ module.exports = class Codeblocks extends Plugin {
   }
 
   inject (codeblock) {
-    codeblock.appendChild(
-      createElement('button', {
-        className: 'aethcord-codeblock-copy-btn',
-        innerHTML: 'copy',
-        onclick: function () {
-            const range = document.createRange();
-            range.selectNode(codeblock.children[0]);
-            console.log(range.toString());
-        }
-      })
-    );
+    if (codeblock.children[0]) {
+      return;
+    }
 
     // Attribution: noodlebox
     codeblock.innerHTML = '<ol>' + codeblock.innerHTML
       .split('\n')
       .map(l => `<li>${l}</li>`)
       .join('') + '</ol>';
+
+    codeblock.appendChild(
+      createElement('button', {
+        className: 'aethcord-codeblock-copy-btn',
+        innerHTML: 'copy',
+        onclick: () => {
+          const range = document.createRange();
+          range.selectNode(codeblock.children[0]);
+          clipboard.writeText(range.toString());
+        }
+      })
+    );
   }
 };
