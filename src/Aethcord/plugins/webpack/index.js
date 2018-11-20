@@ -17,7 +17,7 @@ module.exports = class Webpack extends Plugin {
       const keys = modules[mdl];
       let target = {};
 
-      if (Array.isArray(keys[0])) {
+      if (keys.some(Array.isArray)) {
         for (const nestedKeys of keys) {
           Object.assign(target, await this.getModule(nestedKeys));
         }
