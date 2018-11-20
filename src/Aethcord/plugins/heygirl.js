@@ -1,3 +1,5 @@
+// idea based on http://heygirl.io/ (+used their images)
+
 const Plugin = require('@ac/plugin');
 
 module.exports = class HeyGirl extends Plugin {
