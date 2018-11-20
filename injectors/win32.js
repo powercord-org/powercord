@@ -2,6 +2,9 @@ const { readdir, mkdir, writeFile, symlink } = require('fs').promises;
 const { join } = require('path');
 
 (async () => {
+  const createSymlink = await readdir(__dirname)
+    .then(dir => dir.includes('node_modules'));
+
   const discordPath = join(process.env.LOCALAPPDATA, 'DiscordCanary');
   const discordDirectory = await readdir(discordPath);
 
@@ -17,7 +20,9 @@ const { join } = require('path');
   );
   await mkdir(appDir);
 
-  await mkdir(join(__dirname, '..', 'node_modules'));
+  if (createSymlink) {
+    await mkdir(join(__dirname, '..', 'node_modules'));
+  }
 
   await Promise.all([
     writeFile(
@@ -28,11 +33,13 @@ const { join } = require('path');
       join(appDir, 'package.json'),
       JSON.stringify({ main: 'index.js' })
     ),
-    symlink(
-      join(__dirname, '..', 'src', '@ac'),
-      join(__dirname, '..', 'node_modules', '@ac'),
-      'dir'
-    ).catch(() => {})
+    createSymlink
+      ? symlink(
+          join(__dirname, '..', 'src', '@ac'),
+          join(__dirname, '..', 'node_modules', '@ac'),
+          'dir'
+        )
+      : null
   ]);
 
   console.log('done');
