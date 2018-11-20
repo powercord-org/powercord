@@ -11,7 +11,7 @@ module.exports = class Webpack extends Plugin {
   }
 
   async start () {
-    this.webpackInstance = await this.getWebpackInstance();
+    this.webpackInstance = this.getWebpackInstance();
 
     for (const mdl in modules) {
       const keys = modules[mdl];
@@ -19,10 +19,7 @@ module.exports = class Webpack extends Plugin {
 
       if (Array.isArray(keys[0])) {
         for (const nestedKeys of keys) {
-          target = {
-            ...target,
-            ...await this.getModule(nestedKeys)
-          };
+          Object.assign(target, await this.getModule(nestedKeys));
         }
       } else {
         target = await this.getModule(keys);
