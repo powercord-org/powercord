@@ -3,7 +3,7 @@ const { join } = require('path');
 
 (async () => {
   const createSymlink = await readdir(__dirname)
-    .then(dir => dir.includes('node_modules'));
+    .then(dir => !dir.includes('node_modules'));
 
   const discordPath = join(process.env.LOCALAPPDATA, 'DiscordCanary');
   const discordDirectory = await readdir(discordPath);
