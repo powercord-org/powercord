@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "inject": "node injectors/index.js"
+    "inject": "node injectors/index.js inject",
+    "uninject": "node injectors/index.js uninject"
   },
   "repository": {
     "type": "git",

@@ -1,10 +1,30 @@
-const { readdir, mkdir, writeFile, symlink } = require('fs').promises;
+const {
+  readdir, mkdir, writeFile, symlink, unlink, rmdir, access
+} = require('fs').promises;
 const { join } = require('path');
 
-(async () => {
-  const createSymlink = await readdir(__dirname)
-    .then(dir => !dir.includes('node_modules'));
+const createSymlink = async () => {
+  if (
+    await readdir(join(__dirname, '..'))
+      .then(dir => dir.includes('node_modules'))
+  ) {
+    return null;
+  }
 
+  await mkdir(join(__dirname, '..', 'node_modules'));
+  return symlink(
+    join(__dirname, '..', 'src', '@ac'),
+    join(__dirname, '..', 'node_modules', '@ac'),
+    'dir'
+  );
+}
+const exists = (path) => {
+  return access(path)
+    .then(() => true)
+    .catch(() => false);
+};
+
+const getAppDir = async () => {
   const discordPath = join(process.env.LOCALAPPDATA, 'DiscordCanary');
   const discordDirectory = await readdir(discordPath);
 
@@ -12,17 +32,22 @@ const { join } = require('path');
     .filter(path => path.startsWith('app-'))
     .reverse()[0];
 
-  const appDir = join(
+  return join(
     discordPath,
     currentBuild,
     'resources',
     'app'
   );
-  await mkdir(appDir);
+};
 
-  if (createSymlink) {
-    await mkdir(join(__dirname, '..', 'node_modules'));
+exports.inject = async () => {
+  const appDir = await getAppDir();
+  if (await exists(appDir)) {
+    console.log('Looks like you already have an injector in place. Try uninjecting (`npm run uninject`) and try again.');
+    process.exit(1);
   }
+
+  await mkdir(appDir);
 
   await Promise.all([
     writeFile(
@@ -33,16 +58,22 @@ const { join } = require('path');
       join(appDir, 'package.json'),
       JSON.stringify({ main: 'index.js' })
     ),
-    createSymlink
-      ? symlink(
-          join(__dirname, '..', 'src', '@ac'),
-          join(__dirname, '..', 'node_modules', '@ac'),
-          'dir'
-        )
-      : null
+    createSymlink()
+  ]);
+};
+
+exports.uninject = async () => {
+  const appDir = await getAppDir();
+
+  if (!(await exists(appDir))) {
+    console.error('There is nothing to uninject.');
+    process.exit(1);
+  }
+
+  await Promise.all([
+    unlink(join(appDir, 'package.json')),
+    unlink(join(appDir, 'index.js'))
   ]);
 
-  console.log('done');
-})().catch(e => {
-  console.error('fucky wucky', e);
-});
+  return rmdir(appDir);
+};
