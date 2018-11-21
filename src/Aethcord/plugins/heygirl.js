@@ -25,6 +25,18 @@ module.exports = class HeyGirl extends Plugin {
     return this.URLs[Math.floor(Math.random() * this.URLs.length)];
   }
 
+  heygirl () {
+    document.querySelectorAll('[style*="background-image"]')
+      .forEach(({ style }) => (
+        style.backgroundImage = `url("${this.getRandomURL()}")`
+      ));
+
+    document.querySelectorAll('img')
+      .forEach(image => (
+        image.src = this.getRandomURL()
+      ));
+  }
+
   start () {
     aethcord
       .plugins
@@ -33,17 +45,7 @@ module.exports = class HeyGirl extends Plugin {
         'heygirl',
         'Replaces every image in the current view with a random image of Ryan Gosling.',
         '/heygirl',
-        () => {
-          document.querySelectorAll('[style*="background-image"]')
-            .forEach(({ style }) => (
-              style.backgroundImage = `url("${this.getRandomURL()}")`
-            ));
-
-          document.querySelectorAll('img')
-            .forEach(image => (
-              image.src = this.getRandomURL()
-            ));
-        }
+        this.heygirl.bind(this)
       );
   }
 };
