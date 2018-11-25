@@ -32,6 +32,8 @@ module.exports = class Spotify extends Plugin {
             : res.body.access_token
         )
     )(spotify.getAccessToken);
+
+    return spotify;
   }
 
   async start () {
