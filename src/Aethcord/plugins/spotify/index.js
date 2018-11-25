@@ -9,7 +9,13 @@ module.exports = class Spotify extends Plugin {
     });
   }
 
-  async patchSpotify (spotify) {
+  async patchSpotify () {
+    const {
+      http,
+      spotify, 
+      constants: { Endpoints },
+    } = aethcord.plugins.get('webpack');
+
     const spotifyUserID = await http.get(Endpoints.CONNECTIONS)
       .then(res =>
         res.body.find(connection =>
@@ -29,13 +35,7 @@ module.exports = class Spotify extends Plugin {
   }
 
   async start () {
-    const {
-      spotify,
-      http,
-      constants: { Endpoints }
-    } = aethcord.plugins.get('webpack');
-
-    this.patchSpotify(spotify);
+    const spotify = await this.patchSpotify();
 
     for (const [ commandName, command ] of Object.entries(commands)) {
       command.func = command.func.bind(command, spotify);
