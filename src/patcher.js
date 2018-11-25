@@ -21,10 +21,7 @@ app.on('ready', () => {
       .filter(k => (/^content-security-policy/i).test(k))
       .map(k => (delete responseHeaders[k]));
 
-    done({
-      responseHeaders,
-      cancel: false
-    });
+    done({ responseHeaders });
   });
   
   const electronCacheEntry = require.cache[require.resolve('electron')];
