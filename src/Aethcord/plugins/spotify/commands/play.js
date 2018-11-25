@@ -5,7 +5,14 @@ module.exports = {
   description: 'Play a Spotify URL',
   usage: '/play <URL>',
 
-  async func (spotify, [ url ]) {
+  getURLFromModal () {
+    const spotifyModals = document.querySelectorAll('.embedSpotify-tvxDCr');
+    const spotifyModal = spotifyModals[spotifyModals.length - 1];
+
+    return spotifyModal && spotifyModal.children[0].src;
+  },
+
+  async func (spotify, [ url = this.getURLFromModal() ]) {
     if (!url) {
       return {
         send: false,
