@@ -37,4 +37,4 @@ module.exports = class StateWatcher extends Plugin {
       }
     }
   }
-}
+};

@@ -23,6 +23,7 @@ module.exports = class Codeblocks extends Plugin {
     }
 
     // Attribution: noodlebox
+    // eslint-disable-next-line prefer-template
     codeblock.innerHTML = '<ol>' + codeblock.innerHTML
       .split('\n')
       .map(l => `<li>${l}</li>`)

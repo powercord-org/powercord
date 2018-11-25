@@ -17,12 +17,12 @@ const createSymlink = async () => {
     join(__dirname, '..', 'node_modules', '@ac'),
     'dir'
   );
-}
-const exists = (path) => {
-  return access(path)
+};
+
+const exists = (path) =>
+  access(path)
     .then(() => true)
     .catch(() => false);
-};
 
 const getAppDir = async () => {
   const discordPath = join(process.env.LOCALAPPDATA, 'DiscordCanary');

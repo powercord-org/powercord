@@ -6,7 +6,7 @@ const { join, dirname } = require('path');
 class PatchedBrowserWindow extends BrowserWindow {
   constructor (opts) {
     if (opts.webPreferences && opts.webPreferences.preload) {
-      process.env.originalPreload = opts.webPreferences.preload
+      process.env.originalPreload = opts.webPreferences.preload;
       opts.webPreferences.preload = join(__dirname, 'preload');
       opts.webPreferences.nodeIntegration = true;
     }

@@ -7,4 +7,4 @@ module.exports = {
   post (url) {
     return new GenericRequest('POST', url);
   }
-}
+};

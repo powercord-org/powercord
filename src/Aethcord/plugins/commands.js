@@ -28,12 +28,9 @@ module.exports = class Commands extends Plugin {
 
   help ([ commandName ]) {
     let result;
-    
+
     if (!commandName) {
-      const getPropLength = (command) => {
-        if (!command.name) console.log(command);
-        return command.name.length;
-      };
+      const getPropLength = (command) => command.name.length;
 
       const commands = [ ...this.commands.values() ];
 
@@ -50,7 +47,7 @@ module.exports = class Commands extends Plugin {
       if (!command) {
         result = `Command \`${commandName}\` not found.`;
       } else {
-
+        result = 'todo';
       }
     }
     return {
@@ -67,12 +64,14 @@ module.exports = class Commands extends Plugin {
       channels: { getChannelId }
     } = webpack;
 
-    messages.sendMessage = (sendMessage => async (id, message) => {
+    messages.sendMessage = (sendMessage => async (id, message, ...params) => {
       if (message.content.startsWith('/')) {
         const [ command, ...args ] = message.content.slice(1).split(' ');
         if (this.commands.has(command)) {
           const result = await this.commands.get(command).func(args);
-          if (!result) return;
+          if (!result) {
+            return;
+          }
           if (result.send) {
             message.content = result.result;
           } else {
@@ -84,18 +83,22 @@ module.exports = class Commands extends Plugin {
         }
       }
 
-      return sendMessage(id, message);
+      return sendMessage(id, message, ...params);
     })(this.oldSendMessage = messages.sendMessage);
   }
 
   register (name, description, usage, func) {
     return this.commands.set(name, {
-      name, description, usage, func
+      description,
+      usage,
+      name,
+      func
     });
   }
 
   async stop () {
+    const webpack = aethcord.plugins.get('webpack');
     const messages = await webpack.getModule(webpack.modules.messages[0]);
     messages.sendMessage = this.oldSendMessage;
   }
-}
+};

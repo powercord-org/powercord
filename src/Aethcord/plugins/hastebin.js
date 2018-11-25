@@ -36,7 +36,7 @@ module.exports = class Hastebin extends Plugin {
             result: `${this.DOMAIN}/${body.key}`
           };
         }
-      )
+      );
   }
 
   async parseArguments (args) {
@@ -45,4 +45,4 @@ module.exports = class Hastebin extends Plugin {
       return get(input).then(res => res.raw);
     }
   }
-}
+};

@@ -5,7 +5,6 @@ try {
 } catch (err) {
   if (err.code === 'MODULE_NOT_FOUND') {
     throw new TypeError(`Unsupported platform "${process.platform}"`);
-    process.exit(1);
   }
 
   throw err;
@@ -14,7 +13,7 @@ try {
 const argument = process.argv[2]; // 'inject' | 'uninject'
 const targetFunc = platformModule[argument];
 if (!targetFunc) {
-  throw new TypeError(`Unsupported argument "${argument}"`)
+  throw new TypeError(`Unsupported argument "${argument}"`);
 }
 
 return targetFunc()

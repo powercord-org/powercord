@@ -36,7 +36,7 @@ module.exports = class Webpack extends Plugin {
         e.cache = r.c;
         e.require = r;
       } },
-      [[id]]
+      [ [ id ] ]
     ]);
 
     delete instance.cache[id];
@@ -52,21 +52,21 @@ module.exports = class Webpack extends Plugin {
     if (unsuccessfulIterations > 16) {
       return null;
     }
-  
-    const modules = Object.values(this.webpackInstance.cache);
-    const mdl = modules.find(mdl => (
-      mdl.exports && (
-        filter(mdl.exports) ||
-        mdl.exports.default && filter(mdl.exports.default)
+
+    const moduleInstances = Object.values(this.webpackInstance.cache);
+    const mdl = moduleInstances.find(m => (
+      m.exports && (
+        filter(m.exports) ||
+        (m.exports.default && filter(m.exports.default))
       )
     ));
-  
+
     if (!mdl) {
       unsuccessfulIterations++;
       return sleep(100)
         .then(this.getModule.bind(this, filter, unsuccessfulIterations));
     }
-  
+
     return mdl.exports.default || mdl.exports;
   }
 

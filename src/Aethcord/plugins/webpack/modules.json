@@ -13,5 +13,16 @@
     "getChannelId",
     "getLastSelectedChannelId",
     "getVoiceChannelId"
+  ],
+
+  "spotify": [
+    "play",
+    "pause",
+    "fetchIsSpotifyProtocolRegistered"
+  ],
+
+  "reactDOM": [
+    "render",
+    "createPortal"
   ]
 }
