@@ -12,7 +12,7 @@ module.exports = class Spotify extends Plugin {
   async patchSpotify () {
     const {
       http,
-      spotify, 
+      spotify,
       constants: { Endpoints },
     } = aethcord.plugins.get('webpack');
 
@@ -44,7 +44,7 @@ module.exports = class Spotify extends Plugin {
         .plugins
         .get('commands')
         .commands
-        .set(command, commands[command]);
+        .set(commandName, command);
     }
   }
 };

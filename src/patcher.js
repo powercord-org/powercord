@@ -32,7 +32,7 @@ app.on('ready', () => {
   });
   electronCacheEntry.exports.BrowserWindow = PatchedBrowserWindow;
 
-  const discordPath = join(dirname(require.main.filename), '..', 'app.asar')
+  const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
   require('module')
     ._load(
