@@ -1,3 +1,5 @@
+// this file is heavily due for a refactor lmao stop reading
+
 const Plugin = require('ac/Plugin');
 
 module.exports = class Commands extends Plugin {
