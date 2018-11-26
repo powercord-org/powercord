@@ -1,5 +1,5 @@
-const Plugin = require('@ac/plugin');
-const { createElement } = require('@ac/util');
+const Plugin = require('ac/plugin');
+const { createElement } = require('ac/util');
 const { clipboard } = require('electron');
 
 module.exports = class Codeblocks extends Plugin {

@@ -1,5 +1,5 @@
-const Plugin = require('@ac/Plugin');
-const { sleep, createElement } = require('@ac/util');
+const Plugin = require('ac/Plugin');
+const { sleep, createElement } = require('ac/util');
 const commands = require('./commands');
 
 module.exports = class Spotify extends Plugin {
@@ -15,7 +15,7 @@ module.exports = class Spotify extends Plugin {
       http,
       spotify,
       constants: { Endpoints }
-    } = require('@ac/webpack');
+    } = require('ac/webpack');
 
     const spotifyUserID = await http.get(Endpoints.CONNECTIONS)
       .then(res =>

@@ -1,4 +1,4 @@
-const { sleep } = require('@ac/util');
+const { sleep } = require('ac/util');
 
 const plugins = (() => {
   const _plugins = {};

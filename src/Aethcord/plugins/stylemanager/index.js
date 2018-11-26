@@ -1,4 +1,4 @@
-const Plugin = require('@ac/Plugin');
+const Plugin = require('ac/Plugin');
 const { readdir, readFile } = require('fs').promises;
 
 module.exports = class StyleManager extends Plugin {

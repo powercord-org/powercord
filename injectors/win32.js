@@ -13,8 +13,8 @@ const createSymlink = async () => {
 
   await mkdir(join(__dirname, '..', 'node_modules'));
   return symlink(
-    join(__dirname, '..', 'src', '@ac'),
-    join(__dirname, '..', 'node_modules', '@ac'),
+    join(__dirname, '..', 'src', 'ac'),
+    join(__dirname, '..', 'node_modules', 'ac'),
     'dir'
   );
 };

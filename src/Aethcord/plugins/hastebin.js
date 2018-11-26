@@ -1,5 +1,5 @@
-const Plugin = require('@ac/plugin');
-const { get, post } = require('@ac/http');
+const Plugin = require('ac/plugin');
+const { get, post } = require('ac/http');
 const { clipboard } = require('electron');
 
 module.exports = class Hastebin extends Plugin {

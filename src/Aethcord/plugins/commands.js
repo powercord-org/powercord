@@ -1,4 +1,4 @@
-const Plugin = require('@ac/Plugin');
+const Plugin = require('ac/Plugin');
 
 module.exports = class Commands extends Plugin {
   constructor () {
@@ -57,7 +57,7 @@ module.exports = class Commands extends Plugin {
   }
 
   async start () {
-    const webpack = require('@ac/webpack');
+    const webpack = require('ac/webpack');
     const messages = await webpack.getModule(webpack.moduleFilters.messages[0]);
     const {
       messages: { sendBotMessage },
