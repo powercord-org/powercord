@@ -1,4 +1,5 @@
-const { Plugin, sleep } = require('@ac');
+const Plugin = require('@ac/Plugin');
+const { sleep } = require('@ac/util');
 
 const modules = require('./modules.json');
 
