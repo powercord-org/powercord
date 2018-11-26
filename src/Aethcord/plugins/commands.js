@@ -57,8 +57,8 @@ module.exports = class Commands extends Plugin {
   }
 
   async start () {
-    const webpack = aethcord.plugins.get('webpack');
-    const messages = await webpack.getModule(webpack.modules.messages[0]);
+    const webpack = require('@ac/webpack');
+    const messages = await webpack.getModule(webpack.moduleFilters.messages[0]);
     const {
       messages: { sendBotMessage },
       channels: { getChannelId }
