@@ -1,5 +1,5 @@
 const Plugin = require('ac/Plugin');
-const { sleep, createElement } = require('ac/util');
+const { waitFor, getOwnerInstance } = require('ac/util');
 const commands = require('./commands');
 
 module.exports = class Spotify extends Plugin {
@@ -49,5 +49,28 @@ module.exports = class Spotify extends Plugin {
         .commands
         .set(commandName, command);
     }
+
+    this.modalFuckery();
+  }
+
+  async modalFuckery () {
+    const { React, ReactDOM } = require('ac/webpack');
+    const Modal = require('./Modal.jsx');
+
+    await waitFor('.container-2Thooq');
+
+    const channels = document.querySelector('.channels-Ie2l6A');
+
+    const userBarContainer = channels.querySelector('.container-2Thooq');
+
+    const renderContainer = document.createElement('div');
+    userBarContainer.parentNode.insertBefore(renderContainer, userBarContainer);
+    ReactDOM.render(React.createElement(Modal), renderContainer);
+
+    getOwnerInstance(document.querySelector('.channels-Ie2l6A'))
+      .componentDidUpdate = () => {
+        const containers = document.querySelectorAll('.container-2Thooq');
+        containers[0].closest('.channels-Ie2l6A').insertBefore(containers[0], containers[1]);
+      };
   }
 };
