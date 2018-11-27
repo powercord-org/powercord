@@ -6,7 +6,8 @@ module.exports = class Webpack extends Plugin {
     super({ stage: 0 });
   }
 
-  start () {
-    return webpack.init();
+  async start () {
+    await webpack.init();
+    Object.assign(this, require('ac/webpack'));
   }
 };
