@@ -29,9 +29,24 @@ module.exports = {
       .then(r => r.body);
   },
 
+  getDevices (accessToken) {
+    return get(`${this.BASE_URL}/devices`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .then(r => r.body);
+  },
+
   setVolume (accessToken, volume) {
     return put(`${this.BASE_URL}/volume`)
       .set('Authorization', `Bearer ${accessToken}`)
       .query('volume_percent', volume);
   },
+
+  setActiveDevice (accessToken, deviceID) {
+    return put(this.BASE_URL)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        device_ids: [ deviceID ],
+        play: true
+      });
+  }
 };

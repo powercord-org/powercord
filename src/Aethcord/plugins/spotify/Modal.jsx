@@ -1,5 +1,7 @@
-const { React, spotify } = require('ac/webpack');
+const { React, spotify, contextMenu, messages, channels } = require('ac/webpack');
+const { ContextMenu } = require('ac/components');
 const { concat } = require('ac/util');
+const { clipboard } = require('electron');
 const SpotifyPlayer = require('./SpotifyPlayer.js');
 
 module.exports = class Modal extends React.Component {
@@ -10,9 +12,11 @@ module.exports = class Modal extends React.Component {
       currentItem: {
         name: '',
         artists: [ '' ],
-        img: ''
+        img: '',
+        url: ''
       },
-      isPlaying: true
+      isPlaying: true,
+      volume: 0
     };
   }
 
@@ -21,9 +25,11 @@ module.exports = class Modal extends React.Component {
       currentItem: {
         name: playerState.item.name,
         artists: playerState.item.artists.map(artist => artist.name),
-        img: playerState.item.album.images[0].url
+        img: playerState.item.album.images[0].url,
+        url: playerState.item.external_urls.spotify
       },
-      isPlaying: playerState.is_playing
+      isPlaying: playerState.is_playing,
+      volume: playerState.device.volume_percent
     })
   }
 
@@ -41,14 +47,16 @@ module.exports = class Modal extends React.Component {
     );
   }
 
+  async onButtonClick (type, ...args) {
+    return SpotifyPlayer[type](await spotify.getAccessToken(), ...args)
+  }
+
   render () {
     const { currentItem, isPlaying } = this.state;
     const artists = concat(currentItem.artists);
 
-    const onButtonClick = (type) => async () => SpotifyPlayer[type](await spotify.getAccessToken())
-
     return (
-      <div className='container-2Thooq'>
+      <div className='container-2Thooq' onContextMenu={this.injectContextMenu.bind(this)}>
         <div
           className='wrapper-2F3Zv8 small-5Os1Bb avatar-small'
           style={{ backgroundImage: `url("${currentItem.img}")` }}
@@ -62,22 +70,72 @@ module.exports = class Modal extends React.Component {
           <button
             style={{ color: '#1ed860' }}
             className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-backward'
-            onClick={onButtonClick('prev')}
+            onClick={() => this.onButtonClick('prev')}
           />
 
           <button
             style={{ color: '#1ed860' }}
             className={`iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-${isPlaying ? 'pause' : 'play'}`}
-            onClick={onButtonClick(isPlaying ? 'pause' : 'resume')}
+            onClick={() => this.onButtonClick(isPlaying ? 'pause' : 'resume')}
           />
 
           <button
             style={{ color: '#1ed860' }}
             className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-forward'
-            onClick={onButtonClick('next')}
+            onClick={() => this.onButtonClick('next')}
           />
         </div>
       </div>
+    );
+  }
+
+  async injectContextMenu (event) {
+    const { pageX, pageY } = event;
+
+    contextMenu.openContextMenu(event, () =>
+      React.createElement(ContextMenu, {
+        pageX, pageY,
+        itemGroups: [
+          [{
+            type: 'submenu',
+            name: 'Devices',
+            getItems: async () => SpotifyPlayer.getDevices(
+              await spotify.getAccessToken()
+            ).then(({ devices }) => devices.map(device => ({
+              type: 'button',
+              name: device.name,
+              hint: device.type,
+              onClick: () => this.onButtonClick('setActiveDevice', device.id)
+            })))
+          }],
+
+          [{
+            type: 'button',
+            name: 'Send URL to channel',
+            onClick: () =>
+              messages.sendMessage(
+                channels.getChannelId(),
+                { content: this.state.currentItem.url }
+              )
+          }, {
+            type: 'button',
+            name: 'Copy URL',
+            onClick: () =>
+              clipboard.writeText(this.state.currentItem.url)
+          }],
+
+          [{
+            type: 'slider',
+            name: 'Volume',
+            defaultValue: this.state.volume,
+            onValueChange: async (val) =>
+              SpotifyPlayer.setVolume(
+                await spotify.getAccessToken(),
+                Math.round(val)
+              )
+          }]
+        ]
+      })
     );
   }
 };

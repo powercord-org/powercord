@@ -50,5 +50,10 @@
   "ReactDOM": [
     "render",
     "createPortal"
+  ],
+
+  "contextMenu": [
+    "openContextMenu",
+    "closeContextMenu"
   ]
 }

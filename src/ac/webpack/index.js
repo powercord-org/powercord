@@ -18,7 +18,7 @@ exports.init = async () => {
   ]);
   delete instance.cache[moduleID];
 
-  const getModule = async (filter, unsuccessfulIterations = 0) => {
+  const getModule = (filter, unsuccessfulIterations = 0) => {
     if (Array.isArray(filter)) {
       const keys = filter;
       filter = m => keys.every(key => m[key]);
@@ -44,6 +44,9 @@ exports.init = async () => {
 
     return mdl.exports.default || mdl.exports;
   };
+  
+  const getModuleByDisplayName = (displayName) =>
+    getModule(m => m.displayName && m.displayName.toLowerCase() === displayName);
 
   for (const mdl in moduleFilters) {
     const filters = moduleFilters[mdl];
@@ -62,6 +65,7 @@ exports.init = async () => {
 
   delete exports.init;
   Object.assign(exports, {
+    getModuleByDisplayName,
     moduleFilters,
     getModule,
     instance
