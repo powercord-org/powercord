@@ -1,5 +1,6 @@
-const { React } = require('ac/webpack');
+const { React, spotify } = require('ac/webpack');
 const { concat } = require('ac/util');
+const SpotifyPlayer = require('./SpotifyPlayer.js');
 
 module.exports = class Modal extends React.Component {
   constructor () {
@@ -7,21 +8,44 @@ module.exports = class Modal extends React.Component {
 
     this.state = {
       currentItem: {
-        name: 'Sunset Lover',
-        artists: [ 'Petit Biscuit' ],
-        img: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/57/Sunset_Lover_cover.jpg/220px-Sunset_Lover_cover.jpg'
+        name: '',
+        artists: [ '' ],
+        img: ''
       },
       isPlaying: true
     };
   }
 
+  updateData (playerState) {
+    return this.setState({
+      currentItem: {
+        name: playerState.item.name,
+        artists: playerState.item.artists.map(artist => artist.name),
+        img: playerState.item.album.images[0].url
+      },
+      isPlaying: playerState.is_playing
+    })
+  }
+
+  async componentDidMount () {
+    this.props.main.on('event', (data) => {
+      if (data.type === 'PLAYER_STATE_CHANGED') {
+        this.updateData(data.event.state);
+      }
+    });
+
+    return this.updateData(
+      await SpotifyPlayer.getPlayer(
+        await spotify.getAccessToken()
+      )
+    );
+  }
+
   render () {
     const { currentItem, isPlaying } = this.state;
+    const artists = concat(currentItem.artists);
 
-    let artists = concat(currentItem.artists);
-    if (artists.length > 18) {
-      artists = `${artists.slice(0, 18)}...`;
-    }
+    const onButtonClick = (type) => async () => SpotifyPlayer[type](await spotify.getAccessToken())
 
     return (
       <div className='container-2Thooq'>
@@ -31,23 +55,26 @@ module.exports = class Modal extends React.Component {
         />
         <div className='accountDetails-3k9g4n nameTag-m8r81H'>
           <span class="username">{currentItem.name}</span>
-          <span class="discriminator">by {artists}</span>
+          <span class="discriminator">{artists ? `by ${artists}` : ''}</span>
         </div>
 
         <div className='flex-11O1GKY directionRow-3v3tfG justifyStart-2NDFzi alignStretch-DpGPf3 noWrap-3jynv6'>
           <button
             style={{ color: '#1ed860' }}
             className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-backward'
+            onClick={onButtonClick('prev')}
           />
 
           <button
             style={{ color: '#1ed860' }}
             className={`iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-${isPlaying ? 'pause' : 'play'}`}
+            onClick={onButtonClick(isPlaying ? 'pause' : 'resume')}
           />
 
           <button
             style={{ color: '#1ed860' }}
             className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-forward'
+            onClick={onButtonClick('next')}
           />
         </div>
       </div>

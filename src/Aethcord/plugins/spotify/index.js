@@ -1,5 +1,5 @@
 const Plugin = require('ac/Plugin');
-const { waitFor, getOwnerInstance } = require('ac/util');
+const { waitFor, getOwnerInstance, sleep } = require('ac/util');
 const commands = require('./commands');
 
 module.exports = class Spotify extends Plugin {
@@ -10,10 +10,33 @@ module.exports = class Spotify extends Plugin {
     });
   }
 
+  async patchSpotifySocket () {
+    const { spotifySocket } = require('ac/webpack');
+    while (!spotifySocket.getActiveSocketAndDevice()) {
+      await sleep(1);
+    }
+
+    const { socket } = spotifySocket.getActiveSocketAndDevice().socket;
+
+    socket.onmessage = (_onmessage => (data) => {
+      const parsedData = JSON.parse(data.data);
+      if (parsedData.type === 'message' && parsedData.payloads) {
+        for (const payload of parsedData.payloads) {
+          for (const event of payload.events) {
+            this.emit('event', event);
+          }
+        }
+      }
+
+      return _onmessage(data);
+    })(socket.onmessage);
+  }
+
   async patchSpotify () {
     const {
       http,
       spotify,
+      spotifySocket,
       constants: { Endpoints }
     } = require('ac/webpack');
 
@@ -33,6 +56,8 @@ module.exports = class Spotify extends Plugin {
             : res.body.access_token
         )
     )(spotify.getAccessToken);
+
+    this.patchSpotifySocket();
 
     return spotify;
   }
@@ -65,7 +90,7 @@ module.exports = class Spotify extends Plugin {
 
     const renderContainer = document.createElement('div');
     userBarContainer.parentNode.insertBefore(renderContainer, userBarContainer);
-    ReactDOM.render(React.createElement(Modal), renderContainer);
+    ReactDOM.render(React.createElement(Modal, { main: this }), renderContainer);
 
     getOwnerInstance(document.querySelector('.channels-Ie2l6A'))
       .componentDidUpdate = () => {
