@@ -76,25 +76,3 @@ class SubmenuItem extends React.Component {
 }
 
 module.exports = SubmenuItem;
-
-/*
-
-bottom: 661
-height: 28
-left: 252
-right: 422
-top: 633
-width: 170
-x: 252
-y: 633
-
-
-              type: 'submenu',
-              name: 'Devices',
-              children: [{
-                type: 'button',
-                name: 'a'
-              }, {
-                type: 'button',
-                name: 'a'
-              }]*/
