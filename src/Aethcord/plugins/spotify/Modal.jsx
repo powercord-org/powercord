@@ -91,6 +91,7 @@ module.exports = class Modal extends React.Component {
 
   async injectContextMenu (event) {
     const { pageX, pageY } = event;
+    console.log({ ...event });
 
     contextMenu.openContextMenu(event, () =>
       React.createElement(ContextMenu, {

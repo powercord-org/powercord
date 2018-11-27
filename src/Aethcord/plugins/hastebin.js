@@ -1,4 +1,4 @@
-const Plugin = require('ac/plugin');
+const Plugin = require('ac/Plugin');
 const { get, post } = require('ac/http');
 const { clipboard } = require('electron');
 

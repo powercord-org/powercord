@@ -1,4 +1,4 @@
-const Plugin = require('ac/plugin');
+const Plugin = require('ac/Plugin');
 const webpack = require('ac/webpack');
 
 module.exports = class Webpack extends Plugin {

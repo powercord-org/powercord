@@ -6,7 +6,7 @@ const { join, dirname } = require('path');
 class PatchedBrowserWindow extends BrowserWindow {
   constructor (opts) {
     if (opts.webPreferences && opts.webPreferences.preload) {
-      process.env.originalPreload = opts.webPreferences.preload;
+      global.originalPreload = opts.webPreferences.preload;
       opts.webPreferences.preload = join(__dirname, 'preload');
       opts.webPreferences.nodeIntegration = true;
     }
@@ -23,7 +23,7 @@ app.on('ready', () => {
 
     done({ responseHeaders });
   });
-  
+
   const electronCacheEntry = require.cache[require.resolve('electron')];
   Object.defineProperty(electronCacheEntry, 'exports', {
     value: {

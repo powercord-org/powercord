@@ -1,4 +1,4 @@
-const Plugin = require('ac/plugin');
+const Plugin = require('ac/Plugin');
 
 module.exports = class StateWatcher extends Plugin {
   constructor () {
