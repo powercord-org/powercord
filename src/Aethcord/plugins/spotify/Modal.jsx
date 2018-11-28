@@ -1,4 +1,4 @@
-const { React, spotify, contextMenu, messages, channels } = require('ac/webpack');
+const { React, contextMenu, messages, channels } = require('ac/webpack');
 const { ContextMenu } = require('ac/components');
 const { concat } = require('ac/util');
 const { clipboard } = require('electron');
@@ -41,14 +41,13 @@ module.exports = class Modal extends React.Component {
     });
 
     return this.updateData(
-      await SpotifyPlayer.getPlayer(
-        await spotify.getAccessToken()
-      )
+      await SpotifyPlayer.getPlayer()
     );
   }
 
-  async onButtonClick (type, ...args) {
-    return SpotifyPlayer[type](await spotify.getAccessToken(), ...args)
+  onButtonClick (method, ...args) {
+    return SpotifyPlayer[method](...args)
+      .then(() => true)
   }
 
   render () {
@@ -91,7 +90,6 @@ module.exports = class Modal extends React.Component {
 
   async injectContextMenu (event) {
     const { pageX, pageY } = event;
-    console.log({ ...event });
 
     contextMenu.openContextMenu(event, () =>
       React.createElement(ContextMenu, {
@@ -100,14 +98,15 @@ module.exports = class Modal extends React.Component {
           [{
             type: 'submenu',
             name: 'Devices',
-            getItems: async () => SpotifyPlayer.getDevices(
-              await spotify.getAccessToken()
-            ).then(({ devices }) => devices.map(device => ({
-              type: 'button',
-              name: device.name,
-              hint: device.type,
-              onClick: () => this.onButtonClick('setActiveDevice', device.id)
-            })))
+            getItems: () => SpotifyPlayer.getDevices()
+              .then(({ devices }) =>
+                devices.map(device => ({
+                  type: 'button',
+                  name: device.name,
+                  hint: device.type,
+                  onClick: () => this.onButtonClick('setActiveDevice', device.id)
+                }))
+              )
           }],
 
           [{
@@ -129,11 +128,9 @@ module.exports = class Modal extends React.Component {
             type: 'slider',
             name: 'Volume',
             defaultValue: this.state.volume,
-            onValueChange: async (val) =>
-              SpotifyPlayer.setVolume(
-                await spotify.getAccessToken(),
-                Math.round(val)
-              )
+            onValueChange: (val) =>
+              SpotifyPlayer.setVolume(Math.round(val))
+                .then(() => true)
           }]
         ]
       })
