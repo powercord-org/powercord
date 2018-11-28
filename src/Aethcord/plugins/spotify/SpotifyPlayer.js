@@ -2,59 +2,76 @@ const { get, put, post } = require('ac/http');
 const { spotify } = require('ac/webpack');
 
 module.exports = {
-  BASE_URL: 'https://api.spotify.com/v1/me/player',
-  accessToken: '',
+  BASE_URL: 'https://api.spotify.com/v1',
+  BASE_PLAYER_URL: 'https://api.spotify.com/v1/me/player',
+  accessToken: null,
 
   genericRequest (request) {
-    request.set('Authorization', `Bearer ${this.accessToken}`);
+    request.set('Authorization', `Bearer ${this.accessToken}`)
 
     return request
       .catch(async (err) => {
         if (err.statusCode === 401) {
           this.accessToken = await spotify.getAccessToken();
+
+          delete request._res;
           return this.genericRequest(request);
         }
 
+        console.error(err.body);
         throw err;
-      });
+      })
+  },
+
+  getPlaylists () {
+    return this.genericRequest(get(`${this.BASE_URL}/me/playlists`))
+      .then(r => r.body);
+  },
+
+  play (data) {
+    return this.genericRequest(
+      put(`${this.BASE_PLAYER_URL}/play`)
+        .send(data)
+    );
   },
 
   pause () {
-    return this.genericRequest(put(`${this.BASE_URL}/pause`));
-  },
-
-  resume () {
-    return this.genericRequest(put(`${this.BASE_URL}/play`));
+    return this.genericRequest(put(`${this.BASE_PLAYER_URL}/pause`));
   },
 
   next () {
-    return this.genericRequest(post(`${this.BASE_URL}/next`));
+    return this.genericRequest(post(`${this.BASE_PLAYER_URL}/next`));
   },
 
   prev () {
-    return this.genericRequest(post(`${this.BASE_URL}/previous`));
+    return this.genericRequest(post(`${this.BASE_PLAYER_URL}/previous`));
   },
 
   getPlayer () {
-    return this.genericRequest(get(this.BASE_URL))
+    return this.genericRequest(get(this.BASE_PLAYER_URL))
+      .then(r => r.body);
+  },
+
+  getAlbums () {
+    return this.genericRequest(get(`${this.BASE_URL}/me/albums`))
       .then(r => r.body);
   },
 
   getDevices () {
-    return this.genericRequest(get(`${this.BASE_URL}/devices`))
+    return this.genericRequest(get(`${this.BASE_PLAYER_URL}/devices`))
       .then(r => r.body);
   },
 
   setVolume (volume) {
     return this.genericRequest(
-      put(`${this.BASE_URL}/volume`)
+      put(`${this.BASE_PLAYER_URL}/volume`)
         .query('volume_percent', volume)
     );
   },
 
   setActiveDevice (deviceID) {
     return this.genericRequest(
-      put(this.BASE_URL)
+      put(this.BASE_PLAYER_URL)
         .send({
           device_ids: [ deviceID ],
           play: true
@@ -62,8 +79,3 @@ module.exports = {
     );
   }
 };
-
-spotify.getAccessToken()
-  .then(token => (
-    module.exports.accessToken = token
-  ));
