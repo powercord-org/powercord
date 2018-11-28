@@ -75,7 +75,7 @@ module.exports = class Modal extends React.Component {
           <button
             style={{ color: '#1ed860' }}
             className={`iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-${isPlaying ? 'pause' : 'play'}`}
-            onClick={() => this.onButtonClick(isPlaying ? 'pause' : 'resume')}
+            onClick={() => this.onButtonClick(isPlaying ? 'pause' : 'play')}
           />
 
           <button
@@ -105,6 +105,22 @@ module.exports = class Modal extends React.Component {
                   name: device.name,
                   hint: device.type,
                   onClick: () => this.onButtonClick('setActiveDevice', device.id)
+                }))
+              )
+          }],
+
+          [{
+            type: 'submenu',
+            name: 'Playlists',
+            getItems: () => SpotifyPlayer.getPlaylists()
+              .then(({ items }) =>
+                items.map(playlist => ({
+                  type: 'button',
+                  name: playlist.name,
+                  hint: `${playlist.tracks.total} tracks`,
+                  onClick: () => this.onButtonClick('play', {
+                    context_uri: playlist.uri
+                  })
                 }))
               )
           }],
