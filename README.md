@@ -1,6 +1,6 @@
 # Aethcord
 Aethcord is a lightweight client mod focused on simplicity and performance.  
-As of right now, Aethcord is in very early stages of development, so feel free to join [this server](https://discord.gg/Yphr6WG) for any questions.
+As of right now, Aethcord is in *very* early stages of development, so feel free to join [this server](https://discord.gg/Yphr6WG) for any questions.
 
 # Features
 ## Spotify Modal
@@ -10,7 +10,7 @@ You can see a video preview of the modal [here](https://discord.coffee/f0f706.mp
 
 ## Codeblocks
 Codeblocks have line numbers (attribution: [noodlebox](https://github.com/noodlebox)) and a `copy` button.
-![](https://discord.coffee/cf1cf8.png)
+You can see an image preview of the codeblocks [here](https://discord.coffee/cf1cf8.png).
 
 # Requirements
   1. `npm`
