@@ -1,5 +1,5 @@
 const {
-  readdir, mkdir, writeFile, symlink, unlink, rmdir, access
+  readdir, mkdir, writeFile, unlink, rmdir, access
 } = require('fs').promises;
 const { join } = require('path');
 
@@ -57,8 +57,7 @@ exports.inject = async () => {
     writeFile(
       join(appDir, 'package.json'),
       JSON.stringify({ main: 'index.js' })
-    ),
-    createSymlink()
+    )
   ]);
 };
 
