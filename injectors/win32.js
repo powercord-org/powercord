@@ -3,22 +3,6 @@ const {
 } = require('fs').promises;
 const { join } = require('path');
 
-const createSymlink = async () => {
-  if (
-    await readdir(join(__dirname, '..'))
-      .then(dir => dir.includes('node_modules'))
-  ) {
-    return null;
-  }
-
-  await mkdir(join(__dirname, '..', 'node_modules'));
-  return symlink(
-    join(__dirname, '..', 'src', 'ac'),
-    join(__dirname, '..', 'node_modules', 'ac'),
-    'dir'
-  );
-};
-
 const exists = (path) =>
   access(path)
     .then(() => true)
