@@ -41,7 +41,7 @@ module.exports = class Modal extends React.Component {
           url: playerState.item.external_urls.spotify,
           duration: playerState.item.duration_ms
         },
-        progress: playerState.progress_ms,
+        progress: this.state.seekListeners.seek ? this.state.progress : playerState.progress_ms,
         progressAt: Date.now(),
         isPlaying: playerState.is_playing,
         volume: playerState.device.volume_percent,
@@ -210,7 +210,8 @@ module.exports = class Modal extends React.Component {
     const seek = delta / width;
 
     this.setState({
-      progress: Math.round(this.state.currentItem.duration * seek)
+      progress: Math.round(this.state.currentItem.duration * seek),
+      progressAt: Date.now()
     });
   }
 
