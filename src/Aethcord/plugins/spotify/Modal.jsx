@@ -278,6 +278,7 @@ module.exports = class Modal extends React.Component {
           [ {
             type: 'slider',
             name: 'Volume',
+            color: '#1ed860',
             defaultValue: this.state.volume,
             onValueChange: (val) =>
               SpotifyPlayer.setVolume(Math.round(val))
