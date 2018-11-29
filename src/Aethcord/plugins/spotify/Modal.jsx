@@ -183,8 +183,6 @@ module.exports = class Modal extends React.Component {
     const seekListener = this.seek.bind(this);
     const stopSeekListener = this.endSeek.bind(this);
 
-    // console.log(seekListener, stopSeekListener);
-
     document.addEventListener('mousemove', seekListener);
     document.addEventListener('mouseup', stopSeekListener);
     this.setState({
