@@ -1,5 +1,5 @@
 const {
-  readdir, mkdir, writeFile, unlink, rmdir, access
+  mkdir, writeFile, unlink, rmdir, access
 } = require('fs').promises;
 const { join } = require('path');
 
@@ -10,7 +10,6 @@ const exists = (path) =>
 
 const getAppDir = async () => {
   const discordPath = join('/opt/discord-canary');
-  const discordDirectory = await readdir(discordPath);
 
   return join(
     discordPath,
