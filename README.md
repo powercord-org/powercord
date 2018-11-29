@@ -16,12 +16,12 @@ You can see an image preview of the codeblocks [here](https://discord.coffee/cf1
   1. `npm`
   2. `node` (v10 or higher)
   2. Discord Canary
-  3. Windows or Linux (I don't have a macOS machine) (Side note: if you're on Linux, you need root perms for this command)
+  3. Windows or Linux (I don't have a macOS machine)
 
 # Installation steps
   1. `git clone https://github.com/Aetheryx/aethcord`
   2. `cd aethcord`
   3. `npm i`
-  4. `npm run inject`
+  4. `npm run inject` <sup>(Side note: if you're on Linux, you need root perms for this command)</sup>
   5. Completely kill your Discord Client (right click system tray icon -> Quit DiscordCanary)
   6. Start Discord back up
