@@ -18,7 +18,7 @@ module.exports = class Modal extends React.Component {
         duration: 0
       },
       progress: 0,
-      progressAt: new Date().getTime(),
+      progressAt: Date.now(),
       isPlaying: true,
       volume: 0,
       deviceID: '',
@@ -42,7 +42,7 @@ module.exports = class Modal extends React.Component {
           duration: playerState.item.duration_ms
         },
         progress: playerState.progress_ms,
-        progressAt: new Date().getTime(),
+        progressAt: Date.now(),
         isPlaying: playerState.is_playing,
         volume: playerState.device.volume_percent,
         deviceID: playerState.device.id,
@@ -52,7 +52,10 @@ module.exports = class Modal extends React.Component {
   }
 
   async componentDidMount () {
-    this.setState({ renderInterval: setInterval(() => this.forceUpdate(), 1000) });
+    this.setState({
+      renderInterval: setInterval(() => this.forceUpdate(), 1000)
+    });
+
     this.props.main.on('event', async (data) => {
       switch (data.type) {
         case 'PLAYER_STATE_CHANGED':
@@ -74,9 +77,17 @@ module.exports = class Modal extends React.Component {
   }
 
   componentWillUnmount () {
-    if (this.state.seekListeners.seek !== null) document.removeEventListener('mousemove', this.state.seekListeners.seek);
-    if (this.state.seekListeners.stop !== null) document.removeEventListener('mouseup', this.state.seekListeners.stop);
-    if (this.state.renderInterval !== null) clearInterval(this.state.renderInterval)
+    if (this.state.seekListeners.seek) {
+      document.removeEventListener('mousemove', this.state.seekListeners.seek);
+    }
+
+    if (this.state.seekListeners.stop) {
+      document.removeEventListener('mouseup', this.state.seekListeners.stop);
+    }
+
+    if (this.state.renderInterval) {
+      clearInterval(this.state.renderInterval);
+    }
   }
 
   onButtonClick (method, ...args) {
@@ -85,26 +96,26 @@ module.exports = class Modal extends React.Component {
   }
 
   render () {
-    const { currentItem, isPlaying } = this.state;
+    const { currentItem, isPlaying, displayState } = this.state;
     const artists = concat(currentItem.artists);
 
-    let progress = this.state.progress;
-    if (this.state.isPlaying) progress = this.state.progress + (new Date().getTime() - this.state.progressAt);
-    const current = progress / this.state.currentItem.duration * 100;
+    const progress = this.state.isPlaying
+      ? this.state.progress + (Date.now() - this.state.progressAt)
+      : this.state.progress;
+
+    const current = progress / currentItem.duration * 100;
+
     let className = 'container-2Thooq aethcord-spotify';
-    if (this.state.showDurations || this.state.seekListeners.seek !== null) {
+    if (this.state.showDurations || this.state.seekListeners.seek) {
       className += ' expend';
     }
-    const style = this.state.displayState === 'hide'
-      ? { display: 'none' }
-      : {};
 
     return (
       <div
         className={className}
         id='aethcord-spotify-modal'
         onContextMenu={this.injectContextMenu.bind(this)}
-        style={style}
+        style={displayState === 'hide' ? { display: 'none' } : {}}
       >
         <div
           className='wrapper-2F3Zv8 small-5Os1Bb avatar-small'
@@ -135,12 +146,17 @@ module.exports = class Modal extends React.Component {
           />
         </div>
         <div
-          className='aethcord-spotify-seek' onMouseEnter={() => this.setState({ showDurations: true })}
+          className='aethcord-spotify-seek'
+          onMouseEnter={() => this.setState({ showDurations: true })}
           onMouseLeave={() => this.setState({ showDurations: false })}
         >
           <div className='aethcord-spotify-seek-durations'>
-            <span className='aethcord-spotify-seek-duration'>{this.formatTime(progress)}</span>
-            <span className='aethcord-spotify-seek-duration'>{this.formatTime(this.state.currentItem.duration)}</span>
+            <span className='aethcord-spotify-seek-duration'>{
+              this.formatTime(progress)}
+            </span>
+            <span className='aethcord-spotify-seek-duration'>
+              {this.formatTime(this.state.currentItem.duration)}
+            </span>
           </div>
           <div className='aethcord-spotify-seek-bar' onMouseDown={(e) => this.startSeek(e)}>
             <span className='aethcord-spotify-seek-bar-progress' style={{ width: current + '%' }}/>
@@ -166,6 +182,9 @@ module.exports = class Modal extends React.Component {
     SpotifyPlayer.pause();
     const seekListener = this.seek.bind(this);
     const stopSeekListener = this.endSeek.bind(this);
+
+    // console.log(seekListener, stopSeekListener);
+
     document.addEventListener('mousemove', seekListener);
     document.addEventListener('mouseup', stopSeekListener);
     this.setState({
@@ -174,7 +193,7 @@ module.exports = class Modal extends React.Component {
         stop: stopSeekListener
       }
     });
-    this.seek(e)
+    this.seek(e);
   }
 
   async endSeek () {
@@ -191,12 +210,14 @@ module.exports = class Modal extends React.Component {
     SpotifyPlayer.play();
   }
 
-  seek (e) {
-    const boundingClientRect = document.querySelector('.aethcord-spotify-seek-bar').getBoundingClientRect();
-    const mouseX = e.clientX;
-    const delta = mouseX - boundingClientRect.x;
-    const seek = delta / boundingClientRect.width;
-    this.setState({ progress: Math.round(this.state.currentItem.duration * seek) });
+  seek ({ clientX: mouseX }) {
+    const { x, width } = document.querySelector('.aethcord-spotify-seek-bar').getBoundingClientRect();
+    const delta = mouseX - x;
+    const seek = delta / width;
+
+    this.setState({
+      progress: Math.round(this.state.currentItem.duration * seek)
+    });
   }
 
   async injectContextMenu (event) {

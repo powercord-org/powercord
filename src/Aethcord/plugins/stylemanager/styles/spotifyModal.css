@@ -72,7 +72,6 @@
 }
 
 .aethcord-spotify.expend .aethcord-spotify-seek-durations,
-.aethcord-spotify.expend .aethcord-spotify-seek-bar-cursor
-{
+.aethcord-spotify.expend .aethcord-spotify-seek-bar-cursor {
   opacity: 1;
 }
