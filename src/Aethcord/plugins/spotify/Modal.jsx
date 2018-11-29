@@ -17,28 +17,42 @@ module.exports = class Modal extends React.Component {
       },
       isPlaying: true,
       volume: 0,
-      deviceID: ''
+      deviceID: '',
+      
+      displayState: 'hide'
     };
   }
 
   updateData (playerState) {
-    return this.setState({
-      currentItem: {
-        name: playerState.item.name,
-        artists: playerState.item.artists.map(artist => artist.name),
-        img: playerState.item.album.images[0].url,
-        url: playerState.item.external_urls.spotify
-      },
-      isPlaying: playerState.is_playing,
-      volume: playerState.device.volume_percent,
-      deviceID: playerState.device.id
-    });
+    if (playerState) {
+      return this.setState({
+        currentItem: {
+          name: playerState.item.name,
+          artists: playerState.item.artists.map(artist => artist.name),
+          img: playerState.item.album.images[0].url,
+          url: playerState.item.external_urls.spotify
+        },
+        isPlaying: playerState.is_playing,
+        volume: playerState.device.volume_percent,
+        deviceID: playerState.device.id,
+        displayState: 'show',
+      });
+    }
   }
 
   async componentDidMount () {
-    this.props.main.on('event', (data) => {
-      if (data.type === 'PLAYER_STATE_CHANGED') {
-        this.updateData(data.event.state);
+    this.props.main.on('event', async (data) => {
+      switch (data.type) {
+        case 'PLAYER_STATE_CHANGED':
+          return this.updateData(data.event.state);
+
+        case 'DEVICE_STATE_CHANGED':
+          const { devices } = await SpotifyPlayer.getDevices();
+          if (!devices[0]) {
+            return this.setState({
+              displayState: 'hide'
+            });
+          }
       }
     });
 
@@ -56,8 +70,17 @@ module.exports = class Modal extends React.Component {
     const { currentItem, isPlaying } = this.state;
     const artists = concat(currentItem.artists);
 
+    const style = this.state.displayState === 'hide'
+      ? { opacity: 0, marginBottom: '-300px' }
+      : {};
+
     return (
-      <div className='container-2Thooq' onContextMenu={this.injectContextMenu.bind(this)}>
+      <div
+        className='container-2Thooq'
+        id='aethcord-spotify-modal'
+        onContextMenu={this.injectContextMenu.bind(this)}
+        style={style}
+      >
         <div
           className='wrapper-2F3Zv8 small-5Os1Bb avatar-small'
           style={{ backgroundImage: `url("${currentItem.img}")` }}

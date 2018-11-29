@@ -14,3 +14,7 @@
   background: unset !important;
   color: unset !important;
 }
+
+#aethcord-spotify-modal {
+  transition: 0.5s;
+}
