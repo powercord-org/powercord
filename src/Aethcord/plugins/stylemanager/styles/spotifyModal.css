@@ -25,7 +25,8 @@
 
 .aethcord-spotify-seek {
   position: absolute;
-  bottom: -1px;
+  bottom: -6px;
+  z-index: 2;
   left: 0;
   right: 0;
   display: flex;
@@ -58,13 +59,18 @@
   transition: opacity .3s;
   background-color: #fff;
   position: absolute;
-  bottom: -3px;
+  bottom: 2px;
   opacity: 0;
   z-index: 6;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   transform: translateX(-50%);
+}
+
+.aethcord-spotify-seek-spacer {
+  height: 5px;
+  width: 100%;
 }
 
 .aethcord-spotify.expend {

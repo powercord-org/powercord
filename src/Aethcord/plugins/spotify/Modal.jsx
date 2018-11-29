@@ -101,7 +101,7 @@ module.exports = class Modal extends React.Component {
       ? this.state.progress + (Date.now() - this.state.progressAt)
       : this.state.progress;
 
-    const current = progress / currentItem.duration * 100;
+    const current = Math.min(progress / currentItem.duration * 100, 100);
 
     let className = 'container-2Thooq aethcord-spotify';
     if (this.state.showDurations || this.state.seekListeners.seek) {
@@ -160,6 +160,7 @@ module.exports = class Modal extends React.Component {
             <span className='aethcord-spotify-seek-bar-progress' style={{ width: current + '%' }}/>
             <span className='aethcord-spotify-seek-bar-cursor' style={{ left: current + '%' }}/>
           </div>
+          <div className='aethcord-spotify-seek-spacer'/>
         </div>
       </div>
     );
