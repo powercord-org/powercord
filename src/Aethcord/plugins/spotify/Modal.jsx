@@ -163,7 +163,6 @@ module.exports = class Modal extends React.Component {
   }
 
   startSeek (e) {
-    e.persist();
     SpotifyPlayer.pause();
     const seekListener = this.seek.bind(this);
     const stopSeekListener = this.endSeek.bind(this);
@@ -175,10 +174,10 @@ module.exports = class Modal extends React.Component {
         stop: stopSeekListener
       }
     });
-    setTimeout(() => this.seek(e), 0);
+    this.seek(e)
   }
 
-  async endSeek (e) {
+  async endSeek () {
     document.removeEventListener('mousemove', this.state.seekListeners.seek);
     document.removeEventListener('mouseup', this.state.seekListeners.stop);
     this.setState({
