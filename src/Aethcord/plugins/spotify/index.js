@@ -12,6 +12,8 @@ module.exports = class Spotify extends Plugin {
 
   async patchSpotifySocket () {
     const { spotifySocket } = require('ac/webpack');
+    const SpotifyPlayer = require('./SpotifyPlayer');
+
     while (!spotifySocket.getActiveSocketAndDevice()) {
       await sleep(1);
     }
@@ -30,6 +32,13 @@ module.exports = class Spotify extends Plugin {
 
       return _onmessage(data);
     })(socket.onmessage);
+
+    this.emit('event', {
+      type: 'PLAYER_STATE_CHANGED',
+      event: {
+        state: await SpotifyPlayer.getPlayer()
+      }
+    });
   }
 
   async patchSpotify () {
