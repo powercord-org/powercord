@@ -96,7 +96,7 @@ module.exports = class Modal extends React.Component {
       className += ' expend';
     }
     const style = this.state.displayState === 'hide'
-      ? { opacity: 0, marginBottom: '-300px' }
+      ? { display: 'none' }
       : {};
 
     return (
