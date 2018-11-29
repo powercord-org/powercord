@@ -18,7 +18,7 @@ module.exports = {
           return this.genericRequest(request);
         }
 
-        console.error(err.body);
+        console.error(err.body, request.opts);
         throw err;
       });
   },
