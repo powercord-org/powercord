@@ -89,7 +89,7 @@ module.exports = class Spotify extends Plugin {
 
   async modalFuckery () {
     const { React, ReactDOM } = require('ac/webpack');
-    const Modal = require('./Modal.jsx');
+    const Modal = require('./Modal');
 
     await waitFor('.container-2Thooq');
 
