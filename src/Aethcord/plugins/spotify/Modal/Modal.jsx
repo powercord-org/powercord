@@ -44,6 +44,7 @@ module.exports = class Modal extends React.Component {
           artists: playerState.item.artists.map(artist => artist.name),
           img: playerState.item.album.images[0].url,
           url: playerState.item.external_urls.spotify,
+          uri: playerState.item.uri,
           duration: playerState.item.duration_ms
         },
         seekBar: {

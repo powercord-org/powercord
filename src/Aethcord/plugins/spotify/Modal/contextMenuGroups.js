@@ -1,4 +1,4 @@
-const { clipboard } = require('electron');
+const { clipboard, shell } = require('electron');
 const { messages, channels } = require('ac/webpack');
 const SpotifyPlayer = require('../SpotifyPlayer');
 
@@ -73,6 +73,11 @@ module.exports = (state, onButtonClick) => [
   } ],
 
   [ {
+    type: 'button',
+    name: 'Open in Spotify',
+    onClick: () =>
+      shell.openExternal(state.currentItem.uri)
+  }, {
     type: 'button',
     name: 'Send URL to channel',
     onClick: () =>
