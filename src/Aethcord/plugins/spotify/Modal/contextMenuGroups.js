@@ -1,4 +1,5 @@
 const { clipboard } = require('electron');
+const { messages, channels } = require('ac/webpack');
 const SpotifyPlayer = require('../SpotifyPlayer');
 
 module.exports = (state, onButtonClick) => [

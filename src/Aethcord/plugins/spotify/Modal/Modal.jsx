@@ -1,7 +1,6 @@
-const { React, contextMenu, messages, channels } = require('ac/webpack');
+const { React, contextMenu } = require('ac/webpack');
 const { ContextMenu } = require('ac/components');
 const { concat } = require('ac/util');
-const { clipboard } = require('electron');
 
 const SpotifyPlayer = require('../SpotifyPlayer.js');
 const getContextMenuItemGroups = require('./contextMenuGroups');
