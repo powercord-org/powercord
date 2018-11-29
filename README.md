@@ -16,7 +16,7 @@ You can see an image preview of the codeblocks [here](https://discord.coffee/cf1
   1. `npm`
   2. `node` (v10 or higher)
   2. Discord Canary
-  3. Windows (Linux support coming soon - I don't have a macOS machine though)
+  3. Windows and Linux (I don't have a macOS machine)
 
 # Installation steps
   1. `git clone https://github.com/Aetheryx/aethcord`
