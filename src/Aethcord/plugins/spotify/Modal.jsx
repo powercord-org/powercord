@@ -22,6 +22,7 @@ module.exports = class Modal extends React.Component {
       isPlaying: true,
       volume: 0,
       deviceID: '',
+      repeatState: '',
       renderInterval: null,
       seekListeners: {
         seek: null,
@@ -41,6 +42,7 @@ module.exports = class Modal extends React.Component {
           url: playerState.item.external_urls.spotify,
           duration: playerState.item.duration_ms
         },
+        repeatState: playerState.repeat_state,
         progress: this.state.seekListeners.seek ? this.state.progress : playerState.progress_ms,
         progressAt: Date.now(),
         isPlaying: playerState.is_playing,
@@ -234,8 +236,9 @@ module.exports = class Modal extends React.Component {
                   hint: device.type,
                   highlight: device.id === this.state.deviceID && '#1ed860',
                   disabled: device.id === this.state.deviceID,
+                  seperate: device.id === this.state.deviceID,
                   onClick: () => this.onButtonClick('setActiveDevice', device.id)
-                }))
+                })).sort(button => !button.highlight)
               )
           } ],
 
@@ -256,6 +259,40 @@ module.exports = class Modal extends React.Component {
           } ],
 
           [ {
+            type: 'submenu',
+            name: 'Repeat mode',
+            getItems: () => [ {
+              type: 'button',
+              name: 'On',
+              highlight: this.state.repeatState === 'context' && '#1ed860',
+              disabled: this.state.repeatState === 'context',
+              onClick: () => this.onButtonClick('setRepeatMode', 'context')
+            }, {
+              type: 'button',
+              name: 'Current Track',
+              highlight: this.state.repeatState === 'track' && '#1ed860',
+              disabled: this.state.repeatState === 'track',
+              onClick: () => this.onButtonClick('setRepeatMode', 'track')
+            }, {
+              type: 'button',
+              name: 'Off',
+              highlight: this.state.repeatState === 'off' && '#1ed860',
+              disabled: this.state.repeatState === 'off',
+              onClick: () => this.onButtonClick('setRepeatMode', 'off')
+            } ]
+          } ],
+
+          [ {
+            type: 'slider',
+            name: 'Volume',
+            color: '#1ed860',
+            defaultValue: this.state.volume,
+            onValueChange: (val) =>
+              SpotifyPlayer.setVolume(Math.round(val))
+                .then(() => true)
+          } ],
+
+          [ {
             type: 'button',
             name: 'Send URL to channel',
             onClick: () =>
@@ -268,17 +305,7 @@ module.exports = class Modal extends React.Component {
             name: 'Copy URL',
             onClick: () =>
               clipboard.writeText(this.state.currentItem.url)
-          } ],
-
-          [ {
-            type: 'slider',
-            name: 'Volume',
-            color: '#1ed860',
-            defaultValue: this.state.volume,
-            onValueChange: (val) =>
-              SpotifyPlayer.setVolume(Math.round(val))
-                .then(() => true)
-          }]
+          } ]
         ]
       })
     );

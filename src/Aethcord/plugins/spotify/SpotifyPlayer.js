@@ -84,5 +84,12 @@ module.exports = {
           play: true
         })
     );
-  }
+  },
+
+  setRepeatMode (state) {
+    return this.genericRequest(
+      put(`${this.BASE_PLAYER_URL}/repeat`)
+        .query('state', state)
+    );
+  },
 };
