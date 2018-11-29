@@ -28,17 +28,23 @@ const startPlugins = (stage) =>
       plugin._start();
     });
 
-startPlugins(0);
-
-process.once('loaded', () => {
-  startPlugins(1);
-});
-
-const stage2 = () => startPlugins(2);
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', stage2);
-} else {
-  stage2();
-}
-
 module.exports = new Map(Object.entries(plugins));
+
+(async () => {
+  while (!global.aethcord) {
+    await sleep(5);
+  }
+
+  startPlugins(0);
+
+  process.once('loaded', () => {
+    startPlugins(1);
+  });
+
+  const stage2 = () => startPlugins(2);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', stage2);
+  } else {
+    stage2();
+  }
+})();
