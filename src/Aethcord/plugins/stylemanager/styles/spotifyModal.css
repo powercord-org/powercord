@@ -1,3 +1,7 @@
+.container-2Thooq {
+  position: relative;
+}
+
 .container-2Thooq .discriminator {
   max-width: 84px;
   overflow: hidden;
@@ -17,4 +21,58 @@
 
 #aethcord-spotify-modal {
   transition: 0.5s;
+}
+
+.aethcord-spotify-seek {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.aethcord-spotify-seek-durations {
+  transition: opacity .3s;
+  opacity: 0;
+  height: 15px;
+  display: flex;
+  font-size: 12px;
+  padding-left: 5px;
+  padding-right: 5px;
+  justify-content: space-between;
+}
+
+.aethcord-spotify-seek-bar {
+  cursor: pointer;
+  height: 2px;
+}
+
+.aethcord-spotify-seek-bar-progress {
+  height: 2px;
+  display: block;
+  background-color: #1ed860;
+}
+
+.aethcord-spotify-seek-bar-cursor {
+  transition: opacity .3s;
+  background-color: #fff;
+  position: absolute;
+  bottom: -3px;
+  opacity: 0;
+  z-index: 6;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.aethcord-spotify.expend {
+  padding-bottom: 12px;
+}
+
+.aethcord-spotify.expend .aethcord-spotify-seek-durations,
+.aethcord-spotify.expend .aethcord-spotify-seek-bar-cursor
+{
+  opacity: 1;
 }

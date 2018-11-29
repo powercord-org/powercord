@@ -7,7 +7,7 @@ module.exports = {
   accessToken: null,
 
   genericRequest (request) {
-    request.set('Authorization', `Bearer ${this.accessToken}`)
+    request.set('Authorization', `Bearer ${this.accessToken}`);
 
     return request
       .catch(async (err) => {
@@ -20,7 +20,7 @@ module.exports = {
 
         console.error(err.body);
         throw err;
-      })
+      });
   },
 
   getPlaylists () {
@@ -37,6 +37,13 @@ module.exports = {
 
   pause () {
     return this.genericRequest(put(`${this.BASE_PLAYER_URL}/pause`));
+  },
+
+  seek (position) {
+    return this.genericRequest(
+      put(`${this.BASE_PLAYER_URL}/seek`)
+        .query('position_ms', position)
+    );
   },
 
   next () {
