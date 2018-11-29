@@ -16,7 +16,8 @@ module.exports = class Modal extends React.Component {
         url: ''
       },
       isPlaying: true,
-      volume: 0
+      volume: 0,
+      deviceID: ''
     };
   }
 
@@ -29,8 +30,9 @@ module.exports = class Modal extends React.Component {
         url: playerState.item.external_urls.spotify
       },
       isPlaying: playerState.is_playing,
-      volume: playerState.device.volume_percent
-    })
+      volume: playerState.device.volume_percent,
+      deviceID: playerState.device.id
+    });
   }
 
   async componentDidMount () {
@@ -104,6 +106,8 @@ module.exports = class Modal extends React.Component {
                   type: 'button',
                   name: device.name,
                   hint: device.type,
+                  highlight: device.id === this.state.deviceID && '#1ed860',
+                  disabled: device.id === this.state.deviceID,
                   onClick: () => this.onButtonClick('setActiveDevice', device.id)
                 }))
               )

@@ -4,3 +4,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.itemGroup-1tL0uz.highlighted {
+  border-bottom-width: 1px !important;
+  border-bottom-style: solid !important;
+}
+
+.item-1Yvehc.disabled {
+  background: unset !important;
+  color: unset !important;
+}
