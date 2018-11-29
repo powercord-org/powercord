@@ -70,10 +70,6 @@ module.exports = class Modal extends React.Component {
           }
       }
     });
-
-    return this.updateData(
-      await SpotifyPlayer.getPlayer()
-    );
   }
 
   componentWillUnmount () {
