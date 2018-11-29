@@ -46,6 +46,7 @@
 .aethcord-spotify-seek-bar {
   cursor: pointer;
   height: 2px;
+  transition: margin .5s;
 }
 
 .aethcord-spotify-seek-bar-progress {
@@ -65,10 +66,16 @@
   height: 8px;
   border-radius: 50%;
   transform: translateX(-50%);
+  transition: margin .5s;
 }
 
 .aethcord-spotify.expend {
   padding-bottom: 12px;
+}
+
+.aethcord-spotify.expend .aethcord-spotify-seek-bar,
+.aethcord-spotify.expend .aethcord-spotify-seek-bar-cursor {
+  margin-bottom: 4px;
 }
 
 .aethcord-spotify.expend .aethcord-spotify-seek-durations,
