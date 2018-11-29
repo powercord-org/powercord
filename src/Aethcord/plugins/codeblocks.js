@@ -18,7 +18,7 @@ module.exports = class Codeblocks extends Plugin {
   }
 
   inject (codeblock) {
-    if (codeblock.children[0]) {
+    if (codeblock.querySelector('.aethcord-codeblock-copy-btn')) {
       return;
     }
 
@@ -36,7 +36,14 @@ module.exports = class Codeblocks extends Plugin {
         onclick: () => {
           const range = document.createRange();
           range.selectNode(codeblock.children[0]);
-          clipboard.writeText(range.toString());
+
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+
+          clipboard.writeText(selection.toString());
+
+          selection.removeAllRanges();
         }
       })
     );
