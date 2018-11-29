@@ -1,1 +1,5 @@
+.idea
 node_modules
+src/Aethcord/plugins/stylemanager/styles
+!src/Aethcord/plugins/stylemanager/styles/codeblocks.css
+!src/Aethcord/plugins/stylemanager/styles/spotifyModal.css
