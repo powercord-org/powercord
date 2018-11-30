@@ -6,7 +6,7 @@ module.exports = (state, onButtonClick) => [
   [ {
     type: 'submenu',
     name: 'Devices',
-    width: '205px',
+    width: '200px',
     getItems: () => SpotifyPlayer.getDevices()
       .then(({ devices }) =>
         devices.map(device => {
@@ -29,6 +29,7 @@ module.exports = (state, onButtonClick) => [
   [ {
     type: 'submenu',
     name: 'Playlists',
+    width: '200px',
     getItems: () => SpotifyPlayer.getPlaylists()
       .then(({ items }) =>
         items.map(playlist => ({
