@@ -26,12 +26,7 @@ module.exports = class Modal extends React.Component {
       seekBar: {
         showDurations: false,
         progress: 0,
-        renderInterval: null,
-        progressAt: Date.now(),
-        seekListeners: {
-          seek: null,
-          stop: null
-        },
+        progressAt: Date.now()
       },
       displayState: 'hide'
     };
@@ -50,10 +45,8 @@ module.exports = class Modal extends React.Component {
         },
         seekBar: {
           progressAt: Date.now(),
-          progress: this.state.seekBar.seeking
-            ? this.state.seekBar.progress
-            : playerState.progress_ms,
-          seeking: false
+          progress: playerState.progress_ms,
+          showDurations: this.state.seekBar.showDurations
         },
         repeatState: playerState.repeat_state,
         shuffleState: playerState.shuffle_state,
@@ -132,7 +125,15 @@ module.exports = class Modal extends React.Component {
           />
 
           <SeekBar
-            main={this}
+            {...this.state.seekBar}
+            isPlaying={this.state.isPlaying}
+            duration={this.state.currentItem.duration}
+            onDurationToggle={(show) => this.setState({
+              seekBar: {
+                ...this.state.seekBar,
+                showDurations: show
+              }
+            })}
           />
         </div>
       </div>
