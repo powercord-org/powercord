@@ -61,7 +61,7 @@ module.exports = (state, onButtonClick) => [
         type: 'button',
         highlight: state.repeatState === button.stateName && '#1ed860',
         disabled: state.repeatState === button.stateName,
-        onClick: () => onButtonClick('setRepeatMode', button.stateName),
+        onClick: () => onButtonClick('setRepeatState', button.stateName),
         ...button
       }))
     }, {
