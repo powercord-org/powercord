@@ -9,6 +9,10 @@
   white-space: nowrap;
 }
 
+.aethcord-spotify {
+  transition: .3s;
+}
+
 .aethcord-spotify-seek {
   position: absolute;
   bottom: -6px;
