@@ -4,9 +4,8 @@ As of right now, Aethcord is in *very* early stages of development, so feel free
 
 # Features
 ## Spotify Modal
-The spotify modal you find on top of the user bar aims to replace the need for having your Spotify client on a monitor.  
-The modal lets you view the current song, change volume, play a playlist, switch devices and some other things.  
-You can see a video preview of the modal [here](https://discord.coffee/f0f706.mp4).
+The spotify modal you find on top of the user bar aims to replace the need for having your Spotify client on a monitor.    
+You can see a video preview of the modal [here](https://discord.coffee/e2e981.mp4).
 
 ## Codeblocks
 Codeblocks have line numbers (attribution: [noodlebox](https://github.com/noodlebox)) and a `copy` button.
