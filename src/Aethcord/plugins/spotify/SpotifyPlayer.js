@@ -92,4 +92,11 @@ module.exports = {
         .query('state', state)
     );
   },
+
+  setShuffleState (state) {
+    return this.genericRequest(
+      put(`${this.BASE_PLAYER_URL}/shuffle`)
+        .query('state', state)
+    );
+  }
 };

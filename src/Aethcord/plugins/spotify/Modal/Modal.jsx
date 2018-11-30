@@ -22,6 +22,7 @@ module.exports = class Modal extends React.Component {
       volume: 0,
       deviceID: '',
       repeatState: '',
+      shuffleState: '',
       seekBar: {
         showDurations: false,
         progress: 0,
@@ -55,6 +56,7 @@ module.exports = class Modal extends React.Component {
           seeking: false
         },
         repeatState: playerState.repeat_state,
+        shuffleState: playerState.shuffle_state,
         isPlaying: playerState.is_playing,
         volume: playerState.device.volume_percent,
         deviceID: playerState.device.id,

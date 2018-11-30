@@ -6,6 +6,7 @@ module.exports = (state, onButtonClick) => [
   [ {
     type: 'submenu',
     name: 'Devices',
+    width: '205px',
     getItems: () => SpotifyPlayer.getDevices()
       .then(({ devices }) =>
         devices.map(device => {
@@ -43,23 +44,32 @@ module.exports = (state, onButtonClick) => [
 
   [ {
     type: 'submenu',
-    name: 'Repeat mode',
+    name: 'Playback Settings',
     getItems: () => [ {
-      name: 'On',
-      stateName: 'context'
+      type: 'submenu',
+      name: 'Repeat Modes',
+      getItems: () => [ {
+        name: 'Repeat Current Playlist/Album',
+        stateName: 'context'
+      }, {
+        name: 'Repeat Current Track',
+        stateName: 'track'
+      }, {
+        name: 'Repeat Off',
+        stateName: 'off'
+      } ].map(button => ({
+        type: 'button',
+        highlight: state.repeatState === button.stateName && '#1ed860',
+        disabled: state.repeatState === button.stateName,
+        onClick: () => onButtonClick('setRepeatMode', button.stateName),
+        ...button
+      }))
     }, {
-      name: 'Current Track',
-      stateName: 'track'
-    }, {
-      name: 'Off',
-      stateName: 'off'
-    } ].map(button => ({
-      type: 'button',
-      highlight: state.repeatState === button.stateName && '#1ed860',
-      disabled: state.repeatState === button.stateName,
-      onClick: () => onButtonClick('setRepeatMode', button.stateName),
-      ...button
-    }))
+      type: 'checkbox',
+      name: 'Shuffle',
+      defaultState: state.shuffleState,
+      onToggle: (state) => onButtonClick('setShuffleState', state)
+    } ]
   } ],
 
   [ {
@@ -79,7 +89,7 @@ module.exports = (state, onButtonClick) => [
       shell.openExternal(state.currentItem.uri)
   }, {
     type: 'button',
-    name: 'Send URL to channel',
+    name: 'Send URL to Channel',
     onClick: () =>
       messages.sendMessage(
         channels.getChannelId(),
