@@ -1,5 +1,24 @@
 const Plugin = require('ac/Plugin');
 const { readdir, readFile } = require('fs').promises;
+const { watch } = require('fs');
+
+const loadCSS = async (path) => {
+  const dir = await readdir(path);
+  for (const filename of dir) {
+    const file = await readFile(`${path}/${filename}`);
+
+    const style = document.createElement('style');
+    style.innerHTML = file.toString();
+    style.id = `aethcord-css-${filename.split('.').shift()}`;
+    document.head.appendChild(style);
+  }
+};
+
+const clearCSS = async () => {
+  document.querySelectorAll('[id^="aethcord-css-"]').forEach((item) => {
+    item.parentNode.removeChild(item);
+  });
+};
 
 module.exports = class StyleManager extends Plugin {
   constructor () {
@@ -9,14 +28,12 @@ module.exports = class StyleManager extends Plugin {
   }
 
   async start () {
-    const dir = await readdir(`${__dirname}/styles`);
-    for (const filename of dir) {
-      const file = await readFile(`${__dirname}/styles/${filename}`);
-
-      const style = document.createElement('style');
-      style.innerHTML = file.toString();
-      style.id = `aethcord-css-${filename.split('.').shift()}`;
-      document.head.appendChild(style);
-    }
+    const path = `${__dirname}/styles`;
+    loadCSS(path);
+    watch(path, { encoding: 'utf-8' }, () => {
+      clearCSS();
+      loadCSS(path);
+    });
   }
 };
+
