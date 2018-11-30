@@ -9,20 +9,6 @@
   white-space: nowrap;
 }
 
-.itemGroup-1tL0uz.seperated {
-  border-bottom-width: 1px !important;
-  border-bottom-style: solid !important;
-}
-
-.item-1Yvehc.disabled {
-  background: unset !important;
-  color: unset !important;
-}
-
-#aethcord-spotify-modal {
-  transition: 0.5s;
-}
-
 .aethcord-spotify-seek {
   position: absolute;
   bottom: -6px;
