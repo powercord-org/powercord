@@ -49,13 +49,13 @@ module.exports = (state, onButtonClick) => [
       type: 'submenu',
       name: 'Repeat Modes',
       getItems: () => [ {
-        name: 'Repeat Current Playlist/Album',
+        name: 'On',
         stateName: 'context'
       }, {
-        name: 'Repeat Current Track',
+        name: 'Current Track',
         stateName: 'track'
       }, {
-        name: 'Repeat Off',
+        name: 'Off',
         stateName: 'off'
       } ].map(button => ({
         type: 'button',
