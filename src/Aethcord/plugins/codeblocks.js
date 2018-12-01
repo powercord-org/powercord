@@ -29,11 +29,31 @@ module.exports = class Codeblocks extends Plugin {
       .map(l => `<li>${l}</li>`)
       .join('') + '</ol>';
 
+    const lang = codeblock.className.split(' ').filter(c => !c.includes('-') && c !== 'hljs');
+    if (lang.length !== 0) {
+      codeblock.appendChild(
+        createElement('div', {
+          className: 'aethcord-codeblock-lang',
+          innerHTML: lang[0]
+        })
+      );
+    }
+
     codeblock.appendChild(
       createElement('button', {
         className: 'aethcord-codeblock-copy-btn',
         innerHTML: 'copy',
-        onclick: () => {
+        onclick: (e) => {
+          if (e.target.classList.contains('copied')) {
+            return;
+          }
+
+          e.target.innerText = 'copied!';
+          e.target.classList.add('copied');
+          setTimeout(() => {
+            e.target.innerText = 'copy';
+            e.target.classList.remove('copied');
+          }, 1000);
           const range = document.createRange();
           range.selectNode(codeblock.children[0]);
 

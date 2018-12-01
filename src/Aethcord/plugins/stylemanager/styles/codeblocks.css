@@ -15,6 +15,27 @@
   position: absolute;
   right: 0 !important;
   bottom: 0 !important;
+  transition: .3s;
+}
+
+.aethcord-codeblock-copy-btn.copied {
+  background-color: #00c853;
+}
+
+.aethcord-codeblock-lang {
+  color: #ffffff;
+
+  line-height: 20px;
+  padding: 0 5px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  font-weight: bolder;
+
+  position: absolute;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: initial !important;
 }
 
 /* Attribution: noodlebox */
