@@ -48,8 +48,10 @@ module.exports = {
   },
 
   getPlaylists () {
-    return this.genericRequest(get(`${this.BASE_URL}/me/playlists`))
-      .then(r => r.body);
+    return this.genericRequest(
+      get(`${this.BASE_URL}/me/playlists`)
+        .query('limit', 50)
+    ).then(r => r.body);
   },
 
   play (data) {
