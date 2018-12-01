@@ -10,5 +10,12 @@ require('module')
     join(__dirname, 'fake_node_modules')
   );
 
+let config;
+try {
+  config = require('../config.json');
+} catch (e) {
+  config = {};
+}
+
 const Aethcord = require('./Aethcord');
-global.aethcord = new Aethcord();
+global.aethcord = new Aethcord(config);
