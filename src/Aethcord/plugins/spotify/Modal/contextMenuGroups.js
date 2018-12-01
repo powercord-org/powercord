@@ -1,5 +1,6 @@
 const { clipboard, shell } = require('electron');
 const { messages, channels } = require('ac/webpack');
+const { formatTime } = require('ac/util');
 const SpotifyPlayer = require('../SpotifyPlayer');
 
 module.exports = (state, onButtonClick) => [
@@ -29,7 +30,6 @@ module.exports = (state, onButtonClick) => [
   [ {
     type: 'submenu',
     name: 'Playlists',
-    width: '200px',
     getItems: () => SpotifyPlayer.getPlaylists()
       .then(({ items }) =>
         items.map(playlist => ({
@@ -38,6 +38,36 @@ module.exports = (state, onButtonClick) => [
           hint: `${playlist.tracks.total} tracks`,
           onClick: () => onButtonClick('play', {
             context_uri: playlist.uri
+          })
+        }))
+      )
+  }, {
+    type: 'submenu',
+    name: 'Albums',
+    width: '200px',
+    getItems: () => SpotifyPlayer.getAlbums()
+      .then(({ items }) =>
+        items.map(({ album }) => ({
+          type: 'button',
+          name: album.name,
+          hint: `${album.tracks.total} tracks`,
+          onClick: () => onButtonClick('play', {
+            context_uri: album.uri
+          })
+        }))
+      )
+  }, {
+    type: 'submenu',
+    name: 'Songs',
+    width: '200px',
+    getItems: () => SpotifyPlayer.getSongs()
+      .then(({ items }) =>
+        items.map(({ track }) => ({
+          type: 'button',
+          name: track.name,
+          hint: formatTime(track.duration_ms),
+          onClick: () => onButtonClick('play', {
+            context_uri: track.uri
           })
         }))
       )

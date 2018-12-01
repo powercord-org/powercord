@@ -54,6 +54,20 @@ module.exports = {
     ).then(r => r.body);
   },
 
+  getAlbums () {
+    return this.genericRequest(
+      get(`${this.BASE_URL}/me/albums`)
+        .query('limit', 50)
+    ).then(r => r.body);
+  },
+
+  getSongs () {
+    return this.genericRequest(
+      get(`${this.BASE_URL}/me/tracks`)
+        .query('limit', 50)
+    ).then(r => r.body);
+  },
+
   play (data) {
     return this.genericRequest(
       put(`${this.BASE_PLAYER_URL}/play`)
@@ -82,11 +96,6 @@ module.exports = {
 
   getPlayer () {
     return this.genericRequest(get(this.BASE_PLAYER_URL))
-      .then(r => r.body);
-  },
-
-  getAlbums () {
-    return this.genericRequest(get(`${this.BASE_URL}/me/albums`))
       .then(r => r.body);
   },
 
