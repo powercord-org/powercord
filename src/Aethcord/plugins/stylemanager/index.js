@@ -16,6 +16,9 @@ module.exports = class StyleManager extends Plugin {
     if (path.endsWith('~')) {
       path = path.slice(0, -1);
     }
+    if (!path.endsWith('.css')) {
+      return;
+    }
     const id = path.split('.').shift();
     const styleElement = document.getElementById(`aethcord-css-${id}`);
     if (styleElement) {
