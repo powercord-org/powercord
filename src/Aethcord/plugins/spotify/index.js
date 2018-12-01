@@ -41,38 +41,10 @@ module.exports = class Spotify extends Plugin {
     });
   }
 
-  async patchSpotify () {
-    const {
-      http,
-      spotify,
-      spotifySocket,
-      constants: { Endpoints }
-    } = require('ac/webpack');
-
-    const spotifyUserID = await http.get(Endpoints.CONNECTIONS)
-      .then(res =>
-        res.body.find(connection =>
-          connection.type === 'spotify'
-        ).id
-      );
-
-    spotify.getUserID = () => spotifyUserID;
-    spotify.getAccessToken = (_getAccessToken =>
-      (isInternalCall = false) => _getAccessToken(spotifyUserID)
-        .then(res =>
-          isInternalCall
-            ? res
-            : res.body.access_token
-        )
-    )(spotify.getAccessToken);
+  async start () {
+    const { spotify } = require('ac/webpack');
 
     this.patchSpotifySocket();
-
-    return spotify;
-  }
-
-  async start () {
-    const spotify = await this.patchSpotify();
 
     for (const [ commandName, command ] of Object.entries(commands)) {
       command.func = command.func.bind(command, spotify);

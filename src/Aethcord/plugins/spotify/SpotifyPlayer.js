@@ -6,13 +6,37 @@ module.exports = {
   BASE_PLAYER_URL: 'https://api.spotify.com/v1/me/player',
   accessToken: null,
 
+  async getAccessToken () {
+    if (aethcord.config.spotifyToken) {
+      return post('https://aethcord.aetheryx.xyz/accessToken')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .send({ token: aethcord.config.spotifyToken })
+        .then(res => res.body);
+    }
+
+    const {
+      http,
+      constants: { Endpoints }
+    } = require('ac/webpack');
+
+    const spotifyUserID = await http.get(Endpoints.CONNECTIONS)
+      .then(res =>
+        res.body.find(connection =>
+          connection.type === 'spotify'
+        ).id
+      );
+
+    return spotify.getAccessToken(spotifyUserID)
+      .then(r => r.body.access_token);
+  },
+
   genericRequest (request) {
     request.set('Authorization', `Bearer ${this.accessToken}`);
 
     return request
       .catch(async (err) => {
         if (err.statusCode === 401) {
-          this.accessToken = await spotify.getAccessToken();
+          this.accessToken = await this.getAccessToken();
 
           delete request._res;
           return this.genericRequest(request);
