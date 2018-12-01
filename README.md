@@ -20,7 +20,7 @@ You can see an image preview of the codeblocks [here](https://discord.coffee/cf1
 # Installation steps
   1. `git clone https://github.com/Aetheryx/aethcord`
   2. `cd aethcord`
-  3. `npm i`
-  4. `npm run inject` <sup>(Side note: if you're on Linux, you need root perms for this command)</sup>
+  3. `npm run inject` <sup>(Side note: if you're on Linux, you need root perms for this command)</sup>
+  4. `npm i`
   5. Completely kill your Discord Client (right click system tray icon -> Quit DiscordCanary)
   6. Start Discord back up
