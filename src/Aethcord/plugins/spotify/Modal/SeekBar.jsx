@@ -1,4 +1,5 @@
 const { React } = require('ac/webpack');
+const { formatTime } = require('ac/util');
 const SpotifyPlayer = require('../SpotifyPlayer');
 
 module.exports = class SeekBar extends React.Component {
@@ -93,10 +94,10 @@ module.exports = class SeekBar extends React.Component {
       >
         <div className='aethcord-spotify-seek-durations'>
           <span className='aethcord-spotify-seek-duration'>
-            {this.formatTime(progress)}
+            {formatTime(progress)}
           </span>
           <span className='aethcord-spotify-seek-duration'>
-            {this.formatTime(this.props.duration)}
+            {formatTime(this.props.duration)}
           </span>
         </div>
         <div className='aethcord-spotify-seek-bar' onMouseDown={(e) => this.startSeek(e)}>
@@ -106,16 +107,5 @@ module.exports = class SeekBar extends React.Component {
         <div className='aethcord-spotify-seek-spacer'/>
       </div>
     );
-  }
-
-  formatTime (time) {
-    time = Math.round(time / 1000);
-    let hours = Math.floor(time / 3600) % 24;
-    let minutes = Math.floor(time / 60) % 60;
-    let seconds = time % 60;
-    return [ hours, minutes, seconds ]
-      .map(v => v < 10 ? '0' + v : v)
-      .filter((v, i) => v !== '00' || i > 0)
-      .join(':');
   }
 };
