@@ -6,6 +6,7 @@ module.exports = class SeekBar extends React.Component {
     super(props);
 
     this.state = {
+      seeking: false,
       progress: null,
       wasPlaying: false,
       renderInterval: null
@@ -22,7 +23,7 @@ module.exports = class SeekBar extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.progress !== prevProps.progress) {
+    if (!this.state.seeking && this.props.progress !== prevProps.progress) {
       this.setState({ progress: null });
     }
   }
@@ -43,6 +44,7 @@ module.exports = class SeekBar extends React.Component {
 
   startSeek (e) {
     this.setState({
+      seeking: true,
       wasPlaying: this.props.isPlaying
     });
 
@@ -68,6 +70,7 @@ module.exports = class SeekBar extends React.Component {
     document.removeEventListener('mousemove', this.seek);
     document.removeEventListener('mouseup', this.endSeek);
 
+    this.setState({ seeking: false });
     await SpotifyPlayer.seek(this.state.progress);
     if (this.state.wasPlaying) {
       await SpotifyPlayer.play();
@@ -76,7 +79,7 @@ module.exports = class SeekBar extends React.Component {
 
   render () {
     const rawProgress = this.state.progress || this.props.progress;
-    const progress = this.props.isPlaying
+    const progress = (this.props.isPlaying && !this.state.seeking)
       ? rawProgress + (Date.now() - this.props.progressAt)
       : rawProgress;
 

@@ -18,7 +18,7 @@ module.exports = class Codeblocks extends Plugin {
   }
 
   inject (codeblock) {
-    if (codeblock.querySelector('.aethcord-codeblock-copy-btn')) {
+    if (codeblock.querySelector('.aethcord-codeblock-copy-btn') || codeblock.closest('.search-result-message')) {
       return;
     }
 
