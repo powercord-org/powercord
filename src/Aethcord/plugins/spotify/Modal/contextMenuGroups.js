@@ -68,7 +68,7 @@ module.exports = (state, onButtonClick) => [
           name: track.name,
           hint: formatTime(track.duration_ms),
           onClick: () => onButtonClick('play', {
-            context_uri: track.uri
+            uris: [ track.uri ]
           })
         }))
       )
