@@ -89,7 +89,7 @@ module.exports = class SeekBar extends React.Component {
       <div
         className='aethcord-spotify-seek'
         onMouseEnter={() => this.props.onDurationToggle(true)}
-        onMouseLeave={() => this.props.onDurationToggle(false)}
+        onMouseLeave={() => setTimeout(() => this.props.onDurationToggle(false), 250)}
       >
         <div className='aethcord-spotify-seek-durations'>
           <span className='aethcord-spotify-seek-duration'>
