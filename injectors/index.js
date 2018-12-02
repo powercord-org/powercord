@@ -1,23 +1,24 @@
-let platformModule;
+const main = require('./main.js');
 
+let platformModule;
 try {
   platformModule = require(`./${process.platform}.js`);
 } catch (err) {
   if (err.code === 'MODULE_NOT_FOUND') {
-    throw new TypeError(`Unsupported platform "${process.platform}"`);
+    console.log(`Unsupported platform "${process.platform}"`);
+    process.exit(1);
   }
-
-  throw err;
 }
 
-const argument = process.argv[2]; // 'inject' | 'uninject'
-const targetFunc = platformModule[argument];
-if (!targetFunc) {
-  throw new TypeError(`Unsupported argument "${argument}"`);
-}
-
-return targetFunc()
-  .then(() => console.log('☑'))
-  .catch(err => {
-    console.error('fucky wucky', err);
-  });
+(async () => {
+  if (process.argv[2] === 'inject') {
+    await main.inject(platformModule);
+  } else if (process.argv[2] === 'uninject') {
+    await main.uninject(platformModule);
+  } else {
+    console.log(`Unsupported argument "${argument}", exiting..`);
+    process.exit(1);
+  }
+})()
+  .then(() => console.log('Success!'))
+  .catch(e => console.error('fucky wucky', e));
