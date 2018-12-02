@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/aetheryx/aethcord#readme",
   "dependencies": {
-    "buble": "^0.19.6"
+    "buble": "^0.19.6",
+    "chokidar": "^2.0.4"
   }
 }

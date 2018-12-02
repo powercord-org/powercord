@@ -1,6 +1,6 @@
 const Plugin = require('ac/Plugin');
 const { watch } = require('ac/util');
-
+// const { render } = require('node-sass');
 const { readdir, readFile } = require('fs').promises;
 
 module.exports = class StyleManager extends Plugin {
@@ -13,33 +13,40 @@ module.exports = class StyleManager extends Plugin {
   }
 
   async update (path) {
-    if (path.endsWith('~')) {
-      path = path.slice(0, -1);
-    }
-    if (!path.endsWith('.css')) {
+    if (!path.match(/\.s?css$/)) {
       return;
     }
-    const id = path.split('.').shift();
+    const id = path.split(/[\\|/]/).pop().split('.').shift();
     const styleElement = document.getElementById(`aethcord-css-${id}`);
     if (styleElement) {
-      const content = await readFile(`${this.styleDir}/${path}`);
-      styleElement.innerHTML = content.toString();
+      styleElement.innerHTML = await this.readFile(path);
     }
   }
 
   async loadInitialCSS () {
     const dir = await readdir(this.styleDir);
     for (const filename of dir) {
-      if (!filename.endsWith('.css')) {
+      if (!filename.match(/\.s?css$/)) {
         continue;
       }
-      const file = await readFile(`${this.styleDir}/${filename}`);
 
       const style = document.createElement('style');
-      style.innerHTML = file.toString();
+      style.innerHTML = await this.readFile(`${this.styleDir}/${filename}`);
       style.id = `aethcord-css-${filename.split('.').shift()}`;
       document.head.appendChild(style);
     }
+  }
+
+  async readFile (path) {
+    const file = await readFile(path);
+    if (path.endsWith('scss')) {
+      /*
+       * return render({
+       *   data: file.toString()
+       * });
+       */
+    }
+    return file.toString();
   }
 
   async start () {
