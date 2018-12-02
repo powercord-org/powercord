@@ -63,8 +63,7 @@ module.exports = class SeekBar extends React.Component {
     const { x, width } = document.querySelector('.aethcord-spotify-seek-bar').getBoundingClientRect();
     const delta = mouseX - x;
     const seek = delta / width;
-
-    this.setState({ progress: Math.round(this.props.duration * seek) });
+    this.setState({ progress: Math.round(this.props.duration * Math.max(0, Math.min(seek, 1))) });
   }
 
   async endSeek () {
