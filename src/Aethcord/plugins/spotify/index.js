@@ -10,28 +10,49 @@ module.exports = class Spotify extends Plugin {
     });
   }
 
-  async patchSpotifySocket () {
+  async getSocketBlocking (requirement = () => true) {
     const { spotifySocket } = require('ac/webpack');
-    const SpotifyPlayer = require('./SpotifyPlayer');
 
-    while (!spotifySocket.getActiveSocketAndDevice()) {
+    let internalSocket;
+    while (
+      !(internalSocket = spotifySocket.getActiveSocketAndDevice()) &&
+      requirement(internalSocket)
+    ) {
       await sleep(1);
     }
 
-    const { socket } = spotifySocket.getActiveSocketAndDevice().socket;
+    return internalSocket.socket;
+  }
 
-    socket.onmessage = (_onmessage => (data) => {
-      const parsedData = JSON.parse(data.data);
-      if (parsedData.type === 'message' && parsedData.payloads) {
-        for (const payload of parsedData.payloads) {
-          for (const event of payload.events) {
-            this.emit('event', event);
+  async patchSpotifySocket () {
+    const SpotifyPlayer = require('./SpotifyPlayer');
+    let backoff, socket;
+
+    ({ backoff } = await this.getSocketBlocking());
+
+    const patchOnMessage = async () => {
+      ({ socket } = await this.getSocketBlocking(({ socket }) => (
+        !socket.onmessage.toString().startsWith('(data) =>')
+      )));
+
+      socket.onmessage = (_onmessage => (data) => {
+        const parsedData = JSON.parse(data.data);
+        if (parsedData.type === 'message' && parsedData.payloads) {
+          for (const payload of parsedData.payloads) {
+            for (const event of payload.events) {
+              this.emit('event', event);
+            }
           }
         }
-      }
 
-      return _onmessage(data);
-    })(socket.onmessage);
+        return _onmessage(data);
+      })(socket.onmessage);
+    }
+
+    backoff.succeed = (_succeed => () => {
+      patchOnMessage();
+      return _succeed.call(backoff);
+    })(backoff.succeed);
 
     this.emit('event', {
       type: 'PLAYER_STATE_CHANGED',
