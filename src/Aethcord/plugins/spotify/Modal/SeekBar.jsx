@@ -44,6 +44,7 @@ module.exports = class SeekBar extends React.Component {
   }
 
   startSeek (e) {
+    this.props.onSeeking(true);
     this.setState({
       seeking: true,
       wasPlaying: this.props.isPlaying
@@ -70,6 +71,7 @@ module.exports = class SeekBar extends React.Component {
     document.removeEventListener('mousemove', this.seek);
     document.removeEventListener('mouseup', this.endSeek);
 
+    this.props.onSeeking(false);
     this.setState({ seeking: false });
     await SpotifyPlayer.seek(this.state.progress);
     if (this.state.wasPlaying) {
@@ -89,7 +91,7 @@ module.exports = class SeekBar extends React.Component {
       <div
         className='aethcord-spotify-seek'
         onMouseEnter={() => this.props.onDurationToggle(true)}
-        onMouseLeave={() => setTimeout(() => this.props.onDurationToggle(false), 250)}
+        onMouseLeave={() => this.props.onDurationToggle(false)}
       >
         <div className='aethcord-spotify-seek-durations'>
           <span className='aethcord-spotify-seek-duration'>

@@ -3,5 +3,6 @@ node_modules
 
 src/Aethcord/plugins/stylemanager/styles/*
 !src/Aethcord/plugins/stylemanager/styles/ac-*.css
+!src/Aethcord/plugins/stylemanager/styles/ac-*.scss
 
 config.json

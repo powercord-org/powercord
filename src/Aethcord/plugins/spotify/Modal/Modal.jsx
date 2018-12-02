@@ -24,6 +24,7 @@ module.exports = class Modal extends React.Component {
       repeatState: '',
       shuffleState: '',
       seekBar: {
+        seeking: false,
         showDurations: false,
         progress: 0,
         progressAt: Date.now()
@@ -46,7 +47,8 @@ module.exports = class Modal extends React.Component {
         seekBar: {
           progressAt: Date.now(),
           progress: playerState.progress_ms,
-          showDurations: this.state.seekBar.showDurations
+          showDurations: this.state.seekBar.showDurations,
+          seeking: this.state.seekBar.seeking
         },
         repeatState: playerState.repeat_state,
         shuffleState: playerState.shuffle_state,
@@ -85,7 +87,7 @@ module.exports = class Modal extends React.Component {
     const artists = concat(currentItem.artists);
 
     let className = 'container-2Thooq aethcord-spotify';
-    if (this.state.seekBar.showDurations) {
+    if (this.state.seekBar.showDurations || this.state.seekBar.seeking) {
       className += ' expend';
     }
 
@@ -128,6 +130,12 @@ module.exports = class Modal extends React.Component {
             {...this.state.seekBar}
             isPlaying={this.state.isPlaying}
             duration={this.state.currentItem.duration}
+            onSeeking={(seeking) => this.setState({
+              seekBar: {
+                ...this.state.seekBar,
+                seeking: seeking
+              }
+            })}
             onDurationToggle={(show) => this.setState({
               seekBar: {
                 ...this.state.seekBar,
