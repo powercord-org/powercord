@@ -43,7 +43,7 @@ module.exports = class HeyGirl extends Plugin {
       .get('commands')
       .register(
         'heygirl',
-        'Replaces every image in the current view with a random image of Ryan Gosling.',
+        'Replaces every image with a random image of Ryan Gosling.',
         '/heygirl',
         this.heygirl.bind(this)
       );
