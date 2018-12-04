@@ -1,3 +1,4 @@
 {
-  "spotifyToken": ""
+  "spotifyToken": "",
+  "prefix": "."
 }
