@@ -2,13 +2,13 @@ module.exports = {
   name: 'help',
   description: 'Gives you a list of commands or information on a specific command.',
   usage: '/help [ commandName ]',
-  func: ([ commandName ]) => {
+  func ([ commandName ], main) {
     let result;
 
     if (!commandName) {
       const getPropLength = (command) => command.name.length;
 
-      const commands = [ ...this.commands.values() ];
+      const commands = [ ...main.commands.values() ];
 
       const longestCommandName = getPropLength(
         commands.sort((a, b) => getPropLength(b) - getPropLength(a))[0]
@@ -27,7 +27,7 @@ module.exports = {
         }
       };
     } else {
-      const command = this.commands.get(commandName);
+      const command = main.commands.get(commandName);
       if (!command) {
         result = `Command \`${commandName}\` not found.`;
       } else {

@@ -17,7 +17,7 @@ module.exports = async function monkeypatchMessages () {
       return sendMessage(id, message, ...params);
     }
 
-    const result = await this.commands.get(command).func(args);
+    const result = await this.commands.get(command).func(args, this);
     if (!result) {
       return;
     }
