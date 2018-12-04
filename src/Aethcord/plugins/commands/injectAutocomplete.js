@@ -20,13 +20,11 @@ module.exports = async function injectAutocomplete () {
   const inject = (inst) =>
     inst.props.autocompleteOptions.AETHCORD_CUSTOM_COMMANDS = {
       getText: (index, { commands }) => this.prefix + commands[index].command,
-      matches: (content, _, index) => (
-        index === 0 &&
-        content &&
-        content[0] === this.prefix
-      ),
-      queryResults: (content) => ({
-        commands: customCommands.filter(c => c.command.startsWith(content))
+      matches: () => inst.props.value.startsWith(this.prefix),
+      queryResults: () => ({
+        commands: customCommands.filter(c =>
+          c.command.startsWith(inst.props.value.slice(this.prefix.length))
+        )
       }),
       renderResults: (...args) => {
         const renderedResults = inst.props.autocompleteOptions.COMMAND.renderResults(...args);
@@ -46,10 +44,10 @@ module.exports = async function injectAutocomplete () {
             ) {
               const commandPreviewChildren = rendered.props.children[1].props.children;
               if (commandPreviewChildren[0].startsWith('/')) {
-                commandPreviewChildren[0] = commandPreviewChildren[0].replace('/', _this.prefix);
+                commandPreviewChildren[0] = commandPreviewChildren[0].replace(`/${_this.prefix.slice(1)}`, _this.prefix);
               }
             }
-    
+
             return rendered;
           }
         };
