@@ -24,5 +24,4 @@ You can see an image preview of the codeblocks [here](https://discord.coffee/cf1
   4. `npm run inject` <sup>(Side note: if you're on Linux, you need root perms for this command)</sup>
   5. Completely kill your Discord Client (right click system tray icon -> Quit DiscordCanary)
   6. Start Discord back up and Aethcord should be injected!  
-  
      Make sure to view the [Aethcord Wiki](https://github.com/Aetheryx/aethcord/wiki) for information on getting started and how Aethcord works.
