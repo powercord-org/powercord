@@ -19,10 +19,10 @@ module.exports = async function injectAutocomplete () {
 
   const inject = (inst) =>
     inst.props.autocompleteOptions.AETHCORD_CUSTOM_COMMANDS = {
-      getText: (i, { commands }) => this.prefix + commands[i].command,
-      matches: (r) => r && r[0] === this.prefix,
-      queryResults: (str) => ({
-        commands: customCommands.filter(c => c.command.startsWith(str))
+      getText: (index, { commands }) => this.prefix + commands[index].command,
+      matches: (_, content) => content && content[0] === this.prefix,
+      queryResults: (content) => ({
+        commands: customCommands.filter(c => c.command.startsWith(content))
       }),
       renderResults: (...args) => {
         const renderedResults = inst.props.autocompleteOptions.COMMAND.renderResults(...args);
