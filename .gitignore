@@ -1,8 +1,8 @@
 .idea
 node_modules
 
-src/Aethcord/plugins/stylemanager/styles/*
-!src/Aethcord/plugins/stylemanager/styles/ac-*.css
-!src/Aethcord/plugins/stylemanager/styles/ac-*.scss
+src/Powercord/plugins/stylemanager/styles/*
+!src/Powercord/plugins/stylemanager/styles/ac-*.css
+!src/Powercord/plugins/stylemanager/styles/ac-*.scss
 
 config.json

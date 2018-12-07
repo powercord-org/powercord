@@ -1,6 +1,6 @@
 {
   "globals": {
-    "aethcord": true,
+    "powercord": true,
     "webpackJsonp": true
   },
   "parserOptions": {

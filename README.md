@@ -1,6 +1,6 @@
-# Aethcord
-Aethcord is a lightweight client mod focused on simplicity and performance.  
-As of right now, Aethcord is in *very* early stages of development, so feel free to join [this server](https://discord.gg/Yphr6WG) for any questions.
+# Powercord
+Powercord is a lightweight client mod focused on simplicity and performance.  
+As of right now, Powercord is in *very* early stages of development, so feel free to join [this server](https://discord.gg/Yphr6WG) for any questions.
 
 # Features
 ## Spotify Modal
@@ -18,10 +18,10 @@ You can see an image preview of the codeblocks [here](https://discord.coffee/cf1
   3. Windows or Linux (I don't have a macOS machine)
 
 # Installation steps
-  1. `git clone https://github.com/Aetheryx/aethcord`
-  2. `cd aethcord`
+  1. `git clone https://github.com/aetheryx/powercord`
+  2. `cd powercord`
   3. `npm i`
   4. `npm run inject` <sup>(Side note: if you're on Linux, you need root perms for this command)</sup>
   5. Completely kill your Discord Client (right click system tray icon -> Quit DiscordCanary)
-  6. Start Discord back up and Aethcord should be injected!  
-     Make sure to view the [Aethcord Wiki](https://github.com/Aetheryx/aethcord/wiki) for information on getting started and how Aethcord works.
+  6. Start Discord back up and Powercord should be injected!  
+     Make sure to view the [Powercord Wiki](https://github.com/aetheryx/powercord/wiki) for information on getting started and how Powercord works.

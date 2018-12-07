@@ -17,5 +17,5 @@ try {
   config = {};
 }
 
-const Aethcord = require('./Aethcord');
-global.aethcord = new Aethcord(config);
+const Powercord = require('./Powercord');
+global.powercord = new Powercord(config);

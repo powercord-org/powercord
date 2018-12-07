@@ -1,7 +1,7 @@
 {
-  "name": "aethcord",
+  "name": "powercord",
   "version": "1.0.0",
-  "description": "",
+  "description": "A lightweight @discordapp client mod focused on simplicity and performance",
   "main": "index.js",
   "scripts": {
     "inject": "node injectors/index.js inject",
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aetheryx/aethcord.git"
+    "url": "git+https://github.com/aetheryx/powercord.git"
   },
   "keywords": [],
   "author": "Aetheryx",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/aetheryx/aethcord/issues"
+    "url": "https://github.com/aetheryx/powercord/issues"
   },
-  "homepage": "https://github.com/aetheryx/aethcord#readme",
+  "homepage": "https://github.com/aetheryx/powercord#readme",
   "dependencies": {
     "buble": "^0.19.6",
     "chokidar": "^2.0.4",
