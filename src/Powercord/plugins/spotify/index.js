@@ -10,49 +10,19 @@ module.exports = class Spotify extends Plugin {
     });
   }
 
-  async getSocketBlocking (requirement = () => true) {
-    const { spotifySocket } = require('powercord/webpack');
-
-    let internalSocket;
-    while (
-      !(internalSocket = spotifySocket.getActiveSocketAndDevice()) &&
-      requirement(internalSocket)
-    ) {
-      await sleep(1);
-    }
-
-    return internalSocket.socket;
-  }
-
   async patchSpotifySocket () {
     const SpotifyPlayer = require('./SpotifyPlayer');
-    let backoff, socket;
 
-    ({ backoff } = await this.getSocketBlocking());
-
-    const patchOnMessage = async () => {
-      ({ socket } = await this.getSocketBlocking(({ socket }) => (
-        !socket.onmessage.toString().startsWith('(data) =>')
-      )));
-
-      socket.onmessage = (_onmessage => (data) => {
-        const parsedData = JSON.parse(data.data);
-        if (parsedData.type === 'message' && parsedData.payloads) {
-          for (const payload of parsedData.payloads) {
-            for (const event of payload.events) {
-              this.emit('event', event);
-            }
+    powercord.on('webSocketMessage:dealer.spotify.com', (data) => {
+      const parsedData = JSON.parse(data.data);
+      if (parsedData.type === 'message' && parsedData.payloads) {
+        for (const payload of parsedData.payloads) {
+          for (const event of payload.events) {
+            this.emit('event', event);
           }
         }
-
-        return _onmessage(data);
-      })(socket.onmessage);
-    }
-
-    backoff.succeed = (_succeed => () => {
-      patchOnMessage();
-      return _succeed.call(backoff);
-    })(backoff.succeed);
+      }
+    });
 
     this.emit('event', {
       type: 'PLAYER_STATE_CHANGED',
@@ -65,6 +35,8 @@ module.exports = class Spotify extends Plugin {
   async start () {
     const { spotify } = require('powercord/webpack');
 
+    await this.modalFuckery();
+
     this.patchSpotifySocket();
 
     for (const [ commandName, command ] of Object.entries(commands)) {
@@ -76,8 +48,6 @@ module.exports = class Spotify extends Plugin {
         .commands
         .set(commandName, command);
     }
-
-    this.modalFuckery();
   }
 
   async modalFuckery () {
