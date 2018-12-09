@@ -1,7 +1,12 @@
-// Loosely based on ED/DI injector
+// Based off of BBD injector
 
-const { BrowserWindow, app, session } = require('electron');
-const { join, dirname } = require('path');
+const Module = require('module');
+const { join, dirname, resolve } = require('path');
+const electron = require('electron');
+const { BrowserWindow, app, session } = electron;
+
+const electronPath = require.resolve('electron');
+const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
 class PatchedBrowserWindow extends BrowserWindow {
   constructor (opts) {
@@ -15,8 +20,8 @@ class PatchedBrowserWindow extends BrowserWindow {
   }
 }
 
-app.on('ready', () => {
-  session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
+electron.app.once('ready', () => {
+  electron.session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
     Object.keys(responseHeaders)
       .filter(k => (/^content-security-policy/i).test(k))
       .map(k => (delete responseHeaders[k]));
@@ -24,22 +29,19 @@ app.on('ready', () => {
     done({ responseHeaders });
   });
 
-  const electronCacheEntry = require.cache[require.resolve('electron')];
-  Object.defineProperty(electronCacheEntry, 'exports', {
-    value: {
-      ...electronCacheEntry.exports
-    }
+  Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
+  require.cache[electronPath].exports = Object.assign({}, electron, {
+    BrowserWindow: PatchedBrowserWindow
   });
-  electronCacheEntry.exports.BrowserWindow = PatchedBrowserWindow;
-
-  const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
-
-  require('module')
-    ._load(
-      join(
-        discordPath,
-        require(join(discordPath, 'package.json')).main
-      ),
-      null, true
-    );
 });
+
+const discordPackage = require(join(discordPath, 'package.json'));
+
+electron.app.setAppPath(discordPath);
+electron.app.setName(discordPackage.name);
+
+Module._load(
+  join(discordPath, discordPackage.main),
+  null,
+  true
+);
