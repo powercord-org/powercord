@@ -6,7 +6,8 @@ const { readdir, readFile } = require('fs').promises;
 module.exports = class StyleManager extends Plugin {
   constructor () {
     super({
-      stage: 2
+      stage: 2,
+      overlay: true
     });
 
     this.styleDir = `${__dirname.replace(/\\/g, '/')}/styles`;

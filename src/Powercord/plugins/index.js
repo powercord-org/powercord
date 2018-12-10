@@ -17,7 +17,10 @@ const plugins = (() => {
 
 const startPlugins = (stage) =>
   Object.values(plugins)
-    .filter(plugin => plugin.options.stage === stage)
+    .filter(plugin => (
+      plugin.options.stage === stage &&
+      (!(location.pathname === '/overlay') || plugin.options.overlay)
+    ))
     .map(async (plugin) => {
       while (!plugin.options.dependencies.every(pluginName => (
         powercord.plugins.get(pluginName).ready

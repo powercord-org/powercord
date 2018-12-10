@@ -1,13 +1,16 @@
-// Loosely based on ED/DI injector
+const Module = require('module');
+const { join, dirname, resolve } = require('path');
+const electron = require('electron');
+const { BrowserWindow, app, session } = electron;
 
-const { BrowserWindow, app, session } = require('electron');
-const { join, dirname } = require('path');
+const electronPath = require.resolve('electron');
+const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
 class PatchedBrowserWindow extends BrowserWindow {
   constructor (opts) {
     if (opts.webPreferences && opts.webPreferences.preload) {
       global.originalPreload = opts.webPreferences.preload;
-      opts.webPreferences.preload = join(__dirname, 'preload');
+      opts.webPreferences.preload = join(__dirname, 'preload.js');
       opts.webPreferences.nodeIntegration = true;
     }
 
@@ -15,7 +18,21 @@ class PatchedBrowserWindow extends BrowserWindow {
   }
 }
 
-app.on('ready', () => {
+Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
+require.cache[electronPath].exports = {};
+
+const failedExports = [];
+for (const prop in electron) {
+  try {
+    require.cache[electronPath].exports[prop] = electron[prop];
+  } catch (_) {
+    failedExports.push(prop);
+  }
+}
+
+require.cache[electronPath].exports.BrowserWindow = PatchedBrowserWindow;
+
+app.once('ready', () => {
   session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
     Object.keys(responseHeaders)
       .filter(k => (/^content-security-policy/i).test(k))
@@ -24,22 +41,18 @@ app.on('ready', () => {
     done({ responseHeaders });
   });
 
-  const electronCacheEntry = require.cache[require.resolve('electron')];
-  Object.defineProperty(electronCacheEntry, 'exports', {
-    value: {
-      ...electronCacheEntry.exports
-    }
-  });
-  electronCacheEntry.exports.BrowserWindow = PatchedBrowserWindow;
-
-  const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
-
-  require('module')
-    ._load(
-      join(
-        discordPath,
-        require(join(discordPath, 'package.json')).main
-      ),
-      null, true
-    );
+  for (const prop of failedExports) {
+    require.cache[electronPath].exports[prop] = electron[prop];
+  }
 });
+
+const discordPackage = require(join(discordPath, 'package.json'));
+
+electron.app.setAppPath(discordPath);
+electron.app.setName(discordPackage.name);
+
+Module._load(
+  join(discordPath, discordPackage.main),
+  null,
+  true
+);
