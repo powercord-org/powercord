@@ -2,6 +2,7 @@ const Plugin = require('powercord/Plugin');
 const { watch } = require('powercord/util');
 const { renderSync } = require('sass');
 const { readdir, readFile } = require('fs').promises;
+const { dirname } = require('path');
 
 module.exports = class StyleManager extends Plugin {
   constructor () {
@@ -22,6 +23,7 @@ module.exports = class StyleManager extends Plugin {
     const match = this.trackedFiles.filter(f => f.file === file || f.includes.includes(file));
     if (match.length !== 0) {
       const id = match[0].file.split('.').shift();
+      this.log(`Reloading style ${id}`);
       document.getElementById(`powercord-css-${id}`).innerHTML = await this.readFile(match[0].file);
     }
   }
@@ -39,8 +41,10 @@ module.exports = class StyleManager extends Plugin {
       });
       const style = document.createElement('style');
       style.innerHTML = await this.readFile(filename);
-      style.id = `powercord-css-${filename.split('.').shift()}`;
+      const id = filename.split('.').shift();
+      style.id = `powercord-css-${id}`;
       document.head.appendChild(style);
+      this.log(`Style ${id} applied`);
     }
   }
 
@@ -49,9 +53,13 @@ module.exports = class StyleManager extends Plugin {
     if (filename.endsWith('scss')) {
       const result = renderSync({
         data: file.toString(),
+        importer: (url, prev) => ({ file: `${dirname(prev)}/${url}` }),
         includePaths: [ this.styleDir ]
       });
-      this.trackedFiles.filter(f => f.file === filename)[0].includes = result.stats.includedFiles.map(e => e.split('/').pop());
+      this.trackedFiles.filter(f => f.file === filename)[0].includes = result.stats.includedFiles.map(e => {
+        const path = e.charAt(0).toUpperCase() + e.slice(1);
+        return path.replace(/\\/g, '/').replace(`${this.styleDir}/`, '');
+      });
       return result.css.toString();
     }
     return file.toString();
