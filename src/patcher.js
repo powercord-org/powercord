@@ -32,8 +32,8 @@ for (const prop in electron) {
 
 require.cache[electronPath].exports.BrowserWindow = PatchedBrowserWindow;
 
-app.once('ready', () => {
-  session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
+electron.app.once('ready', () => {
+  electron.session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
     Object.keys(responseHeaders)
       .filter(k => (/^content-security-policy/i).test(k))
       .map(k => (delete responseHeaders[k]));
