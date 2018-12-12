@@ -37,6 +37,7 @@ module.exports = class Updater extends Plugin {
           .split('\n')
           .find(l => l.startsWith('*'))
           .slice(2)
+          .trim()
       );
 
     const localRevision = await exec(`git --git-dir="${this.gitDir}" rev-parse ${branch}`)
