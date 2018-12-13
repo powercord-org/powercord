@@ -6,17 +6,21 @@ module.exports = class Overlay extends Plugin {
     super({
       stage: 2,
       dependencies: [],
-      overlay: true
+      appMode: 'overlay'
     });
   }
 
   start () {
     document.addEventListener('keydown', e => {
       if (e.key === 'I' && e.ctrlKey) {
-        remote.getCurrentWindow().toggleDevTools({
-          detached: true
-        });
+        const remoteWindow = remote.getCurrentWindow();
+
+        if (!remoteWindow.isDevToolsOpened()) {
+          remoteWindow.openDevTools({
+            mode: 'detach'
+          });
+        }
       }
-    })
+    });
   }
 };
