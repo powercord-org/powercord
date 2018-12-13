@@ -25,8 +25,8 @@ module.exports = class StateWatcher extends Plugin {
       }
 
       for (const node of [ ...mutation.addedNodes ]
-          .concat(...mutation.removedNodes)
-          .concat(mutation.target)
+        .concat(...mutation.removedNodes)
+        .concat(mutation.target)
       ) {
         if (!node.classList) {
           continue;

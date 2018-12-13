@@ -1,5 +1,5 @@
 const Plugin = require('powercord/Plugin');
-const { waitFor, getOwnerInstance, sleep } = require('powercord/util');
+const { waitFor, getOwnerInstance } = require('powercord/util');
 const commands = require('./commands');
 
 module.exports = class Spotify extends Plugin {
@@ -18,8 +18,8 @@ module.exports = class Spotify extends Plugin {
       const parsedData = JSON.parse(data.data);
       if (parsedData.type === 'message' && parsedData.payloads) {
         for (const payload of parsedData.payloads) {
-          for (const event of payload.events) {
-            this.emit('event', event);
+          for (const ev of payload.events) {
+            this.emit('event', ev);
           }
         }
       }

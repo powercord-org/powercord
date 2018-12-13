@@ -1,5 +1,5 @@
 const Module = require('module');
-const { join, dirname, resolve } = require('path');
+const { join, dirname } = require('path');
 const electron = require('electron');
 const { BrowserWindow, app, session } = electron;
 
@@ -32,8 +32,8 @@ for (const prop in electron) {
 
 require.cache[electronPath].exports.BrowserWindow = PatchedBrowserWindow;
 
-electron.app.once('ready', () => {
-  electron.session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
+app.once('ready', () => {
+  session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
     Object.keys(responseHeaders)
       .filter(k => (/^content-security-policy/i).test(k))
       .map(k => (delete responseHeaders[k]));

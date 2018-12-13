@@ -26,6 +26,6 @@ window.WebSocket = class PatchedWebSocket extends window.WebSocket {
       powercord.emit(`webSocketMessage:${data.origin.slice(6)}`, data);
     });
   }
-}
+};
 
 require(remote.getGlobal('originalPreload'));

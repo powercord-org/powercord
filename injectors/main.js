@@ -1,5 +1,5 @@
 const {
-  readdir, mkdir, writeFile, unlink, rmdir, access
+  mkdir, writeFile, unlink, rmdir, access
 } = require('fs').promises;
 const { join, sep } = require('path');
 
@@ -27,7 +27,7 @@ exports.inject = async ({ getAppDir }) => {
       JSON.stringify({ main: 'index.js' })
     )
   ]);
-}
+};
 
 exports.uninject = async ({ getAppDir }) => {
   const appDir = await getAppDir();

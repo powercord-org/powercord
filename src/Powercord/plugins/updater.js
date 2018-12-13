@@ -55,7 +55,7 @@ module.exports = class Updater extends Plugin {
 
   askUpdate () {
     dialog.showMessageBox({
-      type: 'question', 
+      type: 'question',
       title: 'Powercord Updater',
       message: 'Hey cutie! Powercord has an update.',
       detail: 'What do you want to do?',
@@ -65,21 +65,20 @@ module.exports = class Updater extends Plugin {
         'Don\'t update',
         'Don\'t update and don\'t ask me until next boot'
       ],
-      defaultId: 3,
+      defaultId: 3
     }, (key) => {
       switch (key) {
         case 0:
           return this.update();
-        
+
         case 1:
           return this.update().then(this.reboot);
-        
+
         case 2:
           return;
 
         case 3:
           this.ask = false;
-          return;
       }
     });
   }

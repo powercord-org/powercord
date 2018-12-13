@@ -26,4 +26,4 @@ module.exports = {
       urlRegex.exec(url)[1]
     );
   }
-}
+};

@@ -32,11 +32,11 @@ module.exports = async function injectAutocomplete () {
           return;
         }
 
-        let [ header, commands ] = renderedResults;
+        const [ header, commands ] = renderedResults;
 
         header.type = class PatchedHeaderType extends header.type {
-          renderContent (...args) {
-            const rendered = super.renderContent(...args);
+          renderContent (...originalArgs) {
+            const rendered = super.renderContent(...originalArgs);
 
             if (
               Array.isArray(rendered.props.children) &&
@@ -54,10 +54,10 @@ module.exports = async function injectAutocomplete () {
 
         for (const command of commands) {
           command.type = class PatchedCommandType extends command.type {
-            renderContent (...args) {
-              const rendered = super.renderContent(...args);
+            renderContent (...originalArgs) {
+              const rendered = super.renderContent(...originalArgs);
 
-              const children = rendered.props.children;
+              const { children } = rendered.props;
               if (children[0].props.name === 'Slash') {
                 rendered.props.children.shift();
               }
@@ -69,7 +69,7 @@ module.exports = async function injectAutocomplete () {
 
               return rendered;
             }
-          }
+          };
         }
 
         return [ header, commands ];
@@ -82,9 +82,10 @@ module.exports = async function injectAutocomplete () {
   const instance = getInstance();
   const instancePrototype = Object.getPrototypeOf(instance);
 
+  // eslint-disable-next-line func-names
   instancePrototype.componentDidMount = (_componentDidMount => function (...args) {
     inject(getInstance());
-    return _componentDidMount.call(this, ...args);;
+    return _componentDidMount.call(this, ...args);
   })(instancePrototype.componentDidMount);
 
   inject(instance);

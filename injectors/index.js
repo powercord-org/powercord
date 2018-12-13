@@ -16,7 +16,7 @@ try {
   } else if (process.argv[2] === 'uninject') {
     await main.uninject(platformModule);
   } else {
-    console.log(`Unsupported argument "${argument}", exiting..`);
+    console.log(`Unsupported argument "${process.argv[2]}", exiting..`);
     process.exit(1);
   }
 })()
