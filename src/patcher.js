@@ -1,5 +1,3 @@
-// Based off of BBD injector
-
 const Module = require('module');
 const { join, dirname, resolve } = require('path');
 const electron = require('electron');
@@ -12,13 +10,27 @@ class PatchedBrowserWindow extends BrowserWindow {
   constructor (opts) {
     if (opts.webPreferences && opts.webPreferences.preload) {
       global.originalPreload = opts.webPreferences.preload;
-      opts.webPreferences.preload = join(__dirname, 'preload');
+      opts.webPreferences.preload = join(__dirname, 'preload.js');
       opts.webPreferences.nodeIntegration = true;
     }
 
     return new BrowserWindow(opts);
   }
 }
+
+Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
+require.cache[electronPath].exports = {};
+
+const failedExports = [];
+for (const prop in electron) {
+  try {
+    require.cache[electronPath].exports[prop] = electron[prop];
+  } catch (_) {
+    failedExports.push(prop);
+  }
+}
+
+require.cache[electronPath].exports.BrowserWindow = PatchedBrowserWindow;
 
 electron.app.once('ready', () => {
   electron.session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
@@ -29,10 +41,9 @@ electron.app.once('ready', () => {
     done({ responseHeaders });
   });
 
-  Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
-  require.cache[electronPath].exports = Object.assign({}, electron, {
-    BrowserWindow: PatchedBrowserWindow
-  });
+  for (const prop of failedExports) {
+    require.cache[electronPath].exports[prop] = electron[prop];
+  }
 });
 
 const discordPackage = require(join(discordPath, 'package.json'));

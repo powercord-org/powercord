@@ -3,7 +3,10 @@ const webpack = require('powercord/webpack');
 
 module.exports = class Webpack extends Plugin {
   constructor () {
-    super({ stage: 0 });
+    super({
+      stage: 0,
+      appMode: 'both'
+    });
   }
 
   async start () {

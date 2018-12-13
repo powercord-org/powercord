@@ -12,8 +12,8 @@ module.exports = class Updater extends Plugin {
   constructor () {
     super({
       stage: 2,
-      dependencies: []
-
+      dependencies: [],
+      appMode: 'app'
     });
 
     this.gitDir = join(__dirname, ...Array(3).fill('..'), '.git');
@@ -37,6 +37,7 @@ module.exports = class Updater extends Plugin {
           .split('\n')
           .find(l => l.startsWith('*'))
           .slice(2)
+          .trim()
       );
 
     const localRevision = await exec(`git --git-dir="${this.gitDir}" rev-parse ${branch}`)

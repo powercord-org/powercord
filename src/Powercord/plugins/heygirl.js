@@ -6,7 +6,8 @@ module.exports = class HeyGirl extends Plugin {
   constructor () {
     super({
       stage: 2,
-      dependencies: [ 'commands' ]
+      dependencies: [ 'commands' ],
+      appMode: 'app'
     });
 
     this.URLs = [].concat(

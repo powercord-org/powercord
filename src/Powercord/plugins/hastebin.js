@@ -6,7 +6,8 @@ module.exports = class Hastebin extends Plugin {
   constructor () {
     super({
       stage: 2,
-      dependencies: [ 'commands' ]
+      dependencies: [ 'commands' ],
+      appMode: 'app'
     });
 
     this.DOMAIN = 'https://haste.aetheryx.xyz';
