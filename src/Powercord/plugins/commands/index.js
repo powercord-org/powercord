@@ -6,7 +6,8 @@ module.exports = class Commands extends Plugin {
   constructor () {
     super({
       stage: 2,
-      dependencies: [ 'webpack' ]
+      dependencies: [ 'webpack' ],
+      appMode: 'app'
     });
 
     this.commands = new Map(Object.entries(commands));

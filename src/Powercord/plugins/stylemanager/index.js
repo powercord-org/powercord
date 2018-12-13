@@ -8,7 +8,7 @@ module.exports = class StyleManager extends Plugin {
   constructor () {
     super({
       stage: 2,
-      overlay: true
+      appMode: 'both'
     });
 
     this.styleDir = `${__dirname.replace(/\\/g, '/')}/styles`;

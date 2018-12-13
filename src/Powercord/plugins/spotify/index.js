@@ -6,7 +6,8 @@ module.exports = class Spotify extends Plugin {
   constructor () {
     super({
       stage: 2,
-      dependencies: [ 'commands', 'webpack' ]
+      dependencies: [ 'commands', 'webpack' ],
+      appMode: 'app'
     });
   }
 

@@ -6,7 +6,8 @@ module.exports = class Codeblocks extends Plugin {
   constructor () {
     super({
       stage: 2,
-      dependencies: [ 'StateWatcher' ]
+      dependencies: [ 'StateWatcher' ],
+      appMode: 'app'
     });
   }
 

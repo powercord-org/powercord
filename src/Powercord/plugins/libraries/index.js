@@ -4,7 +4,10 @@ const libraries = require('./libraries.json');
 
 module.exports = class Libraries extends Plugin {
   constructor () {
-    super({ stage: 2 });
+    super({
+      stage: 2,
+      appMode: 'both'
+    });
   }
 
   async start () {

@@ -3,7 +3,8 @@ const Plugin = require('powercord/Plugin');
 module.exports = class StateWatcher extends Plugin {
   constructor () {
     super({
-      stage: 2
+      stage: 2,
+      appMode: 'app'
     });
 
     this.observer = null;
