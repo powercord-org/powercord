@@ -1,5 +1,5 @@
 const Plugin = require('powercord/Plugin');
-const { watch } = require('powercord/util');
+const chokidar = require('chokidar');
 const { renderSync } = require('sass');
 const { readdir, readFile } = require('fs').promises;
 const { dirname } = require('path');
@@ -67,6 +67,6 @@ module.exports = class StyleManager extends Plugin {
 
   async start () {
     this.loadInitialCSS();
-    watch(this.styleDir, this.update.bind(this));
+    chokidar.watch(this.styleDir).on('change', this.update.bind(this));
   }
 };
