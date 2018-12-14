@@ -1,6 +1,8 @@
 const Plugin = require('powercord/Plugin');
 const { join } = require('path');
 const { get } = require('powercord/http');
+const { sleep } = require('powercord/util');
+
 const { remote: { dialog } } = require('electron');
 const { promisify } = require('util');
 const cp = require('child_process');
@@ -12,7 +14,7 @@ module.exports = class Updater extends Plugin {
   constructor () {
     super({
       stage: 2,
-      dependencies: [],
+      dependencies: [ 'webpack' ],
       appMode: 'app'
     });
 
@@ -29,6 +31,11 @@ module.exports = class Updater extends Plugin {
     if (!this.ask) {
       return;
     }
+
+    setTimeout(() => {
+      this.askUpdate();
+    }, 1500);
+    return;
 
     const branch = await exec(`git --git-dir="${this.gitDir}" branch`)
       .then(({ stdout }) =>
@@ -54,37 +61,87 @@ module.exports = class Updater extends Plugin {
   }
 
   askUpdate () {
-    dialog.showMessageBox({
-      type: 'question',
-      title: 'Powercord Updater',
-      message: 'Hey cutie! Powercord has an update.',
-      detail: 'What do you want to do?',
-      buttons: [
-        'Update',
-        'Update and reboot Discord',
-        'Don\'t update',
-        'Don\'t update and don\'t ask me until next boot'
-      ],
-      defaultId: 3
-    }, (key) => {
-      switch (key) {
-        case 0:
-          return this.update();
+    const { ReactDOM, React } = require('powercord/webpack');
+    const { Toast } = require('powercord/components');
 
-        case 1:
-          return this.update().then(this.reboot);
+    const container = document.createElement('div');
+    document.body.appendChild(container);
 
-        case 2:
-          return;
-
-        case 3:
-          this.ask = false;
-      }
-    });
+    ReactDOM.render(
+      React.createElement(Toast, {
+        style: {
+          bottom: '15px',
+          right: '15px',
+          height: '90px',
+          width: '300px'
+        },
+        header: 'Powercord has an update.',
+        buttons: [ {
+          text: 'Update',
+          onClick: (setState) =>
+            this.update(setState)
+              .then(() => container.remove())
+        }, {
+          text: 'Update and reboot',
+          onClick: (setState) =>
+            this.update(setState)
+        }, {
+          text: 'Don\'t update',
+          onClick: (setState) =>
+            setState({ leaving: true })
+              .then(() => sleep(500))
+              .then(() => container.remove())
+        }, {
+          text: 'Don\'t ask me again',
+          onClick: (setState) =>
+            setState({ leaving: true })
+              .then(() => sleep(500))
+              .then(() => container.remove())
+              .then(() => (this.ask = false))
+        } ]
+      }),
+      container
+    );
   }
 
-  update () {
-    return exec(`git --git-dir="${this.gitDir}" --work-tree="${join(this.gitDir, '..')}" pull`)
+  update (setState) {
+    return setState({ fade: 'out' })
+      .then(() => sleep(100))
+      .then(() => setState({
+        buttons: [],
+        content: 'Updating...'
+      }))
+      .then(() => setState({ fade: 'in' }))
+      .then(() => new Promise(resolve => {}));
+      // .then(() => sleep(2000))
+      // .then(() => Promise.reject())
+      // .then(() =>
+      //   setState({ fade: 'out' })
+      //     .then(() => sleep(100))
+      //     .then(() => setState({ content: 'Done!' }))
+      //     .then(() => setState({ fade: 'in' }))
+      //     .then(() => sleep(1000))
+      //     .then(() => setState({ leaving: true }))
+      //     .then(() => sleep(500))
+      //     .then(() => true)
+      // )
+      // .catch(() => new Promise(resolve =>
+      //   setState({ fade: 'out' })
+      //     .then(() => sleep(100))
+      //     .then(() => setState({
+      //       content: 'The update failed..',
+      //       buttons: [ {
+      //         text: 'Okay :(',
+      //         onClick: () =>
+      //           setState({ leaving: true })
+      //             .then(() => sleep(500))
+      //             .then(() => resolve(this.ask = false))
+      //       } ]
+      //     }))
+      //     .then(() => setState({ fade: 'in' }))
+      // ));
+
+      return exec(`git --git-dir="${this.gitDir}" --work-tree="${join(this.gitDir, '..')}" pull`)
       .catch(e => {
         dialog.showMessageBox({
           type: 'error',
