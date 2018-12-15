@@ -5,9 +5,7 @@ const { clipboard } = require('electron');
 module.exports = class Codeblocks extends Plugin {
   constructor () {
     super({
-      stage: 2,
-      dependencies: [ 'StateWatcher' ],
-      appMode: 'app'
+      dependencies: [ 'StateWatcher' ]
     });
   }
 
@@ -33,12 +31,12 @@ module.exports = class Codeblocks extends Plugin {
       .map(l => `<li>${l}</li>`)
       .join('') + '</ol>';
 
-    const lang = codeblock.className.split(' ').filter(c => !c.includes('-') && c !== 'hljs');
-    if (lang.length !== 0) {
+    const lang = codeblock.className.split(' ').find(c => !c.includes('-') && c !== 'hljs');
+    if (lang) {
       codeblock.appendChild(
         createElement('div', {
           className: 'powercord-codeblock-lang',
-          innerHTML: lang[0]
+          innerHTML: lang
         })
       );
     }
@@ -47,17 +45,18 @@ module.exports = class Codeblocks extends Plugin {
       createElement('button', {
         className: 'powercord-codeblock-copy-btn',
         innerHTML: 'copy',
-        onclick: (e) => {
-          if (e.target.classList.contains('copied')) {
+        onclick: ({ target }) => {
+          if (target.classList.contains('copied')) {
             return;
           }
 
-          e.target.innerText = 'copied!';
-          e.target.classList.add('copied');
+          target.innerText = 'copied!';
+          target.classList.add('copied');
           setTimeout(() => {
-            e.target.innerText = 'copy';
-            e.target.classList.remove('copied');
+            target.innerText = 'copy';
+            target.classList.remove('copied');
           }, 1000);
+
           const range = document.createRange();
           range.selectNode(codeblock.children[0]);
 

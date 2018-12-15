@@ -5,9 +5,7 @@ const { clipboard } = require('electron');
 module.exports = class Hastebin extends Plugin {
   constructor () {
     super({
-      stage: 2,
-      dependencies: [ 'commands' ],
-      appMode: 'app'
+      dependencies: [ 'commands' ]
     });
 
     this.DOMAIN = 'https://haste.aetheryx.xyz';
@@ -15,11 +13,12 @@ module.exports = class Hastebin extends Plugin {
 
   start () {
     powercord
-      .plugins.get('commands')
+      .plugins
+      .get('commands')
       .register(
         'hastebin',
         'Lets you paste content to Hastebin.',
-        '/hastebin [ --send ] < --clipboard | FILE_URL >',
+        '{c} [ --send ] < --clipboard | FILE_URL >',
         async (args) => {
           const send = args.includes('--send')
             ? !!args.splice(args.indexOf('--send'), 1)

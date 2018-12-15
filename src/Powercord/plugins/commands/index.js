@@ -1,23 +1,18 @@
 const Plugin = require('powercord/Plugin');
 
 const commands = require('./commands');
+const monkeypatchMessages = require('./monkeypatchMessages.js');
+const injectAutocomplete = require('./injectAutocomplete.js');
 
 module.exports = class Commands extends Plugin {
   constructor () {
-    super({
-      stage: 2,
-      dependencies: [ 'webpack' ],
-      appMode: 'app'
-    });
+    super();
 
     this.commands = new Map(Object.entries(commands));
   }
 
   async start () {
     this.prefix = powercord.config.prefix || '.';
-
-    const monkeypatchMessages = require('./monkeypatchMessages.js');
-    const injectAutocomplete = require('./injectAutocomplete.js');
 
     monkeypatchMessages.call(this);
     injectAutocomplete.call(this);

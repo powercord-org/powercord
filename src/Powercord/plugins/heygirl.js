@@ -5,9 +5,7 @@ const Plugin = require('powercord/Plugin');
 module.exports = class HeyGirl extends Plugin {
   constructor () {
     super({
-      stage: 2,
-      dependencies: [ 'commands' ],
-      appMode: 'app'
+      dependencies: [ 'commands' ]
     });
 
     this.URLs = [].concat(
@@ -45,7 +43,7 @@ module.exports = class HeyGirl extends Plugin {
       .register(
         'heygirl',
         'Replaces every image with a random image of Ryan Gosling.',
-        '/heygirl',
+        '{c}',
         this.heygirl.bind(this)
       );
   }

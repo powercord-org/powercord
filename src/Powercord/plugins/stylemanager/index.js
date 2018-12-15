@@ -1,17 +1,15 @@
 const Plugin = require('powercord/Plugin');
+const { createElement } = require('powercord/util');
 const chokidar = require('chokidar');
 const { renderSync } = require('sass');
 const { readdir, readFile } = require('fs').promises;
-const { dirname } = require('path');
+const { resolve, dirname, basename } = require('path');
 
 module.exports = class StyleManager extends Plugin {
   constructor () {
-    super({
-      stage: 2,
-      appMode: 'both'
-    });
+    super();
 
-    this.styleDir = `${__dirname.replace(/\\/g, '/')}/styles`;
+    this.styleDir = resolve(__dirname, 'styles');
     this.trackedFiles = [];
   }
 
@@ -19,13 +17,32 @@ module.exports = class StyleManager extends Plugin {
     if (!path.match(/\.s?css$/)) {
       return;
     }
-    const file = path.replace(/\\/g, '/').replace(`${this.styleDir}/`, '');
-    const match = this.trackedFiles.filter(f => f.file === file || f.includes.includes(file));
-    if (match.length !== 0) {
-      const id = match[0].file.split('.').shift();
+
+    const file = basename(path);
+    const match = this.trackedFiles.find(f => f.file === file || f.includes.includes(file));
+
+    if (match) {
+      const id = match.file.split('.').shift();
       this.log(`Reloading style ${id}`);
-      document.getElementById(`powercord-css-${id}`).innerHTML = await this.readFile(match[0].file);
+      document.getElementById(`powercord-css-${id}`).innerHTML = await this.readFile(match.file);
     }
+  }
+
+  async readFile (filename) {
+    const file = await readFile(resolve(this.styleDir, filename));
+    if (filename.endsWith('scss')) {
+      const result = renderSync({
+        data: file.toString(),
+        importer: (url, prev) => ({ file: resolve(dirname(prev), url) }),
+        includePaths: [ this.styleDir ]
+      });
+
+      this.trackedFiles.find(f => f.file === filename).includes = result.stats.includedFiles.map(path => basename(path));
+
+      return result.css.toString();
+    }
+
+    return file.toString();
   }
 
   async loadInitialCSS () {
@@ -39,34 +56,23 @@ module.exports = class StyleManager extends Plugin {
         file: filename,
         includes: []
       });
-      const style = document.createElement('style');
-      style.innerHTML = await this.readFile(filename);
+
       const id = filename.split('.').shift();
-      style.id = `powercord-css-${id}`;
-      document.head.appendChild(style);
+      document.head.appendChild(
+        createElement('style', {
+          innerHTML: await this.readFile(filename),
+          id: `powercord-css-${id}`,
+        })
+      );
+
       this.log(`Style ${id} applied`);
     }
   }
 
-  async readFile (filename) {
-    const file = await readFile(`${this.styleDir}/${filename}`);
-    if (filename.endsWith('scss')) {
-      const result = renderSync({
-        data: file.toString(),
-        importer: (url, prev) => ({ file: `${dirname(prev)}/${url}` }),
-        includePaths: [ this.styleDir ]
-      });
-      this.trackedFiles.filter(f => f.file === filename)[0].includes = result.stats.includedFiles.map(e => {
-        const path = e.charAt(0).toUpperCase() + e.slice(1);
-        return path.replace(/\\/g, '/').replace(`${this.styleDir}/`, '');
-      });
-      return result.css.toString();
-    }
-    return file.toString();
-  }
-
   async start () {
+    chokidar
+      .watch(this.styleDir)
+      .on('change', this.update.bind(this));
     this.loadInitialCSS();
-    chokidar.watch(this.styleDir).on('change', this.update.bind(this));
   }
 };

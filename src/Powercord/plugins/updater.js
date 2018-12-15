@@ -2,6 +2,8 @@ const Plugin = require('powercord/Plugin');
 const { join } = require('path');
 const { get } = require('powercord/http');
 const { sleep } = require('powercord/util');
+const { ReactDOM, React } = require('powercord/webpack');
+const { Toast } = require('powercord/components');
 
 const { promisify } = require('util');
 const cp = require('child_process');
@@ -11,11 +13,7 @@ const REPO = 'aetheryx/powercord';
 
 module.exports = class Updater extends Plugin {
   constructor () {
-    super({
-      stage: 2,
-      dependencies: [ 'webpack' ],
-      appMode: 'app'
-    });
+    super();
 
     this.cwd = {
       cwd: join(__dirname, ...Array(3).fill('..'))
@@ -57,9 +55,6 @@ module.exports = class Updater extends Plugin {
   }
 
   askUpdate () {
-    const { ReactDOM, React } = require('powercord/webpack');
-    const { Toast } = require('powercord/components');
-
     const container = document.createElement('div');
     document.body.appendChild(container);
 

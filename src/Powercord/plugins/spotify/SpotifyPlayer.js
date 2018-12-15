@@ -1,5 +1,9 @@
 const { get, put, post } = require('powercord/http');
-const { spotify } = require('powercord/webpack');
+const {
+  http,
+  spotify,
+  constants: { Endpoints }
+} = require('powercord/webpack');
 
 module.exports = {
   BASE_URL: 'https://api.spotify.com/v1',
@@ -13,11 +17,6 @@ module.exports = {
         .send({ token: powercord.config.spotifyToken })
         .then(res => res.body);
     }
-
-    const {
-      http,
-      constants: { Endpoints }
-    } = require('powercord/webpack');
 
     const spotifyUserID = await http.get(Endpoints.CONNECTIONS)
       .then(res =>

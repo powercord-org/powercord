@@ -4,8 +4,6 @@ const { remote } = require('electron');
 module.exports = class Overlay extends Plugin {
   constructor () {
     super({
-      stage: 2,
-      dependencies: [],
       appMode: 'overlay'
     });
   }

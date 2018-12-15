@@ -1,5 +1,4 @@
-const { waitFor, getOwnerInstance } = require('powercord/util');
-const { sleep } = require('powercord/util');
+const { waitFor, getOwnerInstance, sleep } = require('powercord/util');
 
 module.exports = async function injectAutocomplete () {
   const _this = this;

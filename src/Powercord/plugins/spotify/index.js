@@ -1,19 +1,19 @@
 const Plugin = require('powercord/Plugin');
 const { waitFor, getOwnerInstance } = require('powercord/util');
+const { spotify, React, ReactDOM } = require('powercord/webpack');
+
 const commands = require('./commands');
+const SpotifyPlayer = require('./SpotifyPlayer');
+const Modal = require('./Modal');
 
 module.exports = class Spotify extends Plugin {
   constructor () {
     super({
-      stage: 2,
-      dependencies: [ 'commands', 'webpack' ],
-      appMode: 'app'
+      dependencies: [ 'commands' ]
     });
   }
 
   async patchSpotifySocket () {
-    const SpotifyPlayer = require('./SpotifyPlayer');
-
     powercord.on('webSocketMessage:dealer.spotify.com', (data) => {
       const parsedData = JSON.parse(data.data);
       if (parsedData.type === 'message' && parsedData.payloads) {
@@ -34,11 +34,8 @@ module.exports = class Spotify extends Plugin {
   }
 
   async start () {
-    const { spotify } = require('powercord/webpack');
-
-    await this.modalFuckery();
-
     this.patchSpotifySocket();
+    this.injectModal();
 
     for (const [ commandName, command ] of Object.entries(commands)) {
       command.func = command.func.bind(command, spotify);
@@ -51,14 +48,10 @@ module.exports = class Spotify extends Plugin {
     }
   }
 
-  async modalFuckery () {
-    const { React, ReactDOM } = require('powercord/webpack');
-    const Modal = require('./Modal');
-
+  async injectModal () {
     await waitFor('.container-2Thooq');
 
     const channels = document.querySelector('.channels-Ie2l6A');
-
     const userBarContainer = channels.querySelector('.container-2Thooq');
 
     const renderContainer = document.createElement('div');
@@ -67,8 +60,11 @@ module.exports = class Spotify extends Plugin {
 
     getOwnerInstance(document.querySelector('.channels-Ie2l6A'))
       .componentDidUpdate = () => {
-        const containers = document.querySelectorAll('.container-2Thooq');
-        containers[0].closest('.channels-Ie2l6A').insertBefore(containers[0], containers[1]);
+        const [ spotifyModal, userBar ] = document.querySelectorAll('.container-2Thooq');
+
+        spotifyModal
+          .closest('.channels-Ie2l6A')
+          .insertBefore(spotifyModal, userBar);
       };
   }
 };

@@ -1,7 +1,7 @@
 module.exports = {
   name: 'help',
   description: 'Gives you a list of commands or information on a specific command.',
-  usage: '/help [ commandName ]',
+  usage: '{c} [ commandName ]',
   func ([ commandName ], main) {
     let result;
 
@@ -23,7 +23,7 @@ module.exports = {
           )
           .join('\n'),
         footer: {
-          text: 'Run /help <commandName> for more information regarding a specific command.'
+          text: `Run ${main.prefix}help <commandName> for more information regarding a specific command.`
         }
       };
     } else {
@@ -37,7 +37,7 @@ module.exports = {
           description: command.description,
           fields: [ {
             name: 'Usage',
-            value: `\`\`\`\n${command.usage}\n\`\`\``,
+            value: `\`\n${command.usage.replace('{c}', main.prefix + command.name)}\n\``,
             inline: false
           } ]
         };

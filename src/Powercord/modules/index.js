@@ -1,4 +1,4 @@
-require('fs')
+module.exports = require('fs')
   .readdirSync(__dirname)
   .filter(file => file !== 'index.js')
-  .forEach(filename => require(`${__dirname}/${filename}`));
+  .map(filename => require(`${__dirname}/${filename}`));
