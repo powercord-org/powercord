@@ -1,7 +1,7 @@
 const Plugin = require('powercord/Plugin');
 const { join } = require('path');
 const { get } = require('powercord/http');
-const { sleep } = require('powercord/util');
+const { sleep, createElement } = require('powercord/util');
 const { ReactDOM, React } = require('powercord/webpack');
 const { Toast } = require('powercord/components');
 
@@ -55,7 +55,11 @@ module.exports = class Updater extends Plugin {
   }
 
   askUpdate () {
-    const container = document.createElement('div');
+    if (document.getElementById('powercord-updater')) {
+      return;
+    }
+
+    const container = createElement('div', { id: 'powercord-updater' });
     document.body.appendChild(container);
 
     ReactDOM.render(

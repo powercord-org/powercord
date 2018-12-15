@@ -2,7 +2,7 @@
 node_modules
 
 src/Powercord/plugins/stylemanager/styles/*
-!src/Powercord/plugins/stylemanager/styles/ac-*.css
-!src/Powercord/plugins/stylemanager/styles/ac-*.scss
+!src/Powercord/plugins/stylemanager/styles/pc-*.css
+!src/Powercord/plugins/stylemanager/styles/pc-*.scss
 
 config.json
