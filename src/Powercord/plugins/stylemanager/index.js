@@ -9,7 +9,7 @@ module.exports = class StyleManager extends Plugin {
   constructor () {
     super();
 
-    this.styleDir = resolve(__dirname, 'styles');
+    this.styleDir = resolve(__dirname, 'styles').replace(/\\/g, '/'); // Windows is retarded
     this.trackedFiles = [];
   }
 
@@ -33,7 +33,7 @@ module.exports = class StyleManager extends Plugin {
     if (filename.endsWith('scss')) {
       const result = renderSync({
         data: file.toString(),
-        importer: (url, prev) => ({ file: resolve(dirname(prev), url) }),
+        importer: (url, prev) => ({ file: resolve(dirname(prev), url).replace(/\\/g, '/') }), // Windows pls
         includePaths: [ this.styleDir ]
       });
 
@@ -61,7 +61,7 @@ module.exports = class StyleManager extends Plugin {
       document.head.appendChild(
         createElement('style', {
           innerHTML: await this.readFile(filename),
-          id: `powercord-css-${id}`,
+          id: `powercord-css-${id}`
         })
       );
 

@@ -1,0 +1,82 @@
+@keyframes slidein {
+  from { margin-bottom: -200px; }
+  to {}
+}
+
+@keyframes slideout {
+  from {}
+  to { margin-bottom: -200px }
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to {}
+}
+
+@keyframes fadeout {
+  from {}
+  to { opacity: 0; }
+}
+
+.powercord-toast {
+  display: flex;
+  flex-direction: column;
+  background-color: #23272A;
+  z-index: 999;
+  padding: 5px;
+  border-radius: 5px;
+  color: #FFFFFF;
+  position: absolute;
+  max-width: 300px;
+
+  box-shadow: 8px 5px 2px rgba(35, 39, 42, 0.6);
+
+  animation: slidein 0.5s forwards;
+  .header {
+    font-size: 18px;
+    margin-bottom: 5px;
+    text-align: center;
+  }
+
+  .body {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+  }
+
+  .buttons {
+    flex-wrap: wrap;
+    display: flex;
+    max-width: 300px;
+    width: 100%;
+    cursor: pointer;
+
+    .button {
+      width: 44%;
+      background-color: #2C2F33;
+      text-align: center;
+      padding: 1.5%;
+      border-radius: 5px;
+      margin: 1.5%;
+
+      &:only-child {
+        width: 100%;
+      }
+    }
+  }
+
+  &.leaving {
+    animation: slideout 0.5s forwards;
+  }
+
+  .fadein {
+    animation: fadein 0.2s forwards;
+  }
+
+  .fadeout {
+    animation: fadeout 0.2s forwards;
+  }
+}
