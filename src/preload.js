@@ -18,4 +18,12 @@ try {
 const Powercord = require('./Powercord');
 global.powercord = new Powercord(config);
 
+if (config.openOverlayDevTools && location.pathname === '/overlay') {
+  remote
+    .getCurrentWindow()
+    .openDevTools({
+      mode: 'detach'
+    });
+}
+
 require(remote.getGlobal('originalPreload'));

@@ -1,5 +1,4 @@
 const EventEmitter = require('events');
-const { sleep } = require('powercord/util')
 
 const modules = require('./modules');
 
@@ -35,7 +34,7 @@ module.exports = class Powercord extends EventEmitter {
       ) {
         plugin._start();
       } else {
-        plugin.ready = true;
+        plugins.delete(plugin);
       }
     }
   }
