@@ -3,7 +3,6 @@ const { join } = require('path');
 const { get } = require('powercord/http');
 const { sleep } = require('powercord/util');
 
-const { remote: { dialog } } = require('electron');
 const { promisify } = require('util');
 const cp = require('child_process');
 const exec = promisify(cp.exec);
@@ -18,7 +17,9 @@ module.exports = class Updater extends Plugin {
       appMode: 'app'
     });
 
-    this.gitDir = join(__dirname, ...Array(3).fill('..'), '.git');
+    this.cwd = {
+      cwd: join(__dirname, ...Array(3).fill('..'))
+    };
     this.ask = true;
   }
 
@@ -32,12 +33,7 @@ module.exports = class Updater extends Plugin {
       return;
     }
 
-    setTimeout(() => {
-      this.askUpdate();
-    }, 1500);
-    return;
-
-    const branch = await exec(`git --git-dir="${this.gitDir}" branch`)
+    const branch = await exec('git branch', this.cwd)
       .then(({ stdout }) =>
         stdout
           .toString()
@@ -47,7 +43,7 @@ module.exports = class Updater extends Plugin {
           .trim()
       );
 
-    const localRevision = await exec(`git --git-dir="${this.gitDir}" rev-parse ${branch}`)
+    const localRevision = await exec(`git rev-parse ${branch}`, this.cwd)
       .then(r => r.stdout.toString().trim());
 
     const currentRevision = await get(`https://api.github.com/repos/${REPO}/commits`)
@@ -55,7 +51,7 @@ module.exports = class Updater extends Plugin {
       .query('sha', branch)
       .then(r => r.body[0].sha);
 
-    if (localRevision !== currentRevision) {
+    if (localRevision !== currentRevision || true) {
       this.askUpdate();
     }
   }
@@ -70,9 +66,9 @@ module.exports = class Updater extends Plugin {
     ReactDOM.render(
       React.createElement(Toast, {
         style: {
-          bottom: '15px',
-          right: '15px',
-          height: '90px',
+          bottom: '25px',
+          right: '25px',
+          height: '95px',
           width: '300px'
         },
         header: 'Powercord has an update.',
@@ -85,6 +81,11 @@ module.exports = class Updater extends Plugin {
           text: 'Update and reboot',
           onClick: (setState) =>
             this.update(setState)
+              .then(success =>
+                success
+                  ? location.reload()
+                  : container.remove()
+              )
         }, {
           text: 'Don\'t update',
           onClick: (setState) =>
@@ -106,61 +107,33 @@ module.exports = class Updater extends Plugin {
 
   update (setState) {
     return setState({ fade: 'out' })
-      .then(() => sleep(100))
       .then(() => setState({
         buttons: [],
         content: 'Updating...'
       }))
       .then(() => setState({ fade: 'in' }))
-      .then(() => new Promise(resolve => {}));
-      // .then(() => sleep(2000))
-      // .then(() => Promise.reject())
-      // .then(() =>
-      //   setState({ fade: 'out' })
-      //     .then(() => sleep(100))
-      //     .then(() => setState({ content: 'Done!' }))
-      //     .then(() => setState({ fade: 'in' }))
-      //     .then(() => sleep(1000))
-      //     .then(() => setState({ leaving: true }))
-      //     .then(() => sleep(500))
-      //     .then(() => true)
-      // )
-      // .catch(() => new Promise(resolve =>
-      //   setState({ fade: 'out' })
-      //     .then(() => sleep(100))
-      //     .then(() => setState({
-      //       content: 'The update failed..',
-      //       buttons: [ {
-      //         text: 'Okay :(',
-      //         onClick: () =>
-      //           setState({ leaving: true })
-      //             .then(() => sleep(500))
-      //             .then(() => resolve(this.ask = false))
-      //       } ]
-      //     }))
-      //     .then(() => setState({ fade: 'in' }))
-      // ));
-
-      return exec(`git --git-dir="${this.gitDir}" --work-tree="${join(this.gitDir, '..')}" pull`)
-      .catch(e => {
-        dialog.showMessageBox({
-          type: 'error',
-          title: 'Powercord Updater',
-          message: 'Powercord failed to update. You have to resolve this manually.',
-          detail: e.stderr.replace(/\t/g, ' '.repeat(4))
-        });
-
-        this.ask = false;
-
-        return false;
-      });
-  }
-
-  reboot (updateWasSuccess) {
-    if (!updateWasSuccess) {
-      return;
-    }
-
-    location.reload();
+      .then(() => exec('git pull', this.cwd))
+      .then(() => exec('npm install --only=prod', this.cwd))
+      .then(() =>
+        setState({ fade: 'out' })
+          .then(() => setState({ content: 'Done!' }))
+          .then(() => setState({ fade: 'in' }))
+          .then(() => sleep(1000))
+          .then(() => setState({ leaving: true }))
+          .then(() => true)
+      )
+      .catch(() => new Promise(resolve =>
+        setState({ fade: 'out' })
+          .then(() => setState({
+            content: 'Something went wrong, please update manually.',
+            buttons: [ {
+              text: 'Okay :(',
+              onClick: () =>
+                setState({ leaving: true })
+                  .then(() => resolve(this.ask = false))
+            } ]
+          }))
+          .then(() => setState({ fade: 'in' }))
+      ));
   }
 };

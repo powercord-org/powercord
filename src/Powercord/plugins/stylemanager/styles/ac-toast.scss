@@ -29,6 +29,8 @@
   position: absolute;
   max-width: 300px;
 
+  box-shadow: 8px 5px 2px rgba(35, 39, 42, 0.6);
+
   animation: slidein 0.5s forwards;
   .header {
     font-size: 18px;
@@ -41,15 +43,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+    flex-direction: column;
   }
 
-  .btns {
+  .buttons {
     flex-wrap: wrap;
     display: flex;
     max-width: 300px;
+    width: 100%;
     cursor: pointer;
 
-    .btn {
+    .button {
       width: 44%;
       background-color: #2C2F33;
       text-align: center;
@@ -68,10 +73,10 @@
   }
 
   .fadein {
-    animation: fadein 0.1s forwards;
+    animation: fadein 0.2s forwards;
   }
 
   .fadeout {
-    animation: fadeout 0.1s forwards;
+    animation: fadeout 0.2s forwards;
   }
 }
