@@ -51,7 +51,7 @@ module.exports = class Updater extends Plugin {
       .query('sha', branch)
       .then(r => r.body[0].sha);
 
-    if (localRevision !== currentRevision || true) {
+    if (localRevision !== currentRevision) {
       this.askUpdate();
     }
   }
