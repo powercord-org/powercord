@@ -1,7 +1,5 @@
 onmessage = (data) => {
-  const id = data.data[0];
-  let css = data.data[1];
-  const discordClassNames = data.data[2];
+  const [ id, css, discordClassNames ] = data.data;
 
   css.match(/((?:\s|^)(?:[^}/]*?))\s*{/ig).forEach(selectorsRaw => {
     if (selectorsRaw.includes('keyframes')) {
