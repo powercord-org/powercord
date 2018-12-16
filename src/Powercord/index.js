@@ -9,12 +9,27 @@ module.exports = class Powercord extends EventEmitter {
     super();
 
     this.config = config;
+    this.patchWebSocket();
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.init());
     } else {
       this.init();
     }
+  }
+
+  patchWebSocket () {
+    const _this = this;
+
+    window.WebSocket = class PatchedWebSocket extends window.WebSocket {
+      constructor (url) {
+        super(url);
+
+        this.addEventListener('message', (data) => {
+          _this.emit(`webSocketMessage:${data.origin.slice(6)}`, data);
+        });
+      }
+    };
   }
 
   async init () {
