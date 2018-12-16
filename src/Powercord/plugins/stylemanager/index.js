@@ -2,14 +2,20 @@ const Plugin = require('powercord/Plugin');
 const { createElement } = require('powercord/util');
 const chokidar = require('chokidar');
 const { renderSync } = require('sass');
-const { readdir, readFile } = require('fs').promises;
+const { existsSync } = require('fs');
+const { readdir, readFile, writeFile, mkdir } = require('fs').promises;
 const { resolve, dirname, basename } = require('path');
 
 module.exports = class StyleManager extends Plugin {
   constructor () {
-    super();
+    super({
+      appMode: 'both',
+      dependencies: [ 'classNameNormalizer' ]
+    });
 
     this.styleDir = resolve(__dirname, 'styles').replace(/\\/g, '/'); // Windows is retarded
+    this.compiledDir = resolve(this.styleDir, '_compiled');
+    this.discordClassNames = [];
     this.trackedFiles = [];
   }
 
@@ -22,27 +28,8 @@ module.exports = class StyleManager extends Plugin {
     const match = this.trackedFiles.find(f => f.file === file || f.includes.includes(file));
 
     if (match) {
-      const id = match.file.split('.').shift();
-      this.log(`Reloading style ${id}`);
-      document.getElementById(`powercord-css-${id}`).innerHTML = await this.readFile(match.file);
+      await this._applyFile(match.file);
     }
-  }
-
-  async readFile (filename) {
-    const file = await readFile(resolve(this.styleDir, filename));
-    if (filename.endsWith('scss')) {
-      const result = renderSync({
-        data: file.toString(),
-        importer: (url, prev) => ({ file: resolve(dirname(prev), url).replace(/\\/g, '/') }), // Windows pls
-        includePaths: [ this.styleDir ]
-      });
-
-      this.trackedFiles.find(f => f.file === filename).includes = result.stats.includedFiles.map(path => basename(path));
-
-      return result.css.toString();
-    }
-
-    return file.toString();
   }
 
   async loadInitialCSS () {
@@ -57,15 +44,7 @@ module.exports = class StyleManager extends Plugin {
         includes: []
       });
 
-      const id = filename.split('.').shift();
-      document.head.appendChild(
-        createElement('style', {
-          innerHTML: await this.readFile(filename),
-          id: `powercord-css-${id}`
-        })
-      );
-
-      this.log(`Style ${id} applied`);
+      await this._applyFile(filename);
     }
   }
 
@@ -74,5 +53,89 @@ module.exports = class StyleManager extends Plugin {
       .watch(this.styleDir)
       .on('change', this.update.bind(this));
     this.loadInitialCSS();
+
+    this.worker = new Worker(
+      window.URL.createObjectURL(
+        new Blob([
+          await readFile(resolve(__dirname, 'transpiler.js'))
+        ])
+      )
+    );
+    this.worker.onmessage = this._handleFinishedCompiling.bind(this);
+  }
+
+  async _applyFile (filename) {
+    const fileId = filename.split('.').shift();
+
+    // Compile scss
+    let css = (await readFile(resolve(this.styleDir, filename))).toString();
+    if (filename.endsWith('scss')) {
+      const result = renderSync({
+        data: css,
+        importer: (url, prev) => ({ file: resolve(dirname(prev), url).replace(/\\/g, '/') }), // Windows pls
+        includePaths: [ this.styleDir ]
+      });
+
+      this.trackedFiles.find(f => f.file === filename || f.includes.includes(filename)).includes = result.stats.includedFiles.map(path => basename(path));
+      css = result.css.toString();
+    }
+
+    // Compile classes
+    if (css.includes('@powercordCompile')) {
+      this._ensureClassNamesLoaded();
+      this.worker.postMessage([ fileId, css, this.discordClassNames ]);
+    } else {
+      await this._handleFinishedCompiling([ fileId, css ]);
+    }
+  }
+
+  async _handleFinishedCompiling (data) {
+    const payload = data.data || data;
+    const id = payload[0];
+    const css = payload[1];
+
+    if (!existsSync(this.compiledDir)) {
+      await mkdir(this.compiledDir);
+    }
+    await writeFile(resolve(this.compiledDir, `${id}.css`), css);
+
+    if (!document.getElementById(`powercord-css-${id}`)) {
+      document.head.appendChild(
+        createElement('style', {
+          id: `powercord-css-${id}`,
+          innerHTML: css
+        })
+      );
+      this.log(`Style ${id} applied`);
+    } else {
+      document.getElementById(`powercord-css-${id}`).innerHTML = css;
+      this.log(`Style ${id} updated`);
+    }
+  }
+
+  _ensureClassNamesLoaded () {
+    if (this.discordClassNames.length === 0) {
+      const classNameModules = powercord.plugins.get('classNameNormalizer')._fetchAllModules();
+
+      // Getting all classes
+      const classNames = [];
+      classNameModules.forEach(cnm => {
+        Object.keys(cnm).forEach(k => {
+          const className = cnm[k];
+          const classNameMatches = className.match(/(?:([a-z0-9]+)-([\w-]{6}))+/ig);
+          if (classNameMatches) {
+            classNames.push(...classNameMatches);
+          }
+        });
+      });
+
+      // Generate global object
+      classNames.forEach(className => {
+        const classNameMatch = className.match(/([a-z0-9]+)-([\w-]{6})/i);
+        if (!this.discordClassNames.includes(classNameMatch[1])) {
+          this.discordClassNames.push(classNameMatch[1]);
+        }
+      });
+    }
   }
 };
