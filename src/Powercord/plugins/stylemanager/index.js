@@ -6,12 +6,11 @@ const { existsSync } = require('fs');
 const { readdir, readFile, writeFile, mkdir } = require('fs').promises;
 const { resolve, dirname, basename } = require('path');
 
-const ClassNameNormalizer = require('../classNameNormalizer');
-
 module.exports = class StyleManager extends Plugin {
   constructor () {
     super({
-      appMode: 'both'
+      appMode: 'both',
+      dependencies: [ 'classNameNormalizer' ]
     });
 
     this.styleDir = resolve(__dirname, 'styles').replace(/\\/g, '/'); // Windows is retarded
@@ -116,7 +115,7 @@ module.exports = class StyleManager extends Plugin {
 
   _ensureClassNamesLoaded () {
     if (this.discordClassNames.length === 0) {
-      const classNameModules = ClassNameNormalizer._fetchAllModules();
+      const classNameModules = powercord.plugins.get('classNameNormalizer')._fetchAllModules();
 
       // Getting all classes
       const classNames = [];

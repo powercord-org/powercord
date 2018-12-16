@@ -7,11 +7,11 @@ module.exports = class ClassNameNormalizer extends Plugin {
       appMode: 'both'
     });
 
-    ClassNameNormalizer.randClassReg = /^(?!pc-)((?:[a-z]|[0-9]|-)+)-(?:[a-z]|[0-9]|-|_){6}$/i;
+    this.randClassReg = /^(?!pc-)((?:[a-z]|[0-9]|-)+)-(?:[a-z]|[0-9]|-|_){6}$/i;
   }
 
   start () {
-    this.patchModules(ClassNameNormalizer._fetchAllModules());
+    this.patchModules(this._fetchAllModules());
     this.normalizeElement(document.querySelector('#app-mount'));
   }
 
@@ -24,12 +24,12 @@ module.exports = class ClassNameNormalizer extends Plugin {
   patchModule (classNames) {
     for (const baseClassName in classNames) {
       const value = classNames[baseClassName];
-      if (ClassNameNormalizer._shouldIgnore(value)) {
+      if (this._shouldIgnore(value)) {
         continue;
       }
       const classList = value.split(' ');
       for (const normalClass of classList) {
-        const match = normalClass.match(ClassNameNormalizer.randClassReg)[1];
+        const match = normalClass.match(this.randClassReg)[1];
         if (!match) {
           continue;
         } // Shouldn't ever happen since they passed the moduleFilter, but you never know
@@ -45,10 +45,10 @@ module.exports = class ClassNameNormalizer extends Plugin {
     }
     const classes = element.classList;
     for (let c = 0, clen = classes.length; c < clen; c++) {
-      if (!ClassNameNormalizer.randClassReg.test(classes[c])) {
+      if (!this.randClassReg.test(classes[c])) {
         continue;
       }
-      const match = classes[c].match(ClassNameNormalizer.randClassReg)[1];
+      const match = classes[c].match(this.randClassReg)[1];
       const newClass = match.split('-').map((s, i) => i ? s[0].toUpperCase() + s.slice(1) : s).join('');
       element.classList.add(`pc-${newClass}`);
     }
@@ -58,7 +58,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
   }
 
   // Module fetcher
-  static _fetchAllModules () {
+  _fetchAllModules () {
     const modules = Object.values(require('powercord/webpack').instance.cache);
     const blacklist = [ 'displayName' ];
     let classNameModules = modules.filter(mdl => {
@@ -87,7 +87,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
         if (value.split('-').length === 1) {
           return false;
         }
-        if (!ClassNameNormalizer.randClassReg.test(value.split(' ')[0])) {
+        if (!this.randClassReg.test(value.split(' ')[0])) {
           return false;
         }
       }
@@ -96,7 +96,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
     return classNameModules;
   }
 
-  static _shouldIgnore (value) {
+  _shouldIgnore (value) {
     if (!isNaN(value)) {
       return true;
     }
