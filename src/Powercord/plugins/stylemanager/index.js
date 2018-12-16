@@ -6,6 +6,8 @@ const { existsSync } = require('fs');
 const { readdir, readFile, writeFile, mkdir } = require('fs').promises;
 const { resolve, dirname, basename } = require('path');
 
+const ClassNameNormalizer = require('../classNameNormalizer');
+
 module.exports = class StyleManager extends Plugin {
   constructor () {
     super({
@@ -14,6 +16,7 @@ module.exports = class StyleManager extends Plugin {
 
     this.styleDir = resolve(__dirname, 'styles').replace(/\\/g, '/'); // Windows is retarded
     this.compiledDir = resolve(this.styleDir, '_compiled');
+    this.discordClassNames = [];
     this.trackedFiles = [];
   }
 
@@ -26,9 +29,7 @@ module.exports = class StyleManager extends Plugin {
     const match = this.trackedFiles.find(f => f.file === file || f.includes.includes(file));
 
     if (match) {
-      const id = match.file.split('.').shift();
-      this.log(`Reloading style ${id}`);
-      document.getElementById(`powercord-css-${id}`).innerHTML = await this.readFile(match.file);
+      await this._applyFile(match.file);
     }
   }
 
@@ -44,15 +45,7 @@ module.exports = class StyleManager extends Plugin {
         includes: []
       });
 
-      const id = filename.split('.').shift();
-      document.head.appendChild(
-        createElement('style', {
-          innerHTML: await this._readFile(filename),
-          id: `powercord-css-${id}`
-        })
-      );
-
-      this.log(`Style ${id} applied`);
+      await this._applyFile(filename);
     }
   }
 
@@ -61,9 +54,18 @@ module.exports = class StyleManager extends Plugin {
       .watch(this.styleDir)
       .on('change', this.update.bind(this));
     this.loadInitialCSS();
+
+    this.worker = new Worker(
+      window.URL.createObjectURL(
+        new Blob([
+          await readFile(resolve(__dirname, 'transpiler.js'))
+        ])
+      )
+    );
+    this.worker.onmessage = this._handleFinishedCompiling.bind(this);
   }
 
-  async _readFile (filename) {
+  async _applyFile (filename) {
     const fileId = filename.split('.').shift();
 
     // Compile scss
@@ -82,55 +84,39 @@ module.exports = class StyleManager extends Plugin {
     // Compile classes
     if (css.includes('@powercordCompile')) {
       this._ensureClassNamesLoaded();
-      /*
-       * formatted so eslint don't cry smh
-       *
-       * css.match(/((?:\s|^)(?:[^}/]*?))\s*{/ig).forEach(classNameRaw => {
-       * if (classNameRaw.includes('keyframes')) {
-       * return;
-       * }
-       * const className = classNameRaw.trim();
-       * let classNames = [ className ];
-       * console.log(className);
-       * const cnm = className.match(/(?:\[class[\^*]=["']?([a-z0-9]+)-?["']?])+/ig);
-       * if (cnm) {
-       * cnm.forEach(selector => {
-       * selector.match(/\[class[\^*]=["']?([a-z0-9]+)-?]/ig).forEach(s => {
-       * const c = s.split('=')[1].split(']')[0].replace('-', '');
-       * if (this.discordClassNames[c]) {
-       * classNames = this._arrayReplace(classNames, selector, this.discordClassNames[c].map(h => `.${c}-${h}`));
-       * }
-       * });
-       * });
-       * }
-       * css = css.replace(className, classNames.join(', '));
-       *});
-       */
+      this.worker.postMessage([ fileId, css, this.discordClassNames ]);
+    } else {
+      await this._handleFinishedCompiling([ fileId, css ]);
     }
+  }
 
-    // Save compiled file
+  async _handleFinishedCompiling (data) {
+    const payload = data.data || data;
+    const id = payload[0];
+    const css = payload[1];
+
     if (!existsSync(this.compiledDir)) {
       await mkdir(this.compiledDir);
     }
-    await writeFile(resolve(this.compiledDir, `${fileId}.css`), css);
-    return css;
+    await writeFile(resolve(this.compiledDir, `${id}.css`), css);
+
+    if (!document.getElementById(`powercord-css-${id}`)) {
+      document.head.appendChild(
+        createElement('style', {
+          id: `powercord-css-${id}`,
+          innerHTML: css
+        })
+      );
+      this.log(`Style ${id} applied`);
+    } else {
+      document.getElementById(`powercord-css-${id}`).innerHTML = css;
+      this.log(`Style ${id} updated`);
+    }
   }
 
   _ensureClassNamesLoaded () {
-    if (!this.discordClassNames) {
-      // Filtering modules
-      const modules = Object.values(require('powercord/webpack').instance.cache);
-      const blacklist = [ 'displayName' ];
-      const classNameModules = modules.filter(mdl => {
-        if (!mdl.exports) {
-          return false;
-        }
-        const mdlExports = Object.keys(mdl.exports).filter(r => !blacklist.includes(r));
-        if (mdlExports.length === 0) {
-          return false;
-        }
-        return mdlExports.every(prop => typeof mdl.exports[prop] === 'string');
-      }).map(r => r.exports).filter(m => typeof m === 'object');
+    if (this.discordClassNames.length === 0) {
+      const classNameModules = ClassNameNormalizer._fetchAllModules();
 
       // Getting all classes
       const classNames = [];
@@ -145,25 +131,12 @@ module.exports = class StyleManager extends Plugin {
       });
 
       // Generate global object
-      this.discordClassNames = {};
       classNames.forEach(className => {
         const classNameMatch = className.match(/([a-z0-9]+)-([\w-]{6})/i);
-        if (!this.discordClassNames[classNameMatch[1]]) {
-          this.discordClassNames[classNameMatch[1]] = [ classNameMatch[2] ];
-        } else if (!this.discordClassNames[classNameMatch[1]].includes(classNameMatch[2])) {
-          this.discordClassNames[classNameMatch[1]].push(classNameMatch[2]);
+        if (!this.discordClassNames.includes(classNameMatch[1])) {
+          this.discordClassNames.push(classNameMatch[1]);
         }
       });
     }
-  }
-
-  _arrayReplace (inputs, search, replaces) {
-    const replacedArray = [];
-    inputs.forEach(input => {
-      replaces.forEach(replace => {
-        replacedArray.push(input.replace(search, replace));
-      });
-    });
-    return replacedArray;
   }
 };
