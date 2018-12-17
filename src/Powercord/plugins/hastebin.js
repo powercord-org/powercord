@@ -39,7 +39,7 @@ module.exports = class Hastebin extends Plugin {
       );
   }
 
-  async parseArguments (args) {
+  parseArguments (args) {
     const input = args.join(' ');
     if (input.startsWith('https://cdn.discordapp.com/attachments')) {
       return get(input).then(res => res.raw);
