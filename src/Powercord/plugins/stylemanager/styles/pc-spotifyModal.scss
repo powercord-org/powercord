@@ -3,11 +3,30 @@
   transition: .3s;
   transition-delay: .25s;
 
+  &-songInfo {
+    height: 28px;
+    position: relative;
+  }
+
+  .username {
+    position: absolute;
+    top: 0;
+  }
+
   .discriminator {
+    bottom: 0;
     max-width: 84px;
     overflow: hidden;
+    position: absolute;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .translating {
+    animation-delay: .3s;
+    animation-iteration-count: infinite;
+    animation-name: spotifyText;
+    animation-timing-function: linear;
   }
 
   &-seek {
@@ -71,5 +90,15 @@
       opacity: 1;
       transition-delay: 0s;
     }
+  }
+}
+
+@keyframes spotifyText {
+  0%, 5% {
+    transform: translateX(0);
+  }
+
+  90%, 100% {
+    transform: translateX(calc(-100% + 85px));
   }
 }

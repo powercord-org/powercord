@@ -5,6 +5,7 @@ const { concat } = require('powercord/util');
 const SpotifyPlayer = require('../SpotifyPlayer.js');
 const getContextMenuItemGroups = require('./contextMenuGroups');
 const SeekBar = require('./SeekBar.jsx');
+const Title = require('./Title.jsx');
 
 module.exports = class Modal extends React.Component {
   constructor () {
@@ -102,9 +103,9 @@ module.exports = class Modal extends React.Component {
           className='wrapper-2F3Zv8 small-5Os1Bb avatar-small'
           style={{ backgroundImage: `url("${currentItem.img}")` }}
         />
-        <div className='accountDetails-3k9g4n nameTag-m8r81H'>
-          <span className="username">{currentItem.name}</span>
-          <span className="discriminator">{artists ? `by ${artists}` : ''}</span>
+        <div className='powercord-spotify-songInfo accountDetails-3k9g4n nameTag-m8r81H'>
+          <Title className="username">{currentItem.name}</Title>
+          <Title className="discriminator">{artists ? `by ${artists}` : ''}</Title>
         </div>
 
         <div className='flex-11O1GKY directionRow-3v3tfG justifyStart-2NDFzi alignStretch-DpGPf3 noWrap-3jynv6'>
@@ -147,6 +148,7 @@ module.exports = class Modal extends React.Component {
       </div>
     );
   }
+
 
   async injectContextMenu (event) {
     const { pageX, pageY } = event;
