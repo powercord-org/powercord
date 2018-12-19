@@ -26,4 +26,12 @@ if (config.openOverlayDevTools && location.pathname === '/overlay') {
     });
 }
 
+// https://github.com/electron/electron/issues/9047
+if (
+  process.platform === 'darwin' &&
+  !process.env.PATH.includes('/usr/local/bin')
+) {
+  process.env.PATH += ':/usr/local/bin';
+}
+
 require(remote.getGlobal('originalPreload'));
