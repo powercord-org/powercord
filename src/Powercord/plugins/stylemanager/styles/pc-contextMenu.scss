@@ -23,3 +23,18 @@
     color: unset !important;
   }
 }
+
+.itemSubMenu-1vN_Yn {
+  .scroller {
+    overflow-y: scroll;
+    max-height: 300px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  > .hint-22uc-R {
+    margin-right: 10px;
+  }
+}
