@@ -121,7 +121,9 @@ module.exports = class Updater extends Plugin {
           .then(() => setState({ leaving: true }))
           .then(() => true)
       )
-      .catch(() => new Promise(resolve =>
+      .catch(e => new Promise(resolve => {
+        console.error(e);
+
         setState({ fade: 'out' })
           .then(() => setState({
             content: 'Something went wrong, please update manually.',
@@ -132,7 +134,7 @@ module.exports = class Updater extends Plugin {
                   .then(() => resolve(this.ask = false))
             } ]
           }))
-          .then(() => setState({ fade: 'in' }))
-      ));
+          .then(() => setState({ fade: 'in' }));
+      }));
   }
 };
