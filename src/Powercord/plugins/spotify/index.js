@@ -45,6 +45,8 @@ module.exports = class Spotify extends Plugin {
         .get('commands')
         .commands
         .set(commandName, command);
+
+      // ConnectedAccount
     }
   }
 

@@ -10,7 +10,7 @@ module.exports = class Translate extends Plugin {
       .filter(k => typeof translate.languages[k] === 'string');
 
     const MessageContextMenu = getModuleByDisplayName('messagecontextmenu');
-    MessageContextMenu.prototype.render = (_render => function (...args) {
+    MessageContextMenu.prototype.render = (_render => function (...args) { // eslint-disable-line
       const res = _render.call(this, ...args);
 
       const setText = async (opts) => {
@@ -57,7 +57,10 @@ module.exports = class Translate extends Plugin {
                 .map(from => ({
                   type: 'button',
                   name: translate.languages[from],
-                  onClick: () => setText({ to, from })
+                  onClick: () => setText({
+                    to,
+                    from
+                  })
                 }))
             }))
         })
