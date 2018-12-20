@@ -2,12 +2,12 @@ const Plugin = require('powercord/Plugin');
 const { getModuleByDisplayName, React } = require('powercord/webpack');
 const { sleep } = require('powercord/util');
 const { ContextMenu: { Submenu } } = require('powercord/components');
-const translate = require('@k3rn31p4nic/google-translate-api');
+const index = require('@k3rn31p4nic/google-translate-api');
 
 module.exports = class Translate extends Plugin {
   async start () {
-    const languages = Object.keys(translate.languages)
-      .filter(k => typeof translate.languages[k] === 'string');
+    const languages = Object.keys(index.languages)
+      .filter(k => typeof index.languages[k] === 'string');
 
     const MessageContextMenu = getModuleByDisplayName('messagecontextmenu');
     MessageContextMenu.prototype.render = (_render => function (...args) { // eslint-disable-line
@@ -26,9 +26,9 @@ module.exports = class Translate extends Plugin {
           Promise.all(
             [ ...message.querySelectorAll('.pc-markup') ]
               .map(async (markup) => {
-                const { text, from } = await translate(markup.innerText, opts);
+                const { text, from } = await index(markup.innerText, opts);
                 markup.innerText = text;
-                fromLang = translate.languages[from.language.iso];
+                fromLang = index.languages[from.language.iso];
               })
           )
         ]);
@@ -51,12 +51,12 @@ module.exports = class Translate extends Plugin {
             .map(to => ({
               type: 'submenu',
               hint: 'from',
-              name: translate.languages[to],
+              name: index.languages[to],
               onClick: () => setText({ to }),
               getItems: () => languages
                 .map(from => ({
                   type: 'button',
-                  name: translate.languages[from],
+                  name: index.languages[from],
                   onClick: () => setText({
                     to,
                     from

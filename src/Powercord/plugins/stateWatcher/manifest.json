@@ -1,0 +1,8 @@
+{
+  "name": "State Watcher",
+  "version": "1.0.0",
+  "description": "Watch the dom and fire events on updates",
+  "author": "aetheryx",
+  "license": "MIT",
+  "repo": null
+}

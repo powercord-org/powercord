@@ -22,7 +22,7 @@ module.exports = class Powercord extends EventEmitter {
 
   editConfig (key, value) {
     this.config[key] = value;
-    writeFile(resolve(__dirname, '../..', 'config.json'), JSON.stringify(this.config, null, 2), () => null);
+    writeFile(resolve(__dirname, '..', '..', 'config.json'), JSON.stringify(this.config, null, 2), () => null);
   }
 
   patchWebSocket () {

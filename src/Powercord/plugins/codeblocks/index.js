@@ -5,14 +5,14 @@ const { clipboard } = require('electron');
 module.exports = class Codeblocks extends Plugin {
   constructor () {
     super({
-      dependencies: [ 'StateWatcher' ]
+      dependencies: [ 'stateWatcher' ]
     });
   }
 
   start () {
     powercord
       .plugins
-      .get('StateWatcher')
+      .get('stateWatcher')
       .on('codeblock', this.inject);
   }
 
