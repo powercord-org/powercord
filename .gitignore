@@ -1,6 +1,7 @@
 .idea
 node_modules
 package-lock.json
+yarn.lock
 
 src/Powercord/plugins/stylemanager/styles/*
 !src/Powercord/plugins/stylemanager/styles/pc-*.css
