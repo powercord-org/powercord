@@ -98,7 +98,7 @@
     transform: translateX(0);
   }
 
-  100% {
+  70%, 100% {
     transform: translateX(calc(-50%));
   }
 }
