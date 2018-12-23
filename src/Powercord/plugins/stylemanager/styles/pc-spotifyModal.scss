@@ -94,11 +94,11 @@
 }
 
 @keyframes spotifyText {
-  0% {
+  0%, 5% {
     transform: translateX(0);
   }
 
-  100% {
-    transform: translateX(calc(-50%));
+  75%, 100% {
+    transform: translateX(calc(-100% + 84px));
   }
 }
