@@ -27,10 +27,13 @@ module.exports = class Title extends React.Component {
         className={className}
         style={{
           animationDuration: `${animationDuration}ms`,
-          width: this.state.hovered ? titleWidth : 84,
-          maxWidth: this.state.hovered ? titleWidth : 84
+          width: this.state.hovered ? titleWidth * 2 : 84,
+          maxWidth: this.state.hovered ? titleWidth * 2 : 84
         }}
-      >{this.props.children}</span>
+      >
+       {this.props.children}
+       {this.state.hovered && ` ${this.props.children}`}
+      </span>
     );
   }
 };
