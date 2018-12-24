@@ -21,21 +21,40 @@ module.exports = class Translate extends Plugin {
 
         let fromLang;
 
+        const timestamp = message.querySelector('.pc-timestampCozy');
         await Promise.all([
           sleep(200),
           Promise.all(
             [ ...message.querySelectorAll('.pc-markup') ]
               .map(async (markup) => {
                 const { text, from } = await translate(markup.innerText, opts);
+                if (!timestamp.innerHTML.includes('Translated from')) {
+                  markup.dataset.original = markup.innerText;
+                }
                 markup.innerText = text;
                 fromLang = translate.languages[from.language.iso];
               })
           )
         ]);
 
-        const timestamp = message.querySelector('.pc-timestampCozy');
         if (!timestamp.innerHTML.includes('Translated from')) {
-          timestamp.innerHTML += ` - Translated from ${fromLang}`;
+          timestamp.innerHTML += ' - ';
+          const span = document.createElement('span');
+          span.style = 'cursor: pointer';
+          span.innerText = `Translated from ${fromLang}`;
+          span.addEventListener('click', () => {
+            message.style.transition = '0.2s';
+            message.style.opacity = 0;
+            sleep(200);
+            [ ...message.querySelectorAll('.pc-markup') ]
+              .map(async (markup) => {
+                markup.innerText = markup.dataset.original;
+              });
+            timestamp.removeChild(span);
+            timestamp.innerHTML = timestamp.innerHTML.substring(0, timestamp.innerHTML.length - 3);
+            message.style.opacity = 1;
+          });
+          timestamp.appendChild(span);
         }
 
         message.style.opacity = '1';
@@ -57,7 +76,8 @@ module.exports = class Translate extends Plugin {
                 .map(from => ({
                   type: 'button',
                   name: translate.languages[from],
-                  onClick: () => setText({ to, from })
+                  onClick: () => setText({ to,
+                    from })
                 }))
             }))
         })
