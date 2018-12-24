@@ -46,7 +46,7 @@ module.exports = class Translate extends Plugin {
             message.style.transition = '0.2s';
             message.style.opacity = 0;
             [ ...message.querySelectorAll('.pc-markup') ]
-              .map(async (markup) => {
+              .map(markup => {
                 markup.innerHTML = markup.dataset.original;
               });
             timestamp.removeChild(span);
