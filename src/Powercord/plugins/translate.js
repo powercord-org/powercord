@@ -1,6 +1,6 @@
 const Plugin = require('powercord/Plugin');
 const { getModuleByDisplayName, React } = require('powercord/webpack');
-const { sleep } = require('powercord/util');
+const { sleep, createElement } = require('powercord/util');
 const { ContextMenu: { Submenu } } = require('powercord/components');
 const translate = require('@k3rn31p4nic/google-translate-api');
 
@@ -38,22 +38,24 @@ module.exports = class Translate extends Plugin {
         ]);
 
         if (!timestamp.innerHTML.includes('Translated from')) {
-          timestamp.innerHTML += ' - ';
-          const span = document.createElement('span');
-          span.style = 'cursor: pointer';
-          span.innerText = `Translated from ${fromLang}`;
-          span.addEventListener('click', () => {
-            message.style.transition = '0.2s';
-            message.style.opacity = 0;
-            [ ...message.querySelectorAll('.pc-markup') ]
-              .map(markup => {
-                markup.innerHTML = markup.dataset.original;
-              });
-            timestamp.removeChild(span);
-            timestamp.innerHTML = timestamp.innerHTML.substring(0, timestamp.innerHTML.length - 3);
-            message.style.opacity = 1;
-          });
-          timestamp.appendChild(span);
+          timestamp.appendChild(
+            createElement('span', {
+              innerHTML: `(Translated from ${fromLang})`,
+              className: 'powercord-translate-reset',
+              async onclick () {
+                message.style.opacity = '0';
+                await sleep(200);
+
+                message.querySelectorAll('.pc-markup')
+                  .forEach(markup => {
+                    markup.innerHTML = markup.dataset.original;
+                  });
+
+                timestamp.removeChild(this);
+                message.style.opacity = '1';
+              }
+            })
+          );
         }
 
         message.style.opacity = '1';
@@ -75,8 +77,7 @@ module.exports = class Translate extends Plugin {
                 .map(from => ({
                   type: 'button',
                   name: translate.languages[from],
-                  onClick: () => setText({ to,
-                    from })
+                  onClick: () => setText({ to, from })
                 }))
             }))
         })
