@@ -16,17 +16,17 @@ module.exports = async function injectAutocomplete () {
       description: command.description
     }));
 
-  const inject = (inst) =>
-    inst.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS = {
+  const inject = () =>
+    this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS = {
       getText: (index, { commands }) => this.prefix + commands[index].command,
-      matches: () => inst.props.value.startsWith(this.prefix),
+      matches: () => this.instance.props.value.startsWith(this.prefix),
       queryResults: () => ({
         commands: customCommands.filter(c =>
-          c.command.startsWith(inst.props.value.slice(this.prefix.length))
+          c.command.startsWith(this.instance.props.value.slice(this.prefix.length))
         )
       }),
       renderResults: (...args) => {
-        const renderedResults = inst.props.autocompleteOptions.COMMAND.renderResults(...args);
+        const renderedResults = this.instance.props.autocompleteOptions.COMMAND.renderResults(...args);
         if (!renderedResults) {
           return;
         }
@@ -77,15 +77,16 @@ module.exports = async function injectAutocomplete () {
 
   await waitFor('.channelTextArea-rNsIhG');
 
-  const getInstance = () => getOwnerInstance(document.querySelector('.channelTextArea-rNsIhG'));
-  const instance = getInstance();
-  const instancePrototype = Object.getPrototypeOf(instance);
+const updateInstance = () =>
+  (this.instance = getOwnerInstance(document.querySelector('.channelTextArea-rNsIhG')));
+  const instancePrototype = Object.getPrototypeOf(updateInstance());
 
   // eslint-disable-next-line func-names
   instancePrototype.componentDidMount = (_componentDidMount => function (...args) {
-    inject(getInstance());
+    updateInstance();
+    inject();
     return _componentDidMount.call(this, ...args);
   })(instancePrototype.componentDidMount);
 
-  inject(instance);
+  inject();
 };
