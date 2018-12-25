@@ -77,8 +77,8 @@ module.exports = async function injectAutocomplete () {
 
   await waitFor('.channelTextArea-rNsIhG');
 
-const updateInstance = () =>
-  (this.instance = getOwnerInstance(document.querySelector('.channelTextArea-rNsIhG')));
+  const updateInstance = () =>
+    (this.instance = getOwnerInstance(document.querySelector('.channelTextArea-rNsIhG')));
   const instancePrototype = Object.getPrototypeOf(updateInstance());
 
   // eslint-disable-next-line func-names
