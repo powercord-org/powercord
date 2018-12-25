@@ -1,6 +1,6 @@
 const Plugin = require('powercord/Plugin');
 const { getModuleByDisplayName, React } = require('powercord/webpack');
-const { sleep } = require('powercord/util');
+const { sleep, createElement } = require('powercord/util');
 const { ContextMenu: { Submenu } } = require('powercord/components');
 const translate = require('@k3rn31p4nic/google-translate-api');
 
@@ -21,21 +21,41 @@ module.exports = class Translate extends Plugin {
 
         let fromLang;
 
+        const timestamp = message.querySelector('.pc-timestampCozy');
         await Promise.all([
           sleep(200),
           Promise.all(
             [ ...message.querySelectorAll('.pc-markup') ]
               .map(async (markup) => {
                 const { text, from } = await translate(markup.innerText, opts);
+                if (!timestamp.innerHTML.includes('Translated from')) {
+                  markup.dataset.original = markup.innerHTML;
+                }
                 markup.innerText = text;
                 fromLang = translate.languages[from.language.iso];
               })
           )
         ]);
 
-        const timestamp = message.querySelector('.pc-timestampCozy');
         if (!timestamp.innerHTML.includes('Translated from')) {
-          timestamp.innerHTML += ` - Translated from ${fromLang}`;
+          timestamp.appendChild(
+            createElement('span', {
+              innerHTML: `(Translated from ${fromLang})`,
+              className: 'powercord-translate-reset',
+              async onclick () {
+                message.style.opacity = '0';
+                await sleep(200);
+
+                message.querySelectorAll('.pc-markup')
+                  .forEach(markup => {
+                    markup.innerHTML = markup.dataset.original;
+                  });
+
+                timestamp.removeChild(this);
+                message.style.opacity = '1';
+              }
+            })
+          );
         }
 
         message.style.opacity = '1';
