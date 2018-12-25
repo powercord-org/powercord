@@ -118,7 +118,7 @@ module.exports = class Modal extends React.Component {
             <button
               style={{ color: '#1ed860' }}
               className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-backward'
-              onClick={() => Date.now() - this.state.seekBar.progressAt > 5e3 ? this.onButtonClick('seek', 0) : this.onButtonClick('prev')}
+              onClick={() => this.state.seekBar.progress + (Date.now() - this.state.seekBar.progressAt) > 5e3 ? this.onButtonClick('seek', 0) : this.onButtonClick('prev')}
             />
           </Tooltip>
 
