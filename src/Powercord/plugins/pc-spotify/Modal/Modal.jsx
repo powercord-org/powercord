@@ -1,4 +1,4 @@
-const { React, contextMenu } = require('powercord/webpack');
+const { React, contextMenu, getModuleByDisplayName } = require('powercord/webpack');
 const { ContextMenu } = require('powercord/components');
 const { concat } = require('powercord/util');
 
@@ -41,6 +41,7 @@ module.exports = class Modal extends React.Component {
           name: playerState.item.name,
           artists: playerState.item.artists.map(artist => artist.name),
           img: playerState.item.album.images[0].url,
+          albumName: playerState.item.album.name,
           url: playerState.item.external_urls.spotify,
           uri: playerState.item.uri,
           duration: playerState.item.duration_ms
@@ -84,6 +85,8 @@ module.exports = class Modal extends React.Component {
   }
 
   render () {
+    const Tooltip = getModuleByDisplayName('tooltip');
+
     const { currentItem, isPlaying, displayState } = this.state;
     const artists = concat(currentItem.artists);
 
@@ -99,33 +102,41 @@ module.exports = class Modal extends React.Component {
         onContextMenu={this.injectContextMenu.bind(this)}
         style={displayState === 'hide' ? { display: 'none' } : {}}
       >
-        <div
-          className='wrapper-2F3Zv8 small-5Os1Bb avatar-small'
-          style={{ backgroundImage: `url("${currentItem.img}")` }}
-        />
+        <Tooltip text={currentItem.albumName} position='top'>
+          <div
+            className='wrapper-2F3Zv8 small-5Os1Bb avatar-small'
+            style={{ backgroundImage: `url("${currentItem.img}")` }}
+          />
+        </Tooltip>
         <div className='powercord-spotify-songInfo accountDetails-3k9g4n nameTag-m8r81H'>
           <Title className="username">{currentItem.name}</Title>
           <Title className="discriminator">{artists ? `by ${artists}` : ''}</Title>
         </div>
 
         <div className='flex-11O1GKY directionRow-3v3tfG justifyStart-2NDFzi alignStretch-DpGPf3 noWrap-3jynv6'>
-          <button
-            style={{ color: '#1ed860' }}
-            className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-backward'
-            onClick={() => this.onButtonClick('prev')}
-          />
+          <Tooltip text='Previous' position='top'>
+            <button
+              style={{ color: '#1ed860' }}
+              className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-backward'
+              onClick={() => this.state.seekBar.progress + (Date.now() - this.state.seekBar.progressAt) > 5e3 ? this.onButtonClick('seek', 0) : this.onButtonClick('prev')}
+            />
+          </Tooltip>
 
-          <button
-            style={{ color: '#1ed860' }}
-            className={`iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-${isPlaying ? 'pause' : 'play'}`}
-            onClick={() => this.onButtonClick(isPlaying ? 'pause' : 'play')}
-          />
+          <Tooltip text={isPlaying ? 'Pause' : 'Play'} position='top'>
+            <button
+              style={{ color: '#1ed860' }}
+              className={`iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-${isPlaying ? 'pause' : 'play'}`}
+              onClick={() => this.onButtonClick(isPlaying ? 'pause' : 'play')}
+            />
+          </Tooltip>
 
-          <button
-            style={{ color: '#1ed860' }}
-            className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-forward'
-            onClick={() => this.onButtonClick('next')}
-          />
+          <Tooltip text='Next' position='top'>
+            <button
+              style={{ color: '#1ed860' }}
+              className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-forward'
+              onClick={() => this.onButtonClick('next')}
+            />
+          </Tooltip>
 
           <SeekBar
             {...this.state.seekBar}
