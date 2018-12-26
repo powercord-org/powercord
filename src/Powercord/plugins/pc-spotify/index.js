@@ -9,7 +9,7 @@ const Modal = require('./Modal');
 module.exports = class Spotify extends Plugin {
   constructor () {
     super({
-      dependencies: [ 'commands' ]
+      dependencies: [ 'pc-commands' ]
     });
   }
 
@@ -41,8 +41,8 @@ module.exports = class Spotify extends Plugin {
       command.func = command.func.bind(command, spotify);
 
       powercord
-        .plugins
-        .get('commands')
+        .pluginManager
+        .get('pc-commands')
         .commands
         .set(commandName, command);
 

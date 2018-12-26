@@ -23,7 +23,7 @@ module.exports = class SeekBar extends React.Component {
     });
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     if (!this.state.seeking && this.props.progress !== prevProps.progress) {
       this.setState({ progress: null });
     }
@@ -102,8 +102,8 @@ module.exports = class SeekBar extends React.Component {
           </span>
         </div>
         <div className='powercord-spotify-seek-bar' onMouseDown={(e) => this.startSeek(e)}>
-          <span className='powercord-spotify-seek-bar-progress' style={{ width: current + '%' }}/>
-          <span className='powercord-spotify-seek-bar-cursor' style={{ left: current + '%' }}/>
+          <span className='powercord-spotify-seek-bar-progress' style={{ width: `${current}%` }}/>
+          <span className='powercord-spotify-seek-bar-cursor' style={{ left: `${current}%` }}/>
         </div>
         <div className='powercord-spotify-seek-spacer'/>
       </div>

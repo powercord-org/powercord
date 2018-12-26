@@ -15,7 +15,7 @@ module.exports = class Title extends React.Component {
     this.canvas.font = getComputedStyle(document.querySelector(`.${this.props.className}`)).font;
     const titleWidth = Math.ceil(this.canvas.measureText(this.props.children).width);
     const animationDuration = Math.ceil(titleWidth * 2000 / 120);
-    let className = this.props.className;
+    let { className } = this.props;
     if (this.state.hovered) {
       className += ' translating';
     }

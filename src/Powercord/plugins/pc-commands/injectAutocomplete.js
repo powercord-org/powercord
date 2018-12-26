@@ -3,9 +3,9 @@ const { waitFor, getOwnerInstance, sleep } = require('powercord/util');
 module.exports = async function injectAutocomplete () {
   const _this = this;
 
-  const plugins = [ ...powercord.plugins.keys() ];
+  const plugins = [ ...powercord.pluginManager.plugins.keys() ];
   while (!plugins.every(plugin =>
-    powercord.plugins.get(plugin).ready
+    powercord.pluginManager.get(plugin).ready
   )) {
     await sleep(1);
   }

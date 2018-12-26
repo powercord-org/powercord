@@ -18,7 +18,7 @@ module.exports = class GeneralSettings extends React.Component {
     </div>;
   }
 
-  editConfig(key, value) {
+  editConfig (key, value) {
     powercord.editConfig(key, value);
     setTimeout(() => this.forceUpdate(), 0);
   }

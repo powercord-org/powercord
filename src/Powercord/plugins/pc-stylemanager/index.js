@@ -10,7 +10,7 @@ module.exports = class StyleManager extends Plugin {
   constructor () {
     super({
       appMode: 'both',
-      dependencies: [ 'classNameNormalizer' ]
+      dependencies: [ 'pc-classNameNormalizer' ]
     });
 
     this.styleDir = resolve(__dirname, 'styles').replace(/\\/g, '/'); // Windows is retarded
@@ -115,7 +115,7 @@ module.exports = class StyleManager extends Plugin {
 
   _ensureClassNamesLoaded () {
     if (this.discordClassNames.length === 0) {
-      const classNameModules = powercord.plugins.get('classNameNormalizer')._fetchAllModules();
+      const classNameModules = powercord.pluginManager.get('pc-classNameNormalizer')._fetchAllModules();
 
       // Getting all classes
       const classNames = [];

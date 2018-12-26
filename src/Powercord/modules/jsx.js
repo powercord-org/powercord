@@ -10,6 +10,4 @@ module.exports = () =>
         target: { chrome: 52 }
       }).code,
       filename
-    )
-
-
+    );
