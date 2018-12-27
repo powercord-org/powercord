@@ -14,7 +14,7 @@ module.exports = class Codeblocks extends Plugin {
     await powercord
       .pluginManager
       .get('pc-styleManager')
-      .load('translator', resolve(__dirname, 'style.scss'));
+      .load('codeblock', resolve(__dirname, 'style.scss'));
 
     powercord
       .pluginManager
