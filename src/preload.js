@@ -8,17 +8,10 @@ require('module')
     join(__dirname, 'fake_node_modules')
   );
 
-let config;
-try {
-  config = require('../config.json');
-} catch (e) {
-  config = {};
-}
-
 const Powercord = require('./Powercord');
-global.powercord = new Powercord(config);
+global.powercord = new Powercord();
 
-if (config.openOverlayDevTools && location.pathname === '/overlay') {
+if (powercord.settingsManager.get('openOverlayDevTools', false) && window.__OVERLAY__) {
   remote
     .getCurrentWindow()
     .openDevTools({

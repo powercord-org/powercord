@@ -1,16 +1,15 @@
 const EventEmitter = require('events');
-const { resolve } = require('path');
-const { writeFile } = require('fs');
 
 const modules = require('./modules');
 const PluginManager = require('./pluginManager');
+const SettingsManager = require('./settingsManager');
 
 module.exports = class Powercord extends EventEmitter {
-  constructor (config) {
+  constructor () {
     super();
 
-    this.config = config;
     this.pluginManager = new PluginManager();
+    this.settingsManager = new SettingsManager('general');
     this.patchWebSocket();
 
     if (document.readyState === 'loading') {
@@ -18,11 +17,6 @@ module.exports = class Powercord extends EventEmitter {
     } else {
       this.init();
     }
-  }
-
-  editConfig (key, value) {
-    this.config[key] = value;
-    writeFile(resolve(__dirname, '..', '..', 'config.json'), JSON.stringify(this.config, null, 2), () => null);
   }
 
   patchWebSocket () {

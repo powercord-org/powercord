@@ -12,10 +12,6 @@ module.exports = class Commands extends Plugin {
     this.commands = new Map(Object.entries(commands));
   }
 
-  get prefix () {
-    return powercord.config.prefix || '.';
-  }
-
   async start () {
     monkeypatchMessages.call(this);
     injectAutocomplete.call(this);

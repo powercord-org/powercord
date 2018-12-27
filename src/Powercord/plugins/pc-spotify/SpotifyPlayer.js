@@ -11,10 +11,10 @@ module.exports = {
   accessToken: null,
 
   async getAccessToken () {
-    if (powercord.config.spotifyToken) {
+    if (powercord.settingsManager.get('spotifyToken')) {
       return post('https://powercord.aetheryx.xyz/accessToken')
         .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({ token: powercord.config.spotifyToken })
+        .send({ token: powercord.settingsManager.get('spotifyToken') })
         .then(res => res.body);
     }
 

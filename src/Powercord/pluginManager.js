@@ -50,6 +50,14 @@ module.exports = class PluginManager {
         try {
           const PluginClass = require(`${this.pluginDir}/${filename}`);
           const plugin = new PluginClass();
+          Object.defineProperty(plugin, 'pluginId', {
+            get () {
+              return moduleName;
+            },
+            set () {
+              throw new Error('Plugins cannot update their id at runtime!');
+            }
+          });
           Object.defineProperty(plugin, 'manifest', {
             get () {
               return manifest;
