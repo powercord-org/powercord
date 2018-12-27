@@ -1,5 +1,5 @@
 const Plugin = require('powercord/Plugin');
-const { join } = require('path');
+const { resolve, join } = require('path');
 const { get } = require('powercord/http');
 const { sleep, createElement } = require('powercord/util');
 const { ReactDOM, React } = require('powercord/webpack');
@@ -13,7 +13,9 @@ const REPO = 'aetheryx/powercord';
 
 module.exports = class Updater extends Plugin {
   constructor () {
-    super();
+    super({
+      dependencies: [ 'pc-styleManager' ]
+    });
 
     this.cwd = {
       cwd: join(__dirname, ...Array(3).fill('..'))
@@ -22,6 +24,11 @@ module.exports = class Updater extends Plugin {
   }
 
   async start () {
+    await powercord
+      .pluginManager
+      .get('pc-styleManager')
+      .load('updater', resolve(__dirname, 'style.scss'));
+
     setInterval(this.checkForUpdate.bind(this), 15 * 60 * 1000);
     this.checkForUpdate();
   }
@@ -121,7 +128,7 @@ module.exports = class Updater extends Plugin {
           .then(() => setState({ leaving: true }))
           .then(() => true)
       )
-      .catch(e => new Promise(resolve => {
+      .catch(e => new Promise(res => {
         console.error(e);
 
         setState({ fade: 'out' })
@@ -131,7 +138,7 @@ module.exports = class Updater extends Plugin {
               text: 'Okay :(',
               onClick: () =>
                 setState({ leaving: true })
-                  .then(() => resolve(this.ask = false))
+                  .then(() => res(this.ask = false))
             } ]
           }))
           .then(() => setState({ fade: 'in' }));

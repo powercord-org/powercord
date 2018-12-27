@@ -1,6 +1,7 @@
 const Plugin = require('powercord/Plugin');
 const { waitFor, getOwnerInstance } = require('powercord/util');
 const { spotify, React, ReactDOM } = require('powercord/webpack');
+const { resolve } = require('path');
 
 const commands = require('./commands');
 const SpotifyPlayer = require('./SpotifyPlayer');
@@ -9,7 +10,7 @@ const Modal = require('./Modal');
 module.exports = class Spotify extends Plugin {
   constructor () {
     super({
-      dependencies: [ 'pc-commands' ]
+      dependencies: [ 'pc-commands', 'pc-styleManager' ]
     });
   }
 
@@ -34,6 +35,11 @@ module.exports = class Spotify extends Plugin {
   }
 
   async start () {
+    await powercord
+      .pluginManager
+      .get('pc-styleManager')
+      .load('spotify', resolve(__dirname, 'style.scss'));
+
     this.patchSpotifySocket();
     this.injectModal();
 

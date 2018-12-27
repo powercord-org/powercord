@@ -6,18 +6,18 @@
 .item-1Yvehc {
   display: flex !important;
   justify-content: space-between !important;
-  
+
   span {
     white-space: nowrap;
     overflow: hidden;
     margin-right: 2px;
     text-overflow: ellipsis;
   }
-  
+
   &.itemSlider-FZeYw0 {
     flex-direction: column;
   }
-  
+
   &.disabled {
     background: unset !important;
     color: unset !important;

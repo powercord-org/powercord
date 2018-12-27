@@ -3,9 +3,21 @@ const { getModuleByDisplayName, React } = require('powercord/webpack');
 const { sleep, createElement } = require('powercord/util');
 const { ContextMenu: { Submenu } } = require('powercord/components');
 const translate = require('@k3rn31p4nic/google-translate-api');
+const { resolve } = require('path');
 
 module.exports = class Translate extends Plugin {
+  constructor () {
+    super({
+      dependencies: [ 'pc-styleManager' ]
+    });
+  }
+
   async start () {
+    await powercord
+      .pluginManager
+      .get('pc-styleManager')
+      .load('codeblock', resolve(__dirname, 'style.scss'));
+
     const languages = Object.keys(translate.languages)
       .filter(k => typeof translate.languages[k] === 'string');
 

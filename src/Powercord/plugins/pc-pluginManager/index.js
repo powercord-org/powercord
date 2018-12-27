@@ -1,14 +1,20 @@
 const Plugin = require('powercord/Plugin');
 const { getModuleByDisplayName } = require('powercord/webpack');
 
+const { resolve } = require('path');
+
 module.exports = class PluginManager extends Plugin {
   constructor () {
     super({
-      dependencies: [ 'pc-settings' ]
+      dependencies: [ 'pc-settings', 'pc-styleManager' ]
     });
   }
 
-  start () {
+  async start () {
+    await powercord
+      .pluginManager
+      .get('pc-styleManager')
+      .load('pluginManager', resolve(__dirname, 'style.scss'));
     // const settingsManager = powercord.pluginManager.get('pc-settings');
     this._inject();
   }
