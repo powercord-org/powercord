@@ -16,7 +16,7 @@ module.exports = class Translate extends Plugin {
     await powercord
       .pluginManager
       .get('pc-styleManager')
-      .load('codeblock', resolve(__dirname, 'style.scss'));
+      .load('translator', resolve(__dirname, 'style.scss'));
 
     const languages = Object.keys(translate.languages)
       .filter(k => typeof translate.languages[k] === 'string');
@@ -31,7 +31,7 @@ module.exports = class Translate extends Plugin {
         message.style.transition = '0.2s';
         message.style.opacity = '0';
 
-        let fromLang;
+        let fromLang = '';
 
         const timestamp = message.querySelector('.pc-timestampCozy');
         await Promise.all([

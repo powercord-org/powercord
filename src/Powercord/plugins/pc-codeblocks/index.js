@@ -1,15 +1,21 @@
 const Plugin = require('powercord/Plugin');
 const { createElement } = require('powercord/util');
 const { clipboard } = require('electron');
+const { resolve } = require('path');
 
 module.exports = class Codeblocks extends Plugin {
   constructor () {
     super({
-      dependencies: [ 'pc-stateWatcher' ]
+      dependencies: [ 'pc-stateWatcher', 'pc-styleManager' ]
     });
   }
 
-  start () {
+  async start () {
+    await powercord
+      .pluginManager
+      .get('pc-styleManager')
+      .load('translator', resolve(__dirname, 'style.scss'));
+
     powercord
       .pluginManager
       .get('pc-stateWatcher')
