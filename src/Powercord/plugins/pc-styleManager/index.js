@@ -42,12 +42,15 @@ module.exports = class StyleManager extends Plugin {
 
       const styleId = filename.split('.').shift();
       const file = resolve(this.themesDir, filename);
+      const watcher = chokidar.watch(file);
       this.trackedFiles.push({
-        id: styleId,
-        file,
-        includes: []
+        id: `theme-${styleId}`,
+        file: file.replace(/\\/g, '/'),
+        includes: [],
+        watchers: [ watcher ]
       });
       await this._applyStyle(`theme-${styleId}`, file);
+      watcher.on('change', this.update.bind(this));
     }
   }
 
@@ -65,19 +68,31 @@ module.exports = class StyleManager extends Plugin {
       return this.error(`Tried to load a file that does not exists! (Style ID: ${styleId})`, file);
     }
 
+    const watcher = chokidar.watch(file);
     this.trackedFiles.push({
       id: styleId,
-      file,
-      includes: []
+      file: file.replace(/\\/g, '/'),
+      includes: [],
+      watchers: [ watcher ]
     });
     await this._applyStyle(styleId, file);
-    chokidar.watch(file).on('change', this.update.bind(this));
+    watcher.on('change', this.update.bind(this));
+  }
+
+  unload (styleId) {
+    if (!document.getElementById(`powercord-css-${styleId}`)) {
+      return this.error(`Tried to unload a non existing style! (Style ID: ${styleId})`);
+    }
+
+    this.trackedFiles.find(f => f.id === styleId).watchers.forEach(w => w.close());
+    this.trackedFiles = this.trackedFiles.filter(f => f.id !== styleId);
+    document.getElementById(`powercord-css-${styleId}`).remove();
   }
 
   // Initializing
-  async update (file) {
+  async update (rawFile) {
+    const file = rawFile.replace(/\\/g, '/');
     const match = this.trackedFiles.find(f => f.file === file || f.includes.includes(file));
-
     if (match) {
       await this._applyStyle(match.id, match.file);
     }
@@ -88,17 +103,36 @@ module.exports = class StyleManager extends Plugin {
     // Compile scss
     let css = (await readFile(file)).toString();
     if (file.endsWith('scss')) {
-      const result = await new Promise(res => {
-        render({
-          data: css,
-          includePaths: [ dirname(file) ],
-          importer: (url, prev) => ({ file: resolve(dirname(decodeURI(prev)), url).replace(/\\/g, '/') }) // Windows pls
-        }, (_, compiled) => {
-          res(compiled);
+      let result;
+      try {
+        result = await new Promise((res, rej) => {
+          render({
+            data: css,
+            includePaths: [ dirname(file) ],
+            importer: (url, prev) => ({ file: resolve(dirname(decodeURI(prev)), url).replace(/\\/g, '/') })
+          }, (err, compiled) => {
+            if (err) {
+              return rej(err);
+            }
+            res(compiled);
+          });
         });
+      } catch (e) {
+        this.error(`An error occurred while loading "${file}":`, e);
+        return;
+      }
+
+      const includedFiles = result.stats.includedFiles.map(f => decodeURI(f).replace(/\\/g, '/'));
+      const watchers = [];
+      includedFiles.forEach(f => {
+        const watcher = chokidar.watch(f);
+        watcher.on('change', this.update.bind(this));
+        watchers.push(watcher);
       });
 
-      this.trackedFiles.find(f => f.file === file || f.includes.includes(file)).includes = result.stats.includedFiles;
+      const cleanFile = file.replace(/\\/g, '/');
+      this.trackedFiles.find(f => f.file === cleanFile || f.includes.includes(cleanFile)).watchers.push(...watchers);
+      this.trackedFiles.find(f => f.file === cleanFile || f.includes.includes(cleanFile)).includes = includedFiles;
       css = result.css.toString();
     }
 

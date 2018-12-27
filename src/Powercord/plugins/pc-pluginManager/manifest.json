@@ -1,6 +1,6 @@
 {
   "name": "Plugin Manager",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "Install, enable or disable plugins using a simple UI",
   "author": "Bowser65",
   "license": "MIT",

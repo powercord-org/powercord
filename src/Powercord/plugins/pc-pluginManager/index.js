@@ -1,7 +1,8 @@
 const Plugin = require('powercord/Plugin');
 const { getModuleByDisplayName } = require('powercord/webpack');
-
 const { resolve } = require('path');
+
+const Settings = require('./components/Settings.jsx');
 
 module.exports = class PluginManager extends Plugin {
   constructor () {
@@ -15,7 +16,11 @@ module.exports = class PluginManager extends Plugin {
       .pluginManager
       .get('pc-styleManager')
       .load('pluginManager', resolve(__dirname, 'style.scss'));
-    // const settingsManager = powercord.pluginManager.get('pc-settings');
+
+    powercord
+      .pluginManager
+      .get('pc-settings')
+      .register('pc-pluginManager', 'Plugin Manager', Settings);
     this._inject();
   }
 
