@@ -22,8 +22,7 @@ module.exports = (state, onButtonClick) => [
             seperate: isActiveDevice,
             onClick: () => onButtonClick('setActiveDevice', device.id)
           };
-        })
-        .sort(button => !button.highlight)
+        }).sort(button => !button.highlight)
       )
   } ],
 
@@ -100,7 +99,7 @@ module.exports = (state, onButtonClick) => [
       type: 'checkbox',
       name: 'Shuffle',
       defaultState: state.shuffleState,
-      onToggle: (state) => onButtonClick('setShuffleState', state)
+      onToggle: (s) => onButtonClick('setShuffleState', s)
     } ]
   } ],
 

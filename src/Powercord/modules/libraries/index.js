@@ -22,4 +22,4 @@ module.exports = () => {
 
     document.head.appendChild(elem);
   }
-}
+};

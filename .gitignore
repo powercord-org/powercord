@@ -3,7 +3,10 @@ node_modules
 package-lock.json
 yarn.lock
 
-src/Powercord/plugins/pc-styleManager/themes
+src/Powercord/plugins/*
+!src/Powercord/plugins/pc-*
+
+src/Powercord/plugins/pc-styleManager/themes/*
 !src/Powercord/plugins/pc-styleManager/themes/.exists
 
 config.json
