@@ -1,5 +1,5 @@
 const { getModuleByDisplayName, React } = require('powercord/webpack');
-const { TextInput } = require('powercord/settings');
+const { TextInput } = require('powercord/components/settings');
 const SwitchItem = getModuleByDisplayName('switchitem');
 
 module.exports = class GeneralSettings extends React.Component {

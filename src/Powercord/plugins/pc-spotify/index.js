@@ -45,8 +45,6 @@ module.exports = class Spotify extends Plugin {
         .get('pc-commands')
         .commands
         .set(commandName, command);
-
-      // ConnectedAccount
     }
   }
 

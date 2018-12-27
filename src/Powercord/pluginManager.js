@@ -47,18 +47,22 @@ module.exports = class PluginManager {
           return;
         }
 
-        const PluginClass = require(`${this.pluginDir}/${filename}`);
-        const plugin = new PluginClass();
-        Object.defineProperty(plugin, 'manifest', {
-          get () {
-            return manifest;
-          },
-          set () {
-            throw new Error('Plugins cannot update manifest at runtime!');
-          }
-        });
+        try {
+          const PluginClass = require(`${this.pluginDir}/${filename}`);
+          const plugin = new PluginClass();
+          Object.defineProperty(plugin, 'manifest', {
+            get () {
+              return manifest;
+            },
+            set () {
+              throw new Error('Plugins cannot update manifest at runtime!');
+            }
+          });
 
-        plugins[moduleName] = plugin;
+          plugins[moduleName] = plugin;
+        } catch (e) {
+          console.error('%c[Powercord]', 'color: #257dd4', `An error occurred while initializing "${moduleName}"!`, e);
+        }
       });
 
     this.plugins = new Map(Object.entries(plugins));

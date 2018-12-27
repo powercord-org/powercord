@@ -7,6 +7,7 @@ const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
 class PatchedBrowserWindow extends BrowserWindow {
+  // noinspection JSAnnotator - Make JetBrains happy
   constructor (opts) {
     if (opts.webPreferences && opts.webPreferences.preload) {
       global.originalPreload = opts.webPreferences.preload;
@@ -24,8 +25,10 @@ require.cache[electronPath].exports = {};
 const failedExports = [];
 for (const prop in electron) {
   try {
+    // noinspection JSUnfilteredForInLoop
     require.cache[electronPath].exports[prop] = electron[prop];
   } catch (_) {
+    // noinspection JSUnfilteredForInLoop
     failedExports.push(prop);
   }
 }

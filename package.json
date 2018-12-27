@@ -23,5 +23,9 @@
     "buble": "^0.19.6",
     "chokidar": "^2.0.4",
     "sass": "^1.15.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.11.1",
+    "eslint-plugin-react": "^7.11.1"
   }
 }

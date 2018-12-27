@@ -4,12 +4,15 @@
     "webpackJsonp": true
   },
   "parserOptions": {
-    "ecmaVersion": 8,
+    "ecmaVersion": 2018,
     "sourceType": "script",
     "ecmaFeatures": {
       "jsx": true
     }
   },
+  "plugins": [
+    "react"
+  ],
   "env": {
     "node": true,
     "es6": true,
@@ -242,6 +245,7 @@
     "prefer-template": [ "error" ],
     "rest-spread-spacing": [ "error", "never" ],
     "symbol-description": [ "error" ],
-    "template-curly-spacing": [ "error", "never" ]
+    "template-curly-spacing": [ "error", "never" ],
+    "react/jsx-uses-vars": 1
   }
 }
