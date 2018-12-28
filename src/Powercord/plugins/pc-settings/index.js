@@ -10,13 +10,18 @@ module.exports = class Settings extends Plugin {
   }
 
   start () {
+    Object.defineProperty(require('powercord/webpack').getModule(r => typeof r.isDeveloper !== 'undefined'), 'isDeveloper', { get: () => powercord.settingsManager.get('experiments', false) });
     this.patchSettingsComponent();
     this.register('pc-general', 'General Settings', GeneralSettings);
   }
 
   register (key, displayName, render) {
+    if (!key.match(/^[a-z0-9_-]+$/i)) {
+      return this.error(`Tried to register a settings panel with an invalid ID! You can only use letters, numbers, dashes and underscores. (ID: ${key})`);
+    }
+
     if (this.sections.filter(s => s.key === key).length !== 0) {
-      throw new Error(`Key ${key} is already used by another plugin!`);
+      return this.error(`Key ${key} is already used by another plugin!`);
     }
     this.sections.push({
       section: key,

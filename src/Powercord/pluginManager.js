@@ -13,6 +13,18 @@ module.exports = class PluginManager {
     return this.plugins.get(plugin);
   }
 
+  enable (plugin) {
+    this.requiresReload = true;
+    powercord.settingsManager.set('disabledPlugins', powercord.settingsManager.get('disabledPlugins', []).filter(p => p !== plugin));
+  }
+
+  disable (plugin) {
+    this.requiresReload = true;
+    const disabled = powercord.settingsManager.get('disabledPlugins', []);
+    disabled.push(plugin);
+    powercord.settingsManager.set('disabledPlugins', disabled);
+  }
+
   startPlugins () {
     this._loadPlugins();
     for (const plugin of [ ...this.plugins.values() ]) {
@@ -34,6 +46,10 @@ module.exports = class PluginManager {
     readdirSync(this.pluginDir)
       .forEach(filename => {
         const moduleName = filename.split('.')[0];
+        if (powercord.settingsManager.get('disabledPlugins', []).includes(moduleName)) {
+          return;
+        }
+
         let manifest;
         try {
           manifest = require(`${this.pluginDir}/${filename}/manifest.json`);

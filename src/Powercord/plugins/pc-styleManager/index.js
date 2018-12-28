@@ -49,7 +49,7 @@ module.exports = class StyleManager extends Plugin {
         includes: [],
         watchers: [ watcher ]
       });
-      await this._applyStyle(`theme-${styleId}`, file);
+      await this._applyStyle(`theme-${styleId}`, file, true);
       watcher.on('change', this.update.bind(this));
     }
   }
@@ -75,7 +75,7 @@ module.exports = class StyleManager extends Plugin {
       includes: [],
       watchers: [ watcher ]
     });
-    await this._applyStyle(styleId, file);
+    await this._applyStyle(styleId, file, true);
     watcher.on('change', this.update.bind(this));
   }
 
@@ -99,7 +99,7 @@ module.exports = class StyleManager extends Plugin {
   }
 
   // Internals
-  async _applyStyle (styleId, file) {
+  async _applyStyle (styleId, file, registerWatchers) {
     // Compile scss
     let css = (await readFile(file)).toString();
     if (file.endsWith('scss')) {
@@ -122,16 +122,18 @@ module.exports = class StyleManager extends Plugin {
         return;
       }
 
-      const includedFiles = result.stats.includedFiles.map(f => decodeURI(f).replace(/\\/g, '/'));
-      const watchers = [];
-      includedFiles.forEach(f => {
-        const watcher = chokidar.watch(f);
-        watcher.on('change', this.update.bind(this));
-        watchers.push(watcher);
-      });
-
       const cleanFile = file.replace(/\\/g, '/');
-      this.trackedFiles.find(f => f.file === cleanFile || f.includes.includes(cleanFile)).watchers.push(...watchers);
+      const includedFiles = result.stats.includedFiles.map(f => decodeURI(f).replace(/\\/g, '/'));
+      if (registerWatchers) {
+        const watchers = [];
+        includedFiles.forEach(f => {
+          const watcher = chokidar.watch(f);
+          watcher.on('change', this.update.bind(this));
+          watchers.push(watcher);
+        });
+        this.trackedFiles.find(f => f.file === cleanFile || f.includes.includes(cleanFile)).watchers.push(...watchers);
+      }
+
       this.trackedFiles.find(f => f.file === cleanFile || f.includes.includes(cleanFile)).includes = includedFiles;
       css = result.css.toString();
     }
