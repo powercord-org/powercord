@@ -11,11 +11,14 @@ try {
 module.exports = class SettingsManager {
   constructor (category) {
     this.category = category || 'general';
-    this.config = config[this.category] || [];
+    this.config = config[this.category] || {};
   }
 
   get (key, defautlVal) {
-    return this.config[key] || defautlVal;
+    if (typeof this.config[key] === 'undefined' || this.config[key] === null) {
+      return defautlVal;
+    }
+    return this.config[key];
   }
 
   set (key, value) {
@@ -29,6 +32,7 @@ module.exports = class SettingsManager {
       [this.category]: this.config
     };
 
+    console.log(cfg);
     writeFile(resolve(__dirname, '..', '..', 'config.json'), JSON.stringify(cfg, null, 2), () => null);
   }
 };

@@ -15,7 +15,6 @@ module.exports = async function monkeypatchMessages () {
     }
 
     const [ command, ...args ] = message.content.slice(prefix.length).split(' ');
-    console.log(command);
     if (!this.commands.has(command)) {
       return sendMessage(id, message, ...params);
     }

@@ -4,7 +4,9 @@ const GeneralSettings = require('./GeneralSettings.jsx');
 
 module.exports = class Settings extends Plugin {
   constructor () {
-    super();
+    super({
+      dependencies: [ 'pc-classNameNormalizer' ] // Required by some components
+    });
 
     this.sections = [];
   }
@@ -31,7 +33,7 @@ module.exports = class Settings extends Plugin {
   }
 
   patchSettingsComponent () {
-    const SettingsView = getModuleByDisplayName('settingsview');
+    const SettingsView = getModuleByDisplayName('SettingsView');
     SettingsView.prototype.getPredicateSections = ((_getter, pluginSections) => function (...args) { // eslint-disable-line
       const sections = _getter.call(this, ...args);
       const changelog = sections.filter(c => c.section === 'changelog');
@@ -48,6 +50,10 @@ module.exports = class Settings extends Plugin {
       }
       return sections;
     })(SettingsView.prototype.getPredicateSections, this.sections);
+
+    SettingsView.prototype.componentDidCatch = (() => () => {
+      this.error('nee jij discord :)');
+    })(SettingsView.prototype.componentDidCatch);
   }
 
   _renderSettingsPanel (title, contents) {
@@ -59,7 +65,7 @@ module.exports = class Settings extends Plugin {
       panelContents = null;
     }
 
-    const h2 = React.createElement(getModuleByDisplayName('formtitle'), { tag: 'h2' }, title);
-    return React.createElement(getModuleByDisplayName('formsection'), {}, h2, panelContents);
+    const h2 = React.createElement(getModuleByDisplayName('FormTitle'), { tag: 'h2' }, title);
+    return React.createElement(getModuleByDisplayName('FormSection'), {}, h2, panelContents);
   }
 };

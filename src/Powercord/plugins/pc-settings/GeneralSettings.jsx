@@ -53,6 +53,7 @@ module.exports = class GeneralSettings extends React.Component {
   }
 
   editConfig (key, value) {
+    console.log(value);
     powercord.settingsManager.set(key, value);
     setTimeout(() => this.forceUpdate(), 0);
   }
