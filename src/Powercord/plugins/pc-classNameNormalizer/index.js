@@ -109,7 +109,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
   _shouldIgnore (value) {
     return (
       !isNaN(value) ||
-      this.PROPERTY_BLACKLIST.some(prop => value.endsWith(prop)) || (
+      this.ATTRIBUTE_BLACKLIST.some(prop => value.endsWith(prop)) || (
         value.startsWith('#') && (value.length === 7 || value.length === 4)
       ) ||
       value.includes('calc(') || value.includes('rgba')
