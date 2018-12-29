@@ -6,15 +6,12 @@ const { resolve } = require('path');
 module.exports = class Codeblocks extends Plugin {
   constructor () {
     super({
-      dependencies: [ 'pc-stateWatcher', 'pc-styleManager' ]
+      dependencies: [ 'pc-stateWatcher' ]
     });
   }
 
   async start () {
-    await powercord
-      .pluginManager
-      .get('pc-styleManager')
-      .load('codeblock', resolve(__dirname, 'style.scss'));
+    this.loadCSS(resolve(__dirname, 'style.scss'));
 
     powercord
       .pluginManager

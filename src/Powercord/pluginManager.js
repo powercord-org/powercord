@@ -15,7 +15,10 @@ module.exports = class PluginManager {
 
   enable (plugin) {
     this.requiresReload = true;
-    powercord.settingsManager.set('disabledPlugins', powercord.settingsManager.get('disabledPlugins', []).filter(p => p !== plugin));
+    powercord.settingsManager.set(
+      'disabledPlugins',
+      powercord.settingsManager.get('disabledPlugins', []).filter(p => p !== plugin)
+    );
   }
 
   disable (plugin) {
@@ -52,21 +55,19 @@ module.exports = class PluginManager {
 
         let manifest;
         try {
-          manifest = require(`${this.pluginDir}/${filename}/manifest.json`);
+          manifest = require(resolve(this.pluginDir, filename, 'manifest.json'));
         } catch (e) {
-          console.error('%c[Powercord]', 'color: #257dd4', `Plugin ${moduleName} doesn't have a valid manifest - Skipping`);
-          return;
+          return console.error('%c[Powercord]', 'color: #257dd4', `Plugin ${moduleName} doesn't have a valid manifest - Skipping`);
         }
 
         if (!manifestKeys.every(key => manifest.hasOwnProperty(key))) {
-          console.error('%c[Powercord]', 'color: #257dd4', `Plugin "${moduleName}" doesn't have a valid manifest - Skipping`);
-          return;
+          return console.error('%c[Powercord]', 'color: #257dd4', `Plugin "${moduleName}" doesn't have a valid manifest - Skipping`);
         }
 
         try {
-          const PluginClass = require(`${this.pluginDir}/${filename}`);
+          const PluginClass = require(resolve(this.pluginDir, filename));
           const plugin = new PluginClass();
-          Object.defineProperty(plugin, 'pluginId', {
+          Object.defineProperty(plugin, 'pluginID', {
             get () {
               return moduleName;
             },

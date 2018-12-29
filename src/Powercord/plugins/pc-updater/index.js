@@ -13,21 +13,16 @@ const REPO = 'aetheryx/powercord';
 
 module.exports = class Updater extends Plugin {
   constructor () {
-    super({
-      dependencies: [ 'pc-styleManager' ]
-    });
+    super();
 
+    this.ask = true;
     this.cwd = {
       cwd: join(__dirname, ...Array(3).fill('..'))
     };
-    this.ask = true;
   }
 
   async start () {
-    await powercord
-      .pluginManager
-      .get('pc-styleManager')
-      .load('updater', resolve(__dirname, 'style.scss'));
+    this.loadCSS(resolve(__dirname, 'style.scss'));
 
     setInterval(this.checkForUpdate.bind(this), 15 * 60 * 1000);
     this.checkForUpdate();

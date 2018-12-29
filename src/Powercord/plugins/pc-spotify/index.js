@@ -10,7 +10,7 @@ const Modal = require('./Modal');
 module.exports = class Spotify extends Plugin {
   constructor () {
     super({
-      dependencies: [ 'pc-commands', 'pc-styleManager' ]
+      dependencies: [ 'pc-commands' ]
     });
   }
 
@@ -35,10 +35,7 @@ module.exports = class Spotify extends Plugin {
   }
 
   async start () {
-    await powercord
-      .pluginManager
-      .get('pc-styleManager')
-      .load('spotify', resolve(__dirname, 'style.scss'));
+    this.loadCSS(resolve(__dirname, 'style.scss'));
 
     this.patchSpotifySocket();
     this.injectModal();

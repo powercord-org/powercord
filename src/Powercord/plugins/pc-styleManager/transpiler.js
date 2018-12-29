@@ -5,6 +5,7 @@ onmessage = (data) => {
     if (selectorsRaw.includes('keyframes')) {
       return;
     }
+
     const selectorsRawFormatted = selectorsRaw.replace('{', '').trim();
     let formattedSelector = selectorsRawFormatted;
     const selectorsRawSplitted = selectorsRaw.replace('{', '').trim().split(',');

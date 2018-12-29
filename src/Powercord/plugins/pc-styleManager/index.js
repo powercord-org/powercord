@@ -148,9 +148,7 @@ module.exports = class StyleManager extends Plugin {
   }
 
   async _handleFinishedCompiling (data) {
-    const payload = data.data || data;
-    const id = payload[0];
-    const css = payload[1];
+    const [ id, css ] = data.data || data;
 
     if (!document.getElementById(`powercord-css-${id}`)) {
       document.head.appendChild(
@@ -172,23 +170,22 @@ module.exports = class StyleManager extends Plugin {
 
       // Getting all classes
       const classNames = [];
-      classNameModules.forEach(cnm => {
-        Object.keys(cnm).forEach(k => {
-          const className = cnm[k];
+      for (const classNameModule of classNameModules) {
+        for (const className of Object.values(classNameModule)) {
           const classNameMatches = className.match(/(?:([a-z0-9]+)-([\w-]{6}))+/ig);
           if (classNameMatches) {
             classNames.push(...classNameMatches);
           }
-        });
-      });
+        }
+      }
 
       // Generate global object
-      classNames.forEach(className => {
+      for (const className of classNames) {
         const classNameMatch = className.match(/([a-z0-9]+)-([\w-]{6})/i);
         if (!this.discordClassNames.includes(classNameMatch[1])) {
           this.discordClassNames.push(classNameMatch[1]);
         }
-      });
+      }
     }
   }
 };

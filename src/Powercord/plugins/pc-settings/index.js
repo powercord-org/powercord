@@ -1,5 +1,5 @@
 const Plugin = require('powercord/Plugin');
-const { getModuleByDisplayName, React } = require('powercord/webpack');
+const { getModuleByDisplayName, React, getModule } = require('powercord/webpack');
 const GeneralSettings = require('./GeneralSettings.jsx');
 
 module.exports = class Settings extends Plugin {
@@ -12,7 +12,7 @@ module.exports = class Settings extends Plugin {
   }
 
   start () {
-    Object.defineProperty(require('powercord/webpack').getModule(r => typeof r.isDeveloper !== 'undefined'), 'isDeveloper', { get: () => powercord.settingsManager.get('experiments', false) });
+    this.patchExperiments();
     this.patchSettingsComponent();
     this.register('pc-general', 'General Settings', GeneralSettings);
   }
@@ -29,6 +29,13 @@ module.exports = class Settings extends Plugin {
       section: key,
       label: displayName,
       element: this._renderSettingsPanel.bind(this, displayName, render)
+    });
+  }
+
+  patchExperiments () {
+    const experimentsModule = getModule(r => r.isDeveloper !== void 0);
+    Object.defineProperty(experimentsModule, 'isDeveloper', {
+      get: () => powercord.settingsManager.get('experiments', false)
     });
   }
 
@@ -51,8 +58,9 @@ module.exports = class Settings extends Plugin {
       return sections;
     })(SettingsView.prototype.getPredicateSections, this.sections);
 
-    SettingsView.prototype.componentDidCatch = (() => () => {
+    SettingsView.prototype.componentDidCatch = (_componentDidCatch => (...args) => {
       this.error('nee jij discord :)');
+      return _componentDidCatch(...args);
     })(SettingsView.prototype.componentDidCatch);
   }
 

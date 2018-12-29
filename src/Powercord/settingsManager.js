@@ -14,11 +14,11 @@ module.exports = class SettingsManager {
     this.config = config[this.category] || {};
   }
 
-  get (key, defautlVal) {
-    if (typeof this.config[key] === 'undefined' || this.config[key] === null) {
-      return defautlVal;
-    }
-    return this.config[key];
+  get (key, defaultValue) {
+    const value = this.config[key];
+    return (value === void 0 || value === null)
+      ? defaultValue
+      : value;
   }
 
   set (key, value) {
@@ -32,7 +32,6 @@ module.exports = class SettingsManager {
       [this.category]: this.config
     };
 
-    console.log(cfg);
     writeFile(resolve(__dirname, '..', '..', 'config.json'), JSON.stringify(cfg, null, 2), () => null);
   }
 };

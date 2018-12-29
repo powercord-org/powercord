@@ -30,6 +30,7 @@ module.exports = class KeybindManager extends Plugin {
     if (this.keybinds.filter(k => k.id === id).length !== 0) {
       throw new Error(`ID ${id} is already used by another plugin!`);
     }
+
     this.keybinds.push({
       id,
       name,

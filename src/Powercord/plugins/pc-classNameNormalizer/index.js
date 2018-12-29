@@ -1,4 +1,6 @@
 const Plugin = require('powercord/Plugin');
+const { camelCaseify } = require('powercord/util');
+const { instance } = require('powercord/webpack');
 
 // Based on BBD normalizer
 module.exports = class ClassNameNormalizer extends Plugin {
@@ -8,6 +10,8 @@ module.exports = class ClassNameNormalizer extends Plugin {
     });
 
     this.randClassReg = /^(?!pc-)((?:[a-z]|[0-9]|-)+)-(?:[a-z]|[0-9]|-|_){6}$/i;
+    this.PROPERTY_BLACKLIST = [ 'displayName' ];
+    this.ATTRIBUTE_BLACKLIST = [ 'px', 'ch', 'em', 'ms' ];
   }
 
   start () {
@@ -27,13 +31,15 @@ module.exports = class ClassNameNormalizer extends Plugin {
       if (this._shouldIgnore(value)) {
         continue;
       }
+
       const classList = value.split(' ');
       for (const normalClass of classList) {
         const match = normalClass.match(this.randClassReg)[1];
         if (!match) {
           continue;
         } // Shouldn't ever happen since they passed the moduleFilter, but you never know
-        const camelCase = match.split('-').map((s, i) => i ? s[0].toUpperCase() + s.slice(1) : s).join('');
+
+        const camelCase = camelCaseify(match);
         classNames[baseClassName] += ` pc-${camelCase}`;
       }
     }
@@ -43,15 +49,17 @@ module.exports = class ClassNameNormalizer extends Plugin {
     if (!(element instanceof Element)) {
       return;
     }
-    const classes = element.classList;
-    for (let c = 0, clen = classes.length; c < clen; c++) {
-      if (!this.randClassReg.test(classes[c])) {
+
+    for (const targetClass of element.classList) {
+      if (!this.randClassReg.test(targetClass)) {
         continue;
       }
-      const match = classes[c].match(this.randClassReg)[1];
-      const newClass = match.split('-').map((s, i) => i ? s[0].toUpperCase() + s.slice(1) : s).join('');
+
+      const match = targetClass.match(this.randClassReg)[1];
+      const newClass = camelCaseify(match);
       element.classList.add(`pc-${newClass}`);
     }
+
     for (const child of element.children) {
       this.normalizeElement(child);
     }
@@ -59,53 +67,52 @@ module.exports = class ClassNameNormalizer extends Plugin {
 
   // Module fetcher
   _fetchAllModules () {
-    const modules = Object.values(require('powercord/webpack').instance.cache);
-    const blacklist = [ 'displayName' ];
-    let classNameModules = modules.filter(mdl => {
-      if (!mdl.exports) {
-        return false;
-      }
-      const mdlExports = Object.keys(mdl.exports).filter(r => !blacklist.includes(r));
-      if (mdlExports.length === 0) {
-        return false;
-      }
-      return mdlExports.every(prop => typeof mdl.exports[prop] === 'string');
-    }).map(r => r.exports);
+    return Object.values(instance.cache)
+      .filter(mdl => (
+        mdl.exports &&
+        Object.keys(mdl.exports)
+          .filter(exp => !this.PROPERTY_BLACKLIST.includes(exp))
+          .every(prop => typeof mdl.exports[prop] === 'string')
+      ))
+      .map(mdl => mdl.exports)
+      .filter(mdl => {
+        if (
+          typeof mdl !== 'object' ||
+          Array.isArray(mdl) ||
+          mdl.__esModule ||
+          Object.keys(mdl).length === 0
+        ) {
+          return false;
+        }
 
-    classNameModules = classNameModules.filter(m => typeof m === 'object' && !Array.isArray(m));
-    classNameModules = classNameModules.filter(m => !m.__esModule);
-    classNameModules = classNameModules.filter(m => !!Object.keys(m).length);
-    classNameModules = classNameModules.filter(m => {
-      for (const baseClassName in m) {
-        const value = m[baseClassName];
-        if (typeof value !== 'string') {
-          return false;
+        for (const baseClassName of Object.values(mdl)) {
+          if (typeof baseClassName !== 'string') {
+            return false;
+          }
+
+          if (this._shouldIgnore(baseClassName)) {
+            continue;
+          }
+
+          if (
+            !baseClassName.includes('-') ||
+            !this.randClassReg.test(baseClassName.split(' ')[0])
+          ) {
+            return false;
+          }
         }
-        if (this._shouldIgnore(value)) {
-          continue;
-        }
-        if (value.split('-').length === 1) {
-          return false;
-        }
-        if (!this.randClassReg.test(value.split(' ')[0])) {
-          return false;
-        }
-      }
-      return true;
-    });
-    return classNameModules;
+
+        return true;
+      });
   }
 
   _shouldIgnore (value) {
-    if (!isNaN(value)) {
-      return true;
-    }
-    if (value.endsWith('px') || value.endsWith('ch') || value.endsWith('em') || value.endsWith('ms')) {
-      return true;
-    }
-    if (value.startsWith('#') && (value.length === 7 || value.length === 4)) {
-      return true;
-    }
-    return !!(value.includes('calc(') || value.includes('rgba'));
+    return (
+      !isNaN(value) ||
+      this.PROPERTY_BLACKLIST.some(prop => value.endsWith(prop)) || (
+        value.startsWith('#') && (value.length === 7 || value.length === 4)
+      ) ||
+      value.includes('calc(') || value.includes('rgba')
+    );
   }
 };
