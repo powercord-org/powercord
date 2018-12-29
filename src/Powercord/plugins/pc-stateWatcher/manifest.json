@@ -2,7 +2,7 @@
   "name": "State Watcher",
   "version": "1.0.0",
   "description": "Watch the dom and fire events on updates",
-  "author": "aetheryx",
+  "author": "Powercord Team",
   "license": "MIT",
   "repo": null
 }

@@ -1,8 +1,8 @@
 {
   "name": "Plugin Manager",
   "version": "0.0.2",
-  "description": "Install, enable or disable plugins using a simple UI",
-  "author": "Bowser65",
+  "description": "Powercord's plugin manager",
+  "author": "Powercord Team",
   "license": "MIT",
   "repo": null
 }

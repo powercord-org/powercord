@@ -2,7 +2,7 @@
   "name": "DNT",
   "version": "1.0.0",
   "description": "Blocks all requests to Discord analytics endpoints",
-  "author": "adam",
+  "author": "adam & rauenzi",
   "license": "MIT",
   "repo": null
 }

@@ -2,7 +2,7 @@
   "name": "Class name normalizer",
   "version": "1.0.0",
   "description": "Normalize Discord random class names to .pc- static classes",
-  "author": "Bowser65",
+  "author": "Powercord Team",
   "license": "MIT",
   "repo": null
 }
