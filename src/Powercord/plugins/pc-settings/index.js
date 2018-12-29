@@ -22,7 +22,7 @@ module.exports = class Settings extends Plugin {
       return this.error(`Tried to register a settings panel with an invalid ID! You can only use letters, numbers, dashes and underscores. (ID: ${key})`);
     }
 
-    if (this.sections.filter(s => s.key === key).length !== 0) {
+    if (this.sections.find(s => s.key === key)) {
       return this.error(`Key ${key} is already used by another plugin!`);
     }
     this.sections.push({
@@ -43,10 +43,10 @@ module.exports = class Settings extends Plugin {
     const SettingsView = getModuleByDisplayName('SettingsView');
     SettingsView.prototype.getPredicateSections = ((_getter, pluginSections) => function (...args) { // eslint-disable-line
       const sections = _getter.call(this, ...args);
-      const changelog = sections.filter(c => c.section === 'changelog');
-      if (changelog.length !== 0) {
+      const changelog = sections.find(c => c.section === 'changelog');
+      if (changelog) {
         sections.splice(
-          sections.indexOf(changelog[0]), 0,
+          sections.indexOf(changelog), 0,
           {
             section: 'HEADER',
             label: 'Powercord'

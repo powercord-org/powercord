@@ -27,7 +27,7 @@ module.exports = class KeybindManager extends Plugin {
 
   // @see https://github.com/electron/electron/blob/master/docs/api/accelerator.md for keybind syntax
   register (id, name, func, defaultKeybind) {
-    if (this.keybinds.filter(k => k.id === id).length !== 0) {
+    if (this.keybinds.find(k => k.id === id)) {
       throw new Error(`ID ${id} is already used by another plugin!`);
     }
 
