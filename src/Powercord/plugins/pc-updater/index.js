@@ -10,12 +10,14 @@ const cp = require('child_process');
 const exec = promisify(cp.exec);
 
 const REPO = 'aetheryx/powercord';
+const Settings = require('./Settings.jsx');
 
 module.exports = class Updater extends Plugin {
   constructor () {
-    super();
+    super({
+      dependencies: [ 'pc-settings' ]
+    });
 
-    this.ask = true;
     this.cwd = {
       cwd: join(__dirname, ...Array(3).fill('..'))
     };
@@ -23,13 +25,27 @@ module.exports = class Updater extends Plugin {
 
   async start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
+    powercord
+      .pluginManager
+      .get('pc-settings')
+      .register('pc-updater', 'Updater', () =>
+        React.createElement(Settings, {
+          settings: this.settings
+        })
+      );
 
-    setInterval(this.checkForUpdate.bind(this), 15 * 60 * 1000);
+    let minutes = Number(this.settings.get('interval', 15));
+    if (minutes < 1) {
+      this.settings.set('interval', 1);
+      minutes = 1;
+    }
+
+    setInterval(this.checkForUpdate.bind(this), minutes * 60 * 1000);
     this.checkForUpdate();
   }
 
   async checkForUpdate () {
-    if (!this.ask) {
+    if (!this.settings.get('checkForUpdates', true)) {
       return;
     }
 
@@ -70,7 +86,7 @@ module.exports = class Updater extends Plugin {
           bottom: '25px',
           right: '25px',
           height: '95px',
-          width: '300px'
+          width: '320px'
         },
         header: 'Powercord has an update.',
         buttons: [ {
@@ -94,12 +110,12 @@ module.exports = class Updater extends Plugin {
               .then(() => sleep(500))
               .then(() => container.remove())
         }, {
-          text: 'Don\'t ask me again',
+          text: 'Never ask me again',
           onClick: (setState) =>
             setState({ leaving: true })
               .then(() => sleep(500))
               .then(() => container.remove())
-              .then(() => (this.ask = false))
+              .then(() => this.settings.set('checkForUpdates', false))
         } ]
       }),
       container
