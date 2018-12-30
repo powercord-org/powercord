@@ -35,7 +35,7 @@ module.exports = class Settings extends Plugin {
   patchExperiments () {
     const experimentsModule = getModule(r => r.isDeveloper !== void 0);
     Object.defineProperty(experimentsModule, 'isDeveloper', {
-      get: () => powercord.settingsManager.get('experiments', false)
+      get: () => powercord.settings.get('experiments', false)
     });
   }
 
@@ -58,10 +58,9 @@ module.exports = class Settings extends Plugin {
       return sections;
     })(SettingsView.prototype.getPredicateSections, this.sections);
 
-    SettingsView.prototype.componentDidCatch = (_componentDidCatch => (...args) => {
+    SettingsView.prototype.componentDidCatch = () => {
       this.error('nee jij discord :)');
-      return _componentDidCatch(...args);
-    })(SettingsView.prototype.componentDidCatch);
+    };
   }
 
   _renderSettingsPanel (title, contents) {

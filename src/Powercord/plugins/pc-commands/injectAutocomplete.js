@@ -1,7 +1,7 @@
 const { waitFor, getOwnerInstance, sleep } = require('powercord/util');
 
 module.exports = async function injectAutocomplete () {
-  const prefix = powercord.settingsManager.get('prefix', '.');
+  const prefix = powercord.settings.get('prefix', '.');
 
   const plugins = [ ...powercord.pluginManager.plugins.keys() ];
   while (!plugins.every(plugin =>

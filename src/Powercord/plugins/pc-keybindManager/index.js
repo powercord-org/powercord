@@ -35,10 +35,10 @@ module.exports = class KeybindManager extends Plugin {
       id,
       name,
       func,
-      keybind: this.settingsManager.get(id, defaultKeybind)
+      keybind: this.settings.get(id, defaultKeybind)
     });
 
-    globalShortcut.register(this.settingsManager.get(id, defaultKeybind), func);
+    globalShortcut.register(this.settings.get(id, defaultKeybind), func);
   }
 
   _handleChange (keybindId, key) {
@@ -52,6 +52,6 @@ module.exports = class KeybindManager extends Plugin {
         keybind: key
       }
       : k);
-    this.settingsManager.set(keybindId, key);
+    this.settings.set(keybindId, key);
   }
 };

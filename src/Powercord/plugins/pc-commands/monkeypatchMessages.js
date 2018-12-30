@@ -7,7 +7,7 @@ const {
 const messages = webpack.getModule(webpack.moduleFilters.messages[0]);
 
 module.exports = async function monkeypatchMessages () {
-  const prefix = powercord.settingsManager.get('prefix', '.');
+  const prefix = powercord.settings.get('prefix', '.');
 
   messages.sendMessage = (sendMessage => async (id, message, ...params) => {
     if (!message.content.startsWith(prefix)) {

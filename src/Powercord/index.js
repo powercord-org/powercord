@@ -9,7 +9,7 @@ module.exports = class Powercord extends EventEmitter {
     super();
 
     this.pluginManager = new PluginManager();
-    this.settingsManager = new SettingsManager('general');
+    this.settings = new SettingsManager('general');
     this.patchWebSocket();
 
     if (document.readyState === 'loading') {

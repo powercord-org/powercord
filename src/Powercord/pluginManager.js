@@ -15,17 +15,17 @@ module.exports = class PluginManager {
 
   enable (plugin) {
     this.requiresReload = true;
-    powercord.settingsManager.set(
+    powercord.settings.set(
       'disabledPlugins',
-      powercord.settingsManager.get('disabledPlugins', []).filter(p => p !== plugin)
+      powercord.settings.get('disabledPlugins', []).filter(p => p !== plugin)
     );
   }
 
   disable (plugin) {
     this.requiresReload = true;
-    const disabled = powercord.settingsManager.get('disabledPlugins', []);
+    const disabled = powercord.settings.get('disabledPlugins', []);
     disabled.push(plugin);
-    powercord.settingsManager.set('disabledPlugins', disabled);
+    powercord.settings.set('disabledPlugins', disabled);
   }
 
   startPlugins () {
@@ -49,7 +49,7 @@ module.exports = class PluginManager {
     readdirSync(this.pluginDir)
       .forEach(filename => {
         const moduleName = filename.split('.')[0];
-        if (powercord.settingsManager.get('disabledPlugins', []).includes(moduleName)) {
+        if (powercord.settings.get('disabledPlugins', []).includes(moduleName)) {
           return;
         }
 
@@ -66,25 +66,27 @@ module.exports = class PluginManager {
 
         try {
           const PluginClass = require(resolve(this.pluginDir, filename));
-          const plugin = new PluginClass();
-          Object.defineProperty(plugin, 'pluginID', {
-            get () {
-              return moduleName;
+
+          Object.defineProperties(PluginClass.prototype, {
+            pluginID: {
+              get () {
+                return moduleName;
+              },
+              set () {
+                throw new Error('Plugins cannot update their ID at runtime!');
+              }
             },
-            set () {
-              throw new Error('Plugins cannot update their id at runtime!');
-            }
-          });
-          Object.defineProperty(plugin, 'manifest', {
-            get () {
-              return manifest;
-            },
-            set () {
-              throw new Error('Plugins cannot update manifest at runtime!');
+            manifest: {
+              get () {
+                return manifest;
+              },
+              set () {
+                throw new Error('Plugins cannot update manifest at runtime!');
+              }
             }
           });
 
-          plugins[moduleName] = plugin;
+          plugins[moduleName] = new PluginClass();;
         } catch (e) {
           console.error('%c[Powercord]', 'color: #257dd4', `An error occurred while initializing "${moduleName}"!`, e);
         }

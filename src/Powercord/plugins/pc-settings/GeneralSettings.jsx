@@ -6,7 +6,7 @@ module.exports = class GeneralSettings extends React.Component {
   constructor () {
     super();
 
-    const get = powercord.settingsManager.get.bind(powercord.settingsManager);
+    const get = powercord.settings.get.bind(powercord.settings);
 
     this.state = {
       prefix: get('prefix', '.'),
@@ -21,7 +21,7 @@ module.exports = class GeneralSettings extends React.Component {
     const settings = this.state;
 
     const set = (key, value = !settings[key]) => {
-      powercord.settingsManager.set(key, value);
+      powercord.settings.set(key, value);
       this.setState({
         [key]: value
       });

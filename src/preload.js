@@ -13,7 +13,7 @@ require('module')
 const Powercord = require('./Powercord');
 global.powercord = new Powercord();
 
-if (powercord.settingsManager.get('openOverlayDevTools', false) && window.__OVERLAY__) {
+if (powercord.settings.get('openOverlayDevTools', false) && window.__OVERLAY__) {
   remote
     .getCurrentWindow()
     .openDevTools({
