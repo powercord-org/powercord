@@ -49,7 +49,7 @@ module.exports = class GeneralSettings extends React.Component {
           <div>
             <TextInput
               value={settings.backendURL}
-              onChange={() => set('backendURL')}
+              onChange={(e) => set('backendURL', e)}
             >
               Backend URL
             </TextInput>
@@ -76,5 +76,5 @@ module.exports = class GeneralSettings extends React.Component {
         )}
       </div>
     );
-  } 
+  }
 };

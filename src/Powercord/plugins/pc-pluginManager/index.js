@@ -29,15 +29,15 @@ module.exports = class PluginManager extends Plugin {
     HeaderBar.prototype.render = (_render => function (...args) {
       const res = _render.call(this, ...args);
       if (powercord.pluginManager.requiresReload) {
-        res.props.children[3].props.children[2].props.children.push({
-          ...res.props.children[3].props.children[2].props.children[3],
-          props: {
-            ...res.props.children[3].props.children[2].props.children[3].props,
-            onClick: () => window.location.reload(),
-            tooltip: 'Plugin Manager requires reload',
-            className: 'pc-icon-reload'
-          }
-        });
+        res.props.children[3].props.children[2].props.children.push(
+          Object.assign({}, res.props.children[3].props.children[2].props.children[3], {
+            props: Object.assign({}, res.props.children[3].props.children[2].props.children[3].props, {
+              onClick: () => window.location.reload(),
+              tooltip: 'Plugin Manager requires reload',
+              className: 'pc-icon-reload'
+            })
+          })
+        );
       }
       return res;
     })(HeaderBar.prototype.render);

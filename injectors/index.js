@@ -1,3 +1,5 @@
+require('../polyfills');
+
 const main = require('./main.js');
 
 let platformModule;

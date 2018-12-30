@@ -1,3 +1,5 @@
+require('../polyfills');
+
 const Module = require('module');
 const { join, dirname } = require('path');
 const electron = require('electron');

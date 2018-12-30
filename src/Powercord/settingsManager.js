@@ -27,11 +27,7 @@ module.exports = class SettingsManager {
   }
 
   _save () {
-    const cfg = {
-      ...config,
-      [this.category]: this.config
-    };
-
+    const cfg = Object.assign({}, config, { [this.category]: this.config });
     writeFile(resolve(__dirname, '..', '..', 'config.json'), JSON.stringify(cfg, null, 2), () => null);
   }
 };

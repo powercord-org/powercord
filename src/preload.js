@@ -1,3 +1,5 @@
+require('../polyfills');
+
 const { remote } = require('electron');
 const { join } = require('path');
 

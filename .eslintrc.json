@@ -183,7 +183,6 @@
       }
     }],
     "padded-blocks": [ "error", "never" ],
-    "prefer-object-spread": [ "error" ],
     "quote-props": [ "error", "as-needed" ],
     "quotes": [ "error", "single" ],
     "semi": [ "error", "always" ],
