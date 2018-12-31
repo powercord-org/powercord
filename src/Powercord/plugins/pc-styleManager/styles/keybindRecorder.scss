@@ -1,0 +1,165 @@
+.powercord-keybind {
+  background-color: rgba(0, 0, 0, .1);
+  transition: border .15s ease;
+  border: 1px solid rgba(0, 0, 0, .3);
+  border-radius: 3px;
+  box-sizing: border-box;
+  cursor: pointer;
+  height: 40px;
+  flex: 1;
+  position: relative;
+  margin-right: 10px;
+
+  &-container {
+    display: flex;
+  }
+
+  &-inner {
+    display: flex;
+    cursor: pointer;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    * {
+      cursor: pointer;
+    }
+  }
+
+  &-input {
+    color: #f6f6f7;
+    font-size: 14px;
+    font-weight: 600;
+    user-select: none;
+    border: none;
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    min-width: 0;
+    position: relative;
+    width: 100%;
+    z-index: 1;
+    background-color: transparent;
+    line-height: 22px;
+    overflow: hidden;
+    padding: 10px 0 10px 10px;
+    text-overflow: ellipsis;
+    transition: color .15s ease;
+    white-space: nowrap;
+  }
+
+  &-btn {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex: 0 1 auto;
+    margin: 0;
+  }
+
+  &-button {
+    width: 34px;
+    background: rgba(116, 127, 141, .1);
+    color: #747f8d;
+    overflow: hidden;
+    position: relative;
+    transition: background-color .2s ease-in-out, color .2s ease-in-out, width .2s ease-in-out;
+    white-space: nowrap;
+    border-radius: 2px;
+    margin: 4px 4px 4px 0;
+    padding: 2px 20px;
+    display: inline;
+    height: auto;
+    align-items: center;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    justify-content: center;
+    line-height: 16px;
+    user-select: none;
+
+    &-inner {
+      line-height: 20px;
+      pointer-events: none;
+
+      .text {
+        opacity: 0;
+        transform: translate3d(200%, 0, 0);
+        transition: opacity .2s ease-in-out, transform .2s ease-in-out, -webkit-transform .2s ease-in-out;
+      }
+
+      .icon {
+        background-image: url(https://canary.discordapp.com/assets/860396b3ff3fa1c4ae355bebfabadecb.svg);
+        opacity: 1;
+        transform: translateZ(0);
+        height: 24px;
+        left: 50%;
+        margin-left: -12px;
+        margin-top: -12px;
+        position: absolute;
+        top: 50%;
+        transition: opacity .2s ease-in-out, transform .2s ease-in-out, -webkit-transform .2s ease-in-out;
+        width: 24px;
+      }
+    }
+  }
+
+  &:hover {
+    border-color: rgba(240, 71, 71, .3);
+
+    .text {
+      opacity: 1;
+      transform: translateZ(0);
+    }
+
+    .icon {
+      opacity: 0;
+      transform: translate3d(-200%, 0, 0);
+    }
+
+    .powercord-keybind-button {
+      width: 128px;
+    }
+  }
+
+  &.recording {
+     animation: keybind-shadowPulse 1s ease-in infinite;
+     border-color: rgba(240, 71, 71, .6);
+     box-shadow: 0 0 6px rgba(240, 71, 71, .3);
+     color: #f04747;
+
+     .powercord-keybind-input {
+       color: #f04747;
+     }
+
+     .powercord-keybind-button {
+       background-color: rgba(240, 71, 71, .1);
+       color: #f04747;
+       width: 128px;
+     }
+
+     .text {
+       opacity: 1;
+       transform: translateZ(0);
+     }
+
+     .icon {
+       opacity: 0;
+       transform: translate3d(-200%, 0, 0);
+     }
+   }
+}
+
+@keyframes keybind-shadowPulse {
+  0% {
+    box-shadow: 0 0 6px rgba(240, 71, 71, .3)
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(240, 71, 71, .6)
+  }
+  to {
+    box-shadow: 0 0 6px rgba(240, 71, 71, .3)
+  }
+}

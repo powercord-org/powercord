@@ -41,7 +41,7 @@ module.exports = class GeneralSettings extends React.Component {
           note='How frequently Powercord checks for updates (in minutes).'
           defaultValue={settings.interval}
           required={true}
-          onChange={val => set('interval', (Number(val) && Number(val) >= 1) || 1, 15)}
+          onChange={val => set('interval', (Number(val) && Number(val) >= 1) ? Number(val) : 1, 15)}
         >
           Interval
         </TextInput>

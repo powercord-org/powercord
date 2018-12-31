@@ -2,11 +2,13 @@ const { resolve } = require('path');
 const { readdirSync } = require('fs');
 
 const manifestKeys = [ 'name', 'version', 'description', 'author', 'license', 'repo' ];
+const enforcedPlugins = [ 'pc-styleManager', 'pc-settings', 'pc-pluginManager' ];
 
 module.exports = class PluginManager {
   constructor () {
     this.requiresReload = false;
     this.pluginDir = resolve(__dirname, 'plugins');
+    this.ensuredPlugins = [];
   }
 
   get (plugin) {
@@ -22,6 +24,9 @@ module.exports = class PluginManager {
   }
 
   disable (plugin) {
+    if (enforcedPlugins.includes(plugin)) {
+      throw new Error(`You cannot disable an enforced plugin. (Tried to disable ${plugin})`);
+    }
     this.requiresReload = true;
     const disabled = powercord.settings.get('disabledPlugins', []);
     disabled.push(plugin);
@@ -31,6 +36,9 @@ module.exports = class PluginManager {
   startPlugins () {
     this._loadPlugins();
     for (const plugin of [ ...this.plugins.values() ]) {
+      if (powercord.settings.get('disabledPlugins', []).includes(plugin.pluginID)) {
+        return;
+      }
       if (
         (plugin.options.appMode === 'overlay' && window.__OVERLAY__) ||
         (plugin.options.appMode === 'app' && !window.__OVERLAY__) ||
@@ -44,14 +52,19 @@ module.exports = class PluginManager {
     }
   }
 
+  resolveDeps (plugin) {
+    const deps = [];
+    plugin.options.dependencies.forEach(dep => {
+      deps.push(dep, ...this.resolveDeps(dep));
+    });
+    return deps;
+  }
+
   _loadPlugins () {
     const plugins = {};
     readdirSync(this.pluginDir)
       .forEach(filename => {
         const moduleName = filename.split('.')[0];
-        if (powercord.settings.get('disabledPlugins', []).includes(moduleName)) {
-          return;
-        }
 
         let manifest;
         try {
@@ -86,12 +99,39 @@ module.exports = class PluginManager {
             }
           });
 
-          plugins[moduleName] = new PluginClass();;
+          plugins[moduleName] = new PluginClass();
         } catch (e) {
           console.error('%c[Powercord]', 'color: #257dd4', `An error occurred while initializing "${moduleName}"!`, e);
         }
       });
 
     this.plugins = new Map(Object.entries(plugins));
+    this._ensureDepsEnabled();
+  }
+
+  _ensureDepsEnabled () {
+    this.plugins.forEach(plugin => {
+      if (powercord.settings.get('disabledPlugins', []).includes(plugin.pluginID)) {
+        if (enforcedPlugins.includes(plugin.pluginID)) { // :reee:
+          this.enable(plugin.pluginID);
+          this.requiresReload = false;
+        } else {
+          return;
+        }
+      }
+
+      this._ensureDepEnabled(plugin);
+    });
+  }
+
+  _ensureDepEnabled (plugin) {
+    if (!this.ensuredPlugins.includes(plugin)) { // Prevent cyclic loops
+      this.ensuredPlugins.push(plugin);
+      plugin.options.dependencies.forEach(dep => {
+        this.enable(dep);
+        this.requiresReload = false;
+        this._ensureDepsEnabled(dep);
+      });
+    }
   }
 };

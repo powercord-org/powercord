@@ -20,7 +20,11 @@ module.exports = class GeneralSettings extends React.Component {
   render () {
     const settings = this.state;
 
-    const set = (key, value = !settings[key]) => {
+    const set = (key, value = !settings[key], defaultValue) => {
+      if (!value && defaultValue) {
+        value = defaultValue;
+      }
+
       powercord.settings.set(key, value);
       this.setState({
         [key]: value
@@ -31,7 +35,8 @@ module.exports = class GeneralSettings extends React.Component {
       <div>
         <TextInput
           defaultValue={settings.prefix}
-          onChange={e => set('prefix', e)}
+          required={true}
+          onChange={e => set('prefix', e, '.')}
         >
           Command Prefix
         </TextInput>
@@ -49,7 +54,9 @@ module.exports = class GeneralSettings extends React.Component {
           <div>
             <TextInput
               value={settings.backendURL}
-              onChange={(e) => set('backendURL', e)}
+              required={true}
+              onChange={(e) => set('backendURL', e, 'https://powercord.xyz')}
+              note='Url used for Spotify linking, plugin management and other internal functions'
             >
               Backend URL
             </TextInput>
@@ -64,7 +71,8 @@ module.exports = class GeneralSettings extends React.Component {
 
             <SwitchItem
               note={
-                <span><b style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> Enabling this gives you access to features that can be <b>detected by Discord</b> and may result in an <b style={{ color: 'rgb(240, 71, 71)' }}>account termination</b>.
+                <span><b style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> Enabling this gives you access to features that can be <b>detected by Discord</b> and may result in an <b
+                  style={{ color: 'rgb(240, 71, 71)' }}>account termination</b>.
                   Powercord is <b>not responsible</b> for what you do with this feature. Leave it disabled if you are unsure.</span>
               }
               value={settings.experiments}

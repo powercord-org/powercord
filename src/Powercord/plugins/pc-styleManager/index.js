@@ -31,7 +31,8 @@ module.exports = class StyleManager extends Plugin {
     this.worker.onmessage = this._handleFinishedCompiling.bind(this);
 
     // Load global css
-    await this.load('pc-contextMenu', resolve(__dirname, 'styles', 'contextMenu.scss'));
+    this.load('ContextMenu', resolve(__dirname, 'styles', 'contextMenu.scss'));
+    this.load('KeybindRecorder', resolve(__dirname, 'styles', 'keybindRecorder.scss'));
 
     // Load themes @todo: Use a manifest to get file
     const dir = await readdir(this.themesDir);
@@ -44,12 +45,12 @@ module.exports = class StyleManager extends Plugin {
       const file = resolve(this.themesDir, filename);
       const watcher = chokidar.watch(file);
       this.trackedFiles.push({
-        id: `theme-${styleId}`,
+        id: `Theme-${styleId}`,
         file: file.replace(/\\/g, '/'),
         includes: [],
         watchers: [ watcher ]
       });
-      await this._applyStyle(`theme-${styleId}`, file, true);
+      await this._applyStyle(`Theme-${styleId}`, file, true);
       watcher.on('change', this.update.bind(this));
     }
   }
