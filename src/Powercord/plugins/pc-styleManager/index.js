@@ -110,7 +110,12 @@ module.exports = class StyleManager extends Plugin {
           render({
             data: css,
             includePaths: [ dirname(file) ],
-            importer: (url, prev) => ({ file: resolve(dirname(decodeURI(prev)), url).replace(/\\/g, '/') })
+            importer: (url, prev) => {
+              const prevFile = prev === 'stdin' ? file : prev;
+              return {
+                file: resolve(dirname(decodeURI(prevFile)), url).replace(/\\/g, '/')
+              };
+            }
           }, (err, compiled) => {
             if (err) {
               return rej(err);
