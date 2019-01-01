@@ -39,6 +39,7 @@ module.exports = class KeybindManager extends Plugin {
       keybind: this.settings.get(id, defaultKeybind)
     });
 
+    this.settings.set(id, this.settings.get(id, defaultKeybind)); // Just to be sure we can reset it on startup
     this._safeRegister(this.settings.get(id, defaultKeybind), func);
   }
 
