@@ -1,9 +1,21 @@
 const { React } = require('powercord/webpack');
 
-module.exports = class GeneralSettings extends React.Component {
+const Installed = require('./Installed');
+const Explore = require('./Explore');
+
+module.exports = class Settings extends React.Component {
+  constructor (props) {
+    super(props);
+
+    this.state = {
+      explore: false
+    };
+  }
+
   render () {
-    return <div>
-      uwu
-    </div>;
+    if (this.state.explore) {
+      return <Explore goToInstalled={() => this.setState({ explore: false })}/>;
+    }
+    return <Installed goToExplore={() => this.setState({ explore: true })}/>;
   }
 };

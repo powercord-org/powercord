@@ -12,7 +12,7 @@ module.exports = class PluginManager extends Plugin {
   }
 
   async start () {
-    this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.loadCSS(resolve(__dirname, 'scss', 'style.scss'));
 
     powercord
       .pluginManager

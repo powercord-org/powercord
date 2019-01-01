@@ -1,5 +1,5 @@
-const { React, contextMenu, getModuleByDisplayName } = require('powercord/webpack');
-const { ContextMenu } = require('powercord/components');
+const { React, contextMenu } = require('powercord/webpack');
+const { ContextMenu, Tooltip } = require('powercord/components');
 const { concat } = require('powercord/util');
 
 const SpotifyPlayer = require('../SpotifyPlayer.js');
@@ -69,7 +69,7 @@ module.exports = class Modal extends React.Component {
           return this.updateData(data.event.state);
 
         case 'DEVICE_STATE_CHANGED':
-          const { devices } = await SpotifyPlayer.getDevices();
+          const { devices } = await SpotifyPlayer.getDevices(); // eslint-disable-line
           if (!devices[0]) {
             return this.setState({
               displayState: 'hide'
@@ -85,8 +85,6 @@ module.exports = class Modal extends React.Component {
   }
 
   render () {
-    const Tooltip = getModuleByDisplayName('tooltip');
-
     const { currentItem, isPlaying, displayState } = this.state;
     const artists = concat(currentItem.artists);
 
@@ -145,7 +143,7 @@ module.exports = class Modal extends React.Component {
             onSeeking={(seeking) => this.setState({
               seekBar: {
                 ...this.state.seekBar,
-                seeking: seeking
+                seeking
               }
             })}
             onDurationToggle={(show) => this.setState({
@@ -161,10 +159,10 @@ module.exports = class Modal extends React.Component {
   }
 
 
-  async injectContextMenu (event) {
-    const { pageX, pageY } = event;
+  async injectContextMenu (e) {
+    const { pageX, pageY } = e;
 
-    contextMenu.openContextMenu(event, () =>
+    contextMenu.openContextMenu(e, () =>
       React.createElement(ContextMenu, {
         pageX,
         pageY,

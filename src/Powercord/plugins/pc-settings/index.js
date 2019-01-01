@@ -59,7 +59,7 @@ module.exports = class Settings extends Plugin {
     })(SettingsView.prototype.getPredicateSections, this.sections);
 
     SettingsView.prototype.componentDidCatch = () => {
-      this.error('nee jij discord :)');
+      this.error('nee jij discord :) (There should be an error just before this message)');
     };
   }
 

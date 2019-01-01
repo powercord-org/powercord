@@ -1,18 +1,40 @@
 const { resolve } = require('path');
 const { readdirSync } = require('fs');
 
-const manifestKeys = [ 'name', 'version', 'description', 'author', 'license', 'repo' ];
-const enforcedPlugins = [ 'pc-styleManager', 'pc-settings', 'pc-pluginManager' ];
-
 module.exports = class PluginManager {
   constructor () {
-    this.requiresReload = false;
+    this._requiresReload = false;
     this.pluginDir = resolve(__dirname, 'plugins');
     this.ensuredPlugins = [];
+
+    this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license', 'repo' ];
+    this.enforcedPlugins = [ 'pc-styleManager', 'pc-settings', 'pc-pluginManager', 'pc-keybindManager' ];
+  }
+
+  get requiresReload () {
+    return this._requiresReload;
+  }
+
+  set requiresReload (value) {
+    this._requiresReload = value;
+    const title = document.querySelector('.pc-titleWrapper');
+    if (title) {
+      require('powercord/util').getOwnerInstance(title).forceUpdate();
+    }
   }
 
   get (plugin) {
     return this.plugins.get(plugin);
+  }
+
+  getPlugins () {
+    return Array.from(powercord.pluginManager.plugins.keys()).filter(p =>
+      !powercord.settings.get('hiddenPlugins', []).includes(p));
+  }
+
+  getHiddenPlugins () {
+    return Array.from(powercord.pluginManager.plugins.keys()).filter(p =>
+      powercord.settings.get('hiddenPlugins', []).includes(p));
   }
 
   enable (plugin) {
@@ -24,7 +46,7 @@ module.exports = class PluginManager {
   }
 
   disable (plugin) {
-    if (enforcedPlugins.includes(plugin)) {
+    if (this.enforcedPlugins.includes(plugin)) {
       throw new Error(`You cannot disable an enforced plugin. (Tried to disable ${plugin})`);
     }
     this.requiresReload = true;
@@ -33,10 +55,42 @@ module.exports = class PluginManager {
     powercord.settings.set('disabledPlugins', disabled);
   }
 
+  install (plugin) {
+    this.requiresReload = true;
+    if (plugin.startsWith('pc-')) {
+      powercord.settings.set(
+        'hiddenPlugins',
+        powercord.settings.get('hiddenPlugins', []).filter(p => p !== plugin)
+      );
+    }
+  }
+
+  uninstall (plugin) {
+    if (this.enforcedPlugins.includes(plugin)) {
+      throw new Error(`You cannot uninstall an enforced plugin. (Tried to uninstall ${plugin})`);
+    }
+
+    this.requiresReload = true;
+    if (plugin.startsWith('pc-')) {
+      const hidden = powercord.settings.get('hiddenPlugins', []);
+      hidden.push(plugin);
+      powercord.settings.set('hiddenPlugins', hidden);
+    }
+  }
+
+  isEnabled (plugin) {
+    return !powercord.settings.get('disabledPlugins', []).includes(plugin);
+  }
+
+  isEnforced (plugin) {
+    return this.enforcedPlugins.includes(plugin);
+  }
+
   startPlugins () {
     this._loadPlugins();
     for (const plugin of [ ...this.plugins.values() ]) {
       if (powercord.settings.get('disabledPlugins', []).includes(plugin.pluginID)) {
+        console.log('dafukkkkkk');
         return;
       }
       if (
@@ -65,6 +119,14 @@ module.exports = class PluginManager {
     readdirSync(this.pluginDir)
       .forEach(filename => {
         const moduleName = filename.split('.')[0];
+        if (powercord.settings.get('hiddenPlugins', []).includes(moduleName)) {
+          if (this.enforcedPlugins.includes(moduleName)) { // :reee:
+            this.install(moduleName);
+            this.requiresReload = false;
+          } else {
+            return;
+          }
+        }
 
         let manifest;
         try {
@@ -73,7 +135,7 @@ module.exports = class PluginManager {
           return console.error('%c[Powercord]', 'color: #257dd4', `Plugin ${moduleName} doesn't have a valid manifest - Skipping`);
         }
 
-        if (!manifestKeys.every(key => manifest.hasOwnProperty(key))) {
+        if (!this.manifestKeys.every(key => manifest.hasOwnProperty(key))) {
           return console.error('%c[Powercord]', 'color: #257dd4', `Plugin "${moduleName}" doesn't have a valid manifest - Skipping`);
         }
 
@@ -112,7 +174,7 @@ module.exports = class PluginManager {
   _ensureDepsEnabled () {
     this.plugins.forEach(plugin => {
       if (powercord.settings.get('disabledPlugins', []).includes(plugin.pluginID)) {
-        if (enforcedPlugins.includes(plugin.pluginID)) { // :reee:
+        if (this.enforcedPlugins.includes(plugin.pluginID)) { // :reee:
           this.enable(plugin.pluginID);
           this.requiresReload = false;
         } else {

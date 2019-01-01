@@ -1,0 +1,19 @@
+@import "./reload";
+@import "./plugin";
+
+.powercord-plugins {
+  * {
+    color: #fff;
+  }
+
+  &-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h3 {
+      font-size: 18px;
+      flex: 1;
+    }
+  }
+}

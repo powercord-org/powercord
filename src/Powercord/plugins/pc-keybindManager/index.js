@@ -14,6 +14,14 @@ module.exports = class KeybindManager extends Plugin {
     this.keybinds = [];
   }
 
+  start () {
+    // Clear any previously set keybind
+    Object.keys(this.settings.config).forEach(keybind => {
+      this._safeUnregister(this.settings.get(keybind));
+    });
+    this.register('owo', 'uuuuuuuh', 'idk', () => console.log('fucker'), 'Ctrl+M');
+  }
+
   // @see https://github.com/electron/electron/blob/master/docs/api/accelerator.md for keybind syntax
   register (id, name, description, func, defaultKeybind) {
     if (this.keybinds.find(k => k.id === id)) {
@@ -44,8 +52,7 @@ module.exports = class KeybindManager extends Plugin {
         .register('pc-keybinds', 'Keybinds', () =>
           React.createElement(Settings, {
             onChange: this._handleChange.bind(this),
-            onRecord: this._handleRecord.bind(this),
-            keybinds: this.keybinds
+            onRecord: this._handleRecord.bind(this)
           })
         );
     }
@@ -53,19 +60,17 @@ module.exports = class KeybindManager extends Plugin {
 
   _handleRecord (keybindId) {
     const keybind = this.keybinds.find(k => k.id === keybindId);
-
-    try {
-      globalShortcut.unregister(keybind.keybind);
-    } catch (e) {
-      // let it fail silently, probably just invalid keybind
-    }
+    this._safeUnregister(keybind.keybind);
   }
 
-  _handleChange (keybindId, key) {
+  _handleChange (keybindId, rawKey) {
     const keybind = this.keybinds.find(k => k.id === keybindId);
+    const key = rawKey || keybind.defaultKeybind;
 
-    this._safeRegister(key || keybind.defaultKeybind, keybind.func);
+    this._safeUnregister(keybind.keybind); // just in case
+    this._safeRegister(key, keybind.func);
     this.keybinds = this.keybinds.map(k => k.id === keybindId ? Object.assign(k, { keybind: key }) : k);
+
     this.settings.set(keybindId, key);
   }
 
@@ -74,6 +79,14 @@ module.exports = class KeybindManager extends Plugin {
       globalShortcut.register(keybind, func);
     } catch (e) {
       this.error('Failed to register keybind!', e);
+    }
+  }
+
+  _safeUnregister (keybind) {
+    try {
+      globalShortcut.unregister(keybind);
+    } catch (e) {
+      // let it fail silently, probably just invalid/unset keybind
     }
   }
 };
