@@ -17,7 +17,7 @@ module.exports = class LMGTFY extends Plugin {
         '{c} [ ...search terms ]',
         (args) => ({
           send: true,
-          result: `https://lmgtfy.com/?q=${encodeURI(args.join('+'))}`
+          result: `<https://lmgtfy.com/?q=${encodeURI(args.join('+'))}>`
         })
       );
   }
