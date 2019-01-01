@@ -4,12 +4,6 @@ const { clipboard } = require('electron');
 const { resolve } = require('path');
 
 module.exports = class Codeblocks extends Plugin {
-  constructor () {
-    super({
-      dependencies: [ 'pc-stateWatcher' ]
-    });
-  }
-
   async start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
 

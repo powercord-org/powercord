@@ -4,9 +4,7 @@ const Plugin = require('powercord/Plugin');
 
 module.exports = class HeyGirl extends Plugin {
   constructor () {
-    super({
-      dependencies: [ 'pc-commands' ]
-    });
+    super();
 
     this.URLs = [].concat(
       Array(3).fill('jpg'),

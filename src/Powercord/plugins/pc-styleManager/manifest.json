@@ -4,5 +4,10 @@
   "description": "Powercord's style manager",
   "author": "Powercord Team",
   "license": "MIT",
-  "repo": null
+  "repo": null,
+  "appMode": "both",
+  "dependencies": [
+    "pc-classNameNormalizer",
+    "pc-settings"
+  ]
 }

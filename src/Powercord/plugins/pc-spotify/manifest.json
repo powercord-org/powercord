@@ -4,5 +4,8 @@
   "description": "Better Spotify integration in Discord",
   "author": "Powercord Team",
   "license": "MIT",
-  "repo": null
+  "repo": null,
+  "dependencies": [
+    "pc-commands"
+  ]
 }

@@ -9,10 +9,7 @@ const { resolve, dirname } = require('path');
 // @todo: Install and manage themes using StyleManager
 module.exports = class StyleManager extends Plugin {
   constructor () {
-    super({
-      appMode: 'both',
-      dependencies: [ 'pc-classNameNormalizer', 'pc-settings' ]
-    });
+    super();
 
     this.themesDir = resolve(__dirname, 'themes');
     this.discordClassNames = [];

@@ -5,9 +5,7 @@ const { instance } = require('powercord/webpack');
 // Based on BBD normalizer
 module.exports = class ClassNameNormalizer extends Plugin {
   constructor () {
-    super({
-      appMode: 'both'
-    });
+    super();
 
     this.randClassReg = /^(?!pc-)((?:[a-z]|[0-9]|-)+)-(?:[a-z]|[0-9]|-|_){6}$/i;
     this.PROPERTY_BLACKLIST = [ 'displayName' ];
@@ -27,6 +25,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
 
   patchModule (classNames) {
     for (const baseClassName in classNames) {
+      // noinspection JSUnfilteredForInLoop
       const value = classNames[baseClassName];
       if (this._shouldIgnore(value)) {
         continue;
@@ -40,6 +39,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
         } // Shouldn't ever happen since they passed the moduleFilter, but you never know
 
         const camelCase = camelCaseify(match);
+        // noinspection JSUnfilteredForInLoop
         classNames[baseClassName] += ` pc-${camelCase}`;
       }
     }

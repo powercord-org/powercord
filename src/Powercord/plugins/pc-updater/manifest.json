@@ -4,5 +4,8 @@
   "description": "Ensure Powercord is always up to date",
   "author": "Powercord Team",
   "license": "MIT",
-  "repo": null
+  "repo": null,
+  "dependencies": [
+    "pc-settings"
+  ]
 }

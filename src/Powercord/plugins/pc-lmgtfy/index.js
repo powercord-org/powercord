@@ -1,12 +1,6 @@
 const Plugin = require('powercord/Plugin');
 
 module.exports = class LMGTFY extends Plugin {
-  constructor () {
-    super({
-      dependencies: [ 'pc-commands' ]
-    });
-  }
-
   start () {
     powercord
       .pluginManager

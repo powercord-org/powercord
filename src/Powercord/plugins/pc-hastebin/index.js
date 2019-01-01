@@ -4,9 +4,7 @@ const { clipboard } = require('electron');
 
 module.exports = class Hastebin extends Plugin {
   constructor () {
-    super({
-      dependencies: [ 'pc-commands' ]
-    });
+    super();
 
     this.DOMAIN = 'https://haste.aetheryx.xyz';
   }

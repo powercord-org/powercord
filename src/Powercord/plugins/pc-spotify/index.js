@@ -8,12 +8,6 @@ const SpotifyPlayer = require('./SpotifyPlayer');
 const Modal = require('./Modal');
 
 module.exports = class Spotify extends Plugin {
-  constructor () {
-    super({
-      dependencies: [ 'pc-commands' ]
-    });
-  }
-
   async patchSpotifySocket () {
     powercord.on('webSocketMessage:dealer.spotify.com', (data) => {
       const parsedData = JSON.parse(data.data);

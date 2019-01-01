@@ -94,9 +94,9 @@ module.exports = class PluginManager {
         return;
       }
       if (
-        (plugin.options.appMode === 'overlay' && window.__OVERLAY__) ||
-        (plugin.options.appMode === 'app' && !window.__OVERLAY__) ||
-        plugin.options.appMode === 'both'
+        (plugin.manifest.appMode === 'overlay' && window.__OVERLAY__) ||
+        (plugin.manifest.appMode === 'app' && !window.__OVERLAY__) ||
+        plugin.manifest.appMode === 'both'
       ) {
         plugin._start();
       } else {
@@ -108,7 +108,7 @@ module.exports = class PluginManager {
 
   resolveDeps (plugin) {
     const deps = [];
-    plugin.options.dependencies.forEach(dep => {
+    plugin.manifest.dependencies.forEach(dep => {
       deps.push(dep, ...this.resolveDeps(dep));
     });
     return deps;
@@ -130,7 +130,10 @@ module.exports = class PluginManager {
 
         let manifest;
         try {
-          manifest = require(resolve(this.pluginDir, filename, 'manifest.json'));
+          manifest = Object.assign({
+            appMode: 'app',
+            dependencies: []
+          }, require(resolve(this.pluginDir, filename, 'manifest.json')));
         } catch (e) {
           return console.error('%c[Powercord]', 'color: #257dd4', `Plugin ${moduleName} doesn't have a valid manifest - Skipping`);
         }
@@ -189,7 +192,7 @@ module.exports = class PluginManager {
   _ensureDepEnabled (plugin) {
     if (!this.ensuredPlugins.includes(plugin)) { // Prevent cyclic loops
       this.ensuredPlugins.push(plugin);
-      plugin.options.dependencies.forEach(dep => {
+      plugin.manifest.dependencies.forEach(dep => {
         this.enable(dep);
         this.requiresReload = false;
         this._ensureDepsEnabled(dep);

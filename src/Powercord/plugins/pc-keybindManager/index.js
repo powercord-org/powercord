@@ -6,9 +6,7 @@ const Settings = require('./Settings.jsx');
 
 module.exports = class KeybindManager extends Plugin {
   constructor () {
-    super({
-      dependencies: [ 'pc-settings' ]
-    });
+    super();
 
     this.registered = false;
     this.keybinds = [];

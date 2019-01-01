@@ -4,5 +4,8 @@
   "description": "Powercord's keybind API",
   "author": "Powercord Team",
   "license": "MIT",
-  "repo": null
+  "repo": null,
+  "dependencies": [
+    "pc-settings"
+  ]
 }

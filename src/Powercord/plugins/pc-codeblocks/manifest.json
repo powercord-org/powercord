@@ -4,5 +4,8 @@
   "description": "Improve Discord codeblocks",
   "author": "Powercord Team & noodlebox",
   "license": "MIT",
-  "repo": null
+  "repo": null,
+  "dependencies": [
+    "pc-stateWatcher"
+  ]
 }

@@ -4,9 +4,7 @@ const GeneralSettings = require('./GeneralSettings.jsx');
 
 module.exports = class Settings extends Plugin {
   constructor () {
-    super({
-      dependencies: [ 'pc-classNameNormalizer' ] // Required by some components
-    });
+    super();
 
     this.patched = false;
     this.sections = [];

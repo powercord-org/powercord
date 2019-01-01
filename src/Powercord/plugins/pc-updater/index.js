@@ -14,9 +14,7 @@ const Settings = require('./Settings.jsx');
 
 module.exports = class Updater extends Plugin {
   constructor () {
-    super({
-      dependencies: [ 'pc-settings' ]
-    });
+    super();
 
     this.cwd = {
       cwd: join(__dirname, ...Array(3).fill('..'))
