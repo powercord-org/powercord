@@ -1,5 +1,5 @@
 const { React } = require('powercord/webpack');
-const { Button } = require('powercord/components');
+const { Button, FormText } = require('powercord/components');
 const Plugin = require('./Plugin');
 
 const awaitingReload = [];
@@ -12,6 +12,9 @@ module.exports = class Installed extends React.Component {
         <Button onClick={() => this.props.goToExplore()}>Explore Plugins</Button>
       </div>
       <div className='powercord-plugins-container'>
+        <div className='powercord-plugins-topbar'>
+          <FormText/>
+        </div>
         {Array.from(powercord.pluginManager.plugins.keys()).map(key => {
           const plugin = powercord.pluginManager.plugins.get(key);
           return <Plugin

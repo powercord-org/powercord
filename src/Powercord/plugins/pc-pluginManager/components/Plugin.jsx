@@ -62,7 +62,7 @@ module.exports = class Plugin extends React.Component {
           Repository
         </Button>
 
-        {enforced && <Tooltip text='You cannot hide this plugin' position='top'>
+        {enforced && <Tooltip text="You can't hide this plugin" position='top'>
           <Button disabled className={Button.Colors.RED}>Hide</Button>
         </Tooltip>}
 
@@ -92,7 +92,7 @@ module.exports = class Plugin extends React.Component {
 };
 
 const EnableComponent = ({ enforced, enabled, onEnable, onDisable }) => {
-  const tooltip = enforced ? 'You cannot disable this plugin' : (enabled ? 'Disable' : 'Enable');
+  const tooltip = enforced ? 'You can\'t disable this plugin' : (enabled ? 'Disable' : 'Enable');
   return <Tooltip text={tooltip} position='top'>
     <div>
       <Switch value={enabled} onChange={enabled ? onDisable : onEnable} disabled={enforced}/>

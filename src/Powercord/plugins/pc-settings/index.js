@@ -8,6 +8,7 @@ module.exports = class Settings extends Plugin {
       dependencies: [ 'pc-classNameNormalizer' ] // Required by some components
     });
 
+    this.patched = false;
     this.sections = [];
   }
 
@@ -55,6 +56,24 @@ module.exports = class Settings extends Plugin {
           { section: 'DIVIDER' }
         );
       }
+
+      if (!this.patched) {
+        this.patched = true;
+        sections.find(c => c.section === 'CUSTOM').element = ((_element) => function () { // eslint-disable-line
+          const res = _element();
+          res.props.children.unshift(
+            Object.assign({}, res.props.children[0], {
+              props: Object.assign({}, res.props.children[0].props, {
+                href: 'https://powercord.xyz',
+                title: 'Powercord',
+                className: `${res.props.children[0].props.className} powercord-pc-icon`
+              })
+            })
+          );
+          return res;
+        })(sections.find(c => c.section === 'CUSTOM').element);
+      }
+
       return sections;
     })(SettingsView.prototype.getPredicateSections, this.sections);
 

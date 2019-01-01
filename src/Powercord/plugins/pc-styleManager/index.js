@@ -31,8 +31,7 @@ module.exports = class StyleManager extends Plugin {
     this.worker.onmessage = this._handleFinishedCompiling.bind(this);
 
     // Load global css
-    this.load('ContextMenu', resolve(__dirname, 'styles', 'contextMenu.scss'));
-    this.load('KeybindRecorder', resolve(__dirname, 'styles', 'keybindRecorder.scss'));
+    this.load('Powercord-Globals', resolve(__dirname, 'styles', 'index.scss'));
 
     // Load themes @todo: Use a manifest to get file
     const dir = await readdir(this.themesDir);
