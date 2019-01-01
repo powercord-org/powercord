@@ -4,6 +4,6 @@ module.exports = {
   usage: '{c} [ ...search terms ]',
   func: (args) => ({
     send: true,
-    result: `https://lmgtfy.com/${encodeURI(args.join(' '))}`
+    result: `https://lmgtfy.com/?q=${encodeURI(args.join('+'))}`
   })
 };
