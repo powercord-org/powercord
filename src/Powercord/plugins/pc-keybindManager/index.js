@@ -19,7 +19,6 @@ module.exports = class KeybindManager extends Plugin {
     Object.keys(this.settings.config).forEach(keybind => {
       this._safeUnregister(this.settings.get(keybind));
     });
-    this.register('owo', 'uuuuuuuh', 'idk', () => console.log('fucker'), 'Ctrl+M');
   }
 
   // @see https://github.com/electron/electron/blob/master/docs/api/accelerator.md for keybind syntax
