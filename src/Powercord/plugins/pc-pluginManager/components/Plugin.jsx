@@ -26,22 +26,23 @@ module.exports = class Plugin extends React.Component {
           enabled={enabled}
           onEnable={onEnable}
           onDisable={onDisable}
+          awaitingReload={awaitingReload}
         />}
       </div>
       <div className='powercord-plugin-container'>
-        <div>
+        <div className='author'>
           <Tooltip text='Author(s)' position='top'>
             <Author/>
           </Tooltip>
           <span>{manifest.author}</span>
         </div>
-        <div>
+        <div className='version'>
           <Tooltip text='Version' position='top'>
             <Version/>
           </Tooltip>
           <span>v{manifest.version}</span>
         </div>
-        <div>
+        <div className='license'>
           <Tooltip text='License' position='top'>
             <License/>
           </Tooltip>
@@ -83,19 +84,19 @@ module.exports = class Plugin extends React.Component {
 
   async process (func) {
     this.setState({ installing: true });
-    // See that so loader appears? :weSmart:
-    setTimeout(async () => {
-      await func();
-      this.setState({ installing: false });
-    }, 1000);
+    await func();
+    this.setState({ installing: false });
   }
 };
 
-const EnableComponent = ({ enforced, enabled, onEnable, onDisable }) => {
-  const tooltip = enforced ? 'You can\'t disable this plugin' : (enabled ? 'Disable' : 'Enable');
+const EnableComponent = ({ enforced, awaitingReload, enabled, onEnable, onDisable }) => {
+  const tooltip = awaitingReload
+    ? 'Awaiting Reload'
+    : (enforced ? 'You can\'t disable this plugin' : (enabled ? 'Disable' : 'Enable'));
+
   return <Tooltip text={tooltip} position='top'>
     <div>
-      <Switch value={enabled} onChange={enabled ? onDisable : onEnable} disabled={enforced}/>
+      <Switch value={enabled} onChange={enabled ? onDisable : onEnable} disabled={enforced || awaitingReload}/>
     </div>
   </Tooltip>;
 };

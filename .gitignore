@@ -7,6 +7,6 @@ src/Powercord/plugins/*
 !src/Powercord/plugins/pc-*
 
 src/Powercord/plugins/pc-styleManager/themes/*
-!src/Powercord/plugins/pc-styleManager/themes/.exists
+!src/Powercord/plugins/pc-styleManager/themes/readme.txt
 
 config.json

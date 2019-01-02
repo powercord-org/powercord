@@ -16,4 +16,46 @@
       flex: 1;
     }
   }
+
+  &-topbar {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+
+    > div.pc-marginBottom20 {
+      flex: 1;
+      margin-right: 15px;
+
+      .pc-input {
+        height: 32px;
+      }
+
+      .pc-divider {
+        display: none;
+      }
+    }
+
+    &-show {
+      margin-bottom: 20px;
+      height: 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      span {
+        line-height: 16px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #b9bbbe;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        height: 16px;
+      }
+
+      .pc-switch {
+        margin-top: 3px;
+      }
+    }
+  }
 }

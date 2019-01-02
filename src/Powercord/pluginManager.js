@@ -9,6 +9,10 @@ module.exports = class PluginManager {
 
     this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license', 'repo' ];
     this.enforcedPlugins = [ 'pc-styleManager', 'pc-settings', 'pc-pluginManager', 'pc-keybindManager' ];
+
+    setTimeout(() => {
+      this.hiddenPlugins = powercord.settings.get('hiddenPlugins', []);
+    }, 0); // Async so Powercord is loaded
   }
 
   get requiresReload () {
@@ -28,13 +32,11 @@ module.exports = class PluginManager {
   }
 
   getPlugins () {
-    return Array.from(powercord.pluginManager.plugins.keys()).filter(p =>
-      !powercord.settings.get('hiddenPlugins', []).includes(p));
+    return Array.from(powercord.pluginManager.plugins.keys()).filter(p => !this.hiddenPlugins.includes(p));
   }
 
   getHiddenPlugins () {
-    return Array.from(powercord.pluginManager.plugins.keys()).filter(p =>
-      powercord.settings.get('hiddenPlugins', []).includes(p));
+    return Array.from(powercord.pluginManager.plugins.keys()).filter(p => this.hiddenPlugins.includes(p));
   }
 
   enable (plugin) {
@@ -58,11 +60,15 @@ module.exports = class PluginManager {
   install (plugin) {
     this.requiresReload = true;
     if (plugin.startsWith('pc-')) {
-      powercord.settings.set(
-        'hiddenPlugins',
-        powercord.settings.get('hiddenPlugins', []).filter(p => p !== plugin)
-      );
+      /*
+       * return powercord.settings.set(
+       *   'hiddenPlugins',
+       *   powercord.settings.get('hiddenPlugins', []).filter(p => p !== plugin)
+       * );
+       */
     }
+
+    console.log('soon:tm:');
   }
 
   uninstall (plugin) {
@@ -72,10 +78,14 @@ module.exports = class PluginManager {
 
     this.requiresReload = true;
     if (plugin.startsWith('pc-')) {
-      const hidden = powercord.settings.get('hiddenPlugins', []);
-      hidden.push(plugin);
-      powercord.settings.set('hiddenPlugins', hidden);
+      /*
+       * const hidden = powercord.settings.get('hiddenPlugins', []);
+       * hidden.push(plugin);
+       * return powercord.settings.set('hiddenPlugins', hidden);
+       */
     }
+
+    console.log('soon:tm:');
   }
 
   isEnabled (plugin) {

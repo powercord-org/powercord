@@ -6,7 +6,6 @@ module.exports = class Settings extends Plugin {
   constructor () {
     super();
 
-    this.patched = false;
     this.sections = [];
   }
 
@@ -55,10 +54,9 @@ module.exports = class Settings extends Plugin {
         );
       }
 
-      if (!this.patched) {
-        this.patched = true;
-        sections.find(c => c.section === 'CUSTOM').element = ((_element) => function () { // eslint-disable-line
-          const res = _element();
+      sections.find(c => c.section === 'CUSTOM').element = ((_element) => function () { // eslint-disable-line
+        const res = _element();
+        if (res.props.children.length === 3) {
           res.props.children.unshift(
             Object.assign({}, res.props.children[0], {
               props: Object.assign({}, res.props.children[0].props, {
@@ -68,9 +66,9 @@ module.exports = class Settings extends Plugin {
               })
             })
           );
-          return res;
-        })(sections.find(c => c.section === 'CUSTOM').element);
-      }
+        }
+        return res;
+      })(sections.find(c => c.section === 'CUSTOM').element);
 
       return sections;
     })(SettingsView.prototype.getPredicateSections, this.sections);
