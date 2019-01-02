@@ -54,21 +54,23 @@ module.exports = class Settings extends Plugin {
         );
       }
 
-      sections.find(c => c.section === 'CUSTOM').element = ((_element) => function () { // eslint-disable-line
-        const res = _element();
-        if (res.props.children.length === 3) {
-          res.props.children.unshift(
-            Object.assign({}, res.props.children[0], {
-              props: Object.assign({}, res.props.children[0].props, {
-                href: 'https://powercord.xyz',
-                title: 'Powercord',
-                className: `${res.props.children[0].props.className} powercord-pc-icon`
+      if (sections.find(c => c.section === 'CUSTOM')) {
+        sections.find(c => c.section === 'CUSTOM').element = ((_element) => function () { // eslint-disable-line
+          const res = _element();
+          if (res.props.children.length === 3) {
+            res.props.children.unshift(
+              Object.assign({}, res.props.children[0], {
+                props: Object.assign({}, res.props.children[0].props, {
+                  href: 'https://powercord.xyz',
+                  title: 'Powercord',
+                  className: `${res.props.children[0].props.className} powercord-pc-icon`
+                })
               })
-            })
-          );
-        }
-        return res;
-      })(sections.find(c => c.section === 'CUSTOM').element);
+            );
+          }
+          return res;
+        })(sections.find(c => c.section === 'CUSTOM').element);
+      }
 
       return sections;
     })(SettingsView.prototype.getPredicateSections, this.sections);
