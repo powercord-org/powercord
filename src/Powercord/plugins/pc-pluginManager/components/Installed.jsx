@@ -19,6 +19,7 @@ module.exports = class Installed extends React.Component {
     const plugins = this._getPlugins();
 
     return <div className='powercord-plugins'>
+      <div className='powercord-plugins-wip'>This part of Powercord is in WIP. Except unavailable features and crashes here</div>
       <div className='powercord-plugins-header'>
         <h3>Installed plugins</h3>
         <Button onClick={() => this.props.goToExplore()}>Explore Plugins</Button>

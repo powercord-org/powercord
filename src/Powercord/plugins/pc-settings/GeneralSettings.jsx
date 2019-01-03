@@ -1,6 +1,8 @@
 const { React } = require('powercord/webpack');
 const { TextInput, SwitchItem } = require('powercord/components/settings');
 
+const Account = require('./Account');
+
 module.exports = class GeneralSettings extends React.Component {
   constructor () {
     super();
@@ -32,6 +34,8 @@ module.exports = class GeneralSettings extends React.Component {
 
     return (
       <div>
+        <Account/>
+
         <TextInput
           defaultValue={settings.prefix}
           required={true}

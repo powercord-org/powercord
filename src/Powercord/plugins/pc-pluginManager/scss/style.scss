@@ -6,6 +6,17 @@
     color: #fff;
   }
 
+  &-wip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #d84040;
+    text-align: center;
+    font-size: 18px;
+    padding: 10px;
+  }
+
   &-header {
     display: flex;
     align-items: center;
