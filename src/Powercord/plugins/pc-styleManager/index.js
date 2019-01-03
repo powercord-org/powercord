@@ -107,7 +107,7 @@ module.exports = class StyleManager extends Plugin {
             data: css,
             includePaths: [ dirname(file) ],
             importer: (url, prev) => {
-              const prevFile = prev === 'stdin' ? file : prev;
+              const prevFile = prev === 'stdin' ? file : prev.replace(/https?:\/\/(?:[a-z]+\.)?discordapp\.com/i, '');
               return {
                 file: resolve(dirname(decodeURI(prevFile)), url).replace(/\\/g, '/')
               };
