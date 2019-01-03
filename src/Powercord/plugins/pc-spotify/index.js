@@ -64,4 +64,8 @@ module.exports = class Spotify extends Plugin {
           .insertBefore(spotifyModal, userBar);
       };
   }
+
+  get SpotifyPlayer () {
+    return SpotifyPlayer;
+  }
 };
