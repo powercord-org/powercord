@@ -19,7 +19,9 @@ module.exports = class Installed extends React.Component {
     const plugins = this._getPlugins();
 
     return <div className='powercord-plugins'>
-      <div className='powercord-plugins-wip'>This part of Powercord is a WIP. Expect unavailable features and crashes here</div>
+      <div className='powercord-plugins-wip'>This part of Powercord is a WIP. Expect unavailable features and crashes
+        here
+      </div>
       <div className='powercord-plugins-header'>
         <h3>Installed plugins</h3>
         <Button onClick={() => this.props.goToExplore()}>Explore Plugins</Button>
@@ -41,14 +43,18 @@ module.exports = class Installed extends React.Component {
       <div className='powercord-plugins-container'>
         {plugins.map(plugin => <Plugin
           id={plugin.pluginID}
-          installed={!powercord.pluginManager.hiddenPlugins.includes(plugin.pluginID)}
+          installed={true}
           awaitingReload={awaitingReload.includes(plugin.pluginID)}
           enabled={powercord.pluginManager.isEnabled(plugin.pluginID)}
           enforced={powercord.pluginManager.isEnforced(plugin.pluginID)}
+          hidden={powercord.settings.get('hiddenPlugins', []).includes(plugin.pluginID)}
           manifest={plugin.manifest}
 
           onEnable={() => this.enable(plugin.pluginID)}
           onDisable={() => this.disable(plugin.pluginID)}
+
+          onShow={() => this.show(plugin.pluginID)}
+          onHide={() => this.hide(plugin.pluginID)}
 
           onInstall={() => this.install(plugin.pluginID)}
           onUninstall={() => this.uninstall(plugin.pluginID)}
@@ -66,6 +72,16 @@ module.exports = class Installed extends React.Component {
   disable (pluginID) {
     console.log('soon:tm:');
     // powercord.pluginManager.disable(pluginID);
+    this.forceUpdate();
+  }
+
+  show (pluginID) {
+    powercord.pluginManager.show(pluginID);
+    this.forceUpdate();
+  }
+
+  hide (pluginID) {
+    powercord.pluginManager.hide(pluginID);
     this.forceUpdate();
   }
 

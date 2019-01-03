@@ -1,4 +1,3 @@
-const { remote } = require('electron');
 const { React } = require('powercord/webpack');
 const { Spinner } = require('powercord/components');
 
@@ -13,45 +12,29 @@ module.exports = class Account extends React.Component {
   }
 
   render () {
+    let Component = null;
+    if (this.state.linking) {
+      Component = () => <div><Spinner type='pulsingEllipsis'/> Linking your Powercord account...</div>;
+    } else if (powercord.account) {
+      Component = () => 'owo';
+    } else {
+      Component = () => <div>
+        You haven't linked your Powercord account. <a href='#'>Not available yet</a>
+        {/* <a href='#' onClick={() => this.link()}>Link it now</a> */}
+      </div>;
+    }
+
     return <div className='powercord-account'>
-      {this.state.linking
-        ? <div><Spinner type='pulsingEllipsis'/> Linking your Powercord account...</div>
-        : (powercord.account
-          ? 'owo'
-          : <div>
-            You haven't linked your Powercord account. <a href='#'>Not available yet</a>{/* <a href='#' onClick={() => this.link()}>Link it now</a> */}
-          </div>)}
+      <Component/>
     </div>;
   }
 
+  processTokenMessage (msg) {
+    console.log(msg);
+  }
+
   link () {
-    if (!this.state.window) {
-      const externalWindow = new remote.BrowserWindow({
-        width: 800,
-        height: 600,
-        parent: remote.getCurrentWindow()
-      });
-
-      this.setState({
-        linking: true,
-        window: externalWindow
-      });
-
-      const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
-      externalWindow.loadURL(`${baseUrl}/oauth/discord`);
-
-      externalWindow.webContents.on('will-navigate', (event, url) => {
-        console.log(url);
-      });
-
-      externalWindow.once('close', async () => {
-        await powercord.fetchAccount();
-        this.setState({
-          window: null,
-          linking: false
-        });
-      });
-
-    }
+    this.setState({ linking: true });
+    // open DMs and send message
   }
 };

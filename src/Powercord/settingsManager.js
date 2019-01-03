@@ -1,6 +1,3 @@
-const { resolve } = require('path');
-const { writeFile } = require('fs');
-
 module.exports = class SettingsManager {
   constructor (category) {
     if (!category) {

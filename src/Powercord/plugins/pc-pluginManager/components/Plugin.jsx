@@ -14,8 +14,8 @@ module.exports = class Plugin extends React.Component {
 
   render () {
     const {
-      id, enforced, installed, enabled, awaitingReload, manifest, // Properties
-      onEnable, onDisable, onInstall, onUninstall // Events
+      id, enforced, installed, enabled, hidden, awaitingReload, manifest, // Properties
+      onEnable, onDisable, onInstall, onUninstall, onShow, onHide // Events
     } = this.props;
     return <div className='powercord-plugin'>
       <div className='powercord-plugin-header'>
@@ -63,21 +63,24 @@ module.exports = class Plugin extends React.Component {
           Repository
         </Button>
 
-        {enforced && <Tooltip text="You can't hide this plugin" position='top'>
-          <Button disabled className={Button.Colors.RED}>Hide</Button>
-        </Tooltip>}
-
-        {!enforced && (awaitingReload
-          ? <Button disabled className={Button.Colors.YELLOW}>Awaiting Reload</Button>
-          : <Button
-            disabled={this.state.installing}
-            onClick={() => this.process(installed ? onInstall : onUninstall)}
-            className={installed ? Button.Colors.RED : Button.Colors.GREEN}
-          >
-            {this.state.installing
-              ? <Spinner type='pulsingEllipsis'/>
-              : (installed ? (id.startsWith('pc-') ? 'Hide' : 'Uninstall') : 'Install')}
-          </Button>)}
+        <div className='btn-group'>
+          <Button
+            onClick={() => hidden ? onShow() : onHide()}
+            className={hidden ? Button.Colors.GREEN : Button.Colors.TRANSPARENT}>
+            {hidden ? 'Show' : 'Hide'}
+          </Button>
+          {!id.startsWith('pc-') && (awaitingReload
+            ? <Button disabled className={Button.Colors.YELLOW}>Awaiting Reload</Button>
+            : <Button
+              disabled={this.state.installing}
+              onClick={() => this.process(installed ? onInstall : onUninstall)}
+              className={installed ? Button.Colors.RED : Button.Colors.GREEN}
+            >
+              {this.state.installing
+                ? <Spinner type='pulsingEllipsis'/>
+                : (installed ? 'Uninstall' : 'Install')}
+            </Button>)}
+        </div>
       </div>
     </div>;
   }

@@ -2,10 +2,6 @@
 @import "./plugin";
 
 .powercord-plugins {
-  * {
-    color: #fff;
-  }
-
   &-wip {
     position: absolute;
     top: 0;
@@ -57,7 +53,6 @@
         line-height: 16px;
         font-weight: 600;
         margin-bottom: 8px;
-        color: #b9bbbe;
         font-size: 12px;
         text-transform: uppercase;
         letter-spacing: .5px;
@@ -68,5 +63,24 @@
         margin-top: 3px;
       }
     }
+  }
+}
+
+// Colors
+.theme-dark .powercord-plugins {
+  color: #fff;
+
+  &-topbar-show span {
+    color: #b9bbbe;
+  }
+}
+
+.theme-light .powercord-plugins {
+  &-wip {
+    color: #fff;
+  }
+
+  &-topbar-show span {
+    color: #72767d;
   }
 }

@@ -9,10 +9,6 @@ module.exports = class PluginManager {
 
     this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license', 'repo' ];
     this.enforcedPlugins = [ 'pc-styleManager', 'pc-settings', 'pc-pluginManager', 'pc-keybindManager' ];
-
-    setTimeout(() => {
-      this.hiddenPlugins = powercord.settings.get('hiddenPlugins', []);
-    }, 0); // Async so Powercord is loaded
   }
 
   get requiresReload () {
@@ -27,18 +23,44 @@ module.exports = class PluginManager {
     }
   }
 
+  // Getters
   get (plugin) {
     return this.plugins.get(plugin);
   }
 
   getPlugins () {
-    return Array.from(powercord.pluginManager.plugins.keys()).filter(p => !this.hiddenPlugins.includes(p));
+    return Array.from(powercord.pluginManager.plugins.keys()).filter(p => !powercord.settings.get('hiddenPlugins', []).includes(p));
   }
 
   getHiddenPlugins () {
-    return Array.from(powercord.pluginManager.plugins.keys()).filter(p => this.hiddenPlugins.includes(p));
+    return Array.from(powercord.pluginManager.plugins.keys()).filter(p => powercord.settings.get('hiddenPlugins', []).includes(p));
   }
 
+  isEnabled (plugin) {
+    return !powercord.settings.get('disabledPlugins', []).includes(plugin);
+  }
+
+  isEnforced (plugin) {
+    return this.enforcedPlugins.includes(plugin);
+  }
+
+  resolveDependencies (plugin, deps = []) {
+    let dependencies = [];
+    if (plugin.startsWith('pc-')) {
+      ({ dependencies } = this.get(plugin).manifest);
+    } else {
+      // If installed: local manifest, else: request to API
+    }
+
+    dependencies.forEach(dep => {
+      if (!deps.includes(dep)) {
+        deps.push(dep, ...this.resolveDependencies(dep));
+      }
+    });
+    return deps;
+  }
+
+  // Enable/install/hide shit
   enable (plugin) {
     this.requiresReload = true;
     powercord.settings.set(
@@ -57,17 +79,21 @@ module.exports = class PluginManager {
     powercord.settings.set('disabledPlugins', disabled);
   }
 
+  show (plugin) {
+    powercord.settings.set(
+      'hiddenPlugins',
+      powercord.settings.get('hiddenPlugins', []).filter(p => p !== plugin)
+    );
+  }
+
+  hide (plugin) {
+    const disabled = powercord.settings.get('hiddenPlugins', []);
+    disabled.push(plugin);
+    powercord.settings.set('hiddenPlugins', disabled);
+  }
+
   install (plugin) {
     this.requiresReload = true;
-    if (plugin.startsWith('pc-')) {
-      /*
-       * return powercord.settings.set(
-       *   'hiddenPlugins',
-       *   powercord.settings.get('hiddenPlugins', []).filter(p => p !== plugin)
-       * );
-       */
-    }
-
     console.log('soon:tm:');
   }
 
@@ -76,31 +102,19 @@ module.exports = class PluginManager {
       throw new Error(`You cannot uninstall an enforced plugin. (Tried to uninstall ${plugin})`);
     }
 
-    this.requiresReload = true;
     if (plugin.startsWith('pc-')) {
-      /*
-       * const hidden = powercord.settings.get('hiddenPlugins', []);
-       * hidden.push(plugin);
-       * return powercord.settings.set('hiddenPlugins', hidden);
-       */
+      throw new Error(`You cannot uninstall an internal plugin. (Tried to uninstall ${plugin})`);
     }
 
+    this.requiresReload = true;
     console.log('soon:tm:');
   }
 
-  isEnabled (plugin) {
-    return !powercord.settings.get('disabledPlugins', []).includes(plugin);
-  }
-
-  isEnforced (plugin) {
-    return this.enforcedPlugins.includes(plugin);
-  }
-
+  // Start + internals
   startPlugins () {
     this._loadPlugins();
     for (const plugin of [ ...this.plugins.values() ]) {
       if (powercord.settings.get('disabledPlugins', []).includes(plugin.pluginID)) {
-        console.log('dafukkkkkk');
         return;
       }
       if (
@@ -116,27 +130,11 @@ module.exports = class PluginManager {
     }
   }
 
-  resolveDeps (plugin) {
-    const deps = [];
-    plugin.manifest.dependencies.forEach(dep => {
-      deps.push(dep, ...this.resolveDeps(dep));
-    });
-    return deps;
-  }
-
   _loadPlugins () {
     const plugins = {};
     readdirSync(this.pluginDir)
       .forEach(filename => {
         const moduleName = filename.split('.')[0];
-        if (powercord.settings.get('hiddenPlugins', []).includes(moduleName)) {
-          if (this.enforcedPlugins.includes(moduleName)) { // :reee:
-            this.install(moduleName);
-            this.requiresReload = false;
-          } else {
-            return;
-          }
-        }
 
         let manifest;
         try {
