@@ -12,10 +12,11 @@ module.exports = {
   player: null,
 
   async getAccessToken () {
-    if (powercord.settings.get('spotifyToken')) {
-      return post('https://powercord.aetheryx.xyz/accessToken')
+    const token = powercord.pluginManager.get('pc-spotify').settings.get('token');
+    if (token) {
+      return post('https://powercord.xyz/accessToken')
         .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({ token: powercord.settings.get('spotifyToken') })
+        .send({ token })
         .then(res => res.body);
     }
 
