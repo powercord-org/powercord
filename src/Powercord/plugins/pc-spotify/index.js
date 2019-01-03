@@ -1,10 +1,11 @@
-const Plugin = require('powercord/Plugin');
-const { waitFor, getOwnerInstance } = require('powercord/util');
 const { spotify, React, ReactDOM } = require('powercord/webpack');
+const { waitFor, getOwnerInstance } = require('powercord/util');
+const Plugin = require('powercord/Plugin');
 const { resolve } = require('path');
 
+const SpotifyPlayer = require('./SpotifyPlayer.js');
+const Settings = require('./Settings.jsx');
 const commands = require('./commands');
-const SpotifyPlayer = require('./SpotifyPlayer');
 const Modal = require('./Modal');
 
 module.exports = class Spotify extends Plugin {
@@ -30,12 +31,26 @@ module.exports = class Spotify extends Plugin {
 
   async start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
+    powercord
+      .pluginManager
+      .get('pc-settings')
+      .register('pc-spotify', 'Spotify', () =>
+        React.createElement(Settings, {
+          settings: this.settings
+        })
+      );
 
     this.patchSpotifySocket();
     this.injectModal();
 
+    this.on('event', ev => {
+      if (ev.type === 'PLAYER_STATE_CHANGED') {
+        this.SpotifyPlayer.player = ev.event.state;
+      }
+    });
+
     for (const [ commandName, command ] of Object.entries(commands)) {
-      command.func = command.func.bind(command, spotify);
+      command.func = command.func.bind(command, SpotifyPlayer);
 
       powercord
         .pluginManager
@@ -63,5 +78,9 @@ module.exports = class Spotify extends Plugin {
           .closest('.channels-Ie2l6A')
           .insertBefore(spotifyModal, userBar);
       };
+  }
+
+  get SpotifyPlayer () {
+    return SpotifyPlayer;
   }
 };

@@ -9,12 +9,14 @@ module.exports = {
   BASE_URL: 'https://api.spotify.com/v1',
   BASE_PLAYER_URL: 'https://api.spotify.com/v1/me/player',
   accessToken: null,
+  player: null,
 
   async getAccessToken () {
-    if (powercord.settings.get('spotifyToken')) {
-      return post('https://powercord.aetheryx.xyz/accessToken')
+    const token = powercord.pluginManager.get('pc-spotify').settings.get('token');
+    if (token) {
+      return post('https://powercord.xyz/accessToken')
         .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({ token: powercord.settings.get('spotifyToken') })
+        .send({ token })
         .then(res => res.body);
     }
 

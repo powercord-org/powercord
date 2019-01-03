@@ -12,7 +12,7 @@ module.exports = {
     return spotifyModal && spotifyModal.children[0].src;
   },
 
-  async func (spotify, [ url = this.getURLFromModal() ]) {
+  async func (SpotifyPlayer, [ url = this.getURLFromModal() ]) {
     if (!url) {
       return {
         send: false,
@@ -20,10 +20,10 @@ module.exports = {
       };
     }
 
-    await spotify.play(
-      spotify.getUserID(),
-      await spotify.getAccessToken(),
-      urlRegex.exec(url)[1]
-    );
+    await SpotifyPlayer.play({
+      uris: [
+        `spotify:track:${urlRegex.exec(url)[1]}`
+      ]
+    });
   }
 };

@@ -162,11 +162,17 @@ module.exports = class Modal extends React.Component {
   async injectContextMenu (e) {
     const { pageX, pageY } = e;
 
+    const itemGroups = getContextMenuItemGroups(
+      this.state,
+      this.onButtonClick,
+      !!this.props.main.settings.get('token')
+    );
+
     contextMenu.openContextMenu(e, () =>
       React.createElement(ContextMenu, {
         pageX,
         pageY,
-        itemGroups: getContextMenuItemGroups(this.state, this.onButtonClick)
+        itemGroups
       })
     );
   }

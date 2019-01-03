@@ -1,23 +1,23 @@
 const { resolve } = require('path');
 const { writeFile } = require('fs');
 
-const configPath = resolve(__dirname, '..', '..', 'config.json');
-
-let config;
-try {
-  config = require(configPath);
-} catch (e) {
-  config = {};
-}
-
 module.exports = class SettingsManager {
   constructor (category) {
     if (!category) {
       throw new TypeError('Missing SettingsManager category name');
     }
 
-    this.category = category;
-    this.config = config[this.category] || {};
+    this.category = category.startsWith('pc-') ? category : `pc-${category}`;
+    this.config = this._readFromLS();
+  }
+
+  _readFromLS () {
+    const entry = localStorage.getItem(this.category);
+    try {
+      return JSON.parse(entry) || {};
+    } catch (_) {
+      return {};
+    }
   }
 
   get (nodePath, defaultValue) {
@@ -51,10 +51,6 @@ module.exports = class SettingsManager {
   }
 
   _save () {
-    Object.assign(config, {
-      [this.category]: this.config
-    });
-
-    writeFile(configPath, JSON.stringify(config, null, 2), () => {});
+    localStorage.setItem(this.category, JSON.stringify(this.config));
   }
 };

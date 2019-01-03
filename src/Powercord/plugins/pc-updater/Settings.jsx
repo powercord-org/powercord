@@ -1,7 +1,7 @@
 const { React } = require('powercord/webpack');
 const { TextInput, SwitchItem } = require('powercord/components/settings');
 
-module.exports = class GeneralSettings extends React.Component {
+module.exports = class UpdaterSettings extends React.Component {
   constructor (props) {
     super();
 
