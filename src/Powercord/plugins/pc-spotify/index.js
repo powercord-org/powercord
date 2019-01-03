@@ -34,6 +34,12 @@ module.exports = class Spotify extends Plugin {
     this.patchSpotifySocket();
     this.injectModal();
 
+    this.on('event', ev => {
+      if (ev.type === 'PLAYER_STATE_CHANGED') {
+        this.SpotifyPlayer.player = ev.event.state;
+      }
+    });
+
     for (const [ commandName, command ] of Object.entries(commands)) {
       command.func = command.func.bind(command, spotify);
 

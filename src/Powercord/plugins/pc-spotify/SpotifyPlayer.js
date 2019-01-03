@@ -9,6 +9,7 @@ module.exports = {
   BASE_URL: 'https://api.spotify.com/v1',
   BASE_PLAYER_URL: 'https://api.spotify.com/v1/me/player',
   accessToken: null,
+  player: null,
 
   async getAccessToken () {
     if (powercord.settings.get('spotifyToken')) {
