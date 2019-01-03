@@ -1,3 +1,4 @@
+const { resolve } = require('path');
 const Plugin = require('powercord/Plugin');
 const { getModuleByDisplayName, React, getModule } = require('powercord/webpack');
 const GeneralSettings = require('./GeneralSettings.jsx');
@@ -10,6 +11,7 @@ module.exports = class Settings extends Plugin {
   }
 
   start () {
+    this.loadCSS(resolve(__dirname, 'style.scss'));
     this.patchExperiments();
     this.patchSettingsComponent();
     this.register('pc-general', 'General Settings', GeneralSettings);

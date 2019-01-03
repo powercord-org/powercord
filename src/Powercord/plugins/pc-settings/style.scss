@@ -1,0 +1,24 @@
+.powercord-account {
+  background: rgba(32, 34, 37, .6);
+  border: 1px #202225 solid;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+
+  > div {
+    flex: 1;
+    display: flex;
+    align-items: center;
+
+    a {
+      margin-left: auto;
+    }
+  }
+
+  .pc-spinner {
+    margin-right: 10px;
+  }
+}
