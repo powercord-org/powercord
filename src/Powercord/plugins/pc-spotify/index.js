@@ -41,7 +41,7 @@ module.exports = class Spotify extends Plugin {
     });
 
     for (const [ commandName, command ] of Object.entries(commands)) {
-      command.func = command.func.bind(command, spotify);
+      command.func = command.func.bind(command, SpotifyPlayer);
 
       powercord
         .pluginManager
