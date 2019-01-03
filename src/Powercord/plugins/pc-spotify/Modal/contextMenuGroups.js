@@ -3,7 +3,7 @@ const { messages, channels } = require('powercord/webpack');
 const { formatTime } = require('powercord/util');
 const SpotifyPlayer = require('../SpotifyPlayer');
 
-module.exports = (state, onButtonClick) => [
+module.exports = (state, onButtonClick, hasCustomAuth) => [
   [ {
     type: 'submenu',
     name: 'Devices',
@@ -41,7 +41,7 @@ module.exports = (state, onButtonClick) => [
           })
         }))
       )
-  }, {
+  }, ...(hasCustomAuth ? [ {
     type: 'submenu',
     name: 'Albums',
     width: '200px',
@@ -56,7 +56,7 @@ module.exports = (state, onButtonClick) => [
           })
         }))
       )
-  }, {
+  } ] : []), ...(hasCustomAuth ? [ {
     type: 'submenu',
     name: 'Songs',
     width: '200px',
@@ -71,9 +71,9 @@ module.exports = (state, onButtonClick) => [
           })
         }))
       )
-  } ],
+  } ] : []) ],
 
-  [ {
+  ...(hasCustomAuth ? [ [ {
     type: 'submenu',
     name: 'Playback Settings',
     getItems: () => [ {
@@ -101,7 +101,7 @@ module.exports = (state, onButtonClick) => [
       defaultState: state.shuffleState,
       onToggle: (s) => onButtonClick('setShuffleState', s)
     } ]
-  } ],
+  } ] ] : []),
 
   [ {
     type: 'slider',
