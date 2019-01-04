@@ -1,6 +1,8 @@
 const { waitFor, getOwnerInstance, sleep } = require('powercord/util');
 
 module.exports = async function injectAutocomplete () {
+  const _this = this;
+
   const plugins = [ ...powercord.pluginManager.plugins.keys() ];
   while (!plugins.every(plugin =>
     powercord.pluginManager.get(plugin).ready
@@ -41,7 +43,7 @@ module.exports = async function injectAutocomplete () {
             ) {
               const commandPreviewChildren = rendered.props.children[1].props.children;
               if (commandPreviewChildren[0].startsWith('/')) {
-                commandPreviewChildren[0] = commandPreviewChildren[0].replace(`/${this.prefix.slice(1)}`, this.prefix);
+                commandPreviewChildren[0] = commandPreviewChildren[0].replace(`/${_this.prefix.slice(1)}`, this.prefix);
               }
             }
 
