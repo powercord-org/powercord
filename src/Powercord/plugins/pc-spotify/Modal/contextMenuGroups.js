@@ -41,67 +41,73 @@ module.exports = (state, onButtonClick, hasCustomAuth) => [
           })
         }))
       )
-  }, ...(hasCustomAuth ? [ {
-    type: 'submenu',
-    name: 'Albums',
-    width: '200px',
-    getItems: () => SpotifyPlayer.getAlbums()
-      .then(({ items }) =>
-        items.map(({ album }) => ({
-          type: 'button',
-          name: album.name,
-          hint: `${album.tracks.total} tracks`,
-          onClick: () => onButtonClick('play', {
-            context_uri: album.uri
-          })
-        }))
-      )
-  } ] : []), ...(hasCustomAuth ? [ {
-    type: 'submenu',
-    name: 'Songs',
-    width: '200px',
-    getItems: () => SpotifyPlayer.getSongs()
-      .then(({ items }) =>
-        items.map(({ track }) => ({
-          type: 'button',
-          name: track.name,
-          hint: formatTime(track.duration_ms),
-          onClick: () => onButtonClick('play', {
-            uris: [ track.uri ]
-          })
-        }))
-      )
-  } ] : []) ],
-
-  ...(hasCustomAuth ? [ [ {
-    type: 'submenu',
-    name: 'Playback Settings',
-    getItems: () => [ {
+  }, ...(hasCustomAuth
+    ? [ {
       type: 'submenu',
-      name: 'Repeat Modes',
-      getItems: () => [ {
-        name: 'On',
-        stateName: 'context'
-      }, {
-        name: 'Current Track',
-        stateName: 'track'
-      }, {
-        name: 'Off',
-        stateName: 'off'
-      } ].map(button => ({
-        type: 'button',
-        highlight: state.repeatState === button.stateName && '#1ed860',
-        disabled: state.repeatState === button.stateName,
-        onClick: () => onButtonClick('setRepeatState', button.stateName),
-        ...button
-      }))
-    }, {
-      type: 'checkbox',
-      name: 'Shuffle',
-      defaultState: state.shuffleState,
-      onToggle: (s) => onButtonClick('setShuffleState', s)
+      name: 'Albums',
+      width: '200px',
+      getItems: () => SpotifyPlayer.getAlbums()
+        .then(({ items }) =>
+          items.map(({ album }) => ({
+            type: 'button',
+            name: album.name,
+            hint: `${album.tracks.total} tracks`,
+            onClick: () => onButtonClick('play', {
+              context_uri: album.uri
+            })
+          }))
+        )
     } ]
-  } ] ] : []),
+    : []), ...(hasCustomAuth
+    ? [ {
+      type: 'submenu',
+      name: 'Songs',
+      width: '200px',
+      getItems: () => SpotifyPlayer.getSongs()
+        .then(({ items }) =>
+          items.map(({ track }) => ({
+            type: 'button',
+            name: track.name,
+            hint: formatTime(track.duration_ms),
+            onClick: () => onButtonClick('play', {
+              uris: [ track.uri ]
+            })
+          }))
+        )
+    } ]
+    : []) ],
+
+  ...(hasCustomAuth
+    ? [ [ {
+      type: 'submenu',
+      name: 'Playback Settings',
+      getItems: () => [ {
+        type: 'submenu',
+        name: 'Repeat Modes',
+        getItems: () => [ {
+          name: 'On',
+          stateName: 'context'
+        }, {
+          name: 'Current Track',
+          stateName: 'track'
+        }, {
+          name: 'Off',
+          stateName: 'off'
+        } ].map(button => ({
+          type: 'button',
+          highlight: state.repeatState === button.stateName && '#1ed860',
+          disabled: state.repeatState === button.stateName,
+          onClick: () => onButtonClick('setRepeatState', button.stateName),
+          ...button
+        }))
+      }, {
+        type: 'checkbox',
+        name: 'Shuffle',
+        defaultState: state.shuffleState,
+        onToggle: (s) => onButtonClick('setShuffleState', s)
+      } ]
+    } ] ]
+    : []),
 
   [ {
     type: 'slider',

@@ -1,10 +1,9 @@
-const { spotify, React, ReactDOM } = require('powercord/webpack');
+const { React, ReactDOM } = require('powercord/webpack');
 const { waitFor, getOwnerInstance } = require('powercord/util');
 const Plugin = require('powercord/Plugin');
 const { resolve } = require('path');
 
 const SpotifyPlayer = require('./SpotifyPlayer.js');
-const Settings = require('./Settings.jsx');
 const commands = require('./commands');
 const Modal = require('./Modal');
 
@@ -31,15 +30,6 @@ module.exports = class Spotify extends Plugin {
 
   async start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
-    powercord
-      .pluginManager
-      .get('pc-settings')
-      .register('pc-spotify', 'Spotify', () =>
-        React.createElement(Settings, {
-          settings: this.settings
-        })
-      );
-
     this.patchSpotifySocket();
     this.injectModal();
 

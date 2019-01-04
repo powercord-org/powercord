@@ -165,7 +165,7 @@ module.exports = class Modal extends React.Component {
     const itemGroups = getContextMenuItemGroups(
       this.state,
       this.onButtonClick,
-      !!this.props.main.settings.get('token')
+      powercord.account && powercord.account.spotify
     );
 
     contextMenu.openContextMenu(e, () =>

@@ -12,12 +12,9 @@ module.exports = {
   player: null,
 
   async getAccessToken () {
-    const token = powercord.pluginManager.get('pc-spotify').settings.get('token');
-    if (token) {
-      return post('https://powercord.xyz/accessToken')
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({ token })
-        .then(res => res.body);
+    await powercord.fetchAccount();
+    if (powercord.account && powercord.account.spotify) {
+      return powercord.account.spotify.token;
     }
 
     const spotifyUserID = await http.get(Endpoints.CONNECTIONS)

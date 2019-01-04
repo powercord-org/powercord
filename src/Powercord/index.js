@@ -57,7 +57,7 @@ module.exports = class Powercord extends EventEmitter {
         return console.error('%c[Powercord]', 'color: #257dd4', `An error occurred while fetching your account: ${resp.statusCode} - ${resp.statusText}`, resp.body);
       }
 
-      console.log(resp);
+      this.account = resp.body;
     }
   }
 };
