@@ -2,26 +2,12 @@
 Powercord is a lightweight client mod focused on simplicity and performance.  
 As of right now, Powercord is in *very* early stages of development, so feel free to join [this server](https://discord.gg/Yphr6WG) for any questions.
 
-# Features
-## Spotify Modal
-The spotify modal you find on top of the user bar aims to replace the need for having your Spotify client on a monitor.    
-You can see a video preview of the modal [here](https://discord.coffee/e2e981.mp4).
+# Installation
+See the [installation page of the Powercord Wiki](https://github.com/aetheryx/powercord/wiki/Installation).
 
-## Codeblocks
-Codeblocks have line numbers (attribution: [noodlebox](https://github.com/noodlebox)) and a `copy` button.
-You can see an image preview of the codeblocks [here](https://discord.coffee/cf1cf8.png).
+# Is this against the ToS?
+Long story short... __yes__. Powercord is against the Discord Terms of Service — but, you should keep reading:  
 
-# Requirements
-  1. `npm`
-  2. `node` (v7 or higher)
-  2. Discord Canary
-  3. Windows or Linux (I don't have a macOS machine)
+As of right now, __Discord is not going out of their way to detect client mods or ban client mod users__. On top of that, Powercord does not make any manual HTTP requests unlike certain client mods / plugins, so your client's user agent is the same as a legitimate client. Meaning, Discord doesn't detect a client mod like Powercord. They can go out of their way to start detecting it, but they don't.  
 
-# Installation steps
-  1. `git clone https://github.com/aetheryx/powercord`
-  2. `cd powercord`
-  3. `npm i`
-  4. `npm run inject` <sup>(Side note: if you're on Linux, you need root perms for this command)</sup>
-  5. Completely kill your Discord Client (right click system tray icon -> Quit DiscordCanary)
-  6. Start Discord back up and Powercord should be injected!  
-     Make sure to view the [Powercord Wiki](https://github.com/aetheryx/powercord/wiki) for information on getting started and how Powercord works.
+Hypothetically speaking - even if they somehow did detect Powercord, users are very unlikely to be banned on sight. It doesn't make sense for Discord to start banning a substantial part of it's userbase (client mod users) without any kind of warning. Not to mention it is mandatory for Powercord plugins to be fully API-compliant and ethical, implying Powercord users can't be banned for indirect ToS violations (e.g. selfbotting).
