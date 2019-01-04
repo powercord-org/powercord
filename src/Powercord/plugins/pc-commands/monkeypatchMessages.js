@@ -7,14 +7,12 @@ const {
 const messages = webpack.getModule(webpack.moduleFilters.messages[0]);
 
 module.exports = async function monkeypatchMessages () {
-  const prefix = powercord.settings.get('prefix', '.');
-
   messages.sendMessage = (sendMessage => async (id, message, ...params) => {
-    if (!message.content.startsWith(prefix)) {
+    if (!message.content.startsWith(this.prefix)) {
       return sendMessage(id, message, ...params);
     }
 
-    const [ command, ...args ] = message.content.slice(prefix.length).split(' ');
+    const [ command, ...args ] = message.content.slice(this.prefix.length).split(' ');
     if (!this.commands.has(command)) {
       return sendMessage(id, message, ...params);
     }

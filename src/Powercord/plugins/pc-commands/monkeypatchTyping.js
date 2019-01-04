@@ -1,14 +1,12 @@
 const { typing } = require('powercord/webpack');
 
 module.exports = async function monkeypatchTyping () {
-  const prefix = powercord.settings.get('prefix', '.');
-
   typing.sendTyping = (
     _sendTyping => (id) =>
       setImmediate(() => {
         if (
           this.instance &&
-          this.instance.props.value.startsWith(prefix)
+          this.instance.props.value.startsWith(this.prefix)
         ) {
           return;
         }
