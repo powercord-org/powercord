@@ -22,10 +22,10 @@
     "@k3rn31p4nic/google-translate-api": "github:k3rn31p4nic/google-translate-api",
     "buble": "^0.19.6",
     "chokidar": "^2.0.4",
-    "sass": "^1.15.1"
+    "sass": "^1.15.2"
   },
   "devDependencies": {
     "eslint": "^5.11.1",
-    "eslint-plugin-react": "^7.12.0"
+    "eslint-plugin-react": "^7.12.2"
   }
 }
