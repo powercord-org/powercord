@@ -15,15 +15,18 @@
   position: absolute;
   right: 0 !important;
   bottom: 0 !important;
+  opacity: 0;
   transition: .3s;
 
   &.copied {
     background-color: #00c853;
+    opacity: 1;
   }
 }
 
 .powercord-codeblock-lang {
   color: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 
   line-height: 20px;
   padding: 0 5px;
@@ -34,6 +37,7 @@
 
   position: absolute;
   top: 0 !important;
+  left: 0 !important;
   right: 0 !important;
   bottom: initial !important;
 }
@@ -42,6 +46,11 @@
 
 .hljs {
   position: relative;
+  padding-top: calc(20px + .5em) !important;
+
+  &:hover .powercord-codeblock-copy-btn {
+    opacity: 1;
+  }
 
   ol {
     list-style: none;
