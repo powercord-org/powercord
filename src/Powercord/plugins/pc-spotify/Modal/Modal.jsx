@@ -35,7 +35,7 @@ module.exports = class Modal extends React.Component {
   }
 
   updateData (playerState) {
-    if (playerState && playerState.currently_playing_type != 'unknown') {
+    if (playerState && playerState.currently_playing_type !== 'unknown') {
       return this.setState({
         currentItem: {
           name: playerState.item.name,
