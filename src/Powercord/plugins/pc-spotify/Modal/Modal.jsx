@@ -35,12 +35,12 @@ module.exports = class Modal extends React.Component {
   }
 
   updateData (playerState) {
-    if (playerState) {
+    if (playerState && playerState.currently_playing_type != 'unknown') {
       return this.setState({
         currentItem: {
           name: playerState.item.name,
           artists: playerState.item.artists.map(artist => artist.name),
-          img: playerState.item.album.images[0].url,
+          img: !playerState.item.is_local ? playerState.item.album.images[0].url : null,
           albumName: playerState.item.album.name,
           url: playerState.item.external_urls.spotify,
           uri: playerState.item.uri,
