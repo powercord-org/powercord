@@ -1,5 +1,6 @@
 const { resolve } = require('path');
 const { readdirSync } = require('fs');
+const { getOwnerInstance, asyncArray: { filter, forEach } } = require('powercord/util');
 
 module.exports = class PluginManager {
   constructor () {
@@ -19,7 +20,7 @@ module.exports = class PluginManager {
     this._requiresReload = value;
     const title = document.querySelector('.pc-titleWrapper');
     if (title) {
-      require('powercord/util').getOwnerInstance(title).forceUpdate();
+      getOwnerInstance(title).forceUpdate();
     }
   }
 
@@ -29,11 +30,15 @@ module.exports = class PluginManager {
   }
 
   getPlugins () {
-    return Array.from(powercord.pluginManager.plugins.keys()).filter(p => !powercord.settings.get('hiddenPlugins', []).includes(p));
+    return Array.from(this.plugins.keys()).filter(p => !powercord.settings.get('hiddenPlugins', []).includes(p));
   }
 
   getHiddenPlugins () {
-    return Array.from(powercord.pluginManager.plugins.keys()).filter(p => powercord.settings.get('hiddenPlugins', []).includes(p));
+    return Array.from(this.plugins.keys()).filter(p => powercord.settings.get('hiddenPlugins', []).includes(p));
+  }
+
+  getAllPlugins () {
+    return Array.from(this.plugins.keys());
   }
 
   isEnabled (plugin) {
@@ -44,20 +49,34 @@ module.exports = class PluginManager {
     return this.enforcedPlugins.includes(plugin);
   }
 
-  resolveDependencies (plugin, deps = []) {
-    let dependencies = [];
-    if (plugin.startsWith('pc-')) {
-      ({ dependencies } = this.get(plugin).manifest);
-    } else {
-      // If installed: local manifest, else: request to API
-    }
+  async resolveDependencies (plugin, deps = []) {
+    const dependencies = await this.getDependencies(plugin);
 
-    dependencies.forEach(dep => {
+    await forEach(dependencies, async dep => {
       if (!deps.includes(dep)) {
-        deps.push(dep, ...this.resolveDependencies(dep));
+        deps.push(dep);
+        deps.push(...(await this.resolveDependencies(dep, deps)));
       }
     });
     return deps;
+  }
+
+  async resolveDependent (plugin, dept = []) {
+    const dependents = await filter(this.getAllPlugins(), async p => (await this.getDependencies(p)).includes(plugin));
+    await forEach(dependents, async dpt => {
+      if (!dept.includes(dpt)) {
+        dept.push(dpt);
+        dept.push(...(await this.resolveDependent(dpt, dept)));
+      }
+    });
+  }
+
+  async getDependencies (plugin) {
+    if (plugin.startsWith('pc-')) {
+      return this.get(plugin).manifest.dependencies;
+    }
+    // request to API
+    return [];
   }
 
   // Enable/install/hide shit
