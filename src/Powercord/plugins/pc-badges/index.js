@@ -43,7 +43,7 @@ module.exports = class Badges extends Plugin {
         const element = createElement('div', { className: 'powercord-badges' });
         document.querySelector('.pc-profileBadges').appendChild(element);
 
-        if (!this.badges.developer) {
+        if (this.badges.developer) {
           const developerE = createElement('div');
           element.appendChild(developerE);
           ReactDOM.render(React.createElement(Badge, { badge: 'developer' }), developerE);
@@ -55,13 +55,13 @@ module.exports = class Badges extends Plugin {
           ReactDOM.render(React.createElement(Badge, { badge: 'contributor' }), contributorE);
         }
 
-        if (!this.badges.tester) {
+        if (this.badges.tester) {
           const testerE = createElement('div');
           element.appendChild(testerE);
           ReactDOM.render(React.createElement(Badge, { badge: 'tester' }), testerE);
         }
 
-        if (!this.badges.hunter) {
+        if (this.badges.hunter) {
           const hunterE = createElement('div');
           element.appendChild(hunterE);
           ReactDOM.render(React.createElement(Badge, { badge: 'hunter' }), hunterE);
