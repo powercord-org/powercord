@@ -23,13 +23,13 @@ module.exports = class Account extends React.Component {
     } else if (powercord.account) {
       Component = () => <div>
         <img src={`${baseUrl}/assets/spotify.png`} alt='Spotify'/>
-        <span>
+        <span className='powercord-account-item'>
           {powercord.account.spotify
             ? powercord.account.spotify.name
             : <a href='#' onClick={() => openExternal(`${baseUrl}/oauth/spotify`)}>Link it now</a>}
         </span>
         <img src={`${baseUrl}/assets/github.png`} alt='Github'/>
-        <span>
+        <span className='powercord-account-item'>
           {powercord.account.github
             ? powercord.account.github.name
             : <a href='#' onClick={() => openExternal(`${baseUrl}/oauth/github`)}>Link it now</a>}
@@ -61,23 +61,37 @@ module.exports = class Account extends React.Component {
   }
 
   link () {
-    const server = http.createServer({}, async (req, res) => {
+    const server = http.createServer({}, (req, res) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Headers', 'x-powercord-token');
-      if (req.method === 'GET' && req.headers['x-powercord-token']) {
-        res.end('thx cutie');
-        server.close();
+      if (req.method === 'POST') {
+        let data = '';
+        req.on('data', chunk => data += chunk);
+        req.on('end', async () => {
+          try {
+            const json = JSON.parse(data);
+            if (json.jsonweebtoken) {
+              res.end('thx cutie');
+              server.close();
 
-        clearTimeout(this.state.timeout);
-        powercord.settings.set('powercordToken', req.headers['x-powercord-token']);
-        await powercord.fetchAccount();
-        this.setState({
-          linking: false,
-          server: null,
-          timeout: null
+              clearTimeout(this.state.timeout);
+              powercord.settings.set('powercordToken', json.jsonweebtoken);
+              await powercord.fetchAccount();
+              return this.setState({
+                linking: false,
+                server: null,
+                timeout: null
+              });
+            }
+          } catch (e) {
+            // Let it fail silently
+          }
+
+          res.end('hi cutie');
         });
+      } else {
+        res.end('hi cutie');
       }
-      res.end('hi cutie');
     });
 
     server.listen(6462, (err) => {

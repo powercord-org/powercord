@@ -14,10 +14,7 @@ module.exports = {
   async getAccessToken () {
     await powercord.fetchAccount();
     if (powercord.account && powercord.account.spotify) {
-      return post('https://powercord.xyz/accessToken')
-        .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({ token: powercord.account.spotify.token })
-        .then(res => res.body);
+      return powercord.account.spotify.token; // aeth review aetheryx/powercord-backend#3 :^)
     }
 
     const spotifyUserID = await http.get(Endpoints.CONNECTIONS)
