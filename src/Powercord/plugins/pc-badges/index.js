@@ -33,7 +33,6 @@ module.exports = class Badges extends Plugin {
         _old.call(this, ...args);
       }
 
-      console.log(this);
       if (this.badges) {
         const el = document.querySelector('.pc-profileBadges .powercord-badges');
         if (el) {
