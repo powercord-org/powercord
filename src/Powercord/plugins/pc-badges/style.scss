@@ -1,0 +1,37 @@
+.powercord-badge {
+  width: 24px;
+  height: 24px;
+  margin-right: 6px;
+
+  &.developer, &.contributor {
+    height: 23px;
+    width: 23px;
+  }
+
+  &.tester {
+    width: 17px;
+  }
+
+  img {
+    filter: brightness(100);
+  }
+
+  &s {
+    display: flex;
+
+    div:first-child div {
+      padding-left: 8px;
+      border-left: 1px #fff solid;
+    }
+  }
+}
+
+.pc-topSectionNormal {
+  .powercord-badges div:first-child div {
+    border-left-color: #2f3136;
+  }
+
+  .powercord-badge img {
+    filter: initial;
+  }
+}
