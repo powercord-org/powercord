@@ -31,9 +31,14 @@
         margin-right: 10px;
       }
 
+      span + div {
+        width: 18px;
+        height: 18px;
+        margin-left: 10px;
+      }
+
       svg {
-        width: 24px;
-        height: 24px;
+        width: 100%;
       }
 
       &.description {

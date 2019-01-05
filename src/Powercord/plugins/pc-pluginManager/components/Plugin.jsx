@@ -1,7 +1,7 @@
 const { shell: { openExternal } } = require('electron');
 const { React } = require('powercord/webpack');
 const { Tooltip, Switch, Button, Spinner } = require('powercord/components');
-const { Author, Version, Description, License } = require('./Icons');
+const { Author, Version, Description, License, Info } = require('./Icons');
 
 module.exports = class Plugin extends React.Component {
   constructor (props) {
@@ -17,6 +17,8 @@ module.exports = class Plugin extends React.Component {
       id, enforced, installed, enabled, hidden, awaitingReload, manifest, // Properties
       onEnable, onDisable, onInstall, onUninstall, onShow, onHide // Events
     } = this.props;
+    const versionInt = parseInt(manifest.version.replace(/\./g, ''));
+
     return <div className='powercord-plugin'>
       <div className='powercord-plugin-header'>
         <h4>{manifest.name}</h4>
@@ -41,6 +43,9 @@ module.exports = class Plugin extends React.Component {
             <Version/>
           </Tooltip>
           <span>v{manifest.version}</span>
+          {versionInt < 100 && <Tooltip text='This plugin is in beta' position='top'>
+            <Info/>
+          </Tooltip>}
         </div>
         <div className='license'>
           <Tooltip text='License' position='top'>
