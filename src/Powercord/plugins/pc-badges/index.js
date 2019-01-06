@@ -33,7 +33,7 @@ module.exports = class Badges extends Plugin {
         _old.call(this, ...args);
       }
 
-      if (this.badges) {
+      if (this.badges && document.querySelector('.pc-profileBadges')) { // @todo: Create element if not existing
         const el = document.querySelector('.pc-profileBadges .powercord-badges');
         if (el) {
           el.remove();
