@@ -29,6 +29,15 @@ module.exports = class PluginManager {
     return this.plugins.get(plugin);
   }
 
+  async getPluginName (pluginID) {
+    const plugin = this.get(pluginID);
+    if (plugin) {
+      return plugin.manifest.name;
+    }
+    // API request
+    return 'uuuuuuh';
+  }
+
   getPlugins () {
     return Array.from(this.plugins.keys()).filter(p => !powercord.settings.get('hiddenPlugins', []).includes(p));
   }
@@ -45,8 +54,17 @@ module.exports = class PluginManager {
     return !powercord.settings.get('disabledPlugins', []).includes(plugin);
   }
 
-  isEnforced (plugin) {
-    return this.enforcedPlugins.includes(plugin);
+  isEnforced (plugin, iterate = true) {
+    if (this.enforcedPlugins.includes(plugin)) {
+      return true;
+    }
+
+    if (!iterate) {
+      return false;
+    }
+
+    const dependents = this.resolveDependentsSync(plugin);
+    return dependents.filter(p => this.isEnforced(p, false)).length !== 0;
   }
 
   async resolveDependencies (plugin, deps = []) {
@@ -58,17 +76,18 @@ module.exports = class PluginManager {
         deps.push(...(await this.resolveDependencies(dep, deps)));
       }
     });
-    return deps;
+    return deps.filter((d, p) => deps.indexOf(d) === p);
   }
 
-  async resolveDependent (plugin, dept = []) {
+  async resolveDependents (plugin, dept = []) {
     const dependents = await filter(this.getAllPlugins(), async p => (await this.getDependencies(p)).includes(plugin));
     await forEach(dependents, async dpt => {
       if (!dept.includes(dpt)) {
         dept.push(dpt);
-        dept.push(...(await this.resolveDependent(dpt, dept)));
+        dept.push(...(await this.resolveDependents(dpt, dept)));
       }
     });
+    return dept.filter((d, p) => dept.indexOf(d) === p);
   }
 
   async getDependencies (plugin) {
@@ -76,6 +95,25 @@ module.exports = class PluginManager {
       return this.get(plugin).manifest.dependencies;
     }
     // request to API
+    return [];
+  }
+
+  resolveDependentsSync (plugin, dept = []) {
+    const dependents = this.getAllPlugins().filter(p => (this.getDependenciesSync(p)).includes(plugin));
+    dependents.forEach(dpt => {
+      if (!dept.includes(dpt)) {
+        dept.push(dpt);
+        dept.push(...(this.resolveDependentsSync(dpt, dept)));
+      }
+    });
+    return dept.filter((d, p) => dept.indexOf(d) === p);
+  }
+
+  getDependenciesSync (plugin) {
+    if (plugin.startsWith('pc-')) {
+      return this.get(plugin).manifest.dependencies;
+    }
+    // Just return empty array
     return [];
   }
 
@@ -130,11 +168,11 @@ module.exports = class PluginManager {
   }
 
   // Start + internals
-  startPlugins () {
-    this._loadPlugins();
+  async startPlugins () {
+    await this._loadPlugins();
     for (const plugin of [ ...this.plugins.values() ]) {
       if (powercord.settings.get('disabledPlugins', []).includes(plugin.pluginID)) {
-        return;
+        continue;
       }
       if (
         (plugin.manifest.appMode === 'overlay' && window.__OVERLAY__) ||
@@ -149,7 +187,7 @@ module.exports = class PluginManager {
     }
   }
 
-  _loadPlugins () {
+  async _loadPlugins () {
     const plugins = {};
     readdirSync(this.pluginDir)
       .forEach(filename => {

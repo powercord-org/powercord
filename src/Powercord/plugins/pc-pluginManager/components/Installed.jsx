@@ -1,6 +1,9 @@
 const { React } = require('powercord/webpack');
 const { Button, Switch, Divider } = require('powercord/components');
 const { TextInput } = require('powercord/components/settings');
+const { open: openModal, close: closeModal } = require('powercord/modal');
+const { asyncArray: { map } } = require('powercord/util');
+const { Confirm } = require('powercord/components/modal');
 const Plugin = require('./Plugin');
 
 const awaitingReload = [];
@@ -63,16 +66,34 @@ module.exports = class Installed extends React.Component {
     </div>;
   }
 
-  enable (pluginID) {
-    console.log('soon:tm:');
-    // powercord.pluginManager.enable(pluginID);
-    this.forceUpdate();
+  async enable (pluginID) {
+    const willEnable = (await powercord.pluginManager.resolveDependencies(pluginID)).filter(p => !powercord.pluginManager.isEnabled(p));
+    if (willEnable.length !== 0) {
+      const plugins = await map(willEnable, async p => ({
+        name: await powercord.pluginManager.getPluginName(p),
+        id: p
+      }));
+
+      openModal(() => this._renderEnable(pluginID, plugins));
+    } else {
+      powercord.pluginManager.enable(pluginID);
+      this.forceUpdate();
+    }
   }
 
-  disable (pluginID) {
-    console.log('soon:tm:');
-    // powercord.pluginManager.disable(pluginID);
-    this.forceUpdate();
+  async disable (pluginID) {
+    const willDisable = (await powercord.pluginManager.resolveDependents(pluginID)).filter(p => powercord.pluginManager.isEnabled(p));
+    if (willDisable.length !== 0) {
+      const plugins = await map(willDisable, async p => ({
+        name: await powercord.pluginManager.getPluginName(p),
+        id: p
+      }));
+
+      openModal(() => this._renderEnable(pluginID, plugins, true));
+    } else {
+      powercord.pluginManager.disable(pluginID);
+      this.forceUpdate();
+    }
   }
 
   show (pluginID) {
@@ -95,6 +116,35 @@ module.exports = class Installed extends React.Component {
     await powercord.pluginManager.uninstall(pluginID);
     awaitingReload.push(pluginID);
     this.forceUpdate();
+  }
+
+  _renderEnable (plugin, plugins, disable = false) {
+    return <Confirm
+      red={disable}
+      header={disable ? 'Disable plugins' : 'Enable plugins'}
+      confirmText={disable ? 'Disable plugins' : 'Enable plugins'}
+      cancelText='Cancel'
+      onConfirm={() => {
+        let func = powercord.pluginManager.enable.bind(powercord.pluginManager);
+        if (disable) {
+          func = powercord.pluginManager.disable.bind(powercord.pluginManager);
+        }
+
+        func(plugin);
+        plugins.forEach(p => func(p.id));
+
+        this.forceUpdate();
+        closeModal();
+      }}
+      onCancel={closeModal}
+    >
+      <div className='powercord-plugins-modal'>
+        <span>This will also {disable ? 'disable' : 'enable'} the following plugins:</span>
+        <ul>
+          {plugins.map(p => <li key={p.id}>{p.name}</li>)}
+        </ul>
+      </div>
+    </Confirm>;
   }
 
   _getPlugins () {

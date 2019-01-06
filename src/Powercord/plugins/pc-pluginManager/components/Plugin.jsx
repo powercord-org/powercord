@@ -63,7 +63,9 @@ module.exports = class Plugin extends React.Component {
       <div className='powercord-plugin-footer'>
         <Button
           onClick={() => openExternal(manifest.repo || 'https://github.com/aetheryx/powercord')}
-          className={Button.Colors.TRANSPARENT}
+          look={Button.Looks.LINK}
+          size={Button.Sizes.SMALL}
+          color={Button.Colors.TRANSPARENT}
         >
           Repository
         </Button>
@@ -71,7 +73,10 @@ module.exports = class Plugin extends React.Component {
         <div className='btn-group'>
           <Button
             onClick={() => hidden ? onShow() : onHide()}
-            className={hidden ? Button.Colors.GREEN : Button.Colors.TRANSPARENT}>
+            look={hidden ? Button.Looks.FILLED : Button.Looks.LINK}
+            color={hidden ? Button.Colors.GREEN : Button.Colors.TRANSPARENT}
+            size={Button.Sizes.SMALL}
+          >
             {hidden ? 'Show' : 'Hide'}
           </Button>
           {!id.startsWith('pc-') && (awaitingReload
@@ -79,7 +84,9 @@ module.exports = class Plugin extends React.Component {
             : <Button
               disabled={this.state.installing}
               onClick={() => this.process(installed ? onInstall : onUninstall)}
-              className={installed ? Button.Colors.RED : Button.Colors.GREEN}
+              look={installed ? Button.Looks.OUTLINED : Button.Looks.FILLED}
+              color={installed ? Button.Colors.RED : Button.Colors.GREEN}
+              size={Button.Sizes.SMALL}
             >
               {this.state.installing
                 ? <Spinner type='pulsingEllipsis'/>

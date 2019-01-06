@@ -32,8 +32,8 @@
       }
 
       span + div {
-        width: 18px;
-        height: 18px;
+        width: 14px;
+        height: 14px;
         margin-left: 10px;
       }
 
@@ -59,12 +59,6 @@
       .pc-button + .pc-button {
         margin-left: 10px;
       }
-    }
-
-    .pc-button, .pc-disabledButtonWrapper {
-      height: 32px;
-      min-height: 32px;
-      min-width: 92px;
     }
   }
 
