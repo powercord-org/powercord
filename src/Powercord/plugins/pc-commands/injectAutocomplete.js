@@ -26,8 +26,7 @@ module.exports = async function injectAutocomplete () {
         )
       }),
       renderResults: (...args) => {
-        const textArea = document.getElementsByClassName('pc-textArea');
-        if (textArea[0].selectionStart === 0) {
+        if (this.instance.state.selectionEnd === 0) {
           return;
         }
         const renderedResults = this.instance.props.autocompleteOptions.COMMAND.renderResults(...args);
