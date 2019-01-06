@@ -168,8 +168,8 @@ module.exports = class PluginManager {
   }
 
   // Start + internals
-  async startPlugins () {
-    await this._loadPlugins();
+  startPlugins () {
+    this._loadPlugins();
     for (const plugin of [ ...this.plugins.values() ]) {
       if (powercord.settings.get('disabledPlugins', []).includes(plugin.pluginID)) {
         continue;
@@ -187,7 +187,7 @@ module.exports = class PluginManager {
     }
   }
 
-  async _loadPlugins () {
+  _loadPlugins () {
     const plugins = {};
     readdirSync(this.pluginDir)
       .forEach(filename => {
