@@ -1,3 +1,7 @@
+# Warning (added 06/01/2018)
+You probably don't want to use, or even look at this branch. Look at [v2](https://github.com/aetheryx/powercord/tree/v2) instead. The v1 branch is basically an entirely different project and kept for nothing more than "old times' sake".
+
+
 # aethcord
 A Discord client mod tailored to me.
 
