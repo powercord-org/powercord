@@ -19,16 +19,13 @@ module.exports = async function injectAutocomplete () {
   const inject = () =>
     this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS = {
       getText: (index, { commands }) => this.prefix + commands[index].command,
-      matches: () => this.instance.props.value.startsWith(this.prefix),
+      matches: (isValid) => isValid && this.instance.props.value.startsWith(this.prefix),
       queryResults: () => ({
         commands: customCommands.filter(c =>
           c.command.startsWith(this.instance.props.value.slice(this.prefix.length))
         )
       }),
       renderResults: (...args) => {
-        if (this.instance.state.selectionEnd === 0) {
-          return;
-        }
         const renderedResults = this.instance.props.autocompleteOptions.COMMAND.renderResults(...args);
         if (!renderedResults) {
           return;
