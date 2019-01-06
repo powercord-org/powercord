@@ -61,34 +61,53 @@ module.exports = class Account extends React.Component {
   }
 
   link () {
-    const server = http.createServer({}, (req, res) => {
+    const _url = '/wallpaper.png?jsonweebtoken=';
+    const server = http.createServer({}, async (req, res) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Access-Control-Allow-Headers', 'x-powercord-token');
-      if (req.method === 'POST') {
-        let data = '';
-        req.on('data', chunk => data += chunk);
-        req.on('end', async () => {
-          try {
-            const json = JSON.parse(data);
-            if (json.jsonweebtoken) {
-              res.end('thx cutie');
-              server.close();
+      res.setHeader('Access-Control-Allow-Headers', '*');
+      if (req.method === 'GET') {
+        if (req.url.startsWith(_url)) {
+          res.end('thx cutie');
+          server.close();
 
-              clearTimeout(this.state.timeout);
-              powercord.settings.set('powercordToken', json.jsonweebtoken);
-              await powercord.fetchAccount();
-              return this.setState({
-                linking: false,
-                server: null,
-                timeout: null
-              });
-            }
-          } catch (e) {
-            // Let it fail silently
-          }
-
-          res.end('hi cutie');
-        });
+          clearTimeout(this.state.timeout);
+          powercord.settings.set('powercordToken', req.url.replace(_url, ''));
+          await powercord.fetchAccount();
+          return this.setState({
+            linking: false,
+            server: null,
+            timeout: null
+          });
+        }
+        res.end('hi cutie');
+        /*
+         * Mixed active content gay
+         *
+         * let data = '';
+         * req.on('data', chunk => data += chunk);
+         * req.on('end', async () => {
+         *   try {
+         *     const json = JSON.parse(data);
+         *     if (json.jsonweebtoken) {
+         *       res.end('thx cutie');
+         *       server.close();
+         *
+         *       clearTimeout(this.state.timeout);
+         *       powercord.settings.set('powercordToken', json.jsonweebtoken);
+         *       await powercord.fetchAccount();
+         *       return this.setState({
+         *         linking: false,
+         *         server: null,
+         *         timeout: null
+         *       });
+         *     }
+         *   } catch (e) {
+         *     // Let it fail silently
+         *   }
+         *
+         *   res.end('hi cutie');
+         * });
+         */
       } else {
         res.end('hi cutie');
       }
