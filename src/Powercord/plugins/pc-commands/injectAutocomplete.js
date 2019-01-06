@@ -43,7 +43,7 @@ module.exports = async function injectAutocomplete () {
             ) {
               const commandPreviewChildren = rendered.props.children[1].props.children;
               if (commandPreviewChildren[0].startsWith('/')) {
-                commandPreviewChildren[0] = commandPreviewChildren[0].replace(`/${_this.prefix.slice(1)}`, this.prefix);
+                commandPreviewChildren[0] = commandPreviewChildren[0].replace(`/${_this.prefix.slice(1)}`, _this.prefix);
               }
             }
 
