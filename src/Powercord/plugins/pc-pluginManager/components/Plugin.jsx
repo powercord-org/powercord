@@ -73,8 +73,8 @@ module.exports = class Plugin extends React.Component {
         <div className='btn-group'>
           <Button
             onClick={() => hidden ? onShow() : onHide()}
-            look={hidden ? Button.Looks.FILLED : Button.Looks.LINK}
-            color={hidden ? Button.Colors.GREEN : Button.Colors.TRANSPARENT}
+            look={Button.Looks.OUTLINED}
+            color={hidden ? Button.Colors.GREEN : Button.Colors.RED}
             size={Button.Sizes.SMALL}
           >
             {hidden ? 'Show' : 'Hide'}
@@ -84,7 +84,7 @@ module.exports = class Plugin extends React.Component {
             : <Button
               disabled={this.state.installing}
               onClick={() => this.process(installed ? onInstall : onUninstall)}
-              look={installed ? Button.Looks.OUTLINED : Button.Looks.FILLED}
+              look={Button.Looks.FILLED}
               color={installed ? Button.Colors.RED : Button.Colors.GREEN}
               size={Button.Sizes.SMALL}
             >
