@@ -117,6 +117,11 @@ module.exports = (state, onButtonClick, hasCustomAuth) => [
     onValueChange: (val) =>
       SpotifyPlayer.setVolume(Math.round(val))
         .then(() => true)
+  }, {
+    type: 'button',
+    name: 'Add to Library',
+    onClick: () =>
+      SpotifyPlayer.addSong(state.currentItem.id)
   } ],
 
   [ {

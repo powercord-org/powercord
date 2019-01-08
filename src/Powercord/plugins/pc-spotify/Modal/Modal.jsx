@@ -17,13 +17,15 @@ module.exports = class Modal extends React.Component {
         artists: [ '' ],
         img: '',
         url: '',
-        duration: 0
+        duration: 0,
+        id: ''
       },
       isPlaying: true,
       volume: 0,
       deviceID: '',
-      repeatState: '',
+      repeatState: 'off',
       shuffleState: '',
+      inLibrary: false,
       seekBar: {
         seeking: false,
         showDurations: false,
@@ -36,6 +38,7 @@ module.exports = class Modal extends React.Component {
 
   updateData (playerState) {
     if (playerState && playerState.currently_playing_type !== 'unknown') {
+      console.log(playerState);
       return this.setState({
         currentItem: {
           name: playerState.item.name,
@@ -44,7 +47,8 @@ module.exports = class Modal extends React.Component {
           albumName: playerState.item.album.name,
           url: playerState.item.external_urls.spotify,
           uri: playerState.item.uri,
-          duration: playerState.item.duration_ms
+          duration: playerState.item.duration_ms,
+          id: !playerState.item.is_local ? playerState.item.id : null
         },
         seekBar: {
           progressAt: Date.now(),
@@ -52,6 +56,7 @@ module.exports = class Modal extends React.Component {
           showDurations: this.state.seekBar.showDurations,
           seeking: this.state.seekBar.seeking
         },
+        inLibrary: this.state.inLibrary,
         repeatState: playerState.repeat_state,
         shuffleState: playerState.shuffle_state,
         isPlaying: playerState.is_playing,
@@ -93,6 +98,41 @@ module.exports = class Modal extends React.Component {
       className += ' expend';
     }
 
+    const shuffleColor = this.state.shuffleState ? '#1ed860' : '#fff';
+    const repeatColor = this.state.repeatState === 'off' ? '#fff' : '#1ed860';
+    const repeatIcon = this.state.repeatState === 'context' ? 'sync' : 'undo';
+    const libraryStatus = !this.state.inLibrary
+      ? { tooltip: 'Add to Library',
+        icon: 'plus',
+        color: '#fff',
+        action: () => {
+          this.onButtonClick('addSong', this.state.currentItem.id);
+          this.setState({ inLibrary: !this.state.inLibrary });
+        } }
+      : { tooltip: 'In Library',
+        icon: 'check',
+        color: '#1ed860',
+        action: () => {
+          this.onButtonClick('removeSong', this.state.currentItem.id);
+          this.setState({ inLibrary: !this.state.inLibrary });
+        }
+      };
+
+    const repeatStruct = {
+      off: {
+        tooltip: 'Repeat',
+        next: 'context'
+      },
+      context: {
+        tooltip: 'Repeat Track',
+        next: 'track'
+      },
+      track: {
+        tooltip: 'Repeat Off',
+        next: 'off'
+      }
+    };
+
     return (
       <div
         className={className}
@@ -104,8 +144,10 @@ module.exports = class Modal extends React.Component {
           <div
             className='wrapper-2F3Zv8 small-5Os1Bb avatar-small'
             style={{ backgroundImage: `url("${currentItem.img}")` }}
-          />
+          >
+          </div>
         </Tooltip>
+
         <div className='powercord-spotify-songInfo accountDetails-3k9g4n nameTag-m8r81H'>
           <Title className="username">{currentItem.name}</Title>
           <Title className="discriminator">{artists ? `by ${artists}` : ''}</Title>
@@ -152,7 +194,33 @@ module.exports = class Modal extends React.Component {
                 showDurations: show
               }
             })}
-          />
+          >
+            <div className="powercord-spotify-btngrp">
+              <Tooltip text={libraryStatus.tooltip} position="top">
+                <button
+                  style={{ color: libraryStatus.color }}
+                  className={`iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-${libraryStatus.icon}`}
+                  onClick={libraryStatus.action}
+                />
+              </Tooltip>
+
+              <Tooltip text="Shuffle" position="top">
+                <button
+                  style={{ color: shuffleColor }}
+                  className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-random'
+                  onClick={() => this.onButtonClick('setShuffleState', !this.state.shuffleState)}
+                />
+              </Tooltip>
+
+              <Tooltip text={repeatStruct[this.state.repeatState].tooltip} position="top">
+                <button
+                  style={{ color: repeatColor }}
+                  className={`iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-${repeatIcon}`}
+                  onClick={() => this.onButtonClick('setRepeatState', repeatStruct[this.state.repeatState].next)}
+                />
+              </Tooltip>
+            </div>
+          </SeekBar>
         </div>
       </div>
     );

@@ -1,4 +1,4 @@
-const { get, put, post } = require('powercord/http');
+const { get, put, post, del } = require('powercord/http');
 const {
   http,
   spotify,
@@ -130,6 +130,27 @@ module.exports = {
     return this.genericRequest(
       put(`${this.BASE_PLAYER_URL}/shuffle`)
         .query('state', state)
+    );
+  },
+
+  addSong (songID) {
+    return this.genericRequest(
+      put(`${this.BASE_URL}/me/tracks`)
+        .query('ids', songID)
+    );
+  },
+
+  removeSong (songID) {
+    return this.genericRequest(
+      del(`${this.BASE_URL}/me/tracks`)
+        .query('ids', songID)
+    );
+  },
+
+  checkLibrary (songID) {
+    return this.genericRequest(
+      get(`${this.BASE_URL}/me/tracks/contains`)
+        .query('ids', songID)
     );
   }
 };

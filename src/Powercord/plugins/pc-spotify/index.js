@@ -12,9 +12,11 @@ module.exports = class Spotify extends Plugin {
     powercord.on('webSocketMessage:dealer.spotify.com', (data) => {
       const parsedData = JSON.parse(data.data);
       if (parsedData.type === 'message' && parsedData.payloads) {
-        for (const payload of parsedData.payloads || []) {
-          for (const ev of payload.events || []) {
-            this.emit('event', ev);
+        if (parsedData.uri === 'wss://event') {
+          for (const payload of parsedData.payloads || []) {
+            for (const ev of payload.events || []) {
+              this.emit('event', ev);
+            }
           }
         }
       }

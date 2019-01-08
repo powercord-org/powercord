@@ -29,6 +29,20 @@
     animation-timing-function: linear;
   }
 
+  &-status:hover {
+    color: gray;
+  }
+
+  &-status:active {
+    transform: scale(1.1);
+    color: #1ed860;
+  }
+
+  &-btngrp {
+    display: none;
+    justify-content: center;
+  }
+
   &-seek {
     bottom: -6px;
     display: flex;
@@ -82,8 +96,13 @@
   }
 
   &.expend {
-    padding-bottom: 12px;
+    padding-bottom: 36px;
     transition-delay: 0s;
+
+    .powercord-spotify-btngrp {
+      display: flex;
+      transition-delay: .75s;
+    }
 
     .powercord-spotify-seek-durations,
     .powercord-spotify-seek-bar-cursor {
