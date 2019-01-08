@@ -36,9 +36,19 @@ module.exports = class Modal extends React.Component {
     };
   }
 
+  componentDidUpdate (oldProps, oldState) {
+    if (oldState.currentItem.id !== this.state.currentItem.id && this.state.currentItem.id !== '') {
+      setTimeout(() => {
+        SpotifyPlayer.checkLibrary(this.state.currentItem.id).then((r) => {
+          this.setState({ inLibrary: r.body[0] });
+        });
+      }, 5000
+      );
+    }
+  }
+
   updateData (playerState) {
     if (playerState && playerState.currently_playing_type !== 'unknown') {
-      console.log(playerState);
       return this.setState({
         currentItem: {
           name: playerState.item.name,
@@ -106,15 +116,17 @@ module.exports = class Modal extends React.Component {
         icon: 'plus',
         color: '#fff',
         action: () => {
-          this.onButtonClick('addSong', this.state.currentItem.id);
-          this.setState({ inLibrary: !this.state.inLibrary });
+          SpotifyPlayer.addSong(this.state.currentItem.id).then(() => {
+            this.setState({ inLibrary: !this.state.inLibrary });
+          });
         } }
       : { tooltip: 'In Library',
         icon: 'check',
         color: '#1ed860',
         action: () => {
-          this.onButtonClick('removeSong', this.state.currentItem.id);
-          this.setState({ inLibrary: !this.state.inLibrary });
+          SpotifyPlayer.removeSong(this.state.currentItem.id).then(() => {
+            this.setState({ inLibrary: !this.state.inLibrary });
+          });
         }
       };
 
