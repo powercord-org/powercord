@@ -224,7 +224,7 @@ module.exports = class Modal extends React.Component {
               }
             })}
           >
-            <div className="powercord-spotify-btngrp">
+            <div className="powercord-spotify-seek-btngrp">
               {libraryButton}
 
               <Tooltip text="Shuffle" position="top">

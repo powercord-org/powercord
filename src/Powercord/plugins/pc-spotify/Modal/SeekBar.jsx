@@ -93,11 +93,11 @@ module.exports = class SeekBar extends React.Component {
         onMouseEnter={() => this.props.onDurationToggle(true)}
         onMouseLeave={() => this.props.onDurationToggle(false)}
       >
-        {this.props.children}
-        <div className='powercord-spotify-seek-durations'>
+        <div className='powercord-spotify-seek-elements'>
           <span className='powercord-spotify-seek-duration'>
             {formatTime(progress)}
           </span>
+          {this.props.children}
           <span className='powercord-spotify-seek-duration'>
             {formatTime(this.props.duration)}
           </span>
