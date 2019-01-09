@@ -77,38 +77,6 @@ module.exports = (state, onButtonClick, hasCustomAuth) => [
     } ]
     : []) ],
 
-  ...(hasCustomAuth
-    ? [ [ {
-      type: 'submenu',
-      name: 'Playback Settings',
-      getItems: () => [ {
-        type: 'submenu',
-        name: 'Repeat Modes',
-        getItems: () => [ {
-          name: 'On',
-          stateName: 'context'
-        }, {
-          name: 'Current Track',
-          stateName: 'track'
-        }, {
-          name: 'Off',
-          stateName: 'off'
-        } ].map(button => ({
-          type: 'button',
-          highlight: state.repeatState === button.stateName && '#1ed860',
-          disabled: state.repeatState === button.stateName,
-          onClick: () => onButtonClick('setRepeatState', button.stateName),
-          ...button
-        }))
-      }, {
-        type: 'checkbox',
-        name: 'Shuffle',
-        defaultState: state.shuffleState,
-        onToggle: (s) => onButtonClick('setShuffleState', s)
-      } ]
-    } ] ]
-    : []),
-
   [ {
     type: 'slider',
     name: 'Volume',
@@ -117,11 +85,6 @@ module.exports = (state, onButtonClick, hasCustomAuth) => [
     onValueChange: (val) =>
       SpotifyPlayer.setVolume(Math.round(val))
         .then(() => true)
-  }, {
-    type: 'button',
-    name: 'Add to Library',
-    onClick: () =>
-      SpotifyPlayer.addSong(state.currentItem.id)
   } ],
 
   [ {
