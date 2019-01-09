@@ -11,6 +11,21 @@ module.exports = class Modal extends React.Component {
   constructor () {
     super();
 
+    this.repeatStruct = {
+      off: {
+        tooltip: 'Repeat',
+        next: 'context'
+      },
+      context: {
+        tooltip: 'Repeat Track',
+        next: 'track'
+      },
+      track: {
+        tooltip: 'Repeat Off',
+        next: 'off'
+      }
+    };
+
     this.state = {
       currentItem: {
         name: '',
@@ -45,6 +60,13 @@ module.exports = class Modal extends React.Component {
       }, 5000
       );
     }
+  }
+
+  shouldComponentUpdate (newProps, newState) {
+    if (this.repeatStruct[this.state.repeatState].next === newState.repeatState || this.state.repeatState === newState.repeatState) {
+      return true;
+    }
+    return false;
   }
 
   updateData (playerState) {
@@ -130,21 +152,6 @@ module.exports = class Modal extends React.Component {
         }
       };
 
-    const repeatStruct = {
-      off: {
-        tooltip: 'Repeat',
-        next: 'context'
-      },
-      context: {
-        tooltip: 'Repeat Track',
-        next: 'track'
-      },
-      track: {
-        tooltip: 'Repeat Off',
-        next: 'off'
-      }
-    };
-
     return (
       <div
         className={className}
@@ -224,11 +231,11 @@ module.exports = class Modal extends React.Component {
                 />
               </Tooltip>
 
-              <Tooltip text={repeatStruct[this.state.repeatState].tooltip} position="top">
+              <Tooltip text={this.repeatStruct[this.state.repeatState].tooltip} position="top">
                 <button
                   style={{ color: repeatColor }}
                   className={`iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-${repeatIcon}`}
-                  onClick={() => this.onButtonClick('setRepeatState', repeatStruct[this.state.repeatState].next)}
+                  onClick={() => this.onButtonClick('setRepeatState', this.repeatStruct[this.state.repeatState].next)}
                 />
               </Tooltip>
             </div>
