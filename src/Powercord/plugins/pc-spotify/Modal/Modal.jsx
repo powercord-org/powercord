@@ -51,10 +51,17 @@ module.exports = class Modal extends React.Component {
     };
   }
 
+  stopTimer () {
+    if (this.libraryTimer) {
+      clearTimeout(this.libraryTimer);
+    }
+  }
+
   componentDidUpdate (oldProps, oldState) {
     if (oldState.currentItem.id !== this.state.currentItem.id && this.state.currentItem.id !== '') {
+      this.stopTimer();
       this.setState({ inLibrary: '' });
-      setTimeout(() => {
+      this.libraryTimer = setTimeout(() => {
         SpotifyPlayer.checkLibrary(this.state.currentItem.id).then((r) => {
           this.setState({ inLibrary: r.body[0] });
         });
