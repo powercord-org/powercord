@@ -58,16 +58,12 @@ module.exports = class Modal extends React.Component {
         SpotifyPlayer.checkLibrary(this.state.currentItem.id).then((r) => {
           this.setState({ inLibrary: r.body[0] });
         });
-      }, 5000
-      );
+      }, 5000);
     }
   }
 
   shouldComponentUpdate (newProps, newState) {
-    if (this.repeatStruct[this.state.repeatState].next === newState.repeatState || this.state.repeatState === newState.repeatState) {
-      return true;
-    }
-    return false;
+    return this.repeatStruct[this.state.repeatState].next === newState.repeatState || this.state.repeatState === newState.repeatState;
   }
 
   updateData (playerState) {
@@ -86,7 +82,6 @@ module.exports = class Modal extends React.Component {
         seekBar: {
           progressAt: Date.now(),
           progress: playerState.progress_ms,
-          showDurations: this.state.seekBar.showDurations,
           seeking: this.state.seekBar.seeking
         },
         inLibrary: this.state.inLibrary,
@@ -126,24 +121,22 @@ module.exports = class Modal extends React.Component {
     const { currentItem, isPlaying, displayState } = this.state;
     const artists = concat(currentItem.artists);
 
-    let className = 'container-2Thooq powercord-spotify';
-    if (this.state.seekBar.showDurations || this.state.seekBar.seeking) {
-      className += ' expend';
-    }
-
     const shuffleColor = this.state.shuffleState ? '#1ed860' : '#fff';
     const repeatColor = this.state.repeatState === 'off' ? '#fff' : '#1ed860';
     const repeatIcon = this.state.repeatState === 'context' ? 'sync' : 'undo';
     const libraryStatus = this.state.inLibrary === false
-      ? { tooltip: 'Add to Library',
+      ? {
+        tooltip: 'Add to Library',
         icon: 'plus',
         color: '#fff',
         action: () => {
           SpotifyPlayer.addSong(this.state.currentItem.id).then(() => {
             this.setState({ inLibrary: !this.state.inLibrary });
           });
-        } }
-      : { tooltip: 'In Library',
+        }
+      }
+      : {
+        tooltip: 'In Library',
         icon: 'check',
         color: '#1ed860',
         action: () => {
@@ -164,7 +157,7 @@ module.exports = class Modal extends React.Component {
       : '';
     return (
       <div
-        className={className}
+        className='container-2Thooq powercord-spotify'
         id='powercord-spotify-modal'
         onContextMenu={this.injectContextMenu.bind(this)}
         style={displayState === 'hide' ? { display: 'none' } : {}}
@@ -215,12 +208,6 @@ module.exports = class Modal extends React.Component {
               seekBar: {
                 ...this.state.seekBar,
                 seeking
-              }
-            })}
-            onDurationToggle={(show) => this.setState({
-              seekBar: {
-                ...this.state.seekBar,
-                showDurations: show
               }
             })}
           >

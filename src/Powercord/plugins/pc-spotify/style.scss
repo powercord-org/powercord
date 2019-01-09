@@ -1,5 +1,6 @@
 .powercord-spotify {
   position: relative;
+  margin-bottom: 0;
   transition: .3s;
   transition-delay: .25s;
 
@@ -68,8 +69,7 @@
       flex: 1;
       display: flex;
       justify-content: center;
-      transition: transform .3s;
-      transition-delay: .25s;
+      transform: translateY(-20px);
     }
 
     &-btngrp + &-duration {
@@ -107,14 +107,9 @@
     }
   }
 
-  &.expend {
+  &:hover {
     padding-bottom: 25px;
     transition-delay: 0s;
-
-    .powercord-spotify-seek-btngrp {
-      transform: translateY(-20px);
-      transition-delay: 0s;
-    }
 
     .powercord-spotify-seek-elements,
     .powercord-spotify-seek-bar-cursor {

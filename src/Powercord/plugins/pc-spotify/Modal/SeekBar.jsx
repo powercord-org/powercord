@@ -88,11 +88,7 @@ module.exports = class SeekBar extends React.Component {
     const current = Math.min(progress / this.props.duration * 100, 100);
 
     return (
-      <div
-        className='powercord-spotify-seek'
-        onMouseEnter={() => this.props.onDurationToggle(true)}
-        onMouseLeave={() => this.props.onDurationToggle(false)}
-      >
+      <div className='powercord-spotify-seek'>
         <div className='powercord-spotify-seek-elements'>
           <span className='powercord-spotify-seek-duration'>
             {formatTime(progress)}
