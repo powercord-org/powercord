@@ -40,7 +40,7 @@ module.exports = class Modal extends React.Component {
       deviceID: '',
       repeatState: 'off',
       shuffleState: '',
-      inLibrary: false,
+      inLibrary: '',
       seekBar: {
         seeking: false,
         showDurations: false,
@@ -53,6 +53,7 @@ module.exports = class Modal extends React.Component {
 
   componentDidUpdate (oldProps, oldState) {
     if (oldState.currentItem.id !== this.state.currentItem.id && this.state.currentItem.id !== '') {
+      this.setState({ inLibrary: '' });
       setTimeout(() => {
         SpotifyPlayer.checkLibrary(this.state.currentItem.id).then((r) => {
           this.setState({ inLibrary: r.body[0] });
@@ -133,7 +134,7 @@ module.exports = class Modal extends React.Component {
     const shuffleColor = this.state.shuffleState ? '#1ed860' : '#fff';
     const repeatColor = this.state.repeatState === 'off' ? '#fff' : '#1ed860';
     const repeatIcon = this.state.repeatState === 'context' ? 'sync' : 'undo';
-    const libraryStatus = !this.state.inLibrary
+    const libraryStatus = this.state.inLibrary === false
       ? { tooltip: 'Add to Library',
         icon: 'plus',
         color: '#fff',
@@ -152,6 +153,15 @@ module.exports = class Modal extends React.Component {
         }
       };
 
+    const libraryButton = this.state.inLibrary !== ''
+      ? (<Tooltip text={libraryStatus.tooltip} position="top">
+        <button
+          style={{ color: libraryStatus.color }}
+          className={`iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-${libraryStatus.icon}`}
+          onClick={libraryStatus.action}
+        />
+      </Tooltip>)
+      : '';
     return (
       <div
         className={className}
@@ -215,13 +225,7 @@ module.exports = class Modal extends React.Component {
             })}
           >
             <div className="powercord-spotify-btngrp">
-              <Tooltip text={libraryStatus.tooltip} position="top">
-                <button
-                  style={{ color: libraryStatus.color }}
-                  className={`iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-${libraryStatus.icon}`}
-                  onClick={libraryStatus.action}
-                />
-              </Tooltip>
+              {libraryButton}
 
               <Tooltip text="Shuffle" position="top">
                 <button
