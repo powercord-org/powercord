@@ -115,6 +115,12 @@ module.exports = class Modal extends React.Component {
               displayState: 'hide'
             });
           }
+          break;
+        case 'track':
+          if (data.identifier === this.state.currentItem.id) {
+            this.stopTimer();
+            this.setState({ inLibrary: !data.removed });
+          }
       }
     });
   }
