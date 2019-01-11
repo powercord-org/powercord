@@ -1,0 +1,29 @@
+.powercord-guild-mentions {
+  bottom: -2px;
+  pointer-events: none;
+  position: absolute;
+  right: -2px;
+  background-clip: padding-box;
+  background-color: #f04747;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 rgba(0,0,0,.25), inset 0 1px 0 hsla(0,0%,100%,.15);
+  color: #fff;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  padding: 3px 6px;
+  text-shadow: 0 1px 0 rgba(0,0,0,.25);
+  text-transform: uppercase;
+  transform: translateZ(0);
+}
+
+.pc-guildInner {
+  transition: .3s;
+}
+
+.pc-selected .pc-guildInner, .pc-guildInner:hover {
+  // NOTE: this is not perfect and requires adjustments to fit Discord's animation.
+  transition: cubic-bezier(0.58, -0.01, 0.02, 2.22) .5s;
+  border-radius: 15px;
+}
