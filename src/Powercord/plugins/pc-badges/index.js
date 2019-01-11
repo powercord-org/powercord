@@ -5,6 +5,7 @@ const { createElement } = require('powercord/util');
 const { React, ReactDOM, getModuleByDisplayName } = require('powercord/webpack');
 
 const Badge = require('./Badge.jsx');
+const badgesStore = {};
 
 module.exports = class Badges extends Plugin {
   start () {
@@ -14,25 +15,38 @@ module.exports = class Badges extends Plugin {
 
   _patchUserComponent () {
     const UserProfile = getModuleByDisplayName('UserProfile');
-    UserProfile.prototype.componentDidMount = ((_old) => async function (...args) { // eslint-disable-line
+    UserProfile.prototype.fetchPowercordBadges = async function () { // eslint-disable-line
+      if (this.userID !== this.props.user.id) {
+        this.badges = null;
+        this.userID = this.props.user.id;
+        if (!badgesStore[this.userID]) {
+          try {
+            const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
+            badgesStore[this.userID] = await get(`${baseUrl}/api/users/${this.userID}`).then(res => res.body);
+          } catch (e) {
+            // Let it fail silently, probably just 404
+          }
+        }
+
+        this.badges = badgesStore[this.userID];
+        this.forceUpdate();
+      }
+    };
+
+    UserProfile.prototype.componentDidMount = ((_old) => function (...args) { // eslint-disable-line
       if (_old) {
         _old.call(this, ...args);
       }
 
-      try {
-        const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
-        this.badges = await get(`${baseUrl}/api/users/${this.props.user.id}`).then(res => res.body);
-        this.forceUpdate();
-      } catch (e) {
-        // Let it fail silently, probably just 404
-      }
+      this.fetchPowercordBadges();
     })(UserProfile.prototype.componentDidMount);
 
-    UserProfile.prototype.componentDidUpdate = ((_old) => function (...args) { // eslint-disable-line
+    UserProfile.prototype.componentDidUpdate = ((_old) => async function (...args) { // eslint-disable-line
       if (_old) {
         _old.call(this, ...args);
       }
 
+      await this.fetchPowercordBadges();
       if (this.badges && document.querySelector('.pc-profileBadges')) { // @todo: Create element if not existing
         const el = document.querySelector('.pc-profileBadges .powercord-badges');
         if (el) {
@@ -69,4 +83,3 @@ module.exports = class Badges extends Plugin {
     })(UserProfile.prototype.componentDidUpdate);
   }
 };
-
