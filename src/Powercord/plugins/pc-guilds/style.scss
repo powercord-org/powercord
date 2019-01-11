@@ -27,3 +27,37 @@
   transition: cubic-bezier(0.58, -0.01, 0.02, 2.22) .5s;
   border-radius: 15px;
 }
+
+.pc-createGuildDialog .pc-wrapper {
+  height: 500px;
+}
+
+.powercord-create-folder {
+  &-container {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    background: hsla(0,0%,100%,.75);
+    border: 1px solid rgba(0,0,0,.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,.08);
+  }
+
+  &-title {
+    color: #7289da;
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 20px;
+    padding: 0 15px;
+    text-transform: uppercase;
+  }
+
+  &-description {
+    color: #99aab5;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    margin-top: 5px;
+    padding: 0 15px;
+    margin-bottom: 20px;
+  }
+}
