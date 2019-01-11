@@ -39,7 +39,7 @@ module.exports = class Installed extends React.Component {
           Search plugins...
         </TextInput>
         <div className='powercord-plugins-topbar-show'>
-          <span>Show hidden plugins</span>
+          <span className='powercord-title'>Show hidden plugins</span>
           <Switch value={this.state.hidden} onChange={() => this.setState({ hidden: !this.state.hidden })}/>
         </div>
       </div>

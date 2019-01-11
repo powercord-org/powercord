@@ -26,3 +26,21 @@
     }
   }
 }
+
+.powercord-title {
+  line-height: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  height: 16px;
+}
+
+.theme-dark .powercord-title {
+  color: #b9bbbe;
+}
+
+.theme-light .powercord-title {
+  color: #72767d;
+}

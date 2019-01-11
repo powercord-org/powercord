@@ -3,7 +3,8 @@
   border-radius: 5px;
   margin-bottom: 20px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
 
   > div {
     flex: 1;

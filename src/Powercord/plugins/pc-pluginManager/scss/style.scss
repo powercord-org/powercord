@@ -49,16 +49,6 @@
       flex-direction: column;
       align-items: flex-end;
 
-      span {
-        line-height: 16px;
-        font-weight: 600;
-        margin-bottom: 8px;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: .5px;
-        height: 16px;
-      }
-
       .pc-switch {
         margin-top: 3px;
       }
@@ -83,18 +73,10 @@
 // Colors
 .theme-dark .powercord-plugins {
   color: #fff;
-
-  &-topbar-show span {
-    color: #b9bbbe;
-  }
 }
 
 .theme-light .powercord-plugins {
   &-wip {
     color: #fff;
-  }
-
-  &-topbar-show span {
-    color: #72767d;
   }
 }
