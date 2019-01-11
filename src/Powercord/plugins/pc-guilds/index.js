@@ -6,7 +6,7 @@ const { React, ReactDOM, getModuleByDisplayName } = require('powercord/webpack')
 const Guilds = require('./components/Guilds.jsx');
 const CreateFolder = require('./components/CreateFolder.jsx');
 
-module.exports = class DoNotTrack extends Plugin {
+module.exports = class GuildFolders extends Plugin {
   start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuilds();
