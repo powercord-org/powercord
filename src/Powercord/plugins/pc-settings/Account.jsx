@@ -1,6 +1,6 @@
 const http = require('http');
 const { shell: { openExternal } } = require('electron');
-const { React, streamerMode } = require('powercord/webpack');
+const { React } = require('powercord/webpack');
 const { Spinner } = require('powercord/components');
 
 module.exports = class Account extends React.Component {
@@ -15,6 +15,7 @@ module.exports = class Account extends React.Component {
   }
 
   render () {
+    const streamerMode = require('powercord/webpack').getModule(['autoToggle', 'disableNotifications']);
     const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
 
     let Component = null;
