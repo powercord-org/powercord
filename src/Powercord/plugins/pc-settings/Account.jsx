@@ -1,11 +1,12 @@
 const http = require('http');
 const { shell: { openExternal } } = require('electron');
-const { React } = require('powercord/webpack');
+const { React, Flux } = require('powercord/webpack');
 const { Spinner } = require('powercord/components');
 
-module.exports = class Account extends React.Component {
+const Account = class Account extends React.Component {
   constructor (props) {
     super(props);
+
     this.state = {
       linking: false,
       message: null,
@@ -15,11 +16,10 @@ module.exports = class Account extends React.Component {
   }
 
   render () {
-    const streamerMode = require('powercord/webpack').getModule(['autoToggle', 'disableNotifications']);
     const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
 
     let Component = null;
-    if (streamerMode.enabled && streamerMode.hidePersonalInformation) {
+    if (this.props.streamerMode.enabled && this.props.streamerMode.hidePersonalInformation) {
       Component = () => <div>Streamer mode enabled. Stay safe cutie</div>;
     } else if (this.state.linking) {
       Component = () => <div><Spinner type='pulsingEllipsis'/> Linking your account...</div>;
@@ -47,7 +47,7 @@ module.exports = class Account extends React.Component {
     }
 
     return <div className='powercord-account'>
-      <div class='powercord-title'>Powercord Account</div>
+      <div className='powercord-title'>Powercord Account</div>
       <Component/>
     </div>;
   }
@@ -147,3 +147,6 @@ module.exports = class Account extends React.Component {
     });
   }
 };
+
+const fluxShit = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.cacheKey && m.exports.cacheKey === 'StreamerModeStore')[0].exports;
+module.exports = Flux.connectStores([ fluxShit ], () => ({ streamerMode: fluxShit.getSettings() }))(Account);
