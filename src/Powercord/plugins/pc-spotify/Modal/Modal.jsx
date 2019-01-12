@@ -102,8 +102,11 @@ module.exports = class Modal extends React.Component {
       >
         <Tooltip text={currentItem.albumName} position='top'>
           <div
-            className='wrapper-2F3Zv8 small-5Os1Bb avatar-small'
-            style={{ backgroundImage: `url("${currentItem.img}")` }}
+            className='wrapper-2F3Zv8 small-5Os1Bb avatar-small avatar-3JE4B3 pc-avatar'
+            style={{
+              backgroundImage: `url("${currentItem.img}")`,
+              backgroundSize: 'contain'
+            }}
           />
         </Tooltip>
         <div className='powercord-spotify-songInfo accountDetails-3k9g4n nameTag-m8r81H'>
