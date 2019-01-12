@@ -56,7 +56,7 @@ const Guild = class Guilds extends React.Component {
         </div>
       </Tooltip>
       {this.props.mentions > 0 &&
-      <div className="powercord-guild-mentions pc-wrapper pc-badge pc-fixClipping">{this.props.mentions}</div>}
+      <div className='powercord-mentions-badge pc-wrapper pc-badge pc-fixClipping'>{this.props.mentions}</div>}
     </div>;
   }
 

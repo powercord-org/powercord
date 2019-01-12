@@ -1,7 +1,7 @@
 const { resolve } = require('path');
 const Plugin = require('powercord/Plugin');
-const { createElement } = require('powercord/util');
 const { ContextMenu: { Button } } = require('powercord/components');
+const { createElement, getOwnerInstance } = require('powercord/util');
 const { React, ReactDOM, getModuleByDisplayName } = require('powercord/webpack');
 
 const Guilds = require('./components/Guilds.jsx');
@@ -13,6 +13,9 @@ module.exports = class GuildFolders extends Plugin {
     this._patchGuilds();
     this._patchAddGuild();
     this._patchContextMenu();
+
+    // Ensure new guild component is immediately displayed
+    getOwnerInstance(document.querySelector('.pc-guilds')).forceUpdate();
   }
 
   _patchGuilds () {
