@@ -40,6 +40,10 @@ module.exports = {
           return this.genericRequest(request);
         }
 
+        if (err.body.error && err.body.error.reason === 'PREMIUM_REQUIRED') {
+          powercord.pluginManager.get('pc-spotify').openPremiumDialog();
+          return false;
+        }
         console.error(err.body, request.opts);
         throw err;
       });

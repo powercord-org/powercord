@@ -43,21 +43,19 @@ module.exports = class SeekBar extends React.Component {
     }
   }
 
-  startSeek (e) {
-    this.props.onSeeking(true);
-    this.setState({
-      seeking: true,
-      wasPlaying: this.props.isPlaying
-    });
+  async startSeek (e) {
+    if (await SpotifyPlayer.pause()) {
+      this.props.onSeeking(true);
+      this.setState({
+        seeking: true,
+        wasPlaying: this.props.isPlaying
+      });
 
-    if (this.props.isPlaying) {
-      SpotifyPlayer.pause();
+      document.addEventListener('mousemove', this.seek);
+      document.addEventListener('mouseup', this.endSeek);
+
+      this.seek(e);
     }
-
-    document.addEventListener('mousemove', this.seek);
-    document.addEventListener('mouseup', this.endSeek);
-
-    this.seek(e);
   }
 
   seek ({ clientX: mouseX }) {
