@@ -1,6 +1,7 @@
 const { resolve } = require('path');
 const Plugin = require('powercord/Plugin');
 const { createElement } = require('powercord/util');
+const { ContextMenu: { Button } } = require('powercord/components');
 const { React, ReactDOM, getModuleByDisplayName } = require('powercord/webpack');
 
 const Guilds = require('./components/Guilds.jsx');
@@ -11,6 +12,7 @@ module.exports = class GuildFolders extends Plugin {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuilds();
     this._patchAddGuild();
+    this._patchContextMenu();
   }
 
   _patchGuilds () {
@@ -67,5 +69,24 @@ module.exports = class GuildFolders extends Plugin {
       res.props.className += ' pc-createGuildDialog';
       return res;
     })(AddGuild.prototype.render);
+  }
+
+  _patchContextMenu () {
+    const GuildContextMenu = getModuleByDisplayName('GuildContextMenu');
+
+    // eslint-disable-next-line func-names
+    GuildContextMenu.prototype.render = (_render => function (...args) {
+      const res = _render.call(this, ...args);
+      if (this.props.isPowercord) {
+        res.props.children.push(
+          React.createElement(Button, {
+            name: 'm e m e s',
+            seperate: true,
+            onClick: () => console.log('w a n n a   s o m e   m e m e s ?')
+          })
+        );
+      }
+      return res;
+    })(GuildContextMenu.prototype.render);
   }
 };
