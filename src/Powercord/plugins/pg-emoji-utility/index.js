@@ -1,13 +1,13 @@
 const Plugin = require('powercord/Plugin');
 const webpack = require('powercord/webpack');
-const emojiStore = webpack.getModule(['getGuildEmoji']);
+const emojiStore = webpack.getModule([ 'getGuildEmoji' ]);
 
 module.exports = class EmojiUtility extends Plugin {
-  getEmojiRegex() {
+  getEmojiRegex () {
     return /^<a?:([a-zA-Z0-9_]+):([0-9]+)>$/;
   }
 
-  start() {
+  start () {
     powercord
       .pluginManager
       .get('pc-commands')
@@ -19,27 +19,25 @@ module.exports = class EmojiUtility extends Plugin {
           const argument = args.join(' ');
 
           const matcher = argument.match(this.getEmojiRegex());
-          if(matcher) {
+          if (matcher) {
             const emojis = Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis);
             const emoji = emojis.find(emoji => emoji.id === matcher[2]);
 
-            if(emoji) {
+            if (emoji) {
               return {
                 send: false,
-                result: `${argument} is from ${webpack.getModule(['getGuild']).getGuild(emoji.guildId).name} (${emoji.guildId})`
-              }
-            }else{
-              return {
-                send: false,
-                result: `Could not find emote ${argument}`
-              }
+                result: `${argument} is from ${webpack.getModule([ 'getGuild' ]).getGuild(emoji.guildId).name} (${emoji.guildId})`
+              };
             }
-          }else{
             return {
               send: false,
-              result: `**${argument}** is not an emote`
-            }
+              result: `Could not find emote ${argument}`
+            };
           }
+          return {
+            send: false,
+            result: `**${argument}** is not an emote`
+          };
         }
       );
 
@@ -53,19 +51,18 @@ module.exports = class EmojiUtility extends Plugin {
         (args) => {
           const argument = args.join(' ').toLowerCase();
           const emojis = Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis);
-          
+
           const foundEmojis = emojis.filter(emoji => emoji.name.toLowerCase().includes(argument));
-          if(foundEmojis.length > 0) {
+          if (foundEmojis.length > 0) {
             return {
               send: true,
               result: foundEmojis.map(emoji => `<${(emoji.animated ? 'a' : '') + emoji.allNamesString + emoji.id}>`).join('')
-            }
-          }else{
-            return {
-              send: false,
-              result: `Could not find any emotes containing **${argument}**`
-            }
+            };
           }
+          return {
+            send: false,
+            result: `Could not find any emotes containing **${argument}**`
+          };
         }
       );
   }
