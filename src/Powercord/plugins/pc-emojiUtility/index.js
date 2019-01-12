@@ -1,6 +1,6 @@
 const Plugin = require('powercord/Plugin');
-const webpack = require('powercord/webpack');
-const emojiStore = webpack.getModule([ 'getGuildEmoji' ]);
+const { getModule } = require('powercord/webpack');
+const emojiStore = getModule([ 'getGuildEmoji' ]);
 
 module.exports = class EmojiUtility extends Plugin {
   getEmojiRegex () {
@@ -26,7 +26,7 @@ module.exports = class EmojiUtility extends Plugin {
             if (emoji) {
               return {
                 send: false,
-                result: `${argument} is from ${webpack.getModule([ 'getGuild' ]).getGuild(emoji.guildId).name} (${emoji.guildId})`
+                result: `${argument} is from ${getModule([ 'getGuild' ]).getGuild(emoji.guildId).name} (${emoji.guildId})`
               };
             }
             return {
