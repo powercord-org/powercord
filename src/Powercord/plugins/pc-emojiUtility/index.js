@@ -1,5 +1,5 @@
 const Plugin = require('powercord/Plugin');
-const { getModule } = require('powercord/webpack');
+const { getModule, channels, constants } = require('powercord/webpack');
 const emojiStore = getModule([ 'getGuildEmoji' ]);
 
 module.exports = class EmojiUtility extends Plugin {
@@ -12,7 +12,7 @@ module.exports = class EmojiUtility extends Plugin {
       .pluginManager
       .get('pc-commands')
       .register(
-        'find',
+        'findemote',
         'Find the server an emote is from',
         '{c} [emote]',
         (args) => {
@@ -24,19 +24,44 @@ module.exports = class EmojiUtility extends Plugin {
             const emoji = emojis.find(emoji => emoji.id === matcher[2]);
 
             if (emoji) {
+              const guild = getModule([ 'getGuild' ]).getGuild(emoji.guildId);
+
+              let selectedChannel = channels.getSelectedChannelState()[guild.id];
+              if (!selectedChannel) {
+                /* I am not sure if it can get here but just to be sure */
+                selectedChannel = guild.systemChannelId;
+              }
+
+              const url = `https://${constants.API_HOST}/channels/${guild.id}/${selectedChannel}`;
+
               return {
                 send: false,
-                result: `${argument} is from ${getModule([ 'getGuild' ]).getGuild(emoji.guildId).name} (${emoji.guildId})`
+                result: {
+                  type: 'rich',
+                  description: `${argument} is from **[${guild.name}](${url})**`,
+                  color: 65280,
+                  footer: {
+                    text: `Guild: ${guild.id}`
+                  }
+                }
               };
             }
             return {
               send: false,
-              result: `Could not find emote ${argument}`
+              result: {
+                type: 'rich',
+                description: `Could not find emote ${argument}!`,
+                color: 16711680
+              }
             };
           }
           return {
             send: false,
-            result: `**${argument}** is not an emote`
+            result: {
+              type: 'rich',
+              description: `**${argument}** is not a custom emote!`,
+              color: 16711680
+            }
           };
         }
       );
@@ -61,7 +86,11 @@ module.exports = class EmojiUtility extends Plugin {
           }
           return {
             send: false,
-            result: `Could not find any emotes containing **${argument}**`
+            result: {
+              type: 'rich',
+              description: `Could not find any emotes containing **${argument}**!`,
+              color: 16711680
+            }
           };
         }
       );
