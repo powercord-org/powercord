@@ -56,8 +56,6 @@
   }
 
   &-modal {
-    color: #fff;
-
     ul {
       margin-top: 25px;
       padding-left: 20px;
@@ -73,6 +71,10 @@
 // Colors
 .theme-dark .powercord-plugins {
   color: #fff;
+
+  &-modal {
+    color: #fff;
+  }
 }
 
 .theme-light .powercord-plugins {
