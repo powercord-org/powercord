@@ -17,6 +17,16 @@ module.exports = class EmojiUtility extends Plugin {
         '{c} [emote]',
         (args) => {
           const argument = args.join(' ');
+          if (argument.length == 0) {
+            return {
+              send: false,
+              result: {
+                type: 'rich',
+                description: 'Please provide an emote',
+                color: 16711680
+              }
+            };
+          }
 
           const matcher = argument.match(this.getEmojiRegex());
           if (matcher) {
@@ -50,7 +60,7 @@ module.exports = class EmojiUtility extends Plugin {
               send: false,
               result: {
                 type: 'rich',
-                description: `Could not find emote ${argument}!`,
+                description: `Could not find emote ${argument}`,
                 color: 16711680
               }
             };
@@ -59,7 +69,7 @@ module.exports = class EmojiUtility extends Plugin {
             send: false,
             result: {
               type: 'rich',
-              description: `**${argument}** is not a custom emote!`,
+              description: `**${argument}** is not a custom emote`,
               color: 16711680
             }
           };
@@ -88,7 +98,7 @@ module.exports = class EmojiUtility extends Plugin {
             send: false,
             result: {
               type: 'rich',
-              description: `Could not find any emotes containing **${argument}**!`,
+              description: `Could not find any emotes containing **${argument}**`,
               color: 16711680
             }
           };
