@@ -39,12 +39,12 @@ module.exports = class Powercord extends EventEmitter {
     await Promise.all(modules.map(mdl => mdl()));
     this.pluginManager.startPlugins();
 
-    if (powercord.settings.get('settingsSync', false)) {
+    if (this.account && this.settings.get('settingsSync', false)) {
       SettingsManager.download();
     }
 
     window.addEventListener('beforeunload', () => {
-      if (powercord.settings.get('settingsSync', false)) {
+      if (this.account && this.settings.get('settingsSync', false)) {
         SettingsManager.upload();
       }
     });

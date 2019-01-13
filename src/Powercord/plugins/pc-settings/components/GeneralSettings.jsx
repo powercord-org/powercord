@@ -26,7 +26,7 @@ module.exports = class GeneralSettings extends React.Component {
 
     return (
       <div>
-        <Account passphrase={this.passphrase.bind(this)}/>
+        <Account passphrase={this.passphrase.bind(this)} onAccount={() => this.forceUpdate()}/>
 
         <TextInput
           defaultValue={settings.prefix}
@@ -37,8 +37,9 @@ module.exports = class GeneralSettings extends React.Component {
         </TextInput>
 
         <SwitchItem
-          note='Sync all of your Powercord settings across devices'
-          value={settings.settingsSync}
+          note='Sync all of your Powercord settings across devices. Requires a Powercord account'
+          value={powercord.account && settings.settingsSync}
+          disabled={!powercord.account}
           onChange={() => {
             if (!settings.settingsSync) {
               this.passphrase(true);

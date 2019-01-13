@@ -52,13 +52,13 @@ const PowercordAccount = class PowercordAccount extends React.Component {
 
   async refresh () {
     await powercord.fetchAccount();
-    this.forceUpdate();
+    this.props.onAccount();
   }
 
   async unlink () {
     powercord.settings.set('powercordToken', null);
     await powercord.fetchAccount();
-    this.forceUpdate();
+    this.props.onAccount();
   }
 
   link () {
@@ -74,6 +74,7 @@ const PowercordAccount = class PowercordAccount extends React.Component {
           clearTimeout(this.state.timeout);
           powercord.settings.set('powercordToken', req.url.replace(_url, ''));
           await powercord.fetchAccount();
+          this.props.onAccount();
           return this.setState({
             linking: false,
             server: null,
