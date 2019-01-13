@@ -1,5 +1,5 @@
 const Plugin = require('powercord/Plugin');
-const { getModule, channels, constants } = require('powercord/webpack');
+const { getModule, channels, constants: { Routes, APP_URL_PREFIX } } = require('powercord/webpack');
 const emojiStore = getModule([ 'getGuildEmoji' ]);
 
 module.exports = class EmojiUtility extends Plugin {
@@ -17,7 +17,7 @@ module.exports = class EmojiUtility extends Plugin {
         '{c} [emote]',
         (args) => {
           const argument = args.join(' ');
-          if (argument.length == 0) {
+          if (argument.length === 0) {
             return {
               send: false,
               result: {
@@ -31,7 +31,7 @@ module.exports = class EmojiUtility extends Plugin {
           const matcher = argument.match(this.getEmojiRegex());
           if (matcher) {
             const emojis = Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis);
-            const emoji = emojis.find(emoji => emoji.id === matcher[2]);
+            const emoji = emojis.find(e => e.id === matcher[2]);
 
             if (emoji) {
               const guild = getModule([ 'getGuild' ]).getGuild(emoji.guildId);
@@ -42,7 +42,7 @@ module.exports = class EmojiUtility extends Plugin {
                 selectedChannel = guild.systemChannelId;
               }
 
-              const url = `https://${constants.API_HOST}/channels/${guild.id}/${selectedChannel}`;
+              const url = APP_URL_PREFIX + Routes.CHANNEL(guild.id, selectedChannel); // eslint-disable-line new-cap
 
               return {
                 send: false,
@@ -85,13 +85,32 @@ module.exports = class EmojiUtility extends Plugin {
         '{c} [emote name]',
         (args) => {
           const argument = args.join(' ').toLowerCase();
+          if (argument.length === 0) {
+            return {
+              send: false,
+              result: {
+                type: 'rich',
+                description: 'Please provide an emote name',
+                color: 16711680
+              }
+            };
+          }
+
           const emojis = Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis);
 
           const foundEmojis = emojis.filter(emoji => emoji.name.toLowerCase().includes(argument));
           if (foundEmojis.length > 0) {
+            const emojisAsString = foundEmojis.map(emoji => `<${(emoji.animated ? 'a' : '') + emoji.allNamesString + emoji.id}>`).join('');
+            if (emojisAsString.length > 2000) {
+              return {
+                send: false,
+                result: `That is more than 2000 characters, let me send that locally instead!\n${emojisAsString}`
+              };
+            }
+
             return {
               send: true,
-              result: foundEmojis.map(emoji => `<${(emoji.animated ? 'a' : '') + emoji.allNamesString + emoji.id}>`).join('')
+              result: emojisAsString
             };
           }
           return {
