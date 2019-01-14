@@ -38,6 +38,16 @@ module.exports = class Powercord extends EventEmitter {
     await this.fetchAccount();
     await Promise.all(modules.map(mdl => mdl()));
     this.pluginManager.startPlugins();
+
+    if (this.account && this.settings.get('settingsSync', false)) {
+      SettingsManager.download();
+    }
+
+    window.addEventListener('beforeunload', () => {
+      if (this.account && this.settings.get('settingsSync', false)) {
+        SettingsManager.upload();
+      }
+    });
   }
 
   async fetchAccount () {
@@ -54,12 +64,16 @@ module.exports = class Powercord extends EventEmitter {
         setTimeout(() => {
           this.settings.set('powercordToken', null);
         }, 0); // Make localStorage available
+        this.account = null;
         return console.error('%c[Powercord]', 'color: #257dd4', 'Unable to fetch your account (Invalid token). Removed token from config');
       } else if (resp.statusCode !== 200) {
+        this.account = null;
         return console.error('%c[Powercord]', 'color: #257dd4', `An error occurred while fetching your account: ${resp.statusCode} - ${resp.statusText}`, resp.body);
       }
 
       this.account = resp.body;
+    } else {
+      this.account = null;
     }
   }
 };

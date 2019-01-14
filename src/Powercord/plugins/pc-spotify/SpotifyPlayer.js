@@ -1,4 +1,4 @@
-const { get, put, post } = require('powercord/http');
+const { get, put, post, del } = require('powercord/http');
 const {
   http,
   spotify,
@@ -14,7 +14,7 @@ module.exports = {
   async getAccessToken () {
     await powercord.fetchAccount();
     if (powercord.account && powercord.account.spotify) {
-      return powercord.account.spotify.token; // aeth review aetheryx/powercord-backend#3 :^)
+      return powercord.account.spotify.token;
     }
 
     const spotifyUserID = await http.get(Endpoints.CONNECTIONS)
@@ -40,6 +40,10 @@ module.exports = {
           return this.genericRequest(request);
         }
 
+        if (err.body.error && err.body.error.reason === 'PREMIUM_REQUIRED') {
+          powercord.pluginManager.get('pc-spotify').openPremiumDialog();
+          return false;
+        }
         console.error(err.body, request.opts);
         throw err;
       });
@@ -130,6 +134,27 @@ module.exports = {
     return this.genericRequest(
       put(`${this.BASE_PLAYER_URL}/shuffle`)
         .query('state', state)
+    );
+  },
+
+  addSong (songID) {
+    return this.genericRequest(
+      put(`${this.BASE_URL}/me/tracks`)
+        .query('ids', songID)
+    );
+  },
+
+  removeSong (songID) {
+    return this.genericRequest(
+      del(`${this.BASE_URL}/me/tracks`)
+        .query('ids', songID)
+    );
+  },
+
+  checkLibrary (songID) {
+    return this.genericRequest(
+      get(`${this.BASE_URL}/me/tracks/contains`)
+        .query('ids', songID)
     );
   }
 };

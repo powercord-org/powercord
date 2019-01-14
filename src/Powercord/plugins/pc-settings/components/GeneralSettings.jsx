@@ -1,7 +1,9 @@
 const { React } = require('powercord/webpack');
+const { open: openModal, close: closeModal } = require('powercord/modal');
 const { TextInput, SwitchItem } = require('powercord/components/settings');
 
-const Account = require('./Account');
+const PassphraseModal = require('./PassphraseModal.jsx');
+const Account = require('./PowercordAccount');
 
 module.exports = class GeneralSettings extends React.Component {
   constructor () {
@@ -11,6 +13,7 @@ module.exports = class GeneralSettings extends React.Component {
 
     this.state = {
       prefix: get('prefix', '.'),
+      settingsSync: get('settingsSync', false),
       openOverlayDevTools: get('openOverlayDevTools', false),
       backendURL: get('backendURL', 'https://powercord.xyz'),
       experiments: get('experiments', false),
@@ -21,35 +24,39 @@ module.exports = class GeneralSettings extends React.Component {
   render () {
     const settings = this.state;
 
-    const set = (key, value = !settings[key], defaultValue) => {
-      if (!value && defaultValue) {
-        value = defaultValue;
-      }
-
-      powercord.settings.set(key, value);
-      this.setState({
-        [key]: value
-      });
-    };
-
     return (
       <div>
-        <Account/>
+        <Account passphrase={this.passphrase.bind(this)} onAccount={() => this.forceUpdate()}/>
 
         <TextInput
           defaultValue={settings.prefix}
           required={true}
-          onChange={e => set('prefix', e, '.')}
+          onChange={e => this._set('prefix', e, '.')}
         >
           Command Prefix
         </TextInput>
+
+        <SwitchItem
+          note='Sync all of your Powercord settings across devices. Requires a Powercord account'
+          value={powercord.account && settings.settingsSync}
+          disabled={!powercord.account}
+          onChange={() => {
+            if (!settings.settingsSync) {
+              this.passphrase(true);
+            } else {
+              this._set('settingsSync');
+            }
+          }}
+        >
+          Settings Sync
+        </SwitchItem>
 
         <SwitchItem
           note={
             <span>Exercise caution changing anything in this category if you don't know what you're doing. <b>Seriously.</b></span>
           }
           value={settings.advancedSettings}
-          onChange={() => set('advancedSettings')}
+          onChange={() => this._set('advancedSettings')}
         >
           Advanced Settings
         </SwitchItem>
@@ -58,7 +65,7 @@ module.exports = class GeneralSettings extends React.Component {
             <TextInput
               value={settings.backendURL}
               required={true}
-              onChange={(e) => set('backendURL', e, 'https://powercord.xyz')}
+              onChange={(e) => this._set('backendURL', e, 'https://powercord.xyz')}
               note='Url used for Spotify linking, plugin management and other internal functions'
             >
               Backend URL
@@ -67,7 +74,7 @@ module.exports = class GeneralSettings extends React.Component {
             <SwitchItem
               note='Should Powercord open overlay devtools when it gets injected (useful for developing themes)'
               value={settings.openOverlayDevTools}
-              onChange={() => set('openOverlayDevTools')}
+              onChange={() => this._set('openOverlayDevTools')}
             >
               Overlay DevTools
             </SwitchItem>
@@ -79,7 +86,7 @@ module.exports = class GeneralSettings extends React.Component {
                   Powercord is <b>not responsible</b> for what you do with this feature. Leave it disabled if you are unsure.</span>
               }
               value={settings.experiments}
-              onChange={() => set('experiments')}
+              onChange={() => this._set('experiments')}
             >
               Enable Discord Experiments
             </SwitchItem>
@@ -87,5 +94,34 @@ module.exports = class GeneralSettings extends React.Component {
         )}
       </div>
     );
+  }
+
+  passphrase (updateSync = false) {
+    openModal(() => <PassphraseModal
+      onConfirm={(passphrase) => {
+        powercord.settings.set('passphrase', passphrase);
+        closeModal();
+        if (updateSync) {
+          this._set('settingsSync');
+        }
+      }}
+      onCancel={() => {
+        closeModal();
+        if (updateSync) {
+          this._set('settingsSync');
+        }
+      }}
+    />);
+  }
+
+  _set (key, value = !this.state[key], defaultValue) {
+    if (!value && defaultValue) {
+      value = defaultValue;
+    }
+
+    powercord.settings.set(key, value);
+    this.setState({
+      [key]: value
+    });
   }
 };

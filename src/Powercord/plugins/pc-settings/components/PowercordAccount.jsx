@@ -1,9 +1,12 @@
 const http = require('http');
 const { shell: { openExternal } } = require('electron');
+
 const { React, Flux } = require('powercord/webpack');
 const { Spinner } = require('powercord/components');
 
-const Account = class Account extends React.Component {
+const LinkedAccounts = require('./LinkedAccounts.jsx');
+
+const PowercordAccount = class PowercordAccount extends React.Component {
   constructor (props) {
     super(props);
 
@@ -16,29 +19,17 @@ const Account = class Account extends React.Component {
   }
 
   render () {
-    const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
-
     let Component = null;
     if (this.props.streamerMode.enabled && this.props.streamerMode.hidePersonalInformation) {
       Component = () => <div>Streamer mode enabled. Stay safe cutie</div>;
     } else if (this.state.linking) {
-      Component = () => <div><Spinner type='pulsingEllipsis'/> Linking your account...</div>;
+      Component = () => <div className='linking'><Spinner type='pulsingEllipsis'/> Linking your account...</div>;
     } else if (powercord.account) {
-      Component = () => <div>
-        <img src={`${baseUrl}/assets/spotify.png`} alt='Spotify'/>
-        <span className='powercord-account-item'>
-          {powercord.account.spotify
-            ? powercord.account.spotify.name
-            : <a href='#' onClick={() => openExternal(`${baseUrl}/oauth/spotify`)}>Link it now</a>}
-        </span>
-        <img src={`${baseUrl}/assets/github.png`} alt='Github'/>
-        <span className='powercord-account-item'>
-          {powercord.account.github
-            ? powercord.account.github.name
-            : <a href='#' onClick={() => openExternal(`${baseUrl}/oauth/github`)}>Link it now</a>}
-        </span>
-        <a href='#' onClick={() => this.refresh()}>Refresh accounts</a>
-      </div>;
+      Component = () => <LinkedAccounts
+        passphrase={this.props.passphrase.bind(this)}
+        refresh={this.refresh.bind(this)}
+        unlink={this.unlink.bind(this)}
+      />;
     } else {
       Component = () => <div>
         {this.state.message || 'You haven\'t linked your account yet.'}
@@ -61,7 +52,13 @@ const Account = class Account extends React.Component {
 
   async refresh () {
     await powercord.fetchAccount();
-    this.forceUpdate();
+    this.props.onAccount();
+  }
+
+  async unlink () {
+    powercord.settings.set('powercordToken', null);
+    await powercord.fetchAccount();
+    this.props.onAccount();
   }
 
   link () {
@@ -77,44 +74,15 @@ const Account = class Account extends React.Component {
           clearTimeout(this.state.timeout);
           powercord.settings.set('powercordToken', req.url.replace(_url, ''));
           await powercord.fetchAccount();
+          this.props.onAccount();
           return this.setState({
             linking: false,
             server: null,
             timeout: null
           });
         }
-        res.end('hi cutie');
-        /*
-         * Mixed active content gay
-         *
-         * let data = '';
-         * req.on('data', chunk => data += chunk);
-         * req.on('end', async () => {
-         *   try {
-         *     const json = JSON.parse(data);
-         *     if (json.jsonweebtoken) {
-         *       res.end('thx cutie');
-         *       server.close();
-         *
-         *       clearTimeout(this.state.timeout);
-         *       powercord.settings.set('powercordToken', json.jsonweebtoken);
-         *       await powercord.fetchAccount();
-         *       return this.setState({
-         *         linking: false,
-         *         server: null,
-         *         timeout: null
-         *       });
-         *     }
-         *   } catch (e) {
-         *     // Let it fail silently
-         *   }
-         *
-         *   res.end('hi cutie');
-         * });
-         */
-      } else {
-        res.end('hi cutie');
       }
+      res.end('hi cutie');
     });
 
     server.listen(6462, (err) => {
@@ -149,4 +117,4 @@ const Account = class Account extends React.Component {
 };
 
 const fluxShit = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.cacheKey && m.exports.cacheKey === 'StreamerModeStore')[0].exports;
-module.exports = Flux.connectStores([ fluxShit ], () => ({ streamerMode: fluxShit.getSettings() }))(Account);
+module.exports = Flux.connectStores([ fluxShit ], () => ({ streamerMode: fluxShit.getSettings() }))(PowercordAccount);

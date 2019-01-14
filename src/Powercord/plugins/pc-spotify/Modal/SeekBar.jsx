@@ -43,21 +43,19 @@ module.exports = class SeekBar extends React.Component {
     }
   }
 
-  startSeek (e) {
-    this.props.onSeeking(true);
-    this.setState({
-      seeking: true,
-      wasPlaying: this.props.isPlaying
-    });
+  async startSeek (e) {
+    if (await SpotifyPlayer.pause()) {
+      this.props.onSeeking(true);
+      this.setState({
+        seeking: true,
+        wasPlaying: this.props.isPlaying
+      });
 
-    if (this.props.isPlaying) {
-      SpotifyPlayer.pause();
+      document.addEventListener('mousemove', this.seek);
+      document.addEventListener('mouseup', this.endSeek);
+
+      this.seek(e);
     }
-
-    document.addEventListener('mousemove', this.seek);
-    document.addEventListener('mouseup', this.endSeek);
-
-    this.seek(e);
   }
 
   seek ({ clientX: mouseX }) {
@@ -88,15 +86,12 @@ module.exports = class SeekBar extends React.Component {
     const current = Math.min(progress / this.props.duration * 100, 100);
 
     return (
-      <div
-        className='powercord-spotify-seek'
-        onMouseEnter={() => this.props.onDurationToggle(true)}
-        onMouseLeave={() => this.props.onDurationToggle(false)}
-      >
-        <div className='powercord-spotify-seek-durations'>
+      <div className='powercord-spotify-seek'>
+        <div className='powercord-spotify-seek-elements'>
           <span className='powercord-spotify-seek-duration'>
             {formatTime(progress)}
           </span>
+          {this.props.children}
           <span className='powercord-spotify-seek-duration'>
             {formatTime(this.props.duration)}
           </span>

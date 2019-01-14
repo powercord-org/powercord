@@ -1,5 +1,6 @@
 .powercord-spotify {
   position: relative;
+  margin-bottom: 0;
   transition: .3s;
   transition-delay: .25s;
 
@@ -29,6 +30,15 @@
     animation-timing-function: linear;
   }
 
+  &-status:hover {
+    color: gray;
+  }
+
+  &-status:active {
+    transform: scale(1.1);
+    color: #1ed860;
+  }
+
   &-seek {
     bottom: -6px;
     display: flex;
@@ -38,7 +48,7 @@
     right: 0;
     z-index: 2;
 
-    &-durations {
+    &-elements {
       display: flex;
       font-size: 12px;
       height: 15px;
@@ -48,6 +58,22 @@
       padding-right: 5px;
       transition: opacity .3s;
       transition-delay: .25s;
+    }
+
+    &-duration {
+      min-width: 60px;
+      max-width: 60px;
+    }
+
+    &-btngrp {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      transform: translateY(-20px);
+    }
+
+    &-btngrp + &-duration {
+      text-align: right;
     }
 
     &-bar {
@@ -81,11 +107,11 @@
     }
   }
 
-  &.expend {
-    padding-bottom: 12px;
+  &:hover {
+    padding-bottom: 25px;
     transition-delay: 0s;
 
-    .powercord-spotify-seek-durations,
+    .powercord-spotify-seek-elements,
     .powercord-spotify-seek-bar-cursor {
       opacity: 1;
       transition-delay: 0s;
