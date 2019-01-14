@@ -11,6 +11,7 @@ module.exports = class EmojiUtilitySettings extends React.Component {
       useEmbeds: props.settings.get('useEmbeds', true),
       displayLink: props.settings.get('displayLink', true),
       filePath: props.settings.get('filePath', null),
+      includeIdForSavedEmojis: props.settings.get('includeIdForSavedEmojis', true),
       
       isFilePathValid: props.settings.get('filePath') ? existsSync(props.settings.get('filePath')) : true,
       initialFilePathValue: props.settings.get('filePath')
@@ -81,6 +82,14 @@ module.exports = class EmojiUtilitySettings extends React.Component {
         >
           Save directory
         </TextInput>
+
+        <SwitchItem
+          note='Whether the saveemote command should include the id of the emotes it saves'
+          value={settings.includeIdForSavedEmojis}
+          onChange={() => set('includeIdForSavedEmojis')}
+        >
+          Include ID when saving emotes
+        </SwitchItem>
       </div>
     );
   }

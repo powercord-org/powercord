@@ -311,7 +311,9 @@ module.exports = class EmojiUtility extends Plugin {
           if (foundEmojis.length < 5) {
             for (const emoji of foundEmojis) {
               try {
-                await writeFile(resolve(this.settings.get('filePath'), emoji.name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
+                const name = this.settings.get('includeIdForSavedEmojis') ? `${emoji.name} (${emoji.id})` : emoji.name;
+
+                await writeFile(resolve(this.settings.get('filePath'), name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
 
                 this.sendBotMessage(this.settings.get('useEmbeds')
                   ? {
@@ -351,7 +353,9 @@ module.exports = class EmojiUtility extends Plugin {
 
             for (const emoji of foundEmojis) {
               try {
-                await writeFile(resolve(this.settings.get('filePath'), emoji.name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
+                const name = this.settings.get('includeIdForSavedEmojis') ? `${emoji.name} (${emoji.id})` : emoji.name;
+
+                await writeFile(resolve(this.settings.get('filePath'), name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
               } catch (error) {
                 console.error(error);
 
