@@ -39,7 +39,7 @@ module.exports = class GeneralSettings extends React.Component {
         <SwitchItem
           note='Sync all of your Powercord settings across devices. Requires a Powercord account'
           value={powercord.account && settings.settingsSync}
-          disabled={!powercord.account}
+          disabled={!powercord.account || true}
           onChange={() => {
             if (!settings.settingsSync) {
               this.passphrase(true);
