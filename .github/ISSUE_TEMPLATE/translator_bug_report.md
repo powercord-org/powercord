@@ -1,8 +1,8 @@
 ---
-name: Spotify Bug Report
-about: Create a report for the Spotify plugin to help us improve
-title: '[Spotify]'
-labels: 'bug'
+name: Translator Bug Report
+about: Create a report for the Translator plugin to help us improve
+title: '[Translator]'
+labels: 'enhancement'
 assignees: ''
 
 ---
