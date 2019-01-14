@@ -12,40 +12,64 @@ module.exports = class Guilds extends React.Component {
     };
   }
 
+  componentDidUpdate () {
+    if (this.state.hidden && this.props.settings.get('hidden', []).length === 0) {
+      this.setState({ hidden: false });
+    }
+  }
+
   render () {
-    const guilds = this.getGuilds();
+    const hiddenGuilds = this.props.settings.get('hidden', []);
+    const guilds = this.getGuilds(hiddenGuilds);
 
     return <div className='powercord-guilds'>
-      <div className='powercord-hidden-btn'>
-        Hidden
-        <div className='powercord-mentions-badge'>{guilds.mentions.hidden}</div>
-      </div>
+      {hiddenGuilds.length > 0 &&
+      <div className='powercord-hidden-btn' onClick={() => this.setState({ hidden: !this.state.hidden })}>
+        {this.state.hidden ? 'Visible' : 'Hidden'}
+        {guilds.mentions.hidden > 0 && <div className='powercord-mentions-badge'>{guilds.mentions.hidden}</div>}
+      </div>}
 
-      {guilds.items.map(g => <Guild
-        key={g.guild.id}
+      {guilds.items.map(({ guild, index }) => <Guild
+        key={guild.id}
 
-        guild={g.guild}
-        index={g.index}
+        guild={guild}
+        index={index}
 
-        unread={this.props.unreadGuilds[g.guild.id]}
-        mentions={this.props.mentionCounts[g.guild.id] || 0}
+        unread={this.props.unreadGuilds[guild.id]}
+        mentions={this.props.mentionCounts[guild.id] || 0}
 
-        selected={this.props.selectedGuildId === g.guild.id}
-        audio={this.props.selectedVoiceGuildId === g.guild.id && this.props.mode === 'voice'}
-        video={this.props.selectedVoiceGuildId === g.guild.id && this.props.mode === 'video'}
+        hidden={hiddenGuilds.includes(guild.id)}
+        selected={this.props.selectedGuildId === guild.id}
+        audio={this.props.selectedVoiceGuildId === guild.id && this.props.mode === 'voice'}
+        video={this.props.selectedVoiceGuildId === guild.id && this.props.mode === 'video'}
 
-        setRef={(e) => {
-          this.props.setRef(g.guild.id, e);
+        setRef={e => this.props.setRef(guild.id, e)}
+        onHide={() => {
+          if (hiddenGuilds.includes(guild.id)) {
+            this.props.settings.set('hidden', hiddenGuilds.filter(g => g !== guild.id));
+          } else {
+            this.props.settings.set('hidden', [ ...hiddenGuilds, guild.id ]);
+          }
+          this.forceUpdate();
         }}
       />)}
     </div>;
   }
 
-  getGuilds () {
+  getGuilds (hiddenGuilds) {
+    // Remove hidden guilds from list
+    let { guilds } = this.props;
+    let hiddenMentions = 0;
+
+    if (!this.state.hidden) {
+      guilds = guilds.filter(({ guild }) => !hiddenGuilds.includes(guild.id));
+      hiddenGuilds.forEach(g => hiddenMentions += this.props.mentionCounts[g] || 0);
+    }
+
     return {
-      items: this.props.guilds,
+      items: guilds,
       mentions: {
-        hidden: 1
+        hidden: hiddenMentions
       },
       unreads: {}
     };

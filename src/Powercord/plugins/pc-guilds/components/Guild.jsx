@@ -76,7 +76,9 @@ const Guild = class Guilds extends React.Component {
           top: pageY
         },
         className: `${this.contextMenuClass} theme-dark`,
-        isPowercord: true
+        isPowercord: true,
+        hidden: this.props.hidden,
+        onHide: () => this.props.onHide()
       })
     );
   }

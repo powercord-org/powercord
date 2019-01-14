@@ -20,14 +20,14 @@ module.exports = class GuildFolders extends Plugin {
 
   _patchGuilds () {
     const DGuilds = getModuleByDisplayName('Guilds');
+    const _this = this;
 
     // eslint-disable-next-line func-names
     DGuilds.prototype.render = (_render => function (...args) {
       const res = _render.call(this, ...args);
       res.props.children[1].props.children[4] = React.createElement(Guilds, Object.assign({}, this.props, {
-        setRef: (key, e) => {
-          this.guildRefs[key] = e;
-        }
+        setRef: (key, e) => this.guildRefs[key] = e,
+        settings: _this.settings
       }));
       return res;
     })(DGuilds.prototype.render);
@@ -83,9 +83,9 @@ module.exports = class GuildFolders extends Plugin {
       if (this.props.isPowercord) {
         res.props.children.push(
           React.createElement(Button, {
-            name: 'm e m e s',
+            name: this.props.hidden ? 'Show' : 'Hide',
             seperate: true,
-            onClick: () => console.log('w a n n a   s o m e   m e m e s ?')
+            onClick: () => this.props.onHide()
           })
         );
       }
