@@ -1,9 +1,11 @@
 const Plugin = require('powercord/Plugin');
 const { getModule, channels: { getSelectedChannelState, getChannelId }, constants: { Routes, APP_URL_PREFIX }, React, messages: { createBotMessage, receiveMessage } } = require('powercord/webpack');
 
-const { existsSync, createWriteStream } = require('fs');
-const { get } = require('https');
-const { extname } = require('path');
+const { writeFile } = require('fs').promises;
+const { existsSync } = require('fs');
+
+const { get } = require('powercord/http');
+const { extname, resolve } = require('path');
 const { parse } = require('url');
 
 const emojiStore = getModule([ 'getGuildEmoji' ]);
@@ -15,36 +17,14 @@ module.exports = class EmojiUtility extends Plugin {
     return /^<a?:([a-zA-Z0-9_]+):([0-9]+)>$/;
   }
 
-  getGuildUrl (guild) {
-    let selectedChannel = getSelectedChannelState()[guild.id];
-    if (!selectedChannel) {
-      /* I am not sure if it can get here but just to be sure */
-      selectedChannel = guild.systemChannelId;
-    }
+  getGuildUrl (guildId) {
+    const selectedChannelId = getSelectedChannelState()[guildId];
 
-    return APP_URL_PREFIX + Routes.CHANNEL(guild.id, selectedChannel); // eslint-disable-line new-cap
+    return APP_URL_PREFIX + (selectedChannelId ? Routes.CHANNEL(guildId, selectedChannelId) : Routes.GUILD(guildId)); // eslint-disable-line new-cap
   }
 
   getFullEmoji (emoji) {
     return `<${(emoji.animated ? 'a' : '')}:${emoji.name}:${emoji.id}>`;
-  }
-
-  download (url) {
-    return new Promise((resolve, reject) => {
-      get(url)
-        .on('response', (response) => resolve(response))
-        .on('error', (error) => reject(error));
-    });
-  }
-
-  write (path, stream) {
-    return new Promise((resolve, reject) => {
-      const writeStream = createWriteStream(path)
-        .on('finish', () => resolve())
-        .on('error', (error) => reject(error));
-
-      stream.pipe(writeStream);
-    });
   }
 
   sendBotMessage (content) {
@@ -149,7 +129,7 @@ module.exports = class EmojiUtility extends Plugin {
               send: false,
               result: {
                 type: 'rich',
-                description: foundEmojis.map(found => `${this.getFullEmoji(found.emoji)} is from **[${found.guild.name}](${this.getGuildUrl(found.guild)})**`).join('\n'),
+                description: foundEmojis.map(found => `${this.getFullEmoji(found.emoji)} is from **[${found.guild.name}](${this.getGuildUrl(found.guild.id)})**`).join('\n'),
                 color: 65280,
                 footer: notFoundEmojis.length > 0
                   ? {
@@ -160,7 +140,7 @@ module.exports = class EmojiUtility extends Plugin {
             };
           }
 
-          let description = foundEmojis.map(found => `${this.getFullEmoji(found.emoji)} is from **${found.guild.name}**${this.settings.get('displayLink') ? ` (**${this.getGuildUrl(found.guild)}**)` : ''}`).join('\n');
+          let description = foundEmojis.map(found => `${this.getFullEmoji(found.emoji)} is from **${found.guild.name}**${this.settings.get('displayLink') ? ` (**${this.getGuildUrl(found.guild.id)}**)` : ''}`).join('\n');
           if (notFoundEmojis.length > 0) {
             description += `${description.length > 0 ? '\n\n' : ''}**${notFoundEmojis.length}** of the provided arguments ${notFoundEmojis.length === 1 ? 'is not a custom emote' : 'are not custom emotes'}`;
           }
@@ -233,9 +213,7 @@ module.exports = class EmojiUtility extends Plugin {
         'Save emotes to a specified directory',
         '{c} [emote]',
         async (args) => { // eslint-disable-line complexity
-          let filePath = this.settings.get('filePath');
-
-          if (!filePath) {
+          if (!this.settings.get('filePath')) {
             return {
               send: false,
               result: this.settings.get('useEmbeds')
@@ -248,11 +226,7 @@ module.exports = class EmojiUtility extends Plugin {
             };
           }
 
-          if (!filePath.endsWith('/')) {
-            filePath += '/';
-          }
-
-          if (!existsSync(filePath)) {
+          if (!existsSync(this.settings.get('filePath'))) {
             return {
               send: false,
               result: this.settings.get('useEmbeds')
@@ -337,7 +311,7 @@ module.exports = class EmojiUtility extends Plugin {
           if (foundEmojis.length < 5) {
             for (const emoji of foundEmojis) {
               try {
-                await this.write(filePath + emoji.name + extname(parse(emoji.url).pathname), await this.download(emoji.url));
+                await writeFile(resolve(this.settings.get('filePath'), emoji.name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
 
                 this.sendBotMessage(this.settings.get('useEmbeds')
                   ? {
@@ -354,7 +328,9 @@ module.exports = class EmojiUtility extends Plugin {
                   ? {
                     type: 'rich',
                     description: `Failed to download ${this.getFullEmoji(emoji)}`,
-                    footer: 'Check the console for more information',
+                    footer: {
+                      text: 'Check the console for more information'
+                    },
                     color: 16711680
                   }
                   : `Failed to download ${this.getFullEmoji(emoji)}, check the console for more information`
@@ -375,7 +351,7 @@ module.exports = class EmojiUtility extends Plugin {
 
             for (const emoji of foundEmojis) {
               try {
-                await this.write(filePath + emoji.name + extname(parse(emoji.url).pathname), await this.download(emoji.url));
+                await writeFile(resolve(this.settings.get('filePath'), emoji.name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
               } catch (error) {
                 console.error(error);
 
