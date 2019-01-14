@@ -60,7 +60,7 @@ module.exports = class EmojiUtilitySettings extends React.Component {
         }
 
         <TextInput
-          note='The file path emotes should be saved to when using the saveemote command'
+          note='The directory emotes will be saved to when using the saveemote command'
           defaultValue={settings.filePath}
           style={!this.state.isFilePathValid ? {borderColor: 'red'} : {}}
           onChange={(value) => {
@@ -79,7 +79,7 @@ module.exports = class EmojiUtilitySettings extends React.Component {
             }
           }}
         >
-          File path
+          Save directory
         </TextInput>
       </div>
     );

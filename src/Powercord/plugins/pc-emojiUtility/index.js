@@ -230,9 +230,9 @@ module.exports = class EmojiUtility extends Plugin {
       .get('pc-commands')
       .register(
         'saveemote',
-        'Save emotes to a specified file path',
+        'Save emotes to a specified directory',
         '{c} [emote]',
-        async (args) => {
+        async (args) => { // eslint-disable-line complexity
           let filePath = this.settings.get('filePath');
 
           if (!filePath) {
@@ -241,10 +241,10 @@ module.exports = class EmojiUtility extends Plugin {
               result: this.settings.get('useEmbeds')
                 ? {
                   type: 'rich',
-                  description: 'Please set your save file path in the settings',
+                  description: 'Please set your save directory in the settings',
                   color: 16711680
                 }
-                : 'Please set your save file path in the settings'
+                : 'Please set your save directory in the settings'
             };
           }
 
@@ -258,10 +258,10 @@ module.exports = class EmojiUtility extends Plugin {
               result: this.settings.get('useEmbeds')
                 ? {
                   type: 'rich',
-                  description: 'The specified file path does no longer exist, please update it in the settings',
+                  description: 'The specified save directory does no longer exist, please update it in the settings',
                   color: 16711680
                 }
-                : 'The specified file path does no longer exist, please update it in the settings'
+                : 'The specified save directory does no longer exist, please update it in the settings'
             };
           }
 
