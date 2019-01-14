@@ -105,7 +105,7 @@ module.exports = class EmojiUtility extends Plugin {
     return {
       foundEmojis,
       notFoundEmojis
-    }
+    };
   }
 
   start () {
@@ -134,8 +134,7 @@ module.exports = class EmojiUtility extends Plugin {
             return object;
           }
 
-          const foundEmojis = object.foundEmojis;
-          const notFoundEmojis = object.notFoundEmojis;
+          const { foundEmojis, notFoundEmojis } = object;
 
           if (this.settings.get('useEmbeds')) {
             return {
@@ -257,8 +256,7 @@ module.exports = class EmojiUtility extends Plugin {
             return object;
           }
 
-          const foundEmojis = object.foundEmojis;
-          const notFoundEmojis = object.notFoundEmojis;
+          const { foundEmojis, notFoundEmojis } = object;
 
           if (notFoundEmojis.length > 0) {
             this.sendBotMessage(this.settings.get('useEmbeds')
