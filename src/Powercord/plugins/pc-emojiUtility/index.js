@@ -39,6 +39,75 @@ module.exports = class EmojiUtility extends Plugin {
     return receiveMessage(receivedMessage.channel_id, receivedMessage);
   }
 
+  findEmojisForCommand (args) {
+    if (args.length === 0) {
+      return {
+        send: false,
+        result: this.settings.get('useEmbeds')
+          ? {
+            type: 'rich',
+            description: 'Please provide an emote',
+            color: 16711680
+          }
+          : 'Please provide an emote'
+      };
+    }
+
+    const emojis = [ ...new Set(Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis)) ];
+
+    const foundEmojis = [];
+    const notFoundEmojis = [];
+
+    for (const argument of args) {
+      const matcher = argument.match(this.getEmojiRegex());
+      if (matcher) {
+        const emoji = emojis.find(e => e.id === matcher[2]);
+
+        if (emoji) {
+          const guild = getModule([ 'getGuild' ]).getGuild(emoji.guildId);
+          emoji.guild = guild;
+
+          foundEmojis.push(emoji);
+
+          continue;
+        }
+
+        if (args.length === 1) {
+          return {
+            send: false,
+            result: this.settings.get('useEmbeds')
+              ? {
+                type: 'rich',
+                description: `Could not find emote ${argument}`,
+                color: 16711680
+              }
+              : `Could not find emote ${argument}`
+          };
+        }
+      }
+
+      if (args.length === 1) {
+        return {
+          send: false,
+          result: this.settings.get('useEmbeds')
+            ? {
+              type: 'rich',
+              description: `**${argument}** is not a custom emote`,
+              color: 16711680
+            }
+            : `**${argument}** is not a custom emote`
+        };
+      }
+
+      notFoundEmojis.push(argument);
+    }
+
+    return {
+      foundEmojis,
+      notFoundEmojis
+    }
+  }
+
   start () {
     powercord
       .pluginManager
@@ -60,76 +129,20 @@ module.exports = class EmojiUtility extends Plugin {
         'Find the server an emote is from',
         '{c} [emote]',
         (args) => {
-          if (args.length === 0) {
-            return {
-              send: false,
-              result: this.settings.get('useEmbeds')
-                ? {
-                  type: 'rich',
-                  description: 'Please provide an emote',
-                  color: 16711680
-                }
-                : 'Please provide an emote'
-            };
+          const object = this.findEmojisForCommand(args);
+          if ('send' in object && 'result' in object) {
+            return object;
           }
 
-          const emojis = [ ...new Set(Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis)) ];
-
-          const foundEmojis = [];
-          const notFoundEmojis = [];
-
-          for (const argument of args) {
-            const matcher = argument.match(this.getEmojiRegex());
-            if (matcher) {
-              const emoji = emojis.find(e => e.id === matcher[2]);
-
-              if (emoji) {
-                const guild = getModule([ 'getGuild' ]).getGuild(emoji.guildId);
-
-                foundEmojis.push({
-                  emoji,
-                  guild
-                });
-
-                continue;
-              }
-
-              if (args.length === 1) {
-                return {
-                  send: false,
-                  result: this.settings.get('useEmbeds')
-                    ? {
-                      type: 'rich',
-                      description: `Could not find emote ${argument}`,
-                      color: 16711680
-                    }
-                    : `Could not find emote ${argument}`
-                };
-              }
-            }
-
-            if (args.length === 1) {
-              return {
-                send: false,
-                result: this.settings.get('useEmbeds')
-                  ? {
-                    type: 'rich',
-                    description: `**${argument}** is not a custom emote`,
-                    color: 16711680
-                  }
-                  : `**${argument}** is not a custom emote`
-              };
-            }
-
-            notFoundEmojis.push(argument);
-          }
+          const foundEmojis = object.foundEmojis;
+          const notFoundEmojis = object.notFoundEmojis;
 
           if (this.settings.get('useEmbeds')) {
             return {
               send: false,
               result: {
                 type: 'rich',
-                description: foundEmojis.map(found => `${this.getFullEmoji(found.emoji)} is from **[${found.guild.name}](${this.getGuildUrl(found.guild.id)})**`).join('\n'),
+                description: foundEmojis.map(emoji => `${this.getFullEmoji(emoji)} is from **[${emoji.guild.name}](${this.getGuildUrl(emoji.guildId)})**`).join('\n'),
                 color: 65280,
                 footer: notFoundEmojis.length > 0
                   ? {
@@ -140,7 +153,7 @@ module.exports = class EmojiUtility extends Plugin {
             };
           }
 
-          let description = foundEmojis.map(found => `${this.getFullEmoji(found.emoji)} is from **${found.guild.name}**${this.settings.get('displayLink') ? ` (**${this.getGuildUrl(found.guild.id)}**)` : ''}`).join('\n');
+          let description = foundEmojis.map(emoji => `${this.getFullEmoji(emoji)} is from **${emoji.guild.name}**${this.settings.get('displayLink') ? ` (**${this.getGuildUrl(emoji.guildId)}**)` : ''}`).join('\n');
           if (notFoundEmojis.length > 0) {
             description += `${description.length > 0 ? '\n\n' : ''}**${notFoundEmojis.length}** of the provided arguments ${notFoundEmojis.length === 1 ? 'is not a custom emote' : 'are not custom emotes'}`;
           }
@@ -239,63 +252,13 @@ module.exports = class EmojiUtility extends Plugin {
             };
           }
 
-          if (args.length === 0) {
-            return {
-              send: false,
-              result: this.settings.get('useEmbeds')
-                ? {
-                  type: 'rich',
-                  description: 'Please provide an emote',
-                  color: 16711680
-                }
-                : 'Please provide an emote'
-            };
+          const object = this.findEmojisForCommand(args);
+          if ('send' in object && 'result' in object) {
+            return object;
           }
 
-          const emojis = [ ...new Set(Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis)) ];
-
-          const foundEmojis = [];
-          const notFoundEmojis = [];
-
-          for (const argument of args) {
-            const matcher = argument.match(this.getEmojiRegex());
-            if (matcher) {
-              const emoji = emojis.find(e => e.id === matcher[2]);
-              if (emoji) {
-                foundEmojis.push(emoji);
-
-                continue;
-              }
-
-              if (args.length === 1) {
-                return {
-                  send: false,
-                  result: this.settings.get('useEmbeds')
-                    ? {
-                      type: 'rich',
-                      description: `Could not find emote ${argument}`,
-                      color: 16711680
-                    }
-                    : `Could not find emote ${argument}`
-                };
-              }
-            }
-
-            if (args.length === 1) {
-              return {
-                send: false,
-                result: this.settings.get('useEmbeds')
-                  ? {
-                    type: 'rich',
-                    description: `**${argument}** is not a custom emote`,
-                    color: 16711680
-                  }
-                  : `**${argument}** is not a custom emote`
-              };
-            }
-
-            notFoundEmojis.push(argument);
-          }
+          const foundEmojis = object.foundEmojis;
+          const notFoundEmojis = object.notFoundEmojis;
 
           if (notFoundEmojis.length > 0) {
             this.sendBotMessage(this.settings.get('useEmbeds')
