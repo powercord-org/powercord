@@ -10,6 +10,11 @@ const { parse } = require('url');
 
 const emojiStore = getModule([ 'getGuildEmoji' ]);
 
+const { getGuild } = getModule([ 'getGuild' ]);
+const { uploadEmoji } = getModule([ 'uploadEmoji' ]);
+const { getGuilds } = getModule([ 'getGuilds' ]);
+const { getChannel } = getModule([ 'getChannel' ]);
+
 const Settings = require('./Settings.jsx');
 
 module.exports = class EmojiUtility extends Plugin {
@@ -39,7 +44,27 @@ module.exports = class EmojiUtility extends Plugin {
     return receiveMessage(receivedMessage.channel_id, receivedMessage);
   }
 
+  async getEmojiEncoded (emoji) {
+    const extension = extname(parse(emoji.url).pathname).substring(1);
+    const { raw } = await get(emoji.url);
+
+    return `data:image/${extension};base64,${raw.toString('base64')}`;
+  }
+
+  getGuildByIdOrName (input) {
+    let guild = getGuild(input);
+    if (!guild) {
+      input = input.toLowerCase();
+
+      guild = Object.values(getGuilds()).find(g => g.name.toLowerCase().includes(input));
+    }
+
+    return guild;
+  }
+
   findEmojisForCommand (args) {
+    args = [ ...new Set(args) ];
+
     if (args.length === 0) {
       return {
         send: false,
@@ -53,7 +78,7 @@ module.exports = class EmojiUtility extends Plugin {
       };
     }
 
-    const emojis = [ ...new Set(Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis)) ];
+    const emojis = Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis);
 
     const foundEmojis = [];
     const notFoundEmojis = [];
@@ -64,7 +89,7 @@ module.exports = class EmojiUtility extends Plugin {
         const emoji = emojis.find(e => e.id === matcher[2]);
 
         if (emoji) {
-          const guild = getModule([ 'getGuild' ]).getGuild(emoji.guildId);
+          const guild = getGuild(emoji.guildId);
           emoji.guild = guild;
 
           foundEmojis.push(emoji);
@@ -332,6 +357,151 @@ module.exports = class EmojiUtility extends Plugin {
               }
               : `Successfully downloaded **${foundEmojis.length - failedDownloads.length}**/**${foundEmojis.length}** emotes`
             );
+          }
+        }
+      );
+
+    powercord
+      .pluginManager
+      .get('pc-commands')
+      .register(
+        'cloneemote',
+        'Clone an emote to your own server',
+        '{c} [emote] [server]',
+        async (args) => { // eslint-disable-line complexity
+          if (args.length === 0) {
+            return {
+              send: false,
+              result: this.settings.get('useEmbeds')
+                ? {
+                  type: 'rich',
+                  description: 'Please provide an emote',
+                  color: 16711680
+                }
+                : 'Please provide an emote'
+            };
+          }
+
+          const emojiRaw = args[0];
+          const matcher = emojiRaw.match(this.getEmojiRegex());
+          if (!matcher) {
+            return {
+              send: false,
+              result: this.settings.get('useEmbeds')
+                ? {
+                  type: 'rich',
+                  description: `**${emojiRaw}** is not a custom emote`,
+                  color: 16711680
+                }
+                : `**${emojiRaw}** is not a custom emote`
+            };
+          }
+
+          let guild;
+
+          const guildArg = args.slice(1).join(' ');
+          if (guildArg.length > 0) {
+            guild = this.getGuildByIdOrName(guildArg);
+            if (!guild) {
+              return {
+                send: false,
+                result: this.settings.get('useEmbeds')
+                  ? {
+                    type: 'rich',
+                    description: 'That is not a valid server',
+                    color: 16711680
+                  }
+                  : 'That is not a valid server'
+              };
+            }
+          } else {
+            if (this.settings.get('defaultCloneIdUseCurrent')) {
+              guild = getGuild(getChannel(getChannelId()).guild_id);
+            } else if (this.settings.get('defaultCloneId')) {
+              guild = getGuild(this.settings.get('defaultCloneId'));
+              if (!guild) {
+                return {
+                  send: false,
+                  result: this.settings.get('useEmbeds')
+                    ? {
+                      type: 'rich',
+                      description: 'You are no longer in your default clone server, please update your settings',
+                      color: 16711680
+                    }
+                    : 'You are no longer in your default clone server, please update your settings'
+                };
+              }
+            }
+
+            if (!guild) {
+              return {
+                send: false,
+                result: this.settings.get('useEmbeds')
+                  ? {
+                    type: 'rich',
+                    description: 'No server argument was provided',
+                    color: 16711680
+                  }
+                  : 'No server argument was provided'
+              };
+            }
+          }
+
+          const emoji = Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis).find(e => e.id === matcher[2]);
+          if (emoji) {
+            try {
+              await uploadEmoji(guild.id, await this.getEmojiEncoded(emoji), matcher[1]);
+
+              return {
+                send: false,
+                result: this.settings.get('useEmbeds')
+                  ? {
+                    type: 'rich',
+                    description: `Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`,
+                    color: 65280
+                  }
+                  : `Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`
+              };
+            } catch (error) {
+              if (error.body && error.body.code === 50013) {
+                return {
+                  send: false,
+                  result: this.settings.get('useEmbeds')
+                    ? {
+                      type: 'rich',
+                      description: `Missing permissions to upload emotes in **${guild.name}**`,
+                      color: 16711680
+                    }
+                    : `Missing permissions to upload emotes in **${guild.name}**`
+                };
+              }
+              console.error(error);
+
+              return {
+                send: false,
+                result: this.settings.get('useEmbeds')
+                  ? {
+                    type: 'rich',
+                    description: 'Failed to clone emote',
+                    color: 16711680,
+                    footer: {
+                      text: 'Check the console for more information'
+                    }
+                  }
+                  : 'Failed to clone emote, check the console for more information'
+              };
+            }
+          } else {
+            return {
+              send: false,
+              result: this.settings.get('useEmbeds')
+                ? {
+                  type: 'rich',
+                  description: `Could not find emote ${emojiRaw}`,
+                  color: 16711680
+                }
+                : `Could not find emote ${emojiRaw}`
+            };
           }
         }
       );

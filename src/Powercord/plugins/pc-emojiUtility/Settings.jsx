@@ -1,6 +1,8 @@
-const { React } = require('powercord/webpack');
+const { React, getModule } = require('powercord/webpack');
 const { SwitchItem, TextInput } = require('powercord/components/settings');
 const { existsSync, lstatSync } = require('fs');
+
+const { getGuild } = getModule([ 'getGuild' ]);
 
 module.exports = class EmojiUtilitySettings extends React.Component {
   constructor (props) {
@@ -12,9 +14,14 @@ module.exports = class EmojiUtilitySettings extends React.Component {
       displayLink: props.settings.get('displayLink', true),
       filePath: props.settings.get('filePath', null),
       includeIdForSavedEmojis: props.settings.get('includeIdForSavedEmojis', true),
+      defaultCloneId: props.settings.get('defaultCloneId', null),
+      defaultCloneIdUseCurrent: props.settings.get('defaultCloneIdUseCurrent', false),
       
       isFilePathValid: props.settings.get('filePath') ? existsSync(props.settings.get('filePath')) : true,
-      initialFilePathValue: props.settings.get('filePath')
+      initialFilePathValue: props.settings.get('filePath'),
+
+      isCloneIdValid: props.settings.get('defaultCloneId') ? getGuild(props.settings.get('defaultCloneId')) : true,
+      initialCloneIdValue: props.settings.get('defaultCloneId')
     };
   }
 
@@ -90,6 +97,47 @@ module.exports = class EmojiUtilitySettings extends React.Component {
         >
           Include ID when saving emotes
         </SwitchItem>
+
+        <SwitchItem
+          note='Whether the default server id for the cloneemote command should be the server you are currently in if a server argument is not present'
+          value={settings.defaultCloneIdUseCurrent}
+          onChange={() => set('defaultCloneIdUseCurrent')}
+        >
+          Use current server when cloning emotes
+        </SwitchItem>
+
+        {
+          (() => {
+            if(settings.defaultCloneIdUseCurrent) {
+              return;
+            }
+
+            return(
+              <TextInput
+                note='The default server id which will be used to save cloned emotes with the cloneemote command if a server argument is not present'
+                defaultValue={settings.defaultCloneGuildId}
+                style={!this.state.isCloneIdValid ? {borderColor: 'red'} : {}}
+                onChange={(value) => {
+                  if(value.length === 0 || getGuild(value)) {
+                    this.setState({
+                      isCloneIdValid: true
+                    });
+      
+                    set('defaultCloneId', value.length === 0 ? null : value);
+                  }else{
+                    this.setState({
+                      isCloneIdValid: false
+                    });
+      
+                    set('defaultCloneId', this.state.initialCloneIdValue);
+                  }
+                }}
+              >
+                Default server ID when cloning emotes
+              </TextInput>
+            )
+          })()
+        }
       </div>
     );
   }
