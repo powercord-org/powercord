@@ -1,3 +1,4 @@
+const { inject: pcInject } = require('powercord/injector');
 const { waitFor, getOwnerInstance, sleep } = require('powercord/util');
 
 module.exports = async function injectAutocomplete () {
@@ -52,7 +53,6 @@ module.exports = async function injectAutocomplete () {
         };
 
         for (const command of commands) {
-          const _this = this;
           command.type = class PatchedCommandType extends command.type {
             renderContent (...originalArgs) {
               const rendered = super.renderContent(...originalArgs);
@@ -82,12 +82,11 @@ module.exports = async function injectAutocomplete () {
     (this.instance = getOwnerInstance(document.querySelector('.channelTextArea-rNsIhG')));
   const instancePrototype = Object.getPrototypeOf(updateInstance());
 
-  // eslint-disable-next-line func-names
-  instancePrototype.componentDidMount = (_componentDidMount => function (...args) {
+  pcInject('pc-commands-autocomplete', instancePrototype, 'componentDidMount', (args, originReturn) => {
     updateInstance();
     inject();
-    return _componentDidMount.call(this, ...args);
-  })(instancePrototype.componentDidMount);
+    return originReturn;
+  });
 
   inject();
 };

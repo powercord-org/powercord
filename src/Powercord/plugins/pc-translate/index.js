@@ -1,4 +1,5 @@
 const Plugin = require('powercord/Plugin');
+const { inject } = require('powercord/injector');
 const { getModuleByDisplayName, React } = require('powercord/webpack');
 const { sleep, createElement } = require('powercord/util');
 const { ContextMenu: { Submenu } } = require('powercord/components');
@@ -13,11 +14,9 @@ module.exports = class Translate extends Plugin {
       .filter(k => typeof translate.languages[k] === 'string');
 
     const MessageContextMenu = getModuleByDisplayName('messagecontextmenu');
-    MessageContextMenu.prototype.render = (_render => function (...args) { // eslint-disable-line
-      const res = _render.call(this, ...args);
-
+    inject('pc-translate-context', MessageContextMenu.prototype, 'render', function (args, res) { // eslint-disable-line func-names
       const setText = async (opts) => {
-        const message = this.props.target.closest('.pc-containerCozyBounded');
+        const message = this.props.target.closest('.pc-containerCozyBounded'); // eslint-disable-line no-invalid-this
 
         message.style.transition = '0.2s';
         message.style.opacity = '0';
@@ -90,6 +89,6 @@ module.exports = class Translate extends Plugin {
       );
 
       return res;
-    })(MessageContextMenu.prototype.render);
+    });
   }
 };

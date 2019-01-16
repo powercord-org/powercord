@@ -1,4 +1,5 @@
 const Plugin = require('powercord/Plugin');
+const { inject } = require('powercord/injector');
 const { open: openModal } = require('powercord/modal');
 const { waitFor, getOwnerInstance } = require('powercord/util');
 const { React, ReactDOM, getModuleByDisplayName } = require('powercord/webpack');
@@ -90,13 +91,12 @@ module.exports = class Spotify extends Plugin {
   patchPremiumDialog () {
     const PremiumDialog = getModuleByDisplayName('SpotifyPremiumUpgrade');
 
-    PremiumDialog.prototype.render = ((_render) => function (...args) { // eslint-disable-line
-      const res = _render.call(this, ...args);
-      if (this.props.isPowercord) {
+    inject('pc-spotify-premium', PremiumDialog.prototype, 'render', function (args, res) { // eslint-disable-line func-names
+      if (this.props.isPowercord) { // eslint-disable-line no-invalid-this
         res.props.children[1].props.children[1].props.children = 'Sorry pal, looks like you aren\'t a Spotify Premium member! Premium members are able to control Spotify through Discord with Powercord\'s Spotify modal';
       }
       return res;
-    })(PremiumDialog.prototype.render);
+    });
   }
 
   get SpotifyPlayer () {
