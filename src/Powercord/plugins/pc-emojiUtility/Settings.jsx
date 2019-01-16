@@ -49,22 +49,13 @@ module.exports = class EmojiUtilitySettings extends React.Component {
           Use embeds
         </SwitchItem>
 
-        {
-          (() => {
-            if(settings.useEmbeds) {
-              return;
-            }
-
-            return (
-              <SwitchItem
-                note='Whether the message for the findemote command should contain the link to the guild the emote is in.'
-                value={settings.displayLink}
-                onChange={() => set('displayLink')}
-              >
-                Display link
-              </SwitchItem>
-            )
-          })()
+        {!settings.useEmbeds && <SwitchItem
+            note='Whether the message for the findemote command should contain the link to the guild the emote is in.'
+            value={settings.displayLink}
+            onChange={() => set('displayLink')}
+          >
+            Display link
+          </SwitchItem>
         }
 
         <TextInput
@@ -106,37 +97,28 @@ module.exports = class EmojiUtilitySettings extends React.Component {
           Use current server when cloning emotes
         </SwitchItem>
 
-        {
-          (() => {
-            if(settings.defaultCloneIdUseCurrent) {
-              return;
-            }
+        {!settings.defaultCloneIdUseCurrent && <TextInput
+            note='The default server id which will be used to save cloned emotes with the cloneemote command if a server argument is not present'
+            defaultValue={settings.defaultCloneGuildId}
+            style={!this.state.isCloneIdValid ? {borderColor: 'red'} : {}}
+            onChange={(value) => {
+              if(value.length === 0 || getGuild(value)) {
+                this.setState({
+                  isCloneIdValid: true
+                });
 
-            return(
-              <TextInput
-                note='The default server id which will be used to save cloned emotes with the cloneemote command if a server argument is not present'
-                defaultValue={settings.defaultCloneGuildId}
-                style={!this.state.isCloneIdValid ? {borderColor: 'red'} : {}}
-                onChange={(value) => {
-                  if(value.length === 0 || getGuild(value)) {
-                    this.setState({
-                      isCloneIdValid: true
-                    });
-      
-                    set('defaultCloneId', value.length === 0 ? null : value);
-                  }else{
-                    this.setState({
-                      isCloneIdValid: false
-                    });
-      
-                    set('defaultCloneId', this.state.initialCloneIdValue);
-                  }
-                }}
-              >
-                Default server ID when cloning emotes
-              </TextInput>
-            )
-          })()
+                set('defaultCloneId', value.length === 0 ? null : value);
+              }else{
+                this.setState({
+                  isCloneIdValid: false
+                });
+
+                set('defaultCloneId', this.state.initialCloneIdValue);
+              }
+            }}
+          >
+            Default server ID when cloning emotes
+          </TextInput>
         }
       </div>
     );
