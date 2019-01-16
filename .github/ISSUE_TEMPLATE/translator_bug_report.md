@@ -2,7 +2,7 @@
 name: Translator Bug Report
 about: Create a report for the Translator plugin to help us improve
 title: '[Translator]'
-labels: 'enhancement'
+labels: 'bug'
 assignees: ''
 
 ---
