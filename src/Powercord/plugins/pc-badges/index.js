@@ -1,6 +1,7 @@
 const { resolve } = require('path');
 const { get } = require('powercord/http');
 const Plugin = require('powercord/Plugin');
+const { inject } = require('powercord/injector');
 const { createElement } = require('powercord/util');
 const { React, ReactDOM, getModuleByDisplayName } = require('powercord/webpack');
 
@@ -15,7 +16,9 @@ module.exports = class Badges extends Plugin {
 
   _patchUserComponent () {
     const UserProfile = getModuleByDisplayName('UserProfile');
-    UserProfile.prototype.fetchPowercordBadges = async function () { // eslint-disable-line
+
+    inject('pc-badges-fetch', UserProfile.prototype, 'fetchPowercordBadges', async function () { // eslint-disable-line
+      /* eslint-disable no-invalid-this */
       if (this.userID !== this.props.user.id) {
         this.badges = null;
         this.userID = this.props.user.id;
@@ -30,22 +33,16 @@ module.exports = class Badges extends Plugin {
 
         this.badges = badgesStore[this.userID];
         this.forceUpdate();
+        /* eslint-enable no-invalid-this */
       }
-    };
+    });
 
-    UserProfile.prototype.componentDidMount = ((_old) => function (...args) { // eslint-disable-line
-      if (_old) {
-        _old.call(this, ...args);
-      }
+    inject('pc-badges-mount', UserProfile.prototype, 'componentDidMount', function () { // eslint-disable-line
+      this.fetchPowercordBadges(); // eslint-disable-line no-invalid-this
+    });
 
-      this.fetchPowercordBadges();
-    })(UserProfile.prototype.componentDidMount);
-
-    UserProfile.prototype.componentDidUpdate = ((_old) => async function (...args) { // eslint-disable-line
-      if (_old) {
-        _old.call(this, ...args);
-      }
-
+    inject('pc-badges-mount', UserProfile.prototype, 'componentDidUpdate ', async function () { // eslint-disable-line
+      /* eslint-disable no-invalid-this */
       await this.fetchPowercordBadges();
       if (this.badges && document.querySelector('.pc-profileBadges')) { // @todo: Create element if not existing
         const el = document.querySelector('.pc-profileBadges .powercord-badges');
@@ -80,6 +77,7 @@ module.exports = class Badges extends Plugin {
           ReactDOM.render(React.createElement(Badge, { badge: 'hunter' }), hunterE);
         }
       }
-    })(UserProfile.prototype.componentDidUpdate);
+      /* eslint-enable no-invalid-this */
+    });
   }
 };

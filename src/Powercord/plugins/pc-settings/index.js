@@ -1,5 +1,6 @@
 const { resolve } = require('path');
 const Plugin = require('powercord/Plugin');
+const { inject } = require('powercord/injector');
 const { getModuleByDisplayName, React, getModule } = require('powercord/webpack');
 const GeneralSettings = require('./components/GeneralSettings.jsx');
 
@@ -40,9 +41,9 @@ module.exports = class Settings extends Plugin {
   }
 
   patchSettingsComponent () {
+    const _this = this;
     const SettingsView = getModuleByDisplayName('SettingsView');
-    SettingsView.prototype.getPredicateSections = ((_getter, pluginSections) => function (...args) { // eslint-disable-line
-      const sections = _getter.call(this, ...args);
+    inject('pc-settings-items', SettingsView.prototype, 'getPredicateSections', function (args, sections) { // eslint-disable-line
       const changelog = sections.find(c => c.section === 'changelog');
       if (changelog) {
         sections.splice(
@@ -51,7 +52,7 @@ module.exports = class Settings extends Plugin {
             section: 'HEADER',
             label: 'Powercord'
           },
-          ...pluginSections,
+          ..._this.sections,
           { section: 'DIVIDER' }
         );
       }
@@ -75,11 +76,11 @@ module.exports = class Settings extends Plugin {
       }
 
       return sections;
-    })(SettingsView.prototype.getPredicateSections, this.sections);
+    });
 
-    SettingsView.prototype.componentDidCatch = () => {
+    inject('pc-settings-errorHandler', SettingsView.prototype, 'componentDidCatch', () => {
       this.error('nee jij discord :) (There should be an error just before this message)');
-    };
+    });
   }
 
   _renderSettingsPanel (title, contents) {
