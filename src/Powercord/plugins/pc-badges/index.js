@@ -41,7 +41,7 @@ module.exports = class Badges extends Plugin {
       this.fetchPowercordBadges(); // eslint-disable-line no-invalid-this
     });
 
-    inject('pc-badges-mount', UserProfile.prototype, 'componentDidUpdate ', async function () { // eslint-disable-line
+    inject('pc-badges-update', UserProfile.prototype, 'componentDidUpdate', async function () { // eslint-disable-line
       /* eslint-disable no-invalid-this */
       await this.fetchPowercordBadges();
       if (this.badges && document.querySelector('.pc-profileBadges')) { // @todo: Create element if not existing
