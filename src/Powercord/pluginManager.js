@@ -67,6 +67,7 @@ module.exports = class PluginManager {
     return dependents.filter(p => this.isEnforced(p, false)).length !== 0;
   }
 
+  // Resolvers
   async resolveDependencies (plugin, deps = []) {
     const dependencies = await this.getDependencies(plugin);
 
@@ -117,23 +118,29 @@ module.exports = class PluginManager {
     return [];
   }
 
-  // Enable/install/hide shit
-  enable (plugin) {
-    this.requiresReload = true;
-    powercord.settings.set(
-      'disabledPlugins',
-      powercord.settings.get('disabledPlugins', []).filter(p => p !== plugin)
-    );
+  // Load/enable/install/hide shit
+  load (pluginID) {
+    const plugin = this.get(pluginID);
+    if (!plugin) {
+      throw new Error(`Tried to load a non installed plugin (${plugin})`);
+    }
+    if (plugin.ready) {
+      throw new Error(`Tried to load an already loaded plugin (${plugin})`);
+    }
+
+    plugin._start();
   }
 
-  disable (plugin) {
-    if (this.enforcedPlugins.includes(plugin)) {
-      throw new Error(`You cannot disable an enforced plugin. (Tried to disable ${plugin})`);
+  unload (pluginID) {
+    const plugin = this.get(pluginID);
+    if (!plugin) {
+      throw new Error(`Tried to unload a non installed plugin (${plugin})`);
     }
-    this.requiresReload = true;
-    const disabled = powercord.settings.get('disabledPlugins', []);
-    disabled.push(plugin);
-    powercord.settings.set('disabledPlugins', disabled);
+    if (!plugin.ready) {
+      throw new Error(`Tried to unload a non loaded plugin (${plugin})`);
+    }
+
+    plugin._unload();
   }
 
   show (plugin) {
@@ -147,6 +154,40 @@ module.exports = class PluginManager {
     const disabled = powercord.settings.get('hiddenPlugins', []);
     disabled.push(plugin);
     powercord.settings.set('hiddenPlugins', disabled);
+  }
+
+  enable (pluginID) {
+    if (!this.get(pluginID)) {
+      throw new Error(`Tried to unload a non installed plugin (${pluginID})`);
+    }
+
+    powercord.settings.set(
+      'disabledPlugins',
+      powercord.settings.get('disabledPlugins', []).filter(p => p !== pluginID)
+    );
+
+    this.load(pluginID);
+  }
+
+  disable (pluginID) {
+    const plugin = this.get(pluginID);
+
+    if (!plugin) {
+      throw new Error(`Tried to unload a non installed plugin (${pluginID})`);
+    }
+    if (this.enforcedPlugins.includes(pluginID)) {
+      throw new Error(`You cannot disable an enforced plugin. (Tried to disable ${pluginID})`);
+    }
+    powercord.settings.set('disabledPlugins', [
+      ...powercord.settings.get('disabledPlugins', []),
+      pluginID
+    ]);
+
+    if (plugin.hotReload) {
+      this.unload();
+    } else {
+      this.requiresReload = true;
+    }
   }
 
   install (plugin) {
@@ -179,11 +220,21 @@ module.exports = class PluginManager {
         (plugin.manifest.appMode === 'app' && !window.__OVERLAY__) ||
         plugin.manifest.appMode === 'both'
       ) {
-        plugin._start();
+        this.load(plugin.pluginID);
       } else {
         console.error('%c[Powercord]', 'color: #257dd4', `Plugin ${plugin.constructor.name} doesn't have a valid app mode - Skipping`);
         this.plugins.delete(plugin);
       }
+    }
+  }
+
+  ensureDepEnabled (plugin, ensured = []) {
+    if (!ensured.includes(plugin)) { // Prevent cyclic loops
+      ensured.push(plugin);
+      plugin.manifest.dependencies.forEach(dep => {
+        this.enable(dep);
+        this.ensureDepEnabled(dep, ensured);
+      });
     }
   }
 
@@ -197,7 +248,8 @@ module.exports = class PluginManager {
         try {
           manifest = Object.assign({
             appMode: 'app',
-            dependencies: []
+            dependencies: [],
+            hotReload: true
           }, require(resolve(this.pluginDir, filename, 'manifest.json')));
         } catch (e) {
           return console.error('%c[Powercord]', 'color: #257dd4', `Plugin ${moduleName} doesn't have a valid manifest - Skipping`);
@@ -212,18 +264,14 @@ module.exports = class PluginManager {
 
           Object.defineProperties(PluginClass.prototype, {
             pluginID: {
-              get () {
-                return moduleName;
-              },
-              set () {
+              get: () => moduleName,
+              set: () => {
                 throw new Error('Plugins cannot update their ID at runtime!');
               }
             },
             manifest: {
-              get () {
-                return manifest;
-              },
-              set () {
+              get: () => manifest,
+              set: () => {
                 throw new Error('Plugins cannot update manifest at runtime!');
               }
             }
@@ -236,32 +284,5 @@ module.exports = class PluginManager {
       });
 
     this.plugins = new Map(Object.entries(plugins));
-    this._ensureDepsEnabled();
-  }
-
-  _ensureDepsEnabled () {
-    this.plugins.forEach(plugin => {
-      if (powercord.settings.get('disabledPlugins', []).includes(plugin.pluginID)) {
-        if (this.enforcedPlugins.includes(plugin.pluginID)) { // :reee:
-          this.enable(plugin.pluginID);
-          this.requiresReload = false;
-        } else {
-          return;
-        }
-      }
-
-      this._ensureDepEnabled(plugin);
-    });
-  }
-
-  _ensureDepEnabled (plugin) {
-    if (!this.ensuredPlugins.includes(plugin)) { // Prevent cyclic loops
-      this.ensuredPlugins.push(plugin);
-      plugin.manifest.dependencies.forEach(dep => {
-        this.enable(dep);
-        this.requiresReload = false;
-        this._ensureDepsEnabled(dep);
-      });
-    }
   }
 };

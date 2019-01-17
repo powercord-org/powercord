@@ -22,6 +22,7 @@ module.exports = class PluginManager extends Plugin {
 
     inject('pc-pluginManager-reloadIcon', HeaderBar.prototype, 'render', (args, res) => {
       if (powercord.pluginManager.requiresReload) {
+        // isn't that beautiful? thx noodle.js 7
         res.props.children[3].props.children[2].props.children.push(
           Object.assign({}, res.props.children[3].props.children[2].props.children[3], {
             props: Object.assign({}, res.props.children[3].props.children[2].props.children[3].props, {
