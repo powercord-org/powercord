@@ -56,7 +56,11 @@ module.exports = class EmojiUtility extends Plugin {
   getGuildRoute (guildId) {
     const selectedChannelId = getSelectedChannelState()[guildId];
 
-    return (selectedChannelId ? Routes.CHANNEL(guildId, selectedChannelId) : Routes.GUILD(guildId)); // eslint-disable-line new-cap
+    /* eslint-disable new-cap */
+    return selectedChannelId
+      ? Routes.CHANNEL(guildId, selectedChannelId)
+      : Routes.GUILD(guildId);
+    /* eslint-enable new-cap */
   }
 
   getGuildUrl (guildId) {
@@ -77,6 +81,25 @@ module.exports = class EmojiUtility extends Plugin {
     }
 
     return receiveMessage(receivedMessage.channel_id, receivedMessage);
+  }
+
+  reply (content, embed) {
+    this.sendBotMessage(
+      this.settings.get('useEmbeds')
+        ? Object.assign({
+          type: 'rich',
+          description: content
+        }, embed)
+        : content
+    );
+  }
+
+  replySuccess (content, embed) {
+    this.reply(content, Object.assign({ color: 65280 }, embed));
+  }
+
+  replyError (content, embed) {
+    this.reply(content, Object.assign({ color: 16711680 }, embed));
   }
 
   async getImageEncoded (image) {
@@ -101,16 +124,7 @@ module.exports = class EmojiUtility extends Plugin {
     args = [ ...new Set(args) ];
 
     if (args.length === 0) {
-      return {
-        send: false,
-        result: this.settings.get('useEmbeds')
-          ? {
-            type: 'rich',
-            description: 'Please provide an emote',
-            color: 16711680
-          }
-          : 'Please provide an emote'
-      };
+      return this.replyError('Please provide an emote');
     }
 
     const emojis = Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis);
@@ -133,30 +147,12 @@ module.exports = class EmojiUtility extends Plugin {
         }
 
         if (args.length === 1) {
-          return {
-            send: false,
-            result: this.settings.get('useEmbeds')
-              ? {
-                type: 'rich',
-                description: `Could not find emote ${argument}`,
-                color: 16711680
-              }
-              : `Could not find emote ${argument}`
-          };
+          return this.replyError(`Could not find emote ${argument}`);
         }
       }
 
       if (args.length === 1) {
-        return {
-          send: false,
-          result: this.settings.get('useEmbeds')
-            ? {
-              type: 'rich',
-              description: `**${argument}** is not a custom emote`,
-              color: 16711680
-            }
-            : `**${argument}** is not a custom emote`
-        };
+        return this.replyError(`**${argument}** is not a custom emote`);
       }
 
       notFoundEmojis.push(argument);
@@ -186,51 +182,39 @@ module.exports = class EmojiUtility extends Plugin {
   start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
 
-    const outer = this; // eslint-disable-line consistent-this
+    const _this = this;
 
     const MessageContextMenu = getModuleByDisplayName('MessageContextMenu');
     inject('pc-emojiUtility-emojiContext', MessageContextMenu.prototype, 'render', function (args, res) { // eslint-disable-line func-names
-      const { target } = this.props; // eslint-disable-line no-invalid-this
+      const { target } = this.props;
       if (target.classList.contains('emoji')) {
-        const matcher = target.src.match(outer.getEmojiUrlRegex());
+        const matcher = target.src.match(_this.getEmojiUrlRegex());
         if (matcher) {
           let emoji = Object.values(emojiStore.getGuilds()).flatMap(g => g.emojis).find(e => e.id === matcher[1]);
           if (emoji) {
             emoji.fake = false;
           } else {
-            emoji = outer.createFakeEmoji(matcher[1], target.alt.substring(1, target.alt.length - 1), target.src);
+            emoji = _this.createFakeEmoji(matcher[1], target.alt.substring(1, target.alt.length - 1), target.src);
           }
 
           const getCloneableGuilds = () => {
             const items = [];
-            const clonableGuilds = Object.values(getGuilds()).filter(guild => outer.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+            const clonableGuilds = Object.values(getGuilds()).filter(guild => _this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
 
             const onClick = async (guild) => {
               try {
-                await uploadEmoji(guild.id, await outer.getImageEncoded(emoji.url), emoji.name);
+                await uploadEmoji(guild.id, await _this.getImageEncoded(emoji.url), emoji.name);
 
-                outer.sendBotMessage(outer.settings.get('useEmbeds')
-                  ? {
-                    type: 'rich',
-                    description: `Cloned emote ${outer.getFullEmoji(emoji)} to **${guild.name}**`,
-                    color: 65280
-                  }
-                  : `Cloned emote ${outer.getFullEmoji(emoji)} to **${guild.name}**`
-                );
+                _this.replySuccess(`Cloned emote ${_this.getFullEmoji(emoji)} to **${guild.name}**`);
               } catch (error) {
                 console.error(error);
 
-                outer.sendBotMessage(outer.settings.get('useEmbeds')
-                  ? {
-                    type: 'rich',
-                    description: 'Failed to clone emote',
-                    color: 16711680,
-                    footer: {
-                      text: 'Check the console for more information'
-                    }
+                _this.replyError('Failed to clone emote, check the console for more information', {
+                  description: 'Failed to clone emote',
+                  footer: {
+                    text: 'Check the console for more information'
                   }
-                  : 'Failed to clone emote, check the console for more information'
-                );
+                });
               }
             };
 
@@ -259,59 +243,33 @@ module.exports = class EmojiUtility extends Plugin {
               type: 'button',
               name: 'Save',
               onClick: async () => {
-                if (!outer.settings.get('filePath')) {
-                  outer.sendBotMessage(outer.settings.get('useEmbeds')
-                    ? {
-                      type: 'rich',
-                      description: 'Please set your save directory in the settings',
-                      color: 16711680
-                    }
-                    : 'Please set your save directory in the settings'
-                  );
+                if (!_this.settings.get('filePath')) {
+                  _this.replyError('Please set your save directory in the settings');
 
                   return;
                 }
 
-                if (!existsSync(outer.settings.get('filePath'))) {
-                  outer.sendBotMessage(outer.settings.get('useEmbeds')
-                    ? {
-                      type: 'rich',
-                      description: 'The specified save directory does no longer exist, please update it in the settings',
-                      color: 16711680
-                    }
-                    : 'The specified save directory does no longer exist, please update it in the settings'
-                  );
+                if (!existsSync(_this.settings.get('filePath'))) {
+                  _this.replyError('The specified save directory does no longer exist, please update it in the settings');
 
                   return;
                 }
 
                 try {
-                  const name = outer.settings.get('includeIdForSavedEmojis') ? `${emoji.name} (${emoji.id})` : emoji.name;
+                  const name = _this.settings.get('includeIdForSavedEmojis') ? `${emoji.name} (${emoji.id})` : emoji.name;
 
-                  await writeFile(resolve(outer.settings.get('filePath'), name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
+                  await writeFile(resolve(_this.settings.get('filePath'), name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
 
-                  outer.sendBotMessage(outer.settings.get('useEmbeds')
-                    ? {
-                      type: 'rich',
-                      description: `Downloaded ${outer.getFullEmoji(emoji)}`,
-                      color: 65280
-                    }
-                    : `Downloaded ${outer.getFullEmoji(emoji)}`
-                  );
+                  _this.replySuccess(`Downloaded ${_this.getFullEmoji(emoji)}`);
                 } catch (error) {
                   console.error(error);
 
-                  outer.sendBotMessage(outer.settings.get('useEmbeds')
-                    ? {
-                      type: 'rich',
-                      description: `Failed to download ${outer.getFullEmoji(emoji)}`,
-                      footer: {
-                        text: 'Check the console for more information'
-                      },
-                      color: 16711680
+                  _this.replyError(`Failed to download ${_this.getFullEmoji(emoji)}, check the console for more information`, {
+                    description: `Failed to download ${_this.getFullEmoji(emoji)}`,
+                    footer: {
+                      text: 'Check the console for more information'
                     }
-                    : `Failed to download ${outer.getFullEmoji(emoji)}, check the console for more information`
-                  );
+                  });
                 }
               }
             });
@@ -321,7 +279,7 @@ module.exports = class EmojiUtility extends Plugin {
                 type: 'button',
                 name: 'Go to server',
                 onClick: () => {
-                  transitionTo(outer.getGuildRoute(emoji.guildId));
+                  transitionTo(_this.getGuildRoute(emoji.guildId));
                 }
               });
             }
@@ -349,63 +307,37 @@ module.exports = class EmojiUtility extends Plugin {
 
     const EmojiNameModal = require('./EmojiNameModal.jsx');
     inject('pc-emojiUtility-imageContext', MessageContextMenu.prototype, 'render', function (args, res) { // eslint-disable-line func-names
-      const { target } = this.props; // eslint-disable-line no-invalid-this
+      const { target } = this.props;
       if (target.parentElement.classList.contains('pc-embedWrapper')) {
         const getCreateableGuilds = () => {
           const items = [];
-          const createableGuilds = Object.values(getGuilds()).filter(guild => outer.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+          const createableGuilds = Object.values(getGuilds()).filter(guild => _this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
 
           const onClick = (guild) => {
             openModal(() => React.createElement(EmojiNameModal, {
               onConfirm: async (name) => {
                 if (!name || (name.length < 2 || name.length > 32)) {
-                  outer.sendBotMessage(outer.settings.get('useEmbeds')
-                    ? {
-                      type: 'rich',
-                      description: 'Please enter an emote name with more than 2 and less than 32 characters',
-                      color: 16711680
-                    }
-                    : 'Please enter an emote name with more than 2 and less than 32 characters'
-                  );
+                  _this.replyError('Please enter an emote name with more than 2 and less than 32 characters');
 
                   return;
                 }
 
                 try {
-                  await uploadEmoji(guild.id, await outer.getImageEncoded(target.src), name);
+                  await uploadEmoji(guild.id, await _this.getImageEncoded(target.src), name);
 
-                  outer.sendBotMessage(outer.settings.get('useEmbeds')
-                    ? {
-                      type: 'rich',
-                      description: `Created emote by the name of **${name}** in **${guild.name}**`,
-                      color: 65280
-                    }
-                    : `Created emote by the name of **${name}** in **${guild.name}**`
-                  );
+                  _this.replySuccess(`Created emote by the name of **${name}** in **${guild.name}**`);
                 } catch (error) {
                   if (error.body && error.body.image) {
-                    outer.sendBotMessage(outer.settings.get('useEmbeds')
-                      ? {
-                        type: 'rich',
-                        description: error.body.image[0],
-                        color: 16711680
-                      }
-                      : error.body.image[0]
-                    );
+                    _this.replyError(error.body.image[0]);
                   } else {
                     console.error(error);
 
-                    outer.sendBotMessage(outer.settings.get('useEmbeds')
-                      ? {
-                        type: 'rich',
-                        description: 'Failed to create emote',
-                        color: 16711680,
-                        footer: {
-                          text: 'Check the console for more information'
-                        }
+                    _this.replyError('Failed to create emote, check the console for more information', {
+                      description: 'Failed to create emote',
+                      footer: {
+                        text: 'Check the console for more information'
                       }
-                      : 'Failed to create emote, check the console for more information'
-                    );
+                    });
                   }
                 }
               }
@@ -543,16 +475,7 @@ module.exports = class EmojiUtility extends Plugin {
             };
           }
 
-          return {
-            send: false,
-            result: this.settings.get('useEmbeds')
-              ? {
-                type: 'rich',
-                description: `Could not find any emotes containing **${argument}**`,
-                color: 16711680
-              }
-              : `Could not find any emotes containing **${argument}**`
-          };
+          return this.replyError(`Could not find any emotes containing **${argument}**`);
         }
       );
 
@@ -565,29 +488,11 @@ module.exports = class EmojiUtility extends Plugin {
         '{c} [emote]',
         async (args) => { // eslint-disable-line complexity
           if (!this.settings.get('filePath')) {
-            return {
-              send: false,
-              result: this.settings.get('useEmbeds')
-                ? {
-                  type: 'rich',
-                  description: 'Please set your save directory in the settings',
-                  color: 16711680
-                }
-                : 'Please set your save directory in the settings'
-            };
+            return this.replyError('Please set your save directory in the settings');
           }
 
           if (!existsSync(this.settings.get('filePath'))) {
-            return {
-              send: false,
-              result: this.settings.get('useEmbeds')
-                ? {
-                  type: 'rich',
-                  description: 'The specified save directory does no longer exist, please update it in the settings',
-                  color: 16711680
-                }
-                : 'The specified save directory does no longer exist, please update it in the settings'
-            };
+            return this.replyError('The specified save directory does no longer exist, please update it in the settings');
           }
 
           const object = this.findEmojisForCommand(args);
@@ -598,14 +503,7 @@ module.exports = class EmojiUtility extends Plugin {
           const { foundEmojis, notFoundEmojis } = object;
 
           if (notFoundEmojis.length > 0) {
-            this.sendBotMessage(this.settings.get('useEmbeds')
-              ? {
-                type: 'rich',
-                description: `**${notFoundEmojis.length}** of the provided arguments ${notFoundEmojis.length === 1 ? 'is not a custom emote' : 'are not custom emotes'}`,
-                color: 16711680
-              }
-              : `**${notFoundEmojis.length}** of the provided arguments ${notFoundEmojis.length === 1 ? 'is not a custom emote' : 'are not custom emotes'}`
-            );
+            return this.replyError(`**${notFoundEmojis.length}** of the provided arguments ${notFoundEmojis.length === 1 ? 'is not a custom emote' : 'are not custom emotes'}`);
           }
 
           if (foundEmojis.length < 5) {
@@ -615,39 +513,20 @@ module.exports = class EmojiUtility extends Plugin {
 
                 await writeFile(resolve(this.settings.get('filePath'), name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
 
-                this.sendBotMessage(this.settings.get('useEmbeds')
-                  ? {
-                    type: 'rich',
-                    description: `Downloaded ${this.getFullEmoji(emoji)}`,
-                    color: 65280
-                  }
-                  : `Downloaded ${this.getFullEmoji(emoji)}`
-                );
+                this.replySuccess(`Downloaded ${this.getFullEmoji(emoji)}`);
               } catch (error) {
                 console.error(error);
 
-                this.sendBotMessage(this.settings.get('useEmbeds')
-                  ? {
-                    type: 'rich',
-                    description: `Failed to download ${this.getFullEmoji(emoji)}`,
-                    footer: {
-                      text: 'Check the console for more information'
-                    },
-                    color: 16711680
+                this.replyError(`Failed to download ${this.getFullEmoji(emoji)}, check the console for more information`, {
+                  description: `Failed to download ${this.getFullEmoji(emoji)}`,
+                  footer: {
+                    text: 'Check the console for more information'
                   }
-                  : `Failed to download ${this.getFullEmoji(emoji)}, check the console for more information`
-                );
+                });
               }
             }
           } else {
-            this.sendBotMessage(this.settings.get('useEmbeds')
-              ? {
-                type: 'rich',
-                description: `Downloading **${foundEmojis.length}** emotes, I will report back to you when I am done`,
-                color: 65280
-              }
-              : `Downloading **${foundEmojis.length}** emotes, I will report back to you when I am done`
-            );
+            this.replySuccess(`Downloading **${foundEmojis.length}** emotes, I will report back to you when I am done`);
 
             const failedDownloads = [];
 
@@ -663,14 +542,7 @@ module.exports = class EmojiUtility extends Plugin {
               }
             }
 
-            this.sendBotMessage(this.settings.get('useEmbeds')
-              ? {
-                type: 'rich',
-                description: `Successfully downloaded **${foundEmojis.length - failedDownloads.length}**/**${foundEmojis.length}** emotes`,
-                color: 65280
-              }
-              : `Successfully downloaded **${foundEmojis.length - failedDownloads.length}**/**${foundEmojis.length}** emotes`
-            );
+            this.replySuccess(`Successfully downloaded **${foundEmojis.length - failedDownloads.length}**/**${foundEmojis.length}** emotes`);
           }
         }
       );
@@ -684,31 +556,13 @@ module.exports = class EmojiUtility extends Plugin {
         '{c} [emote] [server]',
         async (args) => { // eslint-disable-line complexity
           if (args.length === 0) {
-            return {
-              send: false,
-              result: this.settings.get('useEmbeds')
-                ? {
-                  type: 'rich',
-                  description: 'Please provide an emote',
-                  color: 16711680
-                }
-                : 'Please provide an emote'
-            };
+            return this.replyError('Please provide an emote');
           }
 
           const emojiRaw = args[0];
           const matcher = emojiRaw.match(this.getEmojiRegex());
           if (!matcher) {
-            return {
-              send: false,
-              result: this.settings.get('useEmbeds')
-                ? {
-                  type: 'rich',
-                  description: `**${emojiRaw}** is not a custom emote`,
-                  color: 16711680
-                }
-                : `**${emojiRaw}** is not a custom emote`
-            };
+            return this.replyError(`**${emojiRaw}** is not a custom emote`);
           }
 
           let guild;
@@ -717,16 +571,7 @@ module.exports = class EmojiUtility extends Plugin {
           if (guildArg.length > 0) {
             guild = this.getGuildByIdOrName(guildArg);
             if (!guild) {
-              return {
-                send: false,
-                result: this.settings.get('useEmbeds')
-                  ? {
-                    type: 'rich',
-                    description: 'That is not a valid server',
-                    color: 16711680
-                  }
-                  : 'That is not a valid server'
-              };
+              return this.replyError('That is not a valid server');
             }
           } else {
             if (this.settings.get('defaultCloneIdUseCurrent')) {
@@ -734,30 +579,12 @@ module.exports = class EmojiUtility extends Plugin {
             } else if (this.settings.get('defaultCloneId')) {
               guild = getGuild(this.settings.get('defaultCloneId'));
               if (!guild) {
-                return {
-                  send: false,
-                  result: this.settings.get('useEmbeds')
-                    ? {
-                      type: 'rich',
-                      description: 'You are no longer in your default clone server, please update your settings',
-                      color: 16711680
-                    }
-                    : 'You are no longer in your default clone server, please update your settings'
-                };
+                return this.replyError('You are no longer in your default clone server, please update your settings');
               }
             }
 
             if (!guild) {
-              return {
-                send: false,
-                result: this.settings.get('useEmbeds')
-                  ? {
-                    type: 'rich',
-                    description: 'No server argument was provided',
-                    color: 16711680
-                  }
-                  : 'No server argument was provided'
-              };
+              return this.replyError('No server argument was provided');
             }
           }
 
@@ -765,58 +592,24 @@ module.exports = class EmojiUtility extends Plugin {
           if (emoji) {
             try {
               if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
-                return {
-                  send: false,
-                  result: this.settings.get('useEmbeds')
-                    ? {
-                      type: 'rich',
-                      description: `Missing permissions to upload emotes in **${guild.name}**`,
-                      color: 16711680
-                    }
-                    : `Missing permissions to upload emotes in **${guild.name}**`
-                };
+                return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
               }
 
               await uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
 
-              return {
-                send: false,
-                result: this.settings.get('useEmbeds')
-                  ? {
-                    type: 'rich',
-                    description: `Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`,
-                    color: 65280
-                  }
-                  : `Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`
-              };
+              return this.replySuccess(`Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`);
             } catch (error) {
               console.error(error);
 
-              return {
-                send: false,
-                result: this.settings.get('useEmbeds')
-                  ? {
-                    type: 'rich',
-                    description: 'Failed to clone emote',
-                    color: 16711680,
-                    footer: {
-                      text: 'Check the console for more information'
-                    }
-                  }
-                  : 'Failed to clone emote, check the console for more information'
-              };
+              return this.replyError('Failed to clone emote, check the console for more information', {
+                description: 'Failed to clone emote',
+                footer: {
+                  text: 'Check the console for more information'
+                }
+              });
             }
           } else {
-            return {
-              send: false,
-              result: this.settings.get('useEmbeds')
-                ? {
-                  type: 'rich',
-                  description: `Could not find emote ${emojiRaw}`,
-                  color: 16711680
-                }
-                : `Could not find emote ${emojiRaw}`
-            };
+            return this.replyError(`Could not find emote ${emojiRaw}`);
           }
         }
       );

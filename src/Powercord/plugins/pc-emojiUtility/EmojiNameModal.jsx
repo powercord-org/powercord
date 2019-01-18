@@ -23,7 +23,7 @@ module.exports = class EmojiNameModal extends React.Component {
         onConfirm={() => this.props.onConfirm(this.state.emojiName)}
         onCancel={() => closeModal()}
       >
-        <div className="powercord-emojiName-modal">
+        <div className='powercord-emojiName-modal'>
           <TextInput
             defaultValue={this.state.emojiName}
             onChange={emojiName => this.setState({ emojiName })}
