@@ -37,6 +37,13 @@ module.exports = class Hastebin extends Plugin {
       );
   }
 
+  unload () {
+    powercord
+      .pluginManager
+      .get('pc-commands')
+      .unregister('hastebin');
+  }
+
   parseArguments (args) {
     const input = args.join(' ');
     if (input.startsWith('https://cdn.discordapp.com/attachments')) {

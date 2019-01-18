@@ -1,6 +1,6 @@
 const { resolve } = require('path');
 const Plugin = require('powercord/Plugin');
-const { inject } = require('powercord/injector');
+const { inject, uninject } = require('powercord/injector');
 const { getModuleByDisplayName, React, getModule } = require('powercord/webpack');
 const GeneralSettings = require('./components/GeneralSettings.jsx');
 
@@ -18,6 +18,13 @@ module.exports = class Settings extends Plugin {
     this.register('pc-general', 'General Settings', GeneralSettings);
   }
 
+  unload () {
+    this.unloadCSS();
+    uninject('pc-settings-items');
+    uninject('pc-settings-errorHandler');
+    this.unregister('pc-general');
+  }
+
   register (key, displayName, render) {
     if (!key.match(/^[a-z0-9_-]+$/i)) {
       return this.error(`Tried to register a settings panel with an invalid ID! You can only use letters, numbers, dashes and underscores. (ID: ${key})`);
@@ -31,6 +38,10 @@ module.exports = class Settings extends Plugin {
       label: displayName,
       element: this._renderSettingsPanel.bind(this, displayName, render)
     });
+  }
+
+  unregister (key) {
+    this.sections = this.sections.filter(s => s.section !== key);
   }
 
   patchExperiments () {

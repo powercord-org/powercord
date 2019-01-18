@@ -1,5 +1,5 @@
 const Plugin = require('powercord/Plugin');
-const { inject } = require('powercord/injector');
+const { inject, uninject } = require('powercord/injector');
 const { getModuleByDisplayName, React } = require('powercord/webpack');
 const { sleep, createElement } = require('powercord/util');
 const { ContextMenu: { Submenu } } = require('powercord/components');
@@ -9,7 +9,15 @@ const { resolve } = require('path');
 module.exports = class Translate extends Plugin {
   async start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
+    this._injectTranslator();
+  }
 
+  unload () {
+    this.unloadCSS();
+    uninject('pc-translate-context');
+  }
+
+  _injectTranslator () {
     const languages = Object.keys(translate.languages)
       .filter(k => typeof translate.languages[k] === 'string');
 

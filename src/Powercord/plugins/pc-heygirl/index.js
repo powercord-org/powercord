@@ -45,4 +45,11 @@ module.exports = class HeyGirl extends Plugin {
         this.heygirl.bind(this)
       );
   }
+
+  unload () {
+    powercord
+      .pluginManager
+      .get('pc-commands')
+      .unregister('heygirl');
+  }
 };

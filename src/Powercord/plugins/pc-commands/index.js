@@ -30,4 +30,8 @@ module.exports = class Commands extends Plugin {
       func
     });
   }
+
+  unregister (name) {
+    this.commands.delete(name);
+  }
 };

@@ -15,6 +15,10 @@ module.exports = class StateWatcher extends Plugin {
     });
   }
 
+  unload () {
+    this.observer.disconnect();
+  }
+
   onMutation (mutations) {
     for (const mutation of mutations) {
       if (!mutation.addedNodes[0]) {

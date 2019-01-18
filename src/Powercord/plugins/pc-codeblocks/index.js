@@ -11,6 +11,21 @@ module.exports = class Codeblocks extends Plugin {
       .pluginManager
       .get('pc-stateWatcher')
       .on('codeblock', this.inject);
+
+    document.querySelectorAll('.hljs').forEach(this.inject.bind(this));
+  }
+
+  unload () {
+    this.unloadCSS();
+
+    powercord
+      .pluginManager
+      .get('pc-stateWatcher')
+      .off('codeblock', this.inject);
+
+    Array.from(document.querySelectorAll('.powercord-codeblock-copy-btn')).map(c => c.parentNode).forEach(c => {
+      c.innerHTML = c._originalInnerHTML;
+    });
   }
 
   inject (codeblock) {
@@ -22,6 +37,8 @@ module.exports = class Codeblocks extends Plugin {
     }
 
     // Attribution: noodlebox
+    codeblock._originalInnerHTML = codeblock.innerHTML;
+
     // eslint-disable-next-line prefer-template
     codeblock.innerHTML = '<ol>' + codeblock.innerHTML
       .split('\n')

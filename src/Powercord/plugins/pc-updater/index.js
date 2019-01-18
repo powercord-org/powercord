@@ -38,8 +38,17 @@ module.exports = class Updater extends Plugin {
       minutes = 1;
     }
 
-    setInterval(this.checkForUpdate.bind(this), minutes * 60 * 1000);
+    this._interval = setInterval(this.checkForUpdate.bind(this), minutes * 60 * 1000);
     this.checkForUpdate();
+  }
+
+  unload () {
+    this.unloadCSS();
+    clearInterval(this._interval);
+    powercord
+      .pluginManager
+      .get('pc-settings')
+      .unregister('pc-updater');
   }
 
   async checkForUpdate () {

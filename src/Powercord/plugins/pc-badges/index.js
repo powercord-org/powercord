@@ -1,7 +1,7 @@
 const { resolve } = require('path');
 const { get } = require('powercord/http');
 const Plugin = require('powercord/Plugin');
-const { inject } = require('powercord/injector');
+const { inject, uninject } = require('powercord/injector');
 const { createElement } = require('powercord/util');
 const { React, ReactDOM, getModuleByDisplayName } = require('powercord/webpack');
 
@@ -12,6 +12,13 @@ module.exports = class Badges extends Plugin {
   start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchUserComponent();
+  }
+
+  unload () {
+    this.unloadCSS();
+    uninject('pc-badges-fetch');
+    uninject('pc-badges-mount');
+    uninject('pc-badges-update');
   }
 
   _patchUserComponent () {

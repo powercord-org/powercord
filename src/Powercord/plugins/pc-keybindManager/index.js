@@ -19,6 +19,14 @@ module.exports = class KeybindManager extends Plugin {
     });
   }
 
+  unload () {
+    this.start(); // pls don't laugh
+    powercord
+      .pluginManager
+      .get('pc-settings')
+      .unregister('pc-keybinds');
+  }
+
   // @see https://github.com/electron/electron/blob/master/docs/api/accelerator.md for keybind syntax
   register (id, name, description, func, defaultKeybind) {
     if (this.keybinds.find(k => k.id === id)) {

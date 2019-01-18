@@ -183,8 +183,8 @@ module.exports = class PluginManager {
       pluginID
     ]);
 
-    if (plugin.hotReload) {
-      this.unload();
+    if (plugin.manifest.hotReload) {
+      this.unload(pluginID);
     } else {
       this.requiresReload = true;
     }

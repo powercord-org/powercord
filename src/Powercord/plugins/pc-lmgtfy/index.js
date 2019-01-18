@@ -15,4 +15,11 @@ module.exports = class LMGTFY extends Plugin {
         })
       );
   }
+
+  unload () {
+    powercord
+      .pluginManager
+      .get('pc-commands')
+      .unregister('lmgtfy');
+  }
 };

@@ -15,4 +15,11 @@ module.exports = class Mock extends Plugin {
         })
       );
   }
+
+  unload () {
+    powercord
+      .pluginManager
+      .get('pc-commands')
+      .unregister('mock');
+  }
 };
