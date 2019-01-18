@@ -21,7 +21,7 @@ const {
 
 const { ContextMenu: { Submenu } } = require('powercord/components');
 
-const { inject } = require('powercord/injector');
+const { inject, uninject } = require('powercord/injector');
 const { open: openModal } = require('powercord/modal');
 
 const { writeFile } = require('fs').promises;
@@ -613,5 +613,23 @@ module.exports = class EmojiUtility extends Plugin {
           }
         }
       );
+  }
+
+  unload () {
+    this.unloadCSS();
+
+    uninject('pc-emojiUtility-emojiContext');
+    uninject('pc-emojiUtility-imageContext');
+
+    const { pluginManager } = powercord;
+
+    const pcCommands = pluginManager.get('pc-commands');
+    pcCommands.unregister('findemote');
+    pcCommands.unregister('massemote');
+    pcCommands.unregister('saveemote');
+    pcCommands.unregister('cloneemote');
+
+    const pcSettings = pluginManager.get('pc-settings');
+    pcSettings.unregister('pc-emojiUtility');
   }
 };
