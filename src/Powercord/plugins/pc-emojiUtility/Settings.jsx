@@ -49,14 +49,15 @@ module.exports = class EmojiUtilitySettings extends React.Component {
           Use embeds
         </SwitchItem>
 
-        {!settings.useEmbeds && <SwitchItem
+        {!settings.useEmbeds && (
+          <SwitchItem
             note='Whether the message for the findemote command should contain the link to the guild the emote is in.'
             value={settings.displayLink}
             onChange={() => set('displayLink')}
           >
             Display link
           </SwitchItem>
-        }
+        )}
 
         <TextInput
           note='The directory emotes will be saved to when using the saveemote command'
@@ -97,7 +98,8 @@ module.exports = class EmojiUtilitySettings extends React.Component {
           Use current server when cloning emotes
         </SwitchItem>
 
-        {!settings.defaultCloneIdUseCurrent && <TextInput
+        {!settings.defaultCloneIdUseCurrent && (
+          <TextInput
             note='The default server id which will be used to save cloned emotes with the cloneemote command if a server argument is not present'
             defaultValue={settings.defaultCloneGuildId}
             style={!this.state.isCloneIdValid ? {borderColor: 'red'} : {}}
@@ -119,7 +121,7 @@ module.exports = class EmojiUtilitySettings extends React.Component {
           >
             Default server ID when cloning emotes
           </TextInput>
-        }
+        )}
       </div>
     );
   }
