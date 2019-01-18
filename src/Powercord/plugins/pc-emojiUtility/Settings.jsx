@@ -16,7 +16,7 @@ module.exports = class EmojiUtilitySettings extends React.Component {
       includeIdForSavedEmojis: props.settings.get('includeIdForSavedEmojis', true),
       defaultCloneId: props.settings.get('defaultCloneId', null),
       defaultCloneIdUseCurrent: props.settings.get('defaultCloneIdUseCurrent', false),
-      
+
       isFilePathValid: props.settings.get('filePath') ? existsSync(props.settings.get('filePath')) : true,
       initialFilePathValue: props.settings.get('filePath'),
 
@@ -62,15 +62,15 @@ module.exports = class EmojiUtilitySettings extends React.Component {
         <TextInput
           note='The directory emotes will be saved to when using the saveemote command'
           defaultValue={settings.filePath}
-          style={!this.state.isFilePathValid ? {borderColor: 'red'} : {}}
+          style={!this.state.isFilePathValid ? { borderColor: 'red' } : {}}
           onChange={(value) => {
-            if(value.length === 0 || (existsSync(value) && lstatSync(value).isDirectory())) {
+            if (value.length === 0 || (existsSync(value) && lstatSync(value).isDirectory())) {
               this.setState({
                 isFilePathValid: true
               });
 
               set('filePath', value.length === 0 ? null : value);
-            }else{
+            } else {
               this.setState({
                 isFilePathValid: false
               });
@@ -102,15 +102,15 @@ module.exports = class EmojiUtilitySettings extends React.Component {
           <TextInput
             note='The default server id which will be used to save cloned emotes with the cloneemote command if a server argument is not present'
             defaultValue={settings.defaultCloneGuildId}
-            style={!this.state.isCloneIdValid ? {borderColor: 'red'} : {}}
+            style={!this.state.isCloneIdValid ? { borderColor: 'red' } : {}}
             onChange={(value) => {
-              if(value.length === 0 || getGuild(value)) {
+              if (value.length === 0 || getGuild(value)) {
                 this.setState({
                   isCloneIdValid: true
                 });
 
                 set('defaultCloneId', value.length === 0 ? null : value);
-              }else{
+              } else {
                 this.setState({
                   isCloneIdValid: false
                 });
