@@ -16,6 +16,14 @@ module.exports = class Commands extends Plugin {
     return powercord.settings.get('prefix', '.');
   }
 
+  get customCommands () {
+    return [ ...this.commands.values() ]
+      .map(command => ({
+        command: command.name,
+        description: command.description
+      }));
+  }
+
   async start () {
     monkeypatchMessages.call(this);
     injectAutocomplete.call(this);
