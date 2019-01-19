@@ -24,7 +24,7 @@ module.exports = class Translate extends Plugin {
     const MessageContextMenu = getModuleByDisplayName('messagecontextmenu');
     inject('pc-translate-context', MessageContextMenu.prototype, 'render', function (args, res) { // eslint-disable-line func-names
       const setText = async (opts) => {
-        const message = this.props.target.closest('.pc-containerCozyBounded'); // eslint-disable-line no-invalid-this
+        const message = this.props.target.closest('.pc-containerCozyBounded');
 
         message.style.transition = '0.2s';
         message.style.opacity = '0';
