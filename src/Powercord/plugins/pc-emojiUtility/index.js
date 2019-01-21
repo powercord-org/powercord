@@ -11,7 +11,9 @@ const {
   constants: {
     Routes,
     APP_URL_PREFIX,
-    Permissions // eslint-disable-line no-shadow
+    Permissions, // eslint-disable-line no-shadow
+    EMOJI_RE,
+    EMOJI_MAX_LENGTH
   },
   messages: {
     createBotMessage,
@@ -39,6 +41,7 @@ const { getGuilds } = getModule([ 'getGuilds' ]);
 const { getChannel } = getModule([ 'getChannel' ]);
 const { getGuildPermissions } = getModule([ 'getGuildPermissions' ]);
 const { transitionTo } = getModule([ 'transitionTo' ]);
+const { getCurrentUser } = getModule([ 'getCurrentUser' ]);
 
 const { clipboard } = require('electron');
 
@@ -197,32 +200,51 @@ module.exports = class EmojiUtility extends Plugin {
             emoji = _this.createFakeEmoji(matcher[1], target.alt.substring(1, target.alt.length - 1), target.src);
           }
 
+          const onGuildClick = async (guild) => {
+            if (!guild) {
+              if (_this.settings.get('defaultCloneIdUseCurrent')) {
+                guild = getGuild(getChannel(getChannelId()).guild_id);
+              } else if (_this.settings.get('defaultCloneId')) {
+                guild = getGuild(_this.settings.get('defaultCloneId'));
+                if (!guild) {
+                  return _this.replyError('You are no longer in your default server, please update your settings');
+                }
+              }
+
+              if (guild) {
+                if (!_this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
+                  return _this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
+                }
+              } else {
+                return _this.replyError('You do not have a default server, please update your settings');
+              }
+            }
+
+            try {
+              await uploadEmoji(guild.id, await _this.getImageEncoded(emoji.url), emoji.name);
+
+              _this.replySuccess(`Cloned emote ${_this.getFullEmoji(emoji)} to **${guild.name}**`);
+            } catch (error) {
+              console.error(error);
+
+              _this.replyError('Failed to clone emote, check the console for more information', {
+                description: 'Failed to clone emote',
+                footer: {
+                  text: 'Check the console for more information'
+                }
+              });
+            }
+          };
+
           const getCloneableGuilds = () => {
             const items = [];
             const clonableGuilds = Object.values(getGuilds()).filter(guild => _this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
-
-            const onClick = async (guild) => {
-              try {
-                await uploadEmoji(guild.id, await _this.getImageEncoded(emoji.url), emoji.name);
-
-                _this.replySuccess(`Cloned emote ${_this.getFullEmoji(emoji)} to **${guild.name}**`);
-              } catch (error) {
-                console.error(error);
-
-                _this.replyError('Failed to clone emote, check the console for more information', {
-                  description: 'Failed to clone emote',
-                  footer: {
-                    text: 'Check the console for more information'
-                  }
-                });
-              }
-            };
 
             for (const guild of clonableGuilds) {
               items.push({
                 type: 'button',
                 name: guild.name,
-                onClick: () => onClick(guild)
+                onClick: () => onGuildClick(guild)
               });
             }
 
@@ -236,6 +258,7 @@ module.exports = class EmojiUtility extends Plugin {
               type: 'submenu',
               name: 'Clone',
               hint: 'to',
+              onClick: () => onGuildClick(null),
               getItems: getCloneableGuilds
             });
 
@@ -309,46 +332,65 @@ module.exports = class EmojiUtility extends Plugin {
     inject('pc-emojiUtility-imageContext', MessageContextMenu.prototype, 'render', function (args, res) { // eslint-disable-line func-names
       const { target } = this.props;
       if (target.parentElement.classList.contains('pc-embedWrapper')) {
+        const onGuildClick = (guild) => {
+          if (_this.settings.get('defaultCloneIdUseCurrent')) {
+            guild = getGuild(getChannel(getChannelId()).guild_id);
+          } else if (_this.settings.get('defaultCloneId')) {
+            guild = getGuild(_this.settings.get('defaultCloneId'));
+            if (!guild) {
+              return _this.replyError('You are no longer in your default server, please update your settings');
+            }
+          }
+
+          if (guild) {
+            if (!_this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
+              return _this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
+            }
+          } else {
+            return _this.replyError('You do not have a default server, please update your settings');
+          }
+
+          openModal(() => React.createElement(EmojiNameModal, {
+            onConfirm: async (name) => {
+              name = name.replace(EMOJI_RE, '').substr(0, EMOJI_MAX_LENGTH);
+
+              if (name.length < 2) {
+                _this.replyError('Please enter an emote name with 2 or more valid characters, valid characters are **a-z**, **0-9** and **_**');
+
+                return;
+              }
+
+              try {
+                await uploadEmoji(guild.id, await _this.getImageEncoded(target.src), name);
+
+                _this.replySuccess(`Created emote by the name of **${name}** in **${guild.name}**`);
+              } catch (error) {
+                if (error.body && error.body.image) {
+                  _this.replyError(error.body.image[0]);
+                } else {
+                  console.error(error);
+
+                  _this.replyError('Failed to create emote, check the console for more information', {
+                    description: 'Failed to create emote',
+                    footer: {
+                      text: 'Check the console for more information'
+                    }
+                  });
+                }
+              }
+            }
+          }));
+        };
+
         const getCreateableGuilds = () => {
           const items = [];
           const createableGuilds = Object.values(getGuilds()).filter(guild => _this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
-
-          const onClick = (guild) => {
-            openModal(() => React.createElement(EmojiNameModal, {
-              onConfirm: async (name) => {
-                if (!name || (name.length < 2 || name.length > 32)) {
-                  _this.replyError('Please enter an emote name with more than 2 and less than 32 characters');
-
-                  return;
-                }
-
-                try {
-                  await uploadEmoji(guild.id, await _this.getImageEncoded(target.src), name);
-
-                  _this.replySuccess(`Created emote by the name of **${name}** in **${guild.name}**`);
-                } catch (error) {
-                  if (error.body && error.body.image) {
-                    _this.replyError(error.body.image[0]);
-                  } else {
-                    console.error(error);
-
-                    _this.replyError('Failed to create emote, check the console for more information', {
-                      description: 'Failed to create emote',
-                      footer: {
-                        text: 'Check the console for more information'
-                      }
-                    });
-                  }
-                }
-              }
-            }));
-          };
 
           for (const guild of createableGuilds) {
             items.push({
               type: 'button',
               name: guild.name,
-              onClick: () => onClick(guild)
+              onClick: () => onGuildClick(guild)
             });
           }
 
@@ -362,6 +404,7 @@ module.exports = class EmojiUtility extends Plugin {
             type: 'submenu',
             hint: 'in',
             name: 'Create',
+            onClick: () => onGuildClick(null),
             getItems: getCreateableGuilds
           });
 
@@ -445,16 +488,7 @@ module.exports = class EmojiUtility extends Plugin {
         (args) => {
           const argument = args.join(' ').toLowerCase();
           if (argument.length === 0) {
-            return {
-              send: false,
-              result: this.settings.get('useEmbeds')
-                ? {
-                  type: 'rich',
-                  description: 'Please provide an emote name',
-                  color: 16711680
-                }
-                : 'Please provide an emote name'
-            };
+            return this.replyError('Please provide an emote name');
           }
 
           const emojis = Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis);
@@ -467,6 +501,13 @@ module.exports = class EmojiUtility extends Plugin {
                 send: false,
                 result: `That is more than 2000 characters, let me send that locally instead!\n${emojisAsString}`
               };
+            }
+
+            if (getCurrentUser().premiumType == 0) {
+              return {
+                send: false,
+                result: `Looks like you do not have nitro, let me send that locally instead!\n${emojisAsString}`
+              }
             }
 
             return {
