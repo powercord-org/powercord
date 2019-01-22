@@ -65,7 +65,7 @@ module.exports = class Modal extends React.Component {
         SpotifyPlayer.checkLibrary(this.state.currentItem.id).then((r) => {
           this.setState({ inLibrary: r.body[0] });
         });
-      }, 5000);
+      }, 2000);
     }
   }
 
