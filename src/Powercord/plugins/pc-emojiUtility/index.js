@@ -360,9 +360,10 @@ module.exports = class EmojiUtility extends Plugin {
     });
 
     const EmojiNameModal = require('./EmojiNameModal.jsx');
-    inject('pc-emojiUtility-imageContext', MessageContextMenu.prototype, 'render', function (args, res) { // eslint-disable-line func-names
+    const handleImageContext = function (args, res) {
       const { target } = this.props;
-      if (target.parentElement.classList.contains('pc-embedWrapper')) {
+
+      if (target.tagName.toLowerCase() === 'img' && target.parentElement.classList.contains('pc-imageWrapper')) {
         const onGuildClick = (guild) => {
           if (!guild) {
             if (_this.settings.get('defaultCloneIdUseCurrent')) {
@@ -450,6 +451,14 @@ module.exports = class EmojiUtility extends Plugin {
           return features;
         };
 
+        /* NativeContextMenu's children is a single object, turn it in to an array to be able to push */
+        if (typeof res.props.children === 'object') {
+          const children = [];
+          children.push(res.props.children);
+
+          res.props.children = children;
+        }
+
         res.props.children.push(
           React.createElement(Submenu, {
             name: 'Emote',
@@ -460,7 +469,12 @@ module.exports = class EmojiUtility extends Plugin {
       }
 
       return res;
-    });
+    };
+
+    inject('pc-emojiUtility-imageContext', MessageContextMenu.prototype, 'render', handleImageContext); // eslint-disable-line func-names
+
+    const NativeContextMenu = getModuleByDisplayName('NativeContextMenu');
+    inject('pc-emojiUtility-nativeContext', NativeContextMenu.prototype, 'render', handleImageContext); // eslint-disable-line func-names
 
     powercord
       .pluginManager
@@ -707,6 +721,7 @@ module.exports = class EmojiUtility extends Plugin {
 
     uninject('pc-emojiUtility-emojiContext');
     uninject('pc-emojiUtility-imageContext');
+    uninject('pc-emojiUtility-nativeContext');
 
     const { pluginManager } = powercord;
 
