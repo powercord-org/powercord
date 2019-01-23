@@ -9,20 +9,13 @@ module.exports = class EmojiUtilitySettings extends React.Component {
     super();
 
     this.settings = props.settings;
-    this.state = {
-      useEmbeds: props.settings.get('useEmbeds', true),
-      displayLink: props.settings.get('displayLink', true),
-      filePath: props.settings.get('filePath', null),
-      includeIdForSavedEmojis: props.settings.get('includeIdForSavedEmojis', true),
-      defaultCloneId: props.settings.get('defaultCloneId', null),
-      defaultCloneIdUseCurrent: props.settings.get('defaultCloneIdUseCurrent', false),
-
+    this.state = Object.assign({
       isFilePathValid: props.settings.get('filePath') ? existsSync(props.settings.get('filePath')) : true,
-      initialFilePathValue: props.settings.get('filePath'),
+      initialFilePathValue: props.settings.get('filePath') ? props.settings.get('filePath') : null,
 
       isCloneIdValid: props.settings.get('defaultCloneId') ? getGuild(props.settings.get('defaultCloneId')) : true,
       initialCloneIdValue: props.settings.get('defaultCloneId') ? props.settings.get('defaultCloneId') : null
-    };
+    }, this.settings.config);
   }
 
   render () {

@@ -185,6 +185,14 @@ module.exports = class EmojiUtility extends Plugin {
   start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
 
+    /* Default settings */
+    this.settings.set('useEmbeds', this.settings.get('useEmbeds', true));
+    this.settings.set('displayLink', this.settings.get('displayLink', true));
+    this.settings.set('filePath', this.settings.get('filePath', null));
+    this.settings.set('includeIdForSavedEmojis', this.settings.get('includeIdForSavedEmojis', true));
+    this.settings.set('defaultCloneId', this.settings.get('defaultCloneId', null));
+    this.settings.set('defaultCloneIdUseCurrent', this.settings.get('defaultCloneIdUseCurrent', false));
+
     const _this = this;
 
     const MessageContextMenu = getModuleByDisplayName('MessageContextMenu');
@@ -503,11 +511,11 @@ module.exports = class EmojiUtility extends Plugin {
               };
             }
 
-            if (getCurrentUser().premiumType == 0) {
+            if (getCurrentUser().premiumType === 0) {
               return {
                 send: false,
                 result: `Looks like you do not have nitro, let me send that locally instead!\n${emojisAsString}`
-              }
+              };
             }
 
             return {
