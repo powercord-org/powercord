@@ -6,8 +6,6 @@ const { asyncArray: { map } } = require('powercord/util');
 const { Confirm } = require('powercord/components/modal');
 const Plugin = require('./Plugin');
 
-const awaitingReload = [];
-
 module.exports = class Installed extends React.Component {
   constructor (props) {
     super(props);
@@ -47,7 +45,6 @@ module.exports = class Installed extends React.Component {
         {plugins.map(plugin => <Plugin
           id={plugin.pluginID}
           installed={true}
-          awaitingReload={awaitingReload.includes(plugin.pluginID)}
           enabled={powercord.pluginManager.isEnabled(plugin.pluginID)}
           enforced={powercord.pluginManager.isEnforced(plugin.pluginID)}
           hidden={powercord.settings.get('hiddenPlugins', []).includes(plugin.pluginID)}
@@ -59,7 +56,6 @@ module.exports = class Installed extends React.Component {
           onShow={() => this.show(plugin.pluginID)}
           onHide={() => this.hide(plugin.pluginID)}
 
-          onInstall={() => this.install(plugin.pluginID)}
           onUninstall={() => this.uninstall(plugin.pluginID)}
         />)}
       </div>
@@ -96,6 +92,16 @@ module.exports = class Installed extends React.Component {
     }
   }
 
+  async uninstall (pluginID) {
+    const willUninstall = (await powercord.pluginManager.resolveDependents(pluginID)).filter(p => powercord.pluginManager.isInstalled(p));
+    const plugins = await map(willUninstall, async p => ({
+      name: await powercord.pluginManager.getPluginName(p),
+      id: p
+    }));
+
+    openModal(() => this._renderInstall(pluginID, plugins, true));
+  }
+
   show (pluginID) {
     powercord.pluginManager.show(pluginID);
     this.forceUpdate();
@@ -103,18 +109,6 @@ module.exports = class Installed extends React.Component {
 
   hide (pluginID) {
     powercord.pluginManager.hide(pluginID);
-    this.forceUpdate();
-  }
-
-  async install (pluginID) {
-    await powercord.pluginManager.install(pluginID);
-    awaitingReload.push(pluginID);
-    this.forceUpdate();
-  }
-
-  async uninstall (pluginID) {
-    await powercord.pluginManager.uninstall(pluginID);
-    awaitingReload.push(pluginID);
     this.forceUpdate();
   }
 
@@ -130,8 +124,8 @@ module.exports = class Installed extends React.Component {
           func = powercord.pluginManager.disable.bind(powercord.pluginManager);
         }
 
-        func(plugin);
         plugins.forEach(p => func(p.id));
+        func(plugin);
 
         this.forceUpdate();
         closeModal();
@@ -140,6 +134,41 @@ module.exports = class Installed extends React.Component {
     >
       <div className='powercord-plugins-modal'>
         <span>This will also {disable ? 'disable' : 'enable'} the following plugins:</span>
+        <ul>
+          {plugins.map(p => <li key={p.id}>{p.name}</li>)}
+        </ul>
+      </div>
+    </Confirm>;
+  }
+
+  _renderInstall (plugin, plugins, uninstall = false) {
+    const s = plugins.length > 1 ? 's' : '';
+
+    return <Confirm
+      red={uninstall}
+      header={uninstall ? `Uninstall plugin${s}` : `Install plugin${s}`}
+      confirmText={uninstall ? `Uninstall plugin${s}` : `Install plugin${s}`}
+      cancelText='Cancel'
+      onConfirm={async () => {
+        closeModal();
+
+        let func = powercord.pluginManager.install.bind(powercord.pluginManager);
+        if (uninstall) {
+          func = powercord.pluginManager.uninstall.bind(powercord.pluginManager);
+        }
+
+        // We can't use asyncArray because we cannot run multiple tasks as asyncArray does in this case.
+        for (let i = 0; i < plugins.length; i++) {
+          await func(plugins[i].id);
+        }
+        await func(plugin);
+        this.forceUpdate();
+      }}
+      onCancel={closeModal}
+    >
+      <div className='powercord-plugins-modal'>
+        <span>Are you sure you want to {uninstall ? 'uninstall' : 'install'} this plugin?</span>
+        {plugins.length > 0 && <span>This will also {uninstall ? 'uninstall' : 'install'}:</span>}
         <ul>
           {plugins.map(p => <li key={p.id}>{p.name}</li>)}
         </ul>

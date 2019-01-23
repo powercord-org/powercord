@@ -56,6 +56,11 @@
   }
 
   &-modal {
+    span + span {
+      margin-top: 20px;
+      display: block;
+    }
+
     ul {
       margin-top: 25px;
       padding-left: 20px;

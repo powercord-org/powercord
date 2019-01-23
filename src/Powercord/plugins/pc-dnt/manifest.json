@@ -4,6 +4,5 @@
   "description": "Blocks all requests to Discord analytics endpoints",
   "author": "adam & rauenzi",
   "license": "MIT",
-  "repo": null,
-  "hotReload": false
+  "repo": null
 }

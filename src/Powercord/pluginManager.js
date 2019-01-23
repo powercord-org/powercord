@@ -1,32 +1,25 @@
 const { resolve } = require('path');
 const { readdirSync } = require('fs');
-const { getOwnerInstance, asyncArray: { filter, forEach } } = require('powercord/util');
+const { get } = require('powercord/http');
+const { rmdirRf } = require('powercord/util');
+const { asyncArray: { forEach } } = require('powercord/util');
+
+const { promisify } = require('util');
+const cp = require('child_process');
+const exec = promisify(cp.exec);
 
 module.exports = class PluginManager {
   constructor () {
-    this._requiresReload = false;
     this.pluginDir = resolve(__dirname, 'plugins');
-    this.ensuredPlugins = [];
+    this.plugins = new Map();
 
     this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license', 'repo' ];
     this.enforcedPlugins = [ 'pc-styleManager', 'pc-settings', 'pc-pluginManager', 'pc-keybindManager' ];
   }
 
-  get requiresReload () {
-    return this._requiresReload;
-  }
-
-  set requiresReload (value) {
-    this._requiresReload = value;
-    const title = document.querySelector('.pc-titleWrapper');
-    if (title) {
-      getOwnerInstance(title).forceUpdate();
-    }
-  }
-
   // Getters
-  get (plugin) {
-    return this.plugins.get(plugin);
+  get (pluginID) {
+    return this.plugins.get(pluginID);
   }
 
   async getPluginName (pluginID) {
@@ -35,7 +28,12 @@ module.exports = class PluginManager {
       return plugin.manifest.name;
     }
     // API request
-    return 'uuuuuuh';
+    const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
+    try {
+      return (await get(`${baseUrl}/api/plugins/${pluginID}`).then(r => r.body)).manifest.name || void 0;
+    } catch (e) {
+      return void 0;
+    }
   }
 
   getPlugins () {
@@ -48,6 +46,10 @@ module.exports = class PluginManager {
 
   getAllPlugins () {
     return Array.from(this.plugins.keys());
+  }
+
+  isInstalled (plugin) {
+    return this.plugins.has(plugin);
   }
 
   isEnabled (plugin) {
@@ -63,7 +65,7 @@ module.exports = class PluginManager {
       return false;
     }
 
-    const dependents = this.resolveDependentsSync(plugin);
+    const dependents = this.resolveDependents(plugin);
     return dependents.filter(p => this.isEnforced(p, false)).length !== 0;
   }
 
@@ -80,52 +82,110 @@ module.exports = class PluginManager {
     return deps.filter((d, p) => deps.indexOf(d) === p);
   }
 
-  async resolveDependents (plugin, dept = []) {
-    const dependents = await filter(this.getAllPlugins(), async p => (await this.getDependencies(p)).includes(plugin));
-    await forEach(dependents, async dpt => {
-      if (!dept.includes(dpt)) {
-        dept.push(dpt);
-        dept.push(...(await this.resolveDependents(dpt, dept)));
-      }
-    });
-    return dept.filter((d, p) => dept.indexOf(d) === p);
-  }
-
-  async getDependencies (plugin) {
-    if (plugin.startsWith('pc-')) {
-      return this.get(plugin).manifest.dependencies;
-    }
-    // request to API
-    return [];
-  }
-
-  resolveDependentsSync (plugin, dept = []) {
-    const dependents = this.getAllPlugins().filter(p => (this.getDependenciesSync(p)).includes(plugin));
+  resolveDependents (plugin, dept = []) {
+    const dependents = this.getAllPlugins().filter(p => this.getDependenciesSync(p).includes(plugin));
     dependents.forEach(dpt => {
       if (!dept.includes(dpt)) {
         dept.push(dpt);
-        dept.push(...(this.resolveDependentsSync(dpt, dept)));
+        dept.push(...this.resolveDependents(dpt, dept));
       }
     });
     return dept.filter((d, p) => dept.indexOf(d) === p);
   }
 
-  getDependenciesSync (plugin) {
-    if (plugin.startsWith('pc-')) {
-      return this.get(plugin).manifest.dependencies;
+  async getDependencies (pluginID) {
+    const plugin = this.get(pluginID);
+    if (plugin) {
+      return plugin.manifest.dependencies;
+    }
+
+    const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
+    try {
+      return (await get(`${baseUrl}/api/plugins/${pluginID}`).then(r => r.body)).manifest.dependencies || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  getDependenciesSync (pluginID) {
+    const plugin = this.get(pluginID);
+    if (plugin) {
+      return plugin.manifest.dependencies;
     }
     // Just return empty array
     return [];
   }
 
-  // Load/enable/install/hide shit
+  // Mount/load/enable/install/hide shit
+  mount (pluginID) {
+    let manifest;
+    try {
+      manifest = Object.assign({
+        appMode: 'app',
+        dependencies: []
+      }, require(resolve(this.pluginDir, pluginID, 'manifest.json')));
+    } catch (e) {
+      return console.error('%c[Powercord]', 'color: #257dd4', `Plugin ${pluginID} doesn't have a valid manifest - Skipping`);
+    }
+
+    if (!this.manifestKeys.every(key => manifest.hasOwnProperty(key))) {
+      return console.error('%c[Powercord]', 'color: #257dd4', `Plugin "${pluginID}" doesn't have a valid manifest - Skipping`);
+    }
+
+    try {
+      const PluginClass = require(resolve(this.pluginDir, pluginID));
+
+      Object.defineProperties(PluginClass.prototype, {
+        pluginID: {
+          get: () => pluginID,
+          set: () => {
+            throw new Error('Plugins cannot update their ID at runtime!');
+          }
+        },
+        manifest: {
+          get: () => manifest,
+          set: () => {
+            throw new Error('Plugins cannot update manifest at runtime!');
+          }
+        }
+      });
+
+      this.plugins.set(pluginID, new PluginClass());
+    } catch (e) {
+      console.error('%c[Powercord]', 'color: #257dd4', `An error occurred while initializing "${pluginID}"!`, e);
+    }
+  }
+
+  async remount (pluginID) {
+    await this.unmount(pluginID);
+    this.mount(pluginID);
+    this.plugins.get(pluginID)._start();
+  }
+
+  async unmount (pluginID) {
+    const plugin = this.get(pluginID);
+    if (!plugin) {
+      throw new Error(`Tried to unmount a non installed plugin (${plugin})`);
+    }
+    if (plugin.ready) {
+      await plugin._unload();
+    }
+
+    Object.keys(require.cache).forEach(key => {
+      if (key.includes(pluginID)) {
+        delete require.cache[key];
+      }
+    });
+    this.plugins.delete(pluginID);
+  }
+
   load (pluginID) {
     const plugin = this.get(pluginID);
     if (!plugin) {
       throw new Error(`Tried to load a non installed plugin (${plugin})`);
     }
     if (plugin.ready) {
-      throw new Error(`Tried to load an already loaded plugin (${plugin})`);
+      return console.error('%c[Powercord]', 'color: #257dd4', `Tried to load an already loaded plugin (${pluginID})`);
     }
 
     plugin._start();
@@ -137,7 +197,7 @@ module.exports = class PluginManager {
       throw new Error(`Tried to unload a non installed plugin (${plugin})`);
     }
     if (!plugin.ready) {
-      throw new Error(`Tried to unload a non loaded plugin (${plugin})`);
+      return console.error('%c[Powercord]', 'color: #257dd4', `Tried to unload a non loaded plugin (${plugin})`);
     }
 
     plugin._unload();
@@ -183,34 +243,30 @@ module.exports = class PluginManager {
       pluginID
     ]);
 
-    if (plugin.manifest.hotReload) {
-      this.unload(pluginID);
-    } else {
-      this.requiresReload = true;
-    }
+    this.unload(pluginID);
   }
 
-  install (plugin) {
-    this.requiresReload = true;
-    console.log('soon:tm:');
+  async install (pluginID) {
+    await exec(`git clone https://github.com/powercord-org/${pluginID}`, this.pluginDir);
+    this.mount(pluginID);
   }
 
-  uninstall (plugin) {
-    if (this.enforcedPlugins.includes(plugin)) {
-      throw new Error(`You cannot uninstall an enforced plugin. (Tried to uninstall ${plugin})`);
+  async uninstall (pluginID) {
+    if (this.enforcedPlugins.includes(pluginID)) {
+      throw new Error(`You cannot uninstall an enforced plugin. (Tried to uninstall ${pluginID})`);
     }
 
-    if (plugin.startsWith('pc-')) {
-      throw new Error(`You cannot uninstall an internal plugin. (Tried to uninstall ${plugin})`);
+    if (pluginID.startsWith('pc-')) {
+      throw new Error(`You cannot uninstall an internal plugin. (Tried to uninstall ${pluginID})`);
     }
 
-    this.requiresReload = true;
-    console.log('soon:tm:');
+    await this.unmount(pluginID);
+    await rmdirRf(resolve(this.pluginDir, pluginID));
   }
 
-  // Start + internals
+  // Start
   startPlugins () {
-    this._loadPlugins();
+    readdirSync(this.pluginDir).forEach(filename => this.mount(filename));
     for (const plugin of [ ...this.plugins.values() ]) {
       if (powercord.settings.get('disabledPlugins', []).includes(plugin.pluginID)) {
         continue;
@@ -226,63 +282,5 @@ module.exports = class PluginManager {
         this.plugins.delete(plugin);
       }
     }
-  }
-
-  ensureDepEnabled (plugin, ensured = []) {
-    if (!ensured.includes(plugin)) { // Prevent cyclic loops
-      ensured.push(plugin);
-      plugin.manifest.dependencies.forEach(dep => {
-        this.enable(dep);
-        this.ensureDepEnabled(dep, ensured);
-      });
-    }
-  }
-
-  _loadPlugins () {
-    const plugins = {};
-    readdirSync(this.pluginDir)
-      .forEach(filename => {
-        const moduleName = filename.split('.')[0];
-
-        let manifest;
-        try {
-          manifest = Object.assign({
-            appMode: 'app',
-            dependencies: [],
-            hotReload: true
-          }, require(resolve(this.pluginDir, filename, 'manifest.json')));
-        } catch (e) {
-          return console.error('%c[Powercord]', 'color: #257dd4', `Plugin ${moduleName} doesn't have a valid manifest - Skipping`);
-        }
-
-        if (!this.manifestKeys.every(key => manifest.hasOwnProperty(key))) {
-          return console.error('%c[Powercord]', 'color: #257dd4', `Plugin "${moduleName}" doesn't have a valid manifest - Skipping`);
-        }
-
-        try {
-          const PluginClass = require(resolve(this.pluginDir, filename));
-
-          Object.defineProperties(PluginClass.prototype, {
-            pluginID: {
-              get: () => moduleName,
-              set: () => {
-                throw new Error('Plugins cannot update their ID at runtime!');
-              }
-            },
-            manifest: {
-              get: () => manifest,
-              set: () => {
-                throw new Error('Plugins cannot update manifest at runtime!');
-              }
-            }
-          });
-
-          plugins[moduleName] = new PluginClass();
-        } catch (e) {
-          console.error('%c[Powercord]', 'color: #257dd4', `An error occurred while initializing "${moduleName}"!`, e);
-        }
-      });
-
-    this.plugins = new Map(Object.entries(plugins));
   }
 };

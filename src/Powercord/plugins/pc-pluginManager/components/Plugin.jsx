@@ -14,7 +14,7 @@ module.exports = class Plugin extends React.Component {
 
   render () {
     const {
-      id, enforced, installed, enabled, hidden, awaitingReload, manifest, // Properties
+      id, enforced, installed, enabled, hidden, manifest, // Properties
       onEnable, onDisable, onInstall, onUninstall, onShow, onHide // Events
     } = this.props;
     const versionInt = parseInt(manifest.version.replace(/\./g, ''));
@@ -23,13 +23,11 @@ module.exports = class Plugin extends React.Component {
       <div className='powercord-plugin-header'>
         <h4>{manifest.name}</h4>
         {installed &&
-        <EnableComponent
-          enforced={enforced}
-          enabled={enabled}
-          onEnable={onEnable}
-          onDisable={onDisable}
-          awaitingReload={awaitingReload}
-        />}
+        <Tooltip text={enforced ? 'You can\'t disable this plugin' : (enabled ? 'Disable' : 'Enable')} position='top'>
+          <div>
+            <Switch value={enabled} onChange={enabled ? onDisable : onEnable} disabled={enforced}/>
+          </div>
+        </Tooltip>}
       </div>
       <div className='powercord-plugin-container'>
         <div className='author'>
@@ -71,27 +69,26 @@ module.exports = class Plugin extends React.Component {
         </Button>
 
         <div className='btn-group'>
-          <Button
+          {this.props.installed && <Button
             onClick={() => hidden ? onShow() : onHide()}
             look={Button.Looks.OUTLINED}
             color={hidden ? Button.Colors.GREEN : Button.Colors.RED}
             size={Button.Sizes.SMALL}
           >
             {hidden ? 'Show' : 'Hide'}
-          </Button>
-          {!id.startsWith('pc-') && (awaitingReload
-            ? <Button disabled className={Button.Colors.YELLOW}>Awaiting Reload</Button>
-            : <Button
-              disabled={this.state.installing}
-              onClick={() => this.process(installed ? onInstall : onUninstall)}
-              look={Button.Looks.FILLED}
-              color={installed ? Button.Colors.RED : Button.Colors.GREEN}
-              size={Button.Sizes.SMALL}
-            >
-              {this.state.installing
-                ? <Spinner type='pulsingEllipsis'/>
-                : (installed ? 'Uninstall' : 'Install')}
-            </Button>)}
+          </Button>}
+
+          {!id.startsWith('pc-') && <Button
+            disabled={this.state.installing}
+            onClick={() => this.process(installed ? onUninstall : onInstall)}
+            look={Button.Looks.FILLED}
+            color={installed ? Button.Colors.RED : Button.Colors.GREEN}
+            size={Button.Sizes.SMALL}
+          >
+            {this.state.installing
+              ? <Spinner type='pulsingEllipsis'/>
+              : (installed ? 'Uninstall' : 'Install')}
+          </Button>}
         </div>
       </div>
     </div>;
@@ -102,16 +99,4 @@ module.exports = class Plugin extends React.Component {
     await func();
     this.setState({ installing: false });
   }
-};
-
-const EnableComponent = ({ enforced, awaitingReload, enabled, onEnable, onDisable }) => {
-  const tooltip = awaitingReload
-    ? 'Awaiting Reload'
-    : (enforced ? 'You can\'t disable this plugin' : (enabled ? 'Disable' : 'Enable'));
-
-  return <Tooltip text={tooltip} position='top'>
-    <div>
-      <Switch value={enabled} onChange={enabled ? onDisable : onEnable} disabled={enforced || awaitingReload}/>
-    </div>
-  </Tooltip>;
 };

@@ -4,6 +4,5 @@
   "description": "Powercord's command manager",
   "author": "Powercord Team",
   "license": "MIT",
-  "repo": null,
-  "hotReload": false
+  "repo": null
 }

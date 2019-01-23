@@ -6,7 +6,7 @@ module.exports = async function injectAutocomplete () {
 
   const plugins = [ ...powercord.pluginManager.plugins.keys() ];
   while (!plugins.every(plugin =>
-    powercord.pluginManager.get(plugin).ready
+    (powercord.pluginManager.get(plugin) || { ready: true }).ready // ugly fix lol
   )) {
     await sleep(1);
   }
