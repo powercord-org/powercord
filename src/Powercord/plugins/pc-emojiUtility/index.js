@@ -13,7 +13,10 @@ const {
     APP_URL_PREFIX,
     Permissions, // eslint-disable-line no-shadow
     EMOJI_RE,
-    EMOJI_MAX_LENGTH
+    EMOJI_MAX_LENGTH,
+    GuildFeatures,
+    EMOJI_MAX_SLOTS,
+    EMOJI_MAX_SLOTS_MORE
   },
   messages: {
     createBotMessage,
@@ -105,9 +108,13 @@ module.exports = class EmojiUtility extends Plugin {
     this.reply(content, Object.assign({ color: 16711680 }, embed));
   }
 
-  async getImageEncoded (image) {
-    const extension = extname(parse(image).pathname).substring(1);
-    const { raw } = await get(image);
+  getExtension (url) {
+    return extname(parse(url).pathname).substring(1);
+  }
+
+  async getImageEncoded (imageUrl) {
+    const extension = this.getExtension(imageUrl);
+    const { raw } = await get(imageUrl);
 
     return `data:image/${extension};base64,${raw.toString('base64')}`;
   }
@@ -182,6 +189,14 @@ module.exports = class EmojiUtility extends Plugin {
     };
   }
 
+  getEmojis (guildId, animated = null) {
+    return emojiStore.getGuilds()[guildId].emojis.filter(e => animated === null || e.animated === animated);
+  }
+
+  getMaxEmojiSlots (guildId) {
+    return getGuild(guildId).hasFeature(GuildFeatures.MORE_EMOJI) ? EMOJI_MAX_SLOTS_MORE : EMOJI_MAX_SLOTS;
+  }
+
   start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
 
@@ -228,6 +243,10 @@ module.exports = class EmojiUtility extends Plugin {
               }
             }
 
+            if (_this.getEmojis(guild.id, emoji.animated).length >= _this.getMaxEmojiSlots(guild.id)) {
+              return _this.replyError(`**${guild.name}** does not have any more emote slots`);
+            }
+
             try {
               await uploadEmoji(guild.id, await _this.getImageEncoded(emoji.url), emoji.name);
 
@@ -235,12 +254,16 @@ module.exports = class EmojiUtility extends Plugin {
             } catch (error) {
               console.error(error);
 
-              _this.replyError('Failed to clone emote, check the console for more information', {
-                description: 'Failed to clone emote',
-                footer: {
-                  text: 'Check the console for more information'
-                }
-              });
+              if (error.body && error.body.message) {
+                _this.replyError(error.body.message);
+              } else {
+                _this.replyError('Failed to clone emote, check the console for more information', {
+                  description: 'Failed to clone emote',
+                  footer: {
+                    text: 'Check the console for more information'
+                  }
+                });
+              }
             }
           };
 
@@ -341,21 +364,27 @@ module.exports = class EmojiUtility extends Plugin {
       const { target } = this.props;
       if (target.parentElement.classList.contains('pc-embedWrapper')) {
         const onGuildClick = (guild) => {
-          if (_this.settings.get('defaultCloneIdUseCurrent')) {
-            guild = getGuild(getChannel(getChannelId()).guild_id);
-          } else if (_this.settings.get('defaultCloneId')) {
-            guild = getGuild(_this.settings.get('defaultCloneId'));
-            if (!guild) {
-              return _this.replyError('You are no longer in your default server, please update your settings');
+          if (!guild) {
+            if (_this.settings.get('defaultCloneIdUseCurrent')) {
+              guild = getGuild(getChannel(getChannelId()).guild_id);
+            } else if (_this.settings.get('defaultCloneId')) {
+              guild = getGuild(_this.settings.get('defaultCloneId'));
+              if (!guild) {
+                return _this.replyError('You are no longer in your default server, please update your settings');
+              }
+            }
+
+            if (guild) {
+              if (!_this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
+                return _this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
+              }
+            } else {
+              return _this.replyError('You do not have a default server, please update your settings');
             }
           }
 
-          if (guild) {
-            if (!_this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
-              return _this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
-            }
-          } else {
-            return _this.replyError('You do not have a default server, please update your settings');
+          if (_this.getEmojis(guild.id, _this.getExtension(target.src) === 'gif').length >= _this.getMaxEmojiSlots(guild.id)) {
+            return _this.replyError(`**${guild.name}** does not have any more emote slots`);
           }
 
           openModal(() => React.createElement(EmojiNameModal, {
@@ -373,11 +402,13 @@ module.exports = class EmojiUtility extends Plugin {
 
                 _this.replySuccess(`Created emote by the name of **${name}** in **${guild.name}**`);
               } catch (error) {
+                console.error(error);
+
                 if (error.body && error.body.image) {
                   _this.replyError(error.body.image[0]);
+                } else if (error.body && error.body.message) {
+                  _this.replyError(error.body.message);
                 } else {
-                  console.error(error);
-
                   _this.replyError('Failed to create emote, check the console for more information', {
                     description: 'Failed to create emote',
                     footer: {
@@ -644,12 +675,19 @@ module.exports = class EmojiUtility extends Plugin {
                 return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
               }
 
+              if (this.getEmojis(guild.id, emoji.animated).length >= this.getMaxEmojiSlots(guild.id)) {
+                return this.replyError(`**${guild.name}** does not have any more emote slots`);
+              }
+
               await uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
 
               return this.replySuccess(`Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`);
             } catch (error) {
               console.error(error);
 
+              if (error.body.message) {
+                return this.replyError(error.body.message);
+              }
               return this.replyError('Failed to clone emote, check the console for more information', {
                 description: 'Failed to clone emote',
                 footer: {
