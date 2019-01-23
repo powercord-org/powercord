@@ -10,11 +10,11 @@ const {
   },
   constants: {
     Routes,
-    APP_URL_PREFIX,
+    GuildFeatures,
     Permissions, // eslint-disable-line no-shadow
+    APP_URL_PREFIX,
     EMOJI_RE,
     EMOJI_MAX_LENGTH,
-    GuildFeatures,
     EMOJI_MAX_SLOTS,
     EMOJI_MAX_SLOTS_MORE
   },
