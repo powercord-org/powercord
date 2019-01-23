@@ -511,7 +511,7 @@ module.exports = class EmojiUtility extends Plugin {
               };
             }
 
-            if (getCurrentUser().premiumType === 0) {
+            if (!getCurrentUser().premium) {
               return {
                 send: false,
                 result: `Looks like you do not have nitro, let me send that locally instead!\n${emojisAsString}`
