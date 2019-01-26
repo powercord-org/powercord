@@ -9,7 +9,7 @@ const { promisify } = require('util');
 const cp = require('child_process');
 const exec = promisify(cp.exec);
 
-const REPO = 'aetheryx/powercord';
+const REPO = 'powercord-org/powercord';
 const Settings = require('./Settings.jsx');
 
 module.exports = class Updater extends Plugin {
