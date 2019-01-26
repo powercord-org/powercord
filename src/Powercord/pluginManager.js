@@ -72,7 +72,7 @@ module.exports = class PluginManager {
   async resolveDependencies (plugin, deps = []) {
     const dependencies = await this.getDependencies(plugin);
 
-    await await Promise.all(dependencies.map(async dep => {
+    await Promise.all(dependencies.map(async dep => {
       if (!deps.includes(dep)) {
         deps.push(dep);
         deps.push(...(await this.resolveDependencies(dep, deps)));
