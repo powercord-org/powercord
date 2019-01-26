@@ -2,7 +2,6 @@ const { resolve } = require('path');
 const { readdirSync } = require('fs');
 const { get } = require('powercord/http');
 const { rmdirRf } = require('powercord/util');
-const { asyncArray: { forEach } } = require('powercord/util');
 
 const { promisify } = require('util');
 const cp = require('child_process');
@@ -73,12 +72,12 @@ module.exports = class PluginManager {
   async resolveDependencies (plugin, deps = []) {
     const dependencies = await this.getDependencies(plugin);
 
-    await forEach(dependencies, async dep => {
+    await await Promise.all(dependencies.map(async dep => {
       if (!deps.includes(dep)) {
         deps.push(dep);
         deps.push(...(await this.resolveDependencies(dep, deps)));
       }
-    });
+    }));
     return deps.filter((d, p) => deps.indexOf(d) === p);
   }
 
