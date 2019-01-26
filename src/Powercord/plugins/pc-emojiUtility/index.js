@@ -4,14 +4,20 @@ const {
   getModuleByDisplayName,
   getModule,
   React,
+  contextMenu,
   channels: {
     getSelectedChannelState,
     getChannelId
   },
   constants: {
     Routes,
+    GuildFeatures,
+    Permissions, // eslint-disable-line no-shadow
     APP_URL_PREFIX,
-    Permissions // eslint-disable-line no-shadow
+    EMOJI_RE,
+    EMOJI_MAX_LENGTH,
+    EMOJI_MAX_SLOTS,
+    EMOJI_MAX_SLOTS_MORE
   },
   messages: {
     createBotMessage,
@@ -19,7 +25,9 @@ const {
   }
 } = require('powercord/webpack');
 
-const { ContextMenu: { Submenu } } = require('powercord/components');
+const { CDN_HOST } = window.GLOBAL_ENV;
+
+const { ContextMenu, ContextMenu: { Submenu } } = require('powercord/components');
 
 const { inject, uninject } = require('powercord/injector');
 const { open: openModal } = require('powercord/modal');
@@ -39,6 +47,7 @@ const { getGuilds } = getModule([ 'getGuilds' ]);
 const { getChannel } = getModule([ 'getChannel' ]);
 const { getGuildPermissions } = getModule([ 'getGuildPermissions' ]);
 const { transitionTo } = getModule([ 'transitionTo' ]);
+const { getCurrentUser } = getModule([ 'getCurrentUser' ]);
 
 const { clipboard } = require('electron');
 
@@ -102,9 +111,13 @@ module.exports = class EmojiUtility extends Plugin {
     this.reply(content, Object.assign({ color: 16711680 }, embed));
   }
 
-  async getImageEncoded (image) {
-    const extension = extname(parse(image).pathname).substring(1);
-    const { raw } = await get(image);
+  getExtension (url) {
+    return extname(parse(url).pathname).substring(1);
+  }
+
+  async getImageEncoded (imageUrl) {
+    const extension = this.getExtension(imageUrl);
+    const { raw } = await get(imageUrl);
 
     return `data:image/${extension};base64,${raw.toString('base64')}`;
   }
@@ -179,10 +192,242 @@ module.exports = class EmojiUtility extends Plugin {
     };
   }
 
+  getEmojis (guildId, animated = null) {
+    return emojiStore.getGuilds()[guildId].emojis.filter(e => animated === null || e.animated === animated);
+  }
+
+  getEmojiById (id) {
+    return Object.values(emojiStore.getGuilds()).flatMap(g => g.emojis).find(e => e.id === id);
+  }
+
+  getMaxEmojiSlots (guildId) {
+    return getGuild(guildId).hasFeature(GuildFeatures.MORE_EMOJI) ? EMOJI_MAX_SLOTS_MORE : EMOJI_MAX_SLOTS;
+  }
+
   start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
 
+    /* Default settings */
+    this.settings.set('useEmbeds', this.settings.get('useEmbeds', true));
+    this.settings.set('displayLink', this.settings.get('displayLink', true));
+    this.settings.set('filePath', this.settings.get('filePath', null));
+    this.settings.set('includeIdForSavedEmojis', this.settings.get('includeIdForSavedEmojis', true));
+    this.settings.set('defaultCloneId', this.settings.get('defaultCloneId', null));
+    this.settings.set('defaultCloneIdUseCurrent', this.settings.get('defaultCloneIdUseCurrent', false));
+
     const _this = this;
+
+    const getCloneableFeatures = (emoji) => {
+      const onGuildClick = async (guild) => {
+        if (!guild) {
+          if (this.settings.get('defaultCloneIdUseCurrent')) {
+            guild = getGuild(getChannel(getChannelId()).guild_id);
+          } else if (this.settings.get('defaultCloneId')) {
+            guild = getGuild(this.settings.get('defaultCloneId'));
+            if (!guild) {
+              return this.replyError('You are no longer in your default server, please update your settings');
+            }
+          }
+
+          if (guild) {
+            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
+              return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
+            }
+          } else {
+            return this.replyError('You do not have a default server, please update your settings');
+          }
+        }
+
+        if (this.getEmojis(guild.id, emoji.animated).length >= this.getMaxEmojiSlots(guild.id)) {
+          return this.replyError(`**${guild.name}** does not have any more emote slots`);
+        }
+
+        try {
+          await uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
+
+          this.replySuccess(`Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`);
+        } catch (error) {
+          console.error(error);
+
+          if (error.body && error.body.message) {
+            this.replyError(error.body.message);
+          } else {
+            this.replyError('Failed to clone emote, check the console for more information', {
+              description: 'Failed to clone emote',
+              footer: {
+                text: 'Check the console for more information'
+              }
+            });
+          }
+        }
+      };
+
+      const getCloneableGuilds = () => {
+        const items = [];
+        const clonableGuilds = Object.values(getGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+
+        for (const guild of clonableGuilds) {
+          items.push({
+            type: 'button',
+            name: guild.name,
+            onClick: () => onGuildClick(guild)
+          });
+        }
+
+        return items;
+      };
+
+      const features = [];
+
+      features.push({
+        type: 'submenu',
+        name: 'Clone',
+        hint: 'to',
+        onClick: () => onGuildClick(null),
+        getItems: getCloneableGuilds
+      });
+
+      features.push({
+        type: 'button',
+        name: 'Save',
+        onClick: async () => {
+          if (!this.settings.get('filePath')) {
+            this.replyError('Please set your save directory in the settings');
+
+            return;
+          }
+
+          if (!existsSync(this.settings.get('filePath'))) {
+            this.replyError('The specified save directory does no longer exist, please update it in the settings');
+
+            return;
+          }
+
+          try {
+            const name = this.settings.get('includeIdForSavedEmojis') ? `${emoji.name} (${emoji.id})` : emoji.name;
+
+            await writeFile(resolve(this.settings.get('filePath'), name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
+
+            this.replySuccess(`Downloaded ${this.getFullEmoji(emoji)}`);
+          } catch (error) {
+            console.error(error);
+
+            this.replyError(`Failed to download ${this.getFullEmoji(emoji)}, check the console for more information`, {
+              description: `Failed to download ${this.getFullEmoji(emoji)}`,
+              footer: {
+                text: 'Check the console for more information'
+              }
+            });
+          }
+        }
+      });
+
+      if (!emoji.fake) {
+        features.push({
+          type: 'button',
+          name: 'Go to server',
+          onClick: () => {
+            transitionTo(this.getGuildRoute(emoji.guildId));
+          }
+        });
+      }
+
+      features.push({
+        type: 'button',
+        name: 'Copy ID',
+        onClick: () => clipboard.writeText(emoji.id)
+      });
+
+      return features;
+    };
+
+    const EmojiNameModal = require('./EmojiNameModal.jsx');
+    const getCreateableFeatures = (target) => {
+      const onGuildClick = (guild) => {
+        if (!guild) {
+          if (this.settings.get('defaultCloneIdUseCurrent')) {
+            guild = getGuild(getChannel(getChannelId()).guild_id);
+          } else if (this.settings.get('defaultCloneId')) {
+            guild = getGuild(this.settings.get('defaultCloneId'));
+            if (!guild) {
+              return this.replyError('You are no longer in your default server, please update your settings');
+            }
+          }
+
+          if (guild) {
+            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
+              return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
+            }
+          } else {
+            return this.replyError('You do not have a default server, please update your settings');
+          }
+        }
+
+        if (this.getEmojis(guild.id, this.getExtension(target.src) === 'gif').length >= this.getMaxEmojiSlots(guild.id)) {
+          return this.replyError(`**${guild.name}** does not have any more emote slots`);
+        }
+
+        openModal(() => React.createElement(EmojiNameModal, {
+          onConfirm: async (name) => {
+            name = name.replace(EMOJI_RE, '').substr(0, EMOJI_MAX_LENGTH);
+
+            if (name.length < 2) {
+              this.replyError('Please enter an emote name with 2 or more valid characters, valid characters are **a-z**, **0-9** and **_**');
+
+              return;
+            }
+
+            try {
+              await uploadEmoji(guild.id, await this.getImageEncoded(target.src), name);
+
+              this.replySuccess(`Created emote by the name of **${name}** in **${guild.name}**`);
+            } catch (error) {
+              console.error(error);
+
+              if (error.body && error.body.image) {
+                this.replyError(error.body.image[0]);
+              } else if (error.body && error.body.message) {
+                this.replyError(error.body.message);
+              } else {
+                this.replyError('Failed to create emote, check the console for more information', {
+                  description: 'Failed to create emote',
+                  footer: {
+                    text: 'Check the console for more information'
+                  }
+                });
+              }
+            }
+          }
+        }));
+      };
+
+      const getCreateableGuilds = () => {
+        const items = [];
+        const createableGuilds = Object.values(getGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+
+        for (const guild of createableGuilds) {
+          items.push({
+            type: 'button',
+            name: guild.name,
+            onClick: () => onGuildClick(guild)
+          });
+        }
+
+        return items;
+      };
+
+      const features = [];
+
+      features.push({
+        type: 'submenu',
+        hint: 'in',
+        name: 'Create',
+        onClick: () => onGuildClick(null),
+        getItems: getCreateableGuilds
+      });
+
+      return features;
+    };
 
     const MessageContextMenu = getModuleByDisplayName('MessageContextMenu');
     inject('pc-emojiUtility-emojiContext', MessageContextMenu.prototype, 'render', function (args, res) { // eslint-disable-line func-names
@@ -190,114 +435,18 @@ module.exports = class EmojiUtility extends Plugin {
       if (target.classList.contains('emoji')) {
         const matcher = target.src.match(_this.getEmojiUrlRegex());
         if (matcher) {
-          let emoji = Object.values(emojiStore.getGuilds()).flatMap(g => g.emojis).find(e => e.id === matcher[1]);
+          let emoji = _this.getEmojiById(matcher[1]);
           if (emoji) {
             emoji.fake = false;
           } else {
             emoji = _this.createFakeEmoji(matcher[1], target.alt.substring(1, target.alt.length - 1), target.src);
           }
 
-          const getCloneableGuilds = () => {
-            const items = [];
-            const clonableGuilds = Object.values(getGuilds()).filter(guild => _this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
-
-            const onClick = async (guild) => {
-              try {
-                await uploadEmoji(guild.id, await _this.getImageEncoded(emoji.url), emoji.name);
-
-                _this.replySuccess(`Cloned emote ${_this.getFullEmoji(emoji)} to **${guild.name}**`);
-              } catch (error) {
-                console.error(error);
-
-                _this.replyError('Failed to clone emote, check the console for more information', {
-                  description: 'Failed to clone emote',
-                  footer: {
-                    text: 'Check the console for more information'
-                  }
-                });
-              }
-            };
-
-            for (const guild of clonableGuilds) {
-              items.push({
-                type: 'button',
-                name: guild.name,
-                onClick: () => onClick(guild)
-              });
-            }
-
-            return items;
-          };
-
-          const getFeatures = () => {
-            const features = [];
-
-            features.push({
-              type: 'submenu',
-              name: 'Clone',
-              hint: 'to',
-              getItems: getCloneableGuilds
-            });
-
-            features.push({
-              type: 'button',
-              name: 'Save',
-              onClick: async () => {
-                if (!_this.settings.get('filePath')) {
-                  _this.replyError('Please set your save directory in the settings');
-
-                  return;
-                }
-
-                if (!existsSync(_this.settings.get('filePath'))) {
-                  _this.replyError('The specified save directory does no longer exist, please update it in the settings');
-
-                  return;
-                }
-
-                try {
-                  const name = _this.settings.get('includeIdForSavedEmojis') ? `${emoji.name} (${emoji.id})` : emoji.name;
-
-                  await writeFile(resolve(_this.settings.get('filePath'), name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
-
-                  _this.replySuccess(`Downloaded ${_this.getFullEmoji(emoji)}`);
-                } catch (error) {
-                  console.error(error);
-
-                  _this.replyError(`Failed to download ${_this.getFullEmoji(emoji)}, check the console for more information`, {
-                    description: `Failed to download ${_this.getFullEmoji(emoji)}`,
-                    footer: {
-                      text: 'Check the console for more information'
-                    }
-                  });
-                }
-              }
-            });
-
-            if (!emoji.fake) {
-              features.push({
-                type: 'button',
-                name: 'Go to server',
-                onClick: () => {
-                  transitionTo(_this.getGuildRoute(emoji.guildId));
-                }
-              });
-            }
-
-            features.push({
-              type: 'button',
-              name: 'Copy ID',
-              onClick: () => clipboard.writeText(emoji.id)
-            });
-
-            return features;
-          };
-
           res.props.children.push(
             React.createElement(Submenu, {
               name: 'Emote',
               seperate: true,
-              getItems: getFeatures
+              getItems: () => getCloneableFeatures(emoji)
             })
           );
         }
@@ -305,76 +454,63 @@ module.exports = class EmojiUtility extends Plugin {
       return res;
     });
 
-    const EmojiNameModal = require('./EmojiNameModal.jsx');
-    inject('pc-emojiUtility-imageContext', MessageContextMenu.prototype, 'render', function (args, res) { // eslint-disable-line func-names
+    const handleImageContext = function (args, res) {
       const { target } = this.props;
-      if (target.parentElement.classList.contains('pc-embedWrapper')) {
-        const getCreateableGuilds = () => {
-          const items = [];
-          const createableGuilds = Object.values(getGuilds()).filter(guild => _this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
 
-          const onClick = (guild) => {
-            openModal(() => React.createElement(EmojiNameModal, {
-              onConfirm: async (name) => {
-                if (!name || (name.length < 2 || name.length > 32)) {
-                  _this.replyError('Please enter an emote name with more than 2 and less than 32 characters');
+      if (target.tagName.toLowerCase() === 'img' && target.parentElement.classList.contains('pc-imageWrapper')) {
+        /* NativeContextMenu's children is a single object, turn it in to an array to be able to push */
+        if (typeof res.props.children === 'object') {
+          const children = [];
+          children.push(res.props.children);
 
-                  return;
-                }
-
-                try {
-                  await uploadEmoji(guild.id, await _this.getImageEncoded(target.src), name);
-
-                  _this.replySuccess(`Created emote by the name of **${name}** in **${guild.name}**`);
-                } catch (error) {
-                  if (error.body && error.body.image) {
-                    _this.replyError(error.body.image[0]);
-                  } else {
-                    console.error(error);
-
-                    _this.replyError('Failed to create emote, check the console for more information', {
-                      description: 'Failed to create emote',
-                      footer: {
-                        text: 'Check the console for more information'
-                      }
-                    });
-                  }
-                }
-              }
-            }));
-          };
-
-          for (const guild of createableGuilds) {
-            items.push({
-              type: 'button',
-              name: guild.name,
-              onClick: () => onClick(guild)
-            });
-          }
-
-          return items;
-        };
-
-        const getFeatures = () => {
-          const features = [];
-
-          features.push({
-            type: 'submenu',
-            hint: 'in',
-            name: 'Create',
-            getItems: getCreateableGuilds
-          });
-
-          return features;
-        };
+          res.props.children = children;
+        }
 
         res.props.children.push(
           React.createElement(Submenu, {
             name: 'Emote',
             seperate: true,
-            getItems: getFeatures
+            getItems: () => getCreateableFeatures(target)
           })
         );
+      }
+
+      return res;
+    };
+
+    inject('pc-emojiUtility-imageContext', MessageContextMenu.prototype, 'render', handleImageContext); // eslint-disable-line func-names
+
+    const NativeContextMenu = getModuleByDisplayName('NativeContextMenu');
+    inject('pc-emojiUtility-nativeContext', NativeContextMenu.prototype, 'render', handleImageContext); // eslint-disable-line func-names
+
+    /* AnimatedComponent is used for reactions */
+    const AnimatedComponent = getModule([ 'createAnimatedComponent' ]).div;
+    inject('pc-emojiUtility-reactionContext', AnimatedComponent.prototype, 'render', function (args, res) { // eslint-disable-line func-names
+      if (this.props.className && this.props.className.includes('pc-reaction')) {
+        res.props.onContextMenu = (e) => {
+          const { pageX, pageY } = e;
+
+          const { props: propEmoji } = this.props.children.props.children[0];
+
+          let emoji = _this.getEmojiById(propEmoji.emojiId);
+          if (emoji) {
+            emoji.fake = false;
+          } else {
+            emoji = _this.createFakeEmoji(propEmoji.emojiId, propEmoji.emojiName, `https://${CDN_HOST}/emojis/${propEmoji.emojiId}.${propEmoji.animated ? 'gif' : 'png'}`);
+          }
+
+          contextMenu.openContextMenu(e, () =>
+            React.createElement(ContextMenu, {
+              pageX,
+              pageY,
+              itemGroups: [ [ {
+                type: 'submenu',
+                name: 'Emote',
+                getItems: () => getCloneableFeatures(emoji)
+              } ] ]
+            })
+          );
+        };
       }
 
       return res;
@@ -445,16 +581,7 @@ module.exports = class EmojiUtility extends Plugin {
         (args) => {
           const argument = args.join(' ').toLowerCase();
           if (argument.length === 0) {
-            return {
-              send: false,
-              result: this.settings.get('useEmbeds')
-                ? {
-                  type: 'rich',
-                  description: 'Please provide an emote name',
-                  color: 16711680
-                }
-                : 'Please provide an emote name'
-            };
+            return this.replyError('Please provide an emote name');
           }
 
           const emojis = Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis);
@@ -466,6 +593,13 @@ module.exports = class EmojiUtility extends Plugin {
               return {
                 send: false,
                 result: `That is more than 2000 characters, let me send that locally instead!\n${emojisAsString}`
+              };
+            }
+
+            if (!getCurrentUser().premium) {
+              return {
+                send: false,
+                result: `Looks like you do not have nitro, let me send that locally instead!\n${emojisAsString}`
               };
             }
 
@@ -595,12 +729,19 @@ module.exports = class EmojiUtility extends Plugin {
                 return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
               }
 
+              if (this.getEmojis(guild.id, emoji.animated).length >= this.getMaxEmojiSlots(guild.id)) {
+                return this.replyError(`**${guild.name}** does not have any more emote slots`);
+              }
+
               await uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
 
               return this.replySuccess(`Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`);
             } catch (error) {
               console.error(error);
 
+              if (error.body.message) {
+                return this.replyError(error.body.message);
+              }
               return this.replyError('Failed to clone emote, check the console for more information', {
                 description: 'Failed to clone emote',
                 footer: {
@@ -620,6 +761,8 @@ module.exports = class EmojiUtility extends Plugin {
 
     uninject('pc-emojiUtility-emojiContext');
     uninject('pc-emojiUtility-imageContext');
+    uninject('pc-emojiUtility-nativeContext');
+    uninject('pc-emojiUtility-reactionContext');
 
     const { pluginManager } = powercord;
 
