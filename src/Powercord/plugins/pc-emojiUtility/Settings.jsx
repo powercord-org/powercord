@@ -11,10 +11,10 @@ module.exports = class EmojiUtilitySettings extends React.Component {
     this.settings = props.settings;
     this.state = Object.assign({
       isFilePathValid: props.settings.get('filePath') ? existsSync(props.settings.get('filePath')) : true,
-      initialFilePathValue: props.settings.get('filePath') ? props.settings.get('filePath') : null,
+      initialFilePathValue: props.settings.get('filePath') || null,
 
       isCloneIdValid: props.settings.get('defaultCloneId') ? getGuild(props.settings.get('defaultCloneId')) : true,
-      initialCloneIdValue: props.settings.get('defaultCloneId') ? props.settings.get('defaultCloneId') : null
+      initialCloneIdValue: props.settings.get('defaultCloneId') || null
     }, this.settings.config);
   }
 
