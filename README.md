@@ -3,7 +3,7 @@ Powercord is a lightweight client mod focused on simplicity and performance.
 As of right now, Powercord is in *very* early stages of development, so feel free to join [this server](https://discord.gg/Yphr6WG) for any questions.
 
 # Installation
-See the [installation page of the Powercord Wiki](https://github.com/aetheryx/powercord/wiki/Installation).
+See the [installation page of the Powercord Wiki](https://github.com/powercord-org/powercord/wiki/Installation).
 
 # Is this against the ToS?
 Long story short... __yes__. Powercord is against the Discord Terms of Service — but, you should keep reading:  
