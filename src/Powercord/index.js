@@ -11,6 +11,7 @@ module.exports = class Powercord extends EventEmitter {
     this.pluginManager = new PluginManager();
     this.settings = new SettingsManager('general');
     this.account = null;
+    this.isLinking = false;
     this.patchWebSocket();
 
     if (document.readyState === 'loading') {
@@ -35,7 +36,7 @@ module.exports = class Powercord extends EventEmitter {
   }
 
   async init () {
-    await this.fetchAccount();
+    this.fetchAccount();
     await Promise.all(modules.map(mdl => mdl()));
     this.pluginManager.startPlugins();
 
@@ -51,29 +52,33 @@ module.exports = class Powercord extends EventEmitter {
   }
 
   async fetchAccount () {
-    const token = this.settings.get('powercordToken', null);
-    if (token) {
-      const baseUrl = this.settings.get('backendURL', 'https://powercord.xyz');
-      console.log('%c[Powercord]', 'color: #257dd4', 'Logging in to your account...');
+    if (!this.isLinking) {
+      this.isLinking = true;
+      const token = this.settings.get('powercordToken', null);
+      if (token) {
+        const baseUrl = this.settings.get('backendURL', 'https://powercord.xyz');
+        console.debug('%c[Powercord]', 'color: #257dd4', 'Logging in to your account...');
 
-      const resp = await get(`${baseUrl}/api/users/@me`)
-        .set('Authorization', token)
-        .catch(e => e);
+        const resp = await get(`${baseUrl}/api/users/@me`)
+          .set('Authorization', token)
+          .catch(e => e);
 
-      if (resp.statusCode === 401) {
-        setTimeout(() => {
-          this.settings.set('powercordToken', null);
-        }, 0); // Make localStorage available
+        if (resp.statusCode === 401) {
+          setTimeout(() => {
+            this.settings.set('powercordToken', null);
+          }, 0); // Make localStorage available
+          this.account = null;
+          return console.error('%c[Powercord]', 'color: #257dd4', 'Unable to fetch your account (Invalid token). Removed token from config');
+        } else if (resp.statusCode !== 200) {
+          this.account = null;
+          return console.error('%c[Powercord]', 'color: #257dd4', `An error occurred while fetching your account: ${resp.statusCode} - ${resp.statusText}`, resp.body);
+        }
+
+        this.account = resp.body;
+      } else {
         this.account = null;
-        return console.error('%c[Powercord]', 'color: #257dd4', 'Unable to fetch your account (Invalid token). Removed token from config');
-      } else if (resp.statusCode !== 200) {
-        this.account = null;
-        return console.error('%c[Powercord]', 'color: #257dd4', `An error occurred while fetching your account: ${resp.statusCode} - ${resp.statusText}`, resp.body);
       }
-
-      this.account = resp.body;
-    } else {
-      this.account = null;
+      this.isLinking = false;
     }
   }
 };
