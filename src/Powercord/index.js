@@ -68,9 +68,11 @@ module.exports = class Powercord extends EventEmitter {
             this.settings.set('powercordToken', null);
           }, 0); // Make localStorage available
           this.account = null;
+          this.isLinking = false;
           return console.error('%c[Powercord]', 'color: #257dd4', 'Unable to fetch your account (Invalid token). Removed token from config');
         } else if (resp.statusCode !== 200) {
           this.account = null;
+          this.isLinking = false;
           return console.error('%c[Powercord]', 'color: #257dd4', `An error occurred while fetching your account: ${resp.statusCode} - ${resp.statusText}`, resp.body);
         }
 
