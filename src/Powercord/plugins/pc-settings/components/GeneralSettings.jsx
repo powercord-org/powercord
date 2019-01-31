@@ -15,6 +15,7 @@ module.exports = class GeneralSettings extends React.Component {
       prefix: get('prefix', '.'),
       settingsSync: get('settingsSync', false),
       openOverlayDevTools: get('openOverlayDevTools', false),
+      hideToken: get('hideToken', true),
       backendURL: get('backendURL', 'https://powercord.xyz'),
       experiments: get('experiments', false),
       advancedSettings: get('advancedSettings', false)
@@ -77,6 +78,14 @@ module.exports = class GeneralSettings extends React.Component {
               onChange={() => this._set('openOverlayDevTools')}
             >
               Overlay DevTools
+            </SwitchItem>
+
+            <SwitchItem
+              note='Prevents Discord from removing your token from localStorage, reducing the numbers of unwanted logouts'
+              value={settings.hideToken}
+              onChange={() => this._set('hideToken')}
+            >
+              Keep token stored
             </SwitchItem>
 
             <SwitchItem
