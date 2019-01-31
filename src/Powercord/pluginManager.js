@@ -156,7 +156,11 @@ module.exports = class PluginManager {
   }
 
   async remount (pluginID) {
-    await this.unmount(pluginID);
+    try {
+      await this.unmount(pluginID);
+    } catch (e) {
+      // chhhh
+    }
     this.mount(pluginID);
     this.plugins.get(pluginID)._start();
   }

@@ -36,8 +36,8 @@ module.exports = class Powercord extends EventEmitter {
   }
 
   async init () {
-    this.fetchAccount();
     await Promise.all(modules.map(mdl => mdl()));
+    this.fetchAccount();
     this.pluginManager.startPlugins();
 
     if (this.account && this.settings.get('settingsSync', false)) {
@@ -68,9 +68,7 @@ module.exports = class Powercord extends EventEmitter {
           .catch(e => e);
 
         if (resp.statusCode === 401) {
-          setTimeout(() => {
-            this.settings.set('powercordToken', null);
-          }, 0); // Make localStorage available
+          this.settings.set('powercordToken', null);
           this.account = null;
           this.isLinking = false;
           return console.error('%c[Powercord]', 'color: #257dd4', 'Unable to fetch your account (Invalid token). Removed token from config');
