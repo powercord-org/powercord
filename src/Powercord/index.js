@@ -36,7 +36,6 @@ module.exports = class Powercord extends EventEmitter {
   }
 
   async init () {
-    
     this.fetchAccount();
     await Promise.all(modules.map(mdl => mdl()));
     this.pluginManager.startPlugins();
