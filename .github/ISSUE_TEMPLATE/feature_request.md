@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 **Describe the feature request**
-A clear and concise description of what the bug is.
+A clear and concise description of what the feature is.
 
 **What Plugin would it be for?**
 Name of plugin if applicable
