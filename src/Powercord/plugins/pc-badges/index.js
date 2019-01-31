@@ -48,14 +48,18 @@ module.exports = class Badges extends Plugin {
 
     inject('pc-badges-update', UserProfile.prototype, 'componentDidUpdate', async function () { // eslint-disable-line
       await this.fetchPowercordBadges();
-      if (this.badges && document.querySelector('.pc-profileBadges')) { // @todo: Create element if not existing
-        const el = document.querySelector('.pc-profileBadges .powercord-badges');
-        if (el) {
-          el.remove();
+      if (this.badges) {
+        const badgesElement = document.querySelector('.pc-headerInfo .powercord-badges');
+        if (badgesElement) {
+          badgesElement.remove();
         }
 
         const element = createElement('div', { className: 'powercord-badges' });
-        document.querySelector('.pc-profileBadges').appendChild(element);
+        let el = document.querySelector('.pc-profileBadges');
+        if (!el) {
+          el = document.querySelector('.pc-headerInfo');
+        }
+        el.appendChild(element);
 
         if (this.badges.developer) {
           const developerE = createElement('div');

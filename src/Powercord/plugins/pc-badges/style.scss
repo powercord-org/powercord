@@ -26,6 +26,14 @@
   }
 }
 
+.pc-nameTag + .powercord-badges {
+  margin-top: 8px;
+
+  div:first-child div {
+    border-left: none;
+  }
+}
+
 .pc-topSectionNormal {
   .powercord-badges div:first-child div {
     border-left-color: #2f3136;
