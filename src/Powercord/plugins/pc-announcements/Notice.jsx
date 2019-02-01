@@ -7,7 +7,7 @@ const Notice = class Notice extends React.Component {
   render () {
     const { notice, onClose } = this.props;
 
-    return <div className={Notice.TYPES[notice.type] || Notice.TYPES.BLURPLE}>
+    return <div className={`powercord-notice ${(Notice.TYPES[notice.type] || Notice.TYPES.BLURPLE)}`}>
       {notice.message}
       <Clickable className={classes.dismiss} onClick={() => onClose()}/>
       {notice.button &&

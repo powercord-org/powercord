@@ -1,7 +1,5 @@
-const {
-  mkdir, writeFile, unlink, rmdir, access
-} = require('fs').promises;
-const { join, sep } = require('path');
+const { mkdir, writeFile, unlink, rmdir, access } = require('fs').promises;
+const { resolve, join, sep } = require('path');
 
 const exists = (path) =>
   access(path)
@@ -25,6 +23,10 @@ exports.inject = async ({ getAppDir }) => {
     writeFile(
       join(appDir, 'package.json'),
       JSON.stringify({ main: 'index.js' })
+    ),
+    writeFile(
+      resolve(__dirname, '..', 'src', '__injected.txt'),
+      'hey cutie'
     )
   ]);
 };
