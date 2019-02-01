@@ -538,8 +538,8 @@ module.exports = class EmojiUtility extends Plugin {
         '{c} [emote]',
         (args) => {
           const object = this.findEmojisForCommand(args);
-          if ('send' in object && 'result' in object) {
-            return object;
+          if (!object) {
+            return;
           }
 
           const { foundEmojis, notFoundEmojis } = object;
@@ -631,8 +631,8 @@ module.exports = class EmojiUtility extends Plugin {
           }
 
           const object = this.findEmojisForCommand(args);
-          if ('send' in object && 'result' in object) {
-            return object;
+          if (!object) {
+            return;
           }
 
           const { foundEmojis, notFoundEmojis } = object;
