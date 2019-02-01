@@ -14,7 +14,7 @@ module.exports = class SeekBar extends React.Component {
     };
 
     this.seek = this.seek.bind(this);
-    this.endSeek = this.endSeek.bind(this);
+    this.endSeek = this.endSeek.bind(this, false);
   }
 
   componentDidMount () {
@@ -44,17 +44,17 @@ module.exports = class SeekBar extends React.Component {
   }
 
   async startSeek (e) {
-    if (await SpotifyPlayer.pause()) {
-      this.props.onSeeking(true);
-      this.setState({
-        seeking: true,
-        wasPlaying: this.props.isPlaying
-      });
+    this.seek(e);
+    document.addEventListener('mousemove', this.seek);
+    document.addEventListener('mouseup', this.endSeek);
 
-      document.addEventListener('mousemove', this.seek);
-      document.addEventListener('mouseup', this.endSeek);
-
-      this.seek(e);
+    this.props.onSeeking(true);
+    this.setState({
+      seeking: true,
+      wasPlaying: this.props.isPlaying
+    });
+    if (!await SpotifyPlayer.pause()) {
+      await this.endSeek(true);
     }
   }
 
@@ -65,15 +65,19 @@ module.exports = class SeekBar extends React.Component {
     this.setState({ progress: Math.round(this.props.duration * Math.max(0, Math.min(seek, 1))) });
   }
 
-  async endSeek () {
+  async endSeek (cancel) {
     document.removeEventListener('mousemove', this.seek);
     document.removeEventListener('mouseup', this.endSeek);
 
     this.props.onSeeking(false);
     this.setState({ seeking: false });
-    await SpotifyPlayer.seek(this.state.progress);
-    if (this.state.wasPlaying) {
-      await SpotifyPlayer.play();
+    if (cancel) {
+      this.setState({ progress: false });
+    } else {
+      await SpotifyPlayer.seek(this.state.progress);
+      if (this.state.wasPlaying) {
+        await SpotifyPlayer.play();
+      }
     }
   }
 
