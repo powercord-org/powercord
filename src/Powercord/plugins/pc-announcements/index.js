@@ -21,7 +21,7 @@ module.exports = class Announcements extends Plugin {
       await unlink(injectedFile);
       this.sendNotice({
         id: 'pc-first-welcome',
-        message: 'Welcome! Powercord have been successfully injected into your Discord client. Feel free to join our Discord server for announcements, support and more!',
+        message: 'Welcome! Powercord has been successfully injected into your Discord client. Feel free to join our Discord server for announcements, support and more!',
         button: {
           text: 'Join Server',
           onClick: () => {
