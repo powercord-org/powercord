@@ -72,6 +72,10 @@ module.exports = class Modal extends React.Component {
   }
 
   shouldComponentUpdate (newProps, newState) {
+    if (!this._settings === this.props.main.settings.get('showControls', true)) {
+      this._settings = this.props.main.settings.get('showControls', true);
+      return true;
+    }
     return this.repeatStruct[this.state.repeatState].next === newState.repeatState || this.state.repeatState === newState.repeatState;
   }
 

@@ -1,4 +1,5 @@
 const { React } = require('powercord/webpack');
+const { getOwnerInstance } = require('powercord/util');
 const { SwitchItem } = require('powercord/components/settings');
 
 module.exports = class Settings extends React.Component {
@@ -21,7 +22,13 @@ module.exports = class Settings extends React.Component {
         <SwitchItem
           note='Adds shuffle, repeat and other controls to the Spotify modal. Increases the height if enabled, if not these controls are available in the context menu'
           value={showControls}
-          onChange={() => this._set('showControls')}
+          onChange={() => {
+            this._set('showControls');
+            const el = document.querySelector('#powercord-spotify-modal');
+            if (el) {
+              getOwnerInstance(el).forceUpdate();
+            }
+          }}
         >
           Show advanced controls
         </SwitchItem>
