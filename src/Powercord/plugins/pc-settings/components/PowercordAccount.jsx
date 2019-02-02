@@ -21,7 +21,7 @@ const PowercordAccount = class PowercordAccount extends React.Component {
   render () {
     let Component = null;
     if (this.props.streamerMode.enabled && this.props.streamerMode.hidePersonalInformation) {
-      Component = () => <div>Streamer mode enabled. Stay safe cutie</div>;
+      Component = () => <div>Streamer mode enabled. Stay safe cutie!</div>;
     } else if (this.state.linking) {
       Component = () => <div className='linking'><Spinner type='pulsingEllipsis'/> Linking your account...</div>;
     } else if (powercord.account) {
@@ -90,7 +90,7 @@ const PowercordAccount = class PowercordAccount extends React.Component {
         this.setState({
           linking: false,
           server: null,
-          message: 'An error occurred. Check console for more details'
+          message: 'An error occurred. Check console for more details!'
         });
         return console.error(err);
       }
