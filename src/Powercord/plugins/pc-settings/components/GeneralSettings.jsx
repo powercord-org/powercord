@@ -38,7 +38,7 @@ module.exports = class GeneralSettings extends React.Component {
         </TextInput>
 
         <SwitchItem
-          note='Sync all of your Powercord settings across devices. Requires a Powercord account'
+          note='Sync all of your Powercord settings across devices. Requires a Powercord account!'
           value={powercord.account && settings.settingsSync}
           disabled={!powercord.account}
           onChange={() => {
@@ -67,13 +67,13 @@ module.exports = class GeneralSettings extends React.Component {
               value={settings.backendURL}
               required={true}
               onChange={(e) => this._set('backendURL', e, 'https://powercord.xyz')}
-              note='Url used for Spotify linking, plugin management and other internal functions'
+              note='URL used for Spotify linking, plugin management and other internal functions'
             >
               Backend URL
             </TextInput>
 
             <SwitchItem
-              note='Should Powercord open overlay devtools when it gets injected (useful for developing themes)'
+              note='Should Powercord open overlay devtools when it gets injected? (useful for developing themes)'
               value={settings.openOverlayDevTools}
               onChange={() => this._set('openOverlayDevTools')}
             >
@@ -81,7 +81,7 @@ module.exports = class GeneralSettings extends React.Component {
             </SwitchItem>
 
             <SwitchItem
-              note='Prevents Discord from removing your token from localStorage, reducing the numbers of unwanted logouts'
+              note='Prevents Discord from removing your token from localStorage, reducing the numbers of unwanted logouts.'
               value={settings.hideToken}
               onChange={() => this._set('hideToken')}
             >

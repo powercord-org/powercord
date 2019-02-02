@@ -20,7 +20,7 @@ module.exports = class Settings extends React.Component {
     return (
       <div>
         <SwitchItem
-          note='Adds shuffle, repeat and other controls to the Spotify modal. Increases the height if enabled, if not these controls are available in the context menu'
+          note='Adds shuffle, repeat and other controls to the Spotify modal. Increases the height if enabled, if not these controls are available in the context menu.'
           value={showControls}
           onChange={() => {
             this._set('showControls');
@@ -34,7 +34,7 @@ module.exports = class Settings extends React.Component {
         </SwitchItem>
 
         <SwitchItem
-          note={'Prevents Discord from automatically pausing Spotify playback if you\'re sending voice for more than 30 seconds'}
+          note={'Prevents Discord from automatically pausing Spotify playback if you\'re sending voice for more than 30 seconds.'}
           value={noAutoPause}
           onChange={() => {
             this.props.patch(noAutoPause);

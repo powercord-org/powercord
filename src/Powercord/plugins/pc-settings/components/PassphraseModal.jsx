@@ -22,7 +22,7 @@ module.exports = class Passphrase extends React.Component {
     >
       <div className='powercord-passphrase-modal'>
         <div className='powercord-passphrase-desc'>
-          This passphrase will be used to encrypt your data before sending it to Powercord servers. It's recommended to
+          This passphrase will be used to encrypt your data before sending it to Powercord's servers. It's recommended to
           use it, but you can just leave this empty and your data will be sent unencrypted.
           <div className='space'/>
           If you're already using sync on other machines, put the same passphrase you used.
