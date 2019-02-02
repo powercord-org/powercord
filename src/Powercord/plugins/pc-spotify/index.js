@@ -2,10 +2,12 @@ const Plugin = require('powercord/Plugin');
 const { open: openModal } = require('powercord/modal');
 const { inject, uninject } = require('powercord/injector');
 const { waitFor, getOwnerInstance } = require('powercord/util');
-const { React, ReactDOM, getModuleByDisplayName } = require('powercord/webpack');
+const { React, ReactDOM, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { resolve } = require('path');
 
-const SpotifyPlayer = require('./SpotifyPlayer.js');
+const Settings = require('./Settings');
+
+const SpotifyPlayer = require('./SpotifyPlayer');
 const commands = require('./commands');
 const Modal = require('./Modal');
 
@@ -17,6 +19,7 @@ module.exports = class Spotify extends Plugin {
   async start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._injectModal();
+    this._patchAutoPause();
     this._patchSpotifySocket();
     this._patchPremiumDialog();
 
@@ -25,6 +28,18 @@ module.exports = class Spotify extends Plugin {
         this.SpotifyPlayer.player = ev.event.state;
       }
     });
+
+    powercord
+      .pluginManager
+      .get('pc-settings')
+      .register(
+        'pc-spotify',
+        'Spotify',
+        () => React.createElement(Settings, {
+          settings: this.settings,
+          patch: this._patchAutoPause.bind(this)
+        })
+      );
 
     for (const [ commandName, command ] of Object.entries(commands)) {
       command.func = command.func.bind(command, SpotifyPlayer);
@@ -39,10 +54,12 @@ module.exports = class Spotify extends Plugin {
 
   unload () {
     this.unloadCSS();
+    this._patchAutoPause(true);
     uninject('pc-spotify-update');
     uninject('pc-spotify-premium');
 
     powercord.off('webSocketMessage:dealer.spotify.com', this._handler);
+    powercord.pluginManager.get('pc-settings').unregister('pc-spotify');
     for (const [ commandName ] of Object.entries(commands)) {
       powercord
         .pluginManager
@@ -59,39 +76,6 @@ module.exports = class Spotify extends Plugin {
   openPremiumDialog () {
     const PremiumDialog = getModuleByDisplayName('SpotifyPremiumUpgrade');
     openModal(() => React.createElement(PremiumDialog, { isPowercord: true }));
-  }
-
-  async _patchSpotifySocket () {
-    this._handler = this._handleData.bind(this);
-    powercord.on('webSocketMessage:dealer.spotify.com', this._handler);
-
-    this.emit('event', {
-      type: 'PLAYER_STATE_CHANGED',
-      event: {
-        state: await SpotifyPlayer.getPlayer()
-      }
-    });
-  }
-
-  _handleData (data) {
-    const parsedData = JSON.parse(data.data);
-    const collectionReg = /hm:\/\/collection\/collection\/[\w\d]+\/json/i;
-    if (parsedData.type === 'message' && parsedData.payloads) {
-      if (parsedData.uri === 'wss://event') {
-        for (const payload of parsedData.payloads || []) {
-          for (const ev of payload.events || []) {
-            this.emit('event', ev);
-          }
-        }
-      } else if (collectionReg.test(parsedData.uri)) {
-        for (let payload of parsedData.payloads || []) {
-          payload = JSON.parse(payload);
-          for (const item of payload.items || []) {
-            this.emit('event', item);
-          }
-        }
-      }
-    }
   }
 
   async _injectModal () {
@@ -114,6 +98,30 @@ module.exports = class Spotify extends Plugin {
     });
   }
 
+  async _patchAutoPause (revert) {
+    if (this.settings.get('noAutoPause', true)) {
+      const mdl = getModule([ 'SpotifyResourceTypes' ]);
+      if (revert) {
+        mdl.pause = mdl._pause;
+      } else {
+        mdl._pause = mdl.pause;
+        mdl.pause = () => void 0;
+      }
+    }
+  }
+
+  async _patchSpotifySocket () {
+    this._handler = this._handleData.bind(this);
+    powercord.on('webSocketMessage:dealer.spotify.com', this._handler);
+
+    this.emit('event', {
+      type: 'PLAYER_STATE_CHANGED',
+      event: {
+        state: await SpotifyPlayer.getPlayer()
+      }
+    });
+  }
+
   _patchPremiumDialog () {
     const PremiumDialog = getModuleByDisplayName('SpotifyPremiumUpgrade');
 
@@ -123,5 +131,26 @@ module.exports = class Spotify extends Plugin {
       }
       return res;
     });
+  }
+
+  _handleData (data) {
+    const parsedData = JSON.parse(data.data);
+    const collectionReg = /hm:\/\/collection\/collection\/[\w\d]+\/json/i;
+    if (parsedData.type === 'message' && parsedData.payloads) {
+      if (parsedData.uri === 'wss://event') {
+        for (const payload of parsedData.payloads || []) {
+          for (const ev of payload.events || []) {
+            this.emit('event', ev);
+          }
+        }
+      } else if (collectionReg.test(parsedData.uri)) {
+        for (let payload of parsedData.payloads || []) {
+          payload = JSON.parse(payload);
+          for (const item of payload.items || []) {
+            this.emit('event', item);
+          }
+        }
+      }
+    }
   }
 };

@@ -62,9 +62,11 @@ module.exports = class Modal extends React.Component {
       this.stopTimer();
       this.setState({ inLibrary: '' });
       this.libraryTimer = setTimeout(() => {
-        SpotifyPlayer.checkLibrary(this.state.currentItem.id).then((r) => {
-          this.setState({ inLibrary: r.body[0] });
-        });
+        if (this.props.main.settings.get('showControls', true) && powercord.account && powercord.account.spotify) {
+          SpotifyPlayer.checkLibrary(this.state.currentItem.id).then((r) => {
+            this.setState({ inLibrary: r.body[0] });
+          });
+        }
       }, 2000);
     }
   }
@@ -170,7 +172,7 @@ module.exports = class Modal extends React.Component {
       : '';
     return (
       <div
-        className='container-2Thooq powercord-spotify'
+        className={`container-2Thooq powercord-spotify${this.props.main.settings.get('showControls', true) ? '' : ' small'}`}
         id='powercord-spotify-modal'
         onContextMenu={this.injectContextMenu.bind(this)}
         style={displayState === 'hide' ? { display: 'none' } : {}}
@@ -226,7 +228,7 @@ module.exports = class Modal extends React.Component {
               }
             })}
           >
-            <div className="powercord-spotify-seek-btngrp">
+            {this.props.main.settings.get('showControls', true) && <div className="powercord-spotify-seek-btngrp">
               {libraryButton}
 
               <Tooltip text="Shuffle" position="top">
@@ -244,7 +246,7 @@ module.exports = class Modal extends React.Component {
                   onClick={() => this.onButtonClick('setRepeatState', this.repeatStruct[this.state.repeatState].next)}
                 />
               </Tooltip>
-            </div>
+            </div>}
           </SeekBar>
         </div>
       </div>
@@ -258,7 +260,8 @@ module.exports = class Modal extends React.Component {
     const itemGroups = getContextMenuItemGroups(
       this.state,
       this.onButtonClick,
-      powercord.account && powercord.account.spotify
+      powercord.account && powercord.account.spotify,
+      !this.props.showAdvanced
     );
 
     contextMenu.openContextMenu(e, () =>

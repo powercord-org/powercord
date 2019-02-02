@@ -3,7 +3,7 @@ const { messages, channels } = require('powercord/webpack');
 const { formatTime } = require('powercord/util');
 const SpotifyPlayer = require('../SpotifyPlayer');
 
-module.exports = (state, onButtonClick, hasCustomAuth) => [
+module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden) => [
   [ {
     type: 'submenu',
     name: 'Devices',
@@ -77,6 +77,38 @@ module.exports = (state, onButtonClick, hasCustomAuth) => [
     } ]
     : []) ],
 
+  ...(hasCustomAuth && hasControlsHidden
+    ? [ [ {
+      type: 'submenu',
+      name: 'Playback Settings',
+      getItems: () => [ {
+        type: 'submenu',
+        name: 'Repeat Modes',
+        getItems: () => [ {
+          name: 'On',
+          stateName: 'context'
+        }, {
+          name: 'Current Track',
+          stateName: 'track'
+        }, {
+          name: 'Off',
+          stateName: 'off'
+        } ].map(button => ({
+          type: 'button',
+          highlight: state.repeatState === button.stateName && '#1ed860',
+          disabled: state.repeatState === button.stateName,
+          onClick: () => onButtonClick('setRepeatState', button.stateName),
+          ...button
+        }))
+      }, {
+        type: 'checkbox',
+        name: 'Shuffle',
+        defaultState: state.shuffleState,
+        onToggle: (s) => onButtonClick('setShuffleState', s)
+      } ]
+    } ] ]
+    : []),
+
   [ {
     type: 'slider',
     name: 'Volume',
@@ -85,7 +117,14 @@ module.exports = (state, onButtonClick, hasCustomAuth) => [
     onValueChange: (val) =>
       SpotifyPlayer.setVolume(Math.round(val))
         .then(() => true)
-  } ],
+  }, ...(hasCustomAuth && hasControlsHidden
+    ? [ {
+      type: 'button',
+      name: 'Add to Library',
+      onClick: () =>
+        SpotifyPlayer.addSong(state.currentItem.id)
+    } ]
+    : []) ],
 
   [ {
     type: 'button',
