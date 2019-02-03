@@ -488,28 +488,29 @@ module.exports = class EmojiUtility extends Plugin {
     inject('pc-emojiUtility-reactionContext', AnimatedComponent.prototype, 'render', function (args, res) { // eslint-disable-line func-names
       if (this.props.className && this.props.className.includes('pc-reaction')) {
         res.props.onContextMenu = (e) => {
-          const { pageX, pageY } = e;
-
           const { props: propEmoji } = this.props.children.props.children[0];
 
-          let emoji = _this.getEmojiById(propEmoji.emojiId);
-          if (emoji) {
-            emoji.fake = false;
-          } else {
-            emoji = _this.createFakeEmoji(propEmoji.emojiId, propEmoji.emojiName, `https://${CDN_HOST}/emojis/${propEmoji.emojiId}.${propEmoji.animated ? 'gif' : 'png'}`);
-          }
+          if (propEmoji.emojiId) {
+            let emoji = _this.getEmojiById(propEmoji.emojiId);
+            if (emoji) {
+              emoji.fake = false;
+            } else {
+              emoji = _this.createFakeEmoji(propEmoji.emojiId, propEmoji.emojiName, `https://${CDN_HOST}/emojis/${propEmoji.emojiId}.${propEmoji.animated ? 'gif' : 'png'}`);
+            }
 
-          contextMenu.openContextMenu(e, () =>
-            React.createElement(ContextMenu, {
-              pageX,
-              pageY,
-              itemGroups: [ [ {
-                type: 'submenu',
-                name: 'Emote',
-                getItems: () => getCloneableFeatures(emoji)
-              } ] ]
-            })
-          );
+            const { pageX, pageY } = e;
+            contextMenu.openContextMenu(e, () =>
+              React.createElement(ContextMenu, {
+                pageX,
+                pageY,
+                itemGroups: [ [ {
+                  type: 'submenu',
+                  name: 'Emote',
+                  getItems: () => getCloneableFeatures(emoji)
+                } ] ]
+              })
+            );
+          }
         };
       }
 
@@ -537,8 +538,8 @@ module.exports = class EmojiUtility extends Plugin {
         '{c} [emote]',
         (args) => {
           const object = this.findEmojisForCommand(args);
-          if ('send' in object && 'result' in object) {
-            return object;
+          if (!object) {
+            return;
           }
 
           const { foundEmojis, notFoundEmojis } = object;
@@ -630,8 +631,8 @@ module.exports = class EmojiUtility extends Plugin {
           }
 
           const object = this.findEmojisForCommand(args);
-          if ('send' in object && 'result' in object) {
-            return object;
+          if (!object) {
+            return;
           }
 
           const { foundEmojis, notFoundEmojis } = object;
