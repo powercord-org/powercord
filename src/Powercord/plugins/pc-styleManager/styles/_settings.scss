@@ -1,3 +1,4 @@
+// Icon in user settings
 .powercord-pc-icon {
   position: relative;
 
@@ -24,6 +25,40 @@
     path {
       display: none;
     }
+  }
+}
+
+.powercord-settings-category {
+  &-title {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+
+    svg {
+      width: 28px;
+      height: 28px;
+      transition: transform .3s;
+      margin-right: 15px;
+
+      &.opened {
+        transform: rotate(90deg);
+      }
+    }
+
+    .pc-title {
+      height: 24px;
+    }
+
+    .pc-modeDefault {
+      cursor: pointer;
+    }
+  }
+
+  &-inner {
+    margin-top: 20px;
+    margin-left: 15px;
+    border-left: 1px rgba(114, 118, 125, .3) solid;
+    padding-left: 30px;
   }
 }
 
