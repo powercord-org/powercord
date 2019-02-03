@@ -1,7 +1,7 @@
 const Plugin = require('powercord/Plugin');
 const { contextMenu, getModuleByDisplayName, React } = require('powercord/webpack');
 const { ContextMenu } = require('powercord/components');
-const { inject } = require('powercord/injector');
+const { inject, uninject } = require('powercord/injector');
 const { clipboard } = require('electron');
 
 // todo figure out how to do the same on UserPopOuts. Discussed with Aeth but seems to be a bit more complicated
@@ -25,5 +25,9 @@ module.exports = class CopyRoleID extends Plugin {
       };
       return res;
     });
+  }
+
+  unload () {
+    uninject('pc-guildRole');
   }
 };
