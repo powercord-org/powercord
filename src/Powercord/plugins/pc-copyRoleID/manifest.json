@@ -1,0 +1,8 @@
+{
+  "name": "Copy Role ID",
+  "version": "1.0.0",
+  "description": "Adds a context menu to Roles in the Server Settings that allows copying the ID.",
+  "author": "MrLar#2565",
+  "license": "MIT",
+  "repo": null
+}
