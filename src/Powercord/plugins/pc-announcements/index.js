@@ -2,6 +2,7 @@ const { resolve } = require('path');
 const { existsSync } = require('fs');
 const { unlink } = require('fs').promises;
 const Plugin = require('powercord/Plugin');
+const { shell: { openExternal } } = require('electron');
 const { inject, uninject } = require('powercord/injector');
 const { React, ReactDOM, getModule } = require('powercord/webpack');
 const Notice = require('./Notice');
@@ -33,6 +34,15 @@ module.exports = class Announcements extends Plugin {
         }
       }, true);
     }
+
+    this.sendNotice({
+      id: 'pc-pewdiepie',
+      message: 'Subscribe to PewDiePie',
+      button: {
+        text: 'Go to channel',
+        onClick: () => openExternal('https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw')
+      }
+    });
   }
 
   unload () {
