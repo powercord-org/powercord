@@ -73,16 +73,16 @@ module.exports = class Badges extends Plugin {
           ReactDOM.render(React.createElement(Badge, { badge: 'contributor' }), contributorE);
         }
 
-        if (this.badges.tester) {
-          const testerE = createElement('div');
-          element.appendChild(testerE);
-          ReactDOM.render(React.createElement(Badge, { badge: 'tester' }), testerE);
-        }
-
         if (this.badges.hunter) {
           const hunterE = createElement('div');
           element.appendChild(hunterE);
           ReactDOM.render(React.createElement(Badge, { badge: 'hunter' }), hunterE);
+        }
+
+        if (this.badges.tester) {
+          const testerE = createElement('div');
+          element.appendChild(testerE);
+          ReactDOM.render(React.createElement(Badge, { badge: 'tester' }), testerE);
         }
       }
     });
