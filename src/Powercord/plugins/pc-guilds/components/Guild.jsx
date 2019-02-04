@@ -1,5 +1,6 @@
 const { React, Flux, Router: { Link }, constants: { Routes }, contextMenu, getModuleByDisplayName } = require('powercord/webpack');
 const { Tooltip } = require('powercord/components');
+const { Draggable } = require('react-beautiful-dnd');
 
 const Guild = class Guilds extends React.Component {
   constructor (props) {
@@ -37,26 +38,35 @@ const Guild = class Guilds extends React.Component {
   render () {
     const link = this.props.selectedChannelId ? Routes.CHANNEL(this.props.guild.id, this.props.selectedChannelId) : Routes.GUILD(this.props.guild.id); // eslint-disable-line new-cap
 
-    return <div className={this.guildClassName} ref={this.props.setRef}>
-      <Tooltip text={this.props.guild.name} position='right'>
-        <div className={`${this.guildClasses.guildInner}`} onContextMenu={this.handleContextMenu.bind(this)}>
-          <Link aria-label={this.props.guild.id} to={link}>
-            <div
-              className={this.iconClassName}
-              style={{
-                backgroundImage: this.props.guild.icon
-                  ? `url('https://cdn.discordapp.com/icons/${this.props.guild.id}/${this.props.guild.icon}.webp')`
-                  : '',
-                backgroundSize: 'contain',
-                width: 50,
-                height: 50
-              }}>{!this.props.guild.icon && this.props.guild.acronym}</div>
-          </Link>
+    return <Draggable draggableId={this.props.guild.id} index={this.props.index}>
+      {(provided) => (
+        <div
+          className={this.guildClassName}
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+        >
+          <Tooltip text={this.props.guild.name} position='right'>
+            <div className={`${this.guildClasses.guildInner}`} onContextMenu={this.handleContextMenu.bind(this)}>
+              <Link aria-label={this.props.guild.id} to={link}>
+                <div
+                  className={this.iconClassName}
+                  style={{
+                    backgroundImage: this.props.guild.icon
+                      ? `url('https://cdn.discordapp.com/icons/${this.props.guild.id}/${this.props.guild.icon}.webp')`
+                      : '',
+                    backgroundSize: 'contain',
+                    width: 50,
+                    height: 50
+                  }}>{!this.props.guild.icon && this.props.guild.acronym}</div>
+              </Link>
+            </div>
+          </Tooltip>
+          {this.props.mentions > 0 &&
+          <div className='powercord-mentions-badge pc-wrapper pc-badge pc-fixClipping'>{this.props.mentions}</div>}
         </div>
-      </Tooltip>
-      {this.props.mentions > 0 &&
-      <div className='powercord-mentions-badge pc-wrapper pc-badge pc-fixClipping'>{this.props.mentions}</div>}
-    </div>;
+      )}
+    </Draggable>;
   }
 
   handleContextMenu (e) {

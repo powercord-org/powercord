@@ -16,6 +16,16 @@
   height: 500px;
 }
 
+.powercord-guilds {
+  .pc-guild {
+    margin-top: 8px;
+
+    &:nth-child(1) {
+      margin-top: 0;
+    }
+  }
+}
+
 .powercord-mentions-badge {
   pointer-events: none;
   background-clip: padding-box;
