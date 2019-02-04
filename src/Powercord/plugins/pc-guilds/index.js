@@ -25,7 +25,9 @@ module.exports = class GuildFolders extends Plugin {
     // eslint-disable-next-line func-names
     DGuilds.prototype.render = (_render => function (...args) {
       const res = _render.call(this, ...args);
-      res.props.children[1].props.children[4] = React.createElement(Guilds, Object.assign({}, this.props, {
+      const child = res.props.children[1].props.children;
+      const guildsIndex = child.indexOf(child.find(c => Array.isArray(c)));
+      child[guildsIndex] = React.createElement(Guilds, Object.assign({}, this.props, {
         setRef: (key, e) => this.guildRefs[key] = e,
         settings: _this.settings
       }));
@@ -47,7 +49,6 @@ module.exports = class GuildFolders extends Plugin {
       if (actions) {
         const element = createElement('div', { id: 'powercord-create-folder' });
         ReactDOM.render(React.createElement(CreateFolder), element);
-
         actions.parentElement.appendChild(element);
       }
     })(AddGuild.prototype.componentDidMount);
@@ -58,11 +59,9 @@ module.exports = class GuildFolders extends Plugin {
       }
 
       const actions = document.querySelector('.pc-createGuildDialog header + .pc-actions');
-
       if (actions && !document.querySelector('#powercord-create-folder')) {
         const element = createElement('div', { id: 'powercord-create-folder' });
         ReactDOM.render(React.createElement(CreateFolder), element);
-
         actions.parentElement.appendChild(element);
       }
     })(AddGuild.prototype.componentDidUpdate);

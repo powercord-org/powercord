@@ -7,7 +7,6 @@ const Guild = class Guilds extends React.Component {
 
     this.guildClasses = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.downloadAppButton)[0].exports;
     this.iconClasses = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.iconActiveMini)[0].exports;
-    this.contextMenuClass = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.contextMenu)[0].exports.contextMenu;
   }
 
   get guildClassName () {
@@ -63,19 +62,13 @@ const Guild = class Guilds extends React.Component {
   handleContextMenu (e) {
     const GuildContextMenu = getModuleByDisplayName('GuildContextMenu');
 
-    const { pageX, pageY } = e;
-
-    contextMenu.openContextMenu(e, () =>
+    contextMenu.openContextMenu(e, (props) =>
       React.createElement(GuildContextMenu, {
+        ...props,
         type: 'GUILD_ICON_BAR',
         guild: this.props.guild,
         badge: this.props.mentions > 0,
         selected: this.props.selected,
-        style: {
-          left: pageX,
-          top: pageY
-        },
-        className: `${this.contextMenuClass} theme-dark`,
         isPowercord: true,
         hidden: this.props.hidden,
         onHide: () => this.props.onHide()
