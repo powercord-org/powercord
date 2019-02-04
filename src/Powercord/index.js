@@ -37,9 +37,13 @@ module.exports = class Powercord extends EventEmitter {
 
   async init () {
     await Promise.all(modules.map(mdl => mdl()));
-    this.fetchAccount();
+    if (this.settings.get('hideToken', true)) {
+      require('powercord/webpack').getModule([ 'hideToken' ]).hideToken = () => void 0;
+    }
+
     this.pluginManager.startPlugins();
 
+    await this.fetchAccount();
     if (this.account && this.settings.get('settingsSync', false)) {
       SettingsManager.download();
     }
@@ -49,10 +53,6 @@ module.exports = class Powercord extends EventEmitter {
         SettingsManager.upload();
       }
     });
-
-    if (this.settings.get('hideToken', true)) {
-      require('powercord/webpack').getModule([ 'hideToken' ]).hideToken = () => void 0;
-    }
   }
 
   async fetchAccount () {
