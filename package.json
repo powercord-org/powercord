@@ -21,6 +21,7 @@
   "dependencies": {
     "buble": "^0.19.6",
     "chokidar": "^2.0.4",
+    "react-beautiful-dnd": "^10.0.4",
     "sass": "^1.15.1"
   },
   "devDependencies": {

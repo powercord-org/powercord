@@ -1,0 +1,11 @@
+{
+  "name": "Guild Folders",
+  "version": "0.0.1",
+  "description": "Allows you to organize your servers with folders and more",
+  "author": "Powercord Team",
+  "license": "MIT",
+  "repo": null,
+  "dependencies": [
+    "pc-classNameNormalizer"
+  ]
+}
