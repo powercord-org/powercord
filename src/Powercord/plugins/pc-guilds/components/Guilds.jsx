@@ -22,7 +22,7 @@ module.exports = class Guilds extends React.Component {
 
   render () {
     const hiddenGuilds = this.props.settings.get('hidden', []);
-    const guilds = this._getGuilds(hiddenGuilds);
+    const guilds = this._getGuilds();
 
     return <DragDropContext onDragEnd={this.onDragEnd}>
       <Droppable droppableId="droppable">
@@ -68,20 +68,24 @@ module.exports = class Guilds extends React.Component {
     </DragDropContext>;
   }
 
-  _getGuilds (hiddenGuilds) {
-    // Remove hidden guilds from list
+  _getGuilds () {
+    const hiddenGuilds = this.props.settings.get('hidden', []);
     let { guilds } = this.props;
-    let hiddenMentions = 0;
+    let toggledMentions = 0;
 
-    if (!this.state.hidden) {
-      guilds = guilds.filter(({ guild }) => !hiddenGuilds.includes(guild.id));
-      hiddenGuilds.forEach(g => hiddenMentions += this.props.mentionCounts[g] || 0);
-    }
+    guilds = guilds.filter(({ guild }) => {
+      if (hiddenGuilds.includes(guild.id)) {
+        toggledMentions += this.state.hidden ? 0 : this.props.mentionCounts[guild.id];
+        return this.state.hidden;
+      }
+      toggledMentions += !this.state.hidden ? 0 : this.props.mentionCounts[guild.id];
+      return !this.state.hidden;
+    });
 
     return {
       items: guilds,
       mentions: {
-        hidden: hiddenMentions
+        hidden: toggledMentions
       },
       unreads: {}
     };
