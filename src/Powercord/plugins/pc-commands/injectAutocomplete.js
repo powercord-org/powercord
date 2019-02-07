@@ -4,7 +4,9 @@ const { waitFor, getOwnerInstance, sleep } = require('powercord/util');
 module.exports = async function injectAutocomplete () {
   const _this = this;
 
-  const plugins = [ ...powercord.pluginManager.plugins.keys() ];
+  const disabledPlugins = powercord.settings.get('disabledPlugins');
+  const plugins = [ ...powercord.pluginManager.plugins.keys() ]
+    .filter(plugin => !disabledPlugins.includes(plugin));
   while (!plugins.every(plugin =>
     (powercord.pluginManager.get(plugin) || { ready: true }).ready // ugly fix lol
   )) {
@@ -70,10 +72,10 @@ module.exports = async function injectAutocomplete () {
       }
     };
 
-  await waitFor('.channelTextArea-rNsIhG');
+  await waitFor('.pc-channelTextArea');
 
   const updateInstance = () =>
-    (this.instance = getOwnerInstance(document.querySelector('.channelTextArea-rNsIhG')));
+    (this.instance = getOwnerInstance(document.querySelector('.pc-channelTextArea')));
   const instancePrototype = Object.getPrototypeOf(updateInstance());
 
   pcInject('pc-commands-autocomplete', instancePrototype, 'componentDidMount', (args, originReturn) => {
