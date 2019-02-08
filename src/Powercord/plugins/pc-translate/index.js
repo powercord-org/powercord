@@ -22,6 +22,7 @@ module.exports = class Translate extends Plugin {
       .filter(k => typeof translate.languages[k] === 'string');
 
     const MessageContextMenu = await getModuleByDisplayName('messagecontextmenu');
+    // @todo: Inject into MessageContent component to update only raw contents and keep formatting (requires injecting before Discord's code, #78)
     inject('pc-translate-context', MessageContextMenu.prototype, 'render', function (args, res) { // eslint-disable-line func-names
       const setText = async (opts) => {
         const message = this.props.target.closest('.pc-containerCozyBounded');
@@ -58,7 +59,9 @@ module.exports = class Translate extends Plugin {
 
                 message.querySelectorAll('.pc-markup')
                   .forEach(markup => {
-                    markup.innerHTML = markup.dataset.original;
+                    if (markup.dataset.original) {
+                      markup.firstChild.nodeValue = markup.dataset.original;
+                    }
                   });
 
                 timestamp.removeChild(this);
