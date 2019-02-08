@@ -4,5 +4,8 @@
   "description": "Powercord's command manager",
   "author": "Powercord Team",
   "license": "MIT",
-  "repo": null
+  "repo": null,
+  "dependencies": [
+    "pc-classNameNormalizer"
+  ]
 }
