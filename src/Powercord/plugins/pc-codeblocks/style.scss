@@ -42,41 +42,41 @@
   bottom: initial !important;
 }
 
-/* Attribution: noodlebox */
+/* Attribution: ThuverX#9814 */
 
-.hljs {
-  position: relative;
-  padding-top: calc(20px + .5em) !important;
-
-  &:hover .powercord-codeblock-copy-btn {
-    opacity: 1;
-  }
-
-  ol {
-    list-style: none;
-    counter-reset: linenumbers;
-
-    li {
-      text-indent: -4ch;
-      margin-left: 3.5ch;
-      padding-left: 0.5ch;
-      border-left: 1px solid rgba(0, 0, 0, 0.2);
-
-      &::before {
-        color: rgba(127, 127, 127, 0.5);
-        display: inline-block;
-        width: 3ch;
-        margin-right: 0.5ch;
-        padding-right: 0.5ch;
-        text-align: right;
-        counter-increment: linenumbers;
-        content: counter(linenumbers);
-        user-select: none;
-      }
-    }
-  }
+$numbers: '';
+@for $i from 1 through 999 {
+  $numbers: $numbers + $i + '\A '
 }
 
-.hljs[class$='hljs'] {
-  padding-top: .5em !important;
+.hljs {
+  overflow: hidden;
+  position: relative;
+  padding-left: calc(35px + .5em) !important;
+
+  &:not([class$='hljs']) {
+    padding-top: calc(20px + .5em) !important;
+
+    .powercord-lines:after {
+      top: calc(20px + .5em);
+    }
+  }
+
+  .powercord-lines {
+    text-align: right;
+    height: 100%;
+    width: 30px;
+    line-height: 1rem;
+
+    &:after {
+      overflow: hidden;
+      content: $numbers;
+      position: absolute;
+      padding-right: 6px;
+      left: -3px;
+      top: .5em;
+      bottom: .5em;
+      border-right: 1px solid rgba(0, 0, 0, 0.2);
+    }
+  }
 }

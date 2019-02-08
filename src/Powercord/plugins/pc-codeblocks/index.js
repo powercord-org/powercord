@@ -36,14 +36,7 @@ module.exports = class Codeblocks extends Plugin {
       return;
     }
 
-    // Attribution: noodlebox
     codeblock._originalInnerHTML = codeblock.innerHTML;
-
-    // eslint-disable-next-line prefer-template
-    codeblock.innerHTML = '<ol>' + codeblock.innerHTML
-      .split('\n')
-      .map(l => `<li>${l}</li>`)
-      .join('') + '</ol>';
 
     const lang = codeblock.className.split(' ').find(c => !c.includes('-') && c !== 'hljs');
     if (lang) {
@@ -54,6 +47,8 @@ module.exports = class Codeblocks extends Plugin {
         })
       );
     }
+
+    codeblock.appendChild(createElement('div', { className: 'powercord-lines' }));
 
     codeblock.appendChild(
       createElement('button', {
