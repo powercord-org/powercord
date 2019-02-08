@@ -204,7 +204,7 @@ module.exports = class EmojiUtility extends Plugin {
     return getGuild(guildId).hasFeature(GuildFeatures.MORE_EMOJI) ? EMOJI_MAX_SLOTS_MORE : EMOJI_MAX_SLOTS;
   }
 
-  start () {
+  async start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
 
     /* Default settings */
@@ -429,7 +429,7 @@ module.exports = class EmojiUtility extends Plugin {
       return features;
     };
 
-    const MessageContextMenu = getModuleByDisplayName('MessageContextMenu');
+    const MessageContextMenu = await getModuleByDisplayName('MessageContextMenu');
     inject('pc-emojiUtility-emojiContext', MessageContextMenu.prototype, 'render', function (args, res) { // eslint-disable-line func-names
       const { target } = this.props;
       if (target.classList.contains('emoji')) {

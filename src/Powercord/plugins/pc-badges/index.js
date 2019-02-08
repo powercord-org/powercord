@@ -21,9 +21,8 @@ module.exports = class Badges extends Plugin {
     uninject('pc-badges-update');
   }
 
-  _patchUserComponent () {
-    const UserProfile = getModuleByDisplayName('UserProfile');
-
+  async _patchUserComponent () {
+    const UserProfile = await getModuleByDisplayName('UserProfile');
     inject('pc-badges-fetch', UserProfile.prototype, 'fetchPowercordBadges', async function () { // eslint-disable-line
       if (this.userID !== this.props.user.id) {
         this.badges = null;

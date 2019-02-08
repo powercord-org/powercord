@@ -28,10 +28,10 @@ module.exports = class GuildFolders extends Plugin {
     uninject('pc-guilds-context');
   }
 
-  _patchGuilds () {
+  async _patchGuilds () {
     const _this = this;
 
-    const DGuilds = getModuleByDisplayName('Guilds');
+    const DGuilds = await getModuleByDisplayName('Guilds');
     inject('pc-guilds', DGuilds.prototype, 'render', function (_, res) { // eslint-disable-line func-names
       res.props.children[1].props.children[3].props.children[0] = React.createElement(Guilds, Object.assign({}, this.props, {
         setRef: (key, e) => this.guildRefs[key] = e,
@@ -70,8 +70,8 @@ module.exports = class GuildFolders extends Plugin {
     });
   }
 
-  _patchContextMenu () {
-    const GuildContextMenu = getModuleByDisplayName('GuildContextMenu');
+  async _patchContextMenu () {
+    const GuildContextMenu = await getModuleByDisplayName('GuildContextMenu');
 
     inject('pc-guilds-context', GuildContextMenu.prototype, 'render', function (_, res) { // eslint-disable-line func-names
       if (this.props.isPowercord) {

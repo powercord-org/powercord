@@ -51,9 +51,9 @@ module.exports = class Settings extends Plugin {
     });
   }
 
-  patchSettingsComponent () {
+  async patchSettingsComponent () {
     const _this = this;
-    const SettingsView = getModuleByDisplayName('SettingsView');
+    const SettingsView = await getModuleByDisplayName('SettingsView');
     inject('pc-settings-items', SettingsView.prototype, 'getPredicateSections', (args, sections) => { // eslint-disable-line
       const changelog = sections.find(c => c.section === 'changelog');
       if (changelog) {

@@ -17,11 +17,11 @@ module.exports = class Translate extends Plugin {
     uninject('pc-translate-context');
   }
 
-  _injectTranslator () {
+  async _injectTranslator () {
     const languages = Object.keys(translate.languages)
       .filter(k => typeof translate.languages[k] === 'string');
 
-    const MessageContextMenu = getModuleByDisplayName('messagecontextmenu');
+    const MessageContextMenu = await getModuleByDisplayName('messagecontextmenu');
     inject('pc-translate-context', MessageContextMenu.prototype, 'render', function (args, res) { // eslint-disable-line func-names
       const setText = async (opts) => {
         const message = this.props.target.closest('.pc-containerCozyBounded');
