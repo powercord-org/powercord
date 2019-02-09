@@ -41,6 +41,9 @@
   text-shadow: 0 1px 0 rgba(0, 0, 0, .25);
   text-transform: uppercase;
   transform: translateZ(0);
+  bottom: -2px;
+  right: -2px;
+  position: absolute;
 }
 
 .pc-guild .powercord-mentions-badge {
