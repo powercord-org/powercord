@@ -79,4 +79,8 @@ $numbers: '';
       border-right: 1px solid rgba(0, 0, 0, 0.2);
     }
   }
+
+  &:hover .powercord-codeblock-copy-btn {
+    opacity: 1;
+  }
 }
