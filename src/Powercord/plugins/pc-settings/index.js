@@ -12,6 +12,11 @@ module.exports = class Settings extends Plugin {
   }
 
   start () {
+    // The reason why I do that is because settings may be required by plugins that are designed to work in overlay
+    if (window.__OVERLAY__) {
+      this.log('Note: started in compatibility mode');
+      return;
+    }
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this.patchExperiments();
     this.patchSettingsComponent();
@@ -19,6 +24,9 @@ module.exports = class Settings extends Plugin {
   }
 
   unload () {
+    if (window.__OVERLAY__) {
+      return;
+    }
     this.unloadCSS();
     uninject('pc-settings-items');
     uninject('pc-settings-errorHandler');

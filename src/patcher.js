@@ -19,6 +19,22 @@ class PatchedBrowserWindow extends BrowserWindow {
   }
 }
 
+Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
+require.cache[electronPath].exports = {};
+
+const failedExports = [];
+for (const prop in electron) {
+  try {
+    // noinspection JSUnfilteredForInLoop
+    require.cache[electronPath].exports[prop] = electron[prop];
+  } catch (_) {
+    // noinspection JSUnfilteredForInLoop
+    failedExports.push(prop);
+  }
+}
+
+require.cache[electronPath].exports.BrowserWindow = PatchedBrowserWindow;
+
 app.once('ready', () => {
   session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
     Object.keys(responseHeaders)
@@ -28,10 +44,9 @@ app.once('ready', () => {
     done({ responseHeaders });
   });
 
-  Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
-  require.cache[electronPath].exports = Object.assign({}, electron, {
-    BrowserWindow: PatchedBrowserWindow
-  });
+  for (const prop of failedExports) {
+    require.cache[electronPath].exports[prop] = electron[prop];
+  }
 });
 
 const discordPackage = require(join(discordPath, 'package.json'));

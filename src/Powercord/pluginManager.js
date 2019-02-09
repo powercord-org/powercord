@@ -269,19 +269,19 @@ module.exports = class PluginManager {
 
   // Start
   startPlugins () {
+    const isOverlay = (/overlay/).test(location.pathname);
     readdirSync(this.pluginDir).forEach(filename => this.mount(filename));
     for (const plugin of [ ...this.plugins.values() ]) {
       if (powercord.settings.get('disabledPlugins', []).includes(plugin.pluginID)) {
         continue;
       }
       if (
-        (plugin.manifest.appMode === 'overlay' && window.__OVERLAY__) ||
-        (plugin.manifest.appMode === 'app' && !window.__OVERLAY__) ||
+        (plugin.manifest.appMode === 'overlay' && isOverlay) ||
+        (plugin.manifest.appMode === 'app' && !isOverlay) ||
         plugin.manifest.appMode === 'both'
       ) {
         this.load(plugin.pluginID);
       } else {
-        console.error('%c[Powercord]', 'color: #257dd4', `Plugin ${plugin.constructor.name} doesn't have a valid app mode - Skipping`);
         this.plugins.delete(plugin);
       }
     }

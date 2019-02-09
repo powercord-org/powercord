@@ -5,6 +5,7 @@
   "author": "Powercord Team",
   "license": "MIT",
   "repo": null,
+  "appMode": "both",
   "dependencies": [
     "pc-classNameNormalizer"
   ]

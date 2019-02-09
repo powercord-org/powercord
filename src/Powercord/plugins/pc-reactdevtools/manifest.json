@@ -4,5 +4,6 @@
   "description": "Adds React Devtools in Discord devtools",
   "author": "Powercord Team",
   "license": "MIT",
-  "repo": null
+  "repo": null,
+  "appMode": "both"
 }

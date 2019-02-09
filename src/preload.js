@@ -10,15 +10,21 @@ require('module')
     join(__dirname, 'fake_node_modules')
   );
 
+const isOverlay = (/overlay/).test(location.pathname);
+
 const Powercord = require('./Powercord');
 global.powercord = new Powercord();
 
-if (powercord.settings.get('openOverlayDevTools', false) && window.__OVERLAY__) {
-  remote
-    .getCurrentWindow()
-    .openDevTools({
-      mode: 'detach'
-    });
+// if (powercord.settings.get('openOverlayDevTools', false) && isOverlay) {
+if (isOverlay) {
+  // Discord is gay and localStorage is not the same in client and in overlay
+  setTimeout(() => {
+    remote
+      .getCurrentWindow()
+      .openDevTools({
+        mode: 'detach'
+      });
+  }, 1500);
 }
 
 // https://github.com/electron/electron/issues/9047

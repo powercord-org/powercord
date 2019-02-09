@@ -7,7 +7,6 @@
   "repo": null,
   "appMode": "both",
   "dependencies": [
-    "pc-classNameNormalizer",
-    "pc-settings"
+    "pc-classNameNormalizer"
   ]
 }
