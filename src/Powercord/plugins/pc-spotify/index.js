@@ -74,8 +74,10 @@ module.exports = class Spotify extends Plugin {
   }
 
   openPremiumDialog () {
-    const PremiumDialog = getModuleByDisplayName('SpotifyPremiumUpgrade');
-    openModal(() => React.createElement(PremiumDialog, { isPowercord: true }));
+    if (!document.querySelector('.powercord-spotify-premium')) {
+      const PremiumDialog = getModuleByDisplayName('SpotifyPremiumUpgrade');
+      openModal(() => React.createElement(PremiumDialog, { isPowercord: true }));
+    }
   }
 
   async _injectModal () {
@@ -128,6 +130,7 @@ module.exports = class Spotify extends Plugin {
     inject('pc-spotify-premium', PremiumDialog.prototype, 'render', function (args, res) { // eslint-disable-line func-names
       if (this.props.isPowercord) {
         res.props.children[1].props.children[1].props.children = 'Sorry pal, looks like you aren\'t a Spotify Premium member! Premium members are able to control Spotify through Discord with Powercord\'s Spotify modal';
+        res.props.children[1].props.children[1].props.className += ' powercord-spotify-premium';
       }
       return res;
     });
