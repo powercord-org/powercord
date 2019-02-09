@@ -48,8 +48,8 @@ module.exports = class Codeblocks extends Plugin {
       );
     }
 
+    codeblock.innerHTML = `<div>${codeblock.innerHTML}</div>`;
     codeblock.appendChild(createElement('div', { className: 'powercord-lines' }));
-
     codeblock.appendChild(
       createElement('button', {
         className: 'powercord-codeblock-copy-btn',
