@@ -4,7 +4,7 @@ const { waitFor, getOwnerInstance, sleep } = require('powercord/util');
 module.exports = async function injectAutocomplete () {
   const _this = this;
 
-  const disabledPlugins = powercord.settings.get('disabledPlugins');
+  const disabledPlugins = powercord.settings.get('disabledPlugins', []);
   const plugins = [ ...powercord.pluginManager.plugins.keys() ]
     .filter(plugin => !disabledPlugins.includes(plugin));
   while (!plugins.every(plugin =>
