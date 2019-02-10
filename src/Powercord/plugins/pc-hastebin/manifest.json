@@ -6,6 +6,7 @@
   "license": "MIT",
   "repo": null,
   "dependencies": [
-    "pc-commands"
+    "pc-commands",
+    "pc-settings"
   ]
 }
