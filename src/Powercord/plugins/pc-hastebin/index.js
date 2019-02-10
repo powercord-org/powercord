@@ -1,15 +1,26 @@
 const Plugin = require('powercord/Plugin');
 const { get, post } = require('powercord/http');
 const { clipboard } = require('electron');
+const { React } = require('powercord/webpack');
+
+const Settings = require('./Settings.jsx');
 
 module.exports = class Hastebin extends Plugin {
-  constructor () {
-    super();
-
-    this.DOMAIN = 'https://haste.aetheryx.xyz';
-  }
-
   start () {
+    powercord
+      .pluginManager
+      .get('pc-settings')
+      .register('pc-hastebin', 'Hastebin', () =>
+        React.createElement(Settings, {
+          settings: this.settings
+        })
+      );
+
+    const domain = this.settings.get('domain', 'https://haste.aetheryx.xyz');
+    const prefix = powercord.pluginManager
+      .get('pc-commands').settings
+      .get('prefix', '.'); // todo: make not ugly at time other than 4:30am
+
     powercord
       .pluginManager
       .get('pc-commands')
@@ -22,16 +33,23 @@ module.exports = class Hastebin extends Plugin {
             ? !!args.splice(args.indexOf('--send'), 1)
             : false;
 
-          const { body } = await post(`${this.DOMAIN}/documents`)
-            .send(
-              args.includes('--clipboard')
-                ? clipboard.readText()
-                : await this.parseArguments(args)
-            );
+          const data = args.includes('--clipboard')
+            ? clipboard.readText()
+            : await this.parseArguments(args)
+
+          if (!data) {
+            return {
+              send: false,
+              result: `Invalid arguments. Run \`${prefix}help hastebin\` for more information.`
+            };
+          }
+
+          const { body } = await post(`${domain}/documents`)
+            .send(data);
 
           return {
             send,
-            result: `${this.DOMAIN}/${body.key}`
+            result: `${domain}/${body.key}`
           };
         }
       );
@@ -49,5 +67,7 @@ module.exports = class Hastebin extends Plugin {
     if (input.startsWith('https://cdn.discordapp.com/attachments')) {
       return get(input).then(res => res.raw);
     }
+
+    return false;
   }
 };
