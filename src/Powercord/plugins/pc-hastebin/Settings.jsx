@@ -31,7 +31,7 @@ module.exports = class HastebinSettings extends React.Component {
           note='The domain used for the Hastebin server.'
           defaultValue={settings.domain}
           required={true}
-          onChange={val => set('domain', val)}
+          onChange={val => set('domain', val.endsWith('/') ? val.slice(0, -1) : val)}
         >
           Domain
         </TextInput>
