@@ -15,6 +15,10 @@ module.exports = class ClassNameNormalizer extends Plugin {
   start () {
     this.patchModules(this._fetchAllModules());
     this.normalizeElement(document.querySelector('#app-mount'));
+
+    if (window.__OVERLAY__) {
+      document.body.classList.add('overlay');
+    }
   }
 
   patchModules (modules) {
