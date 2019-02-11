@@ -38,8 +38,9 @@ module.exports = class Powercord extends EventEmitter {
 
   async init () {
     await Promise.all(modules.map(mdl => mdl()));
+    const isOverlay = (/overlay/).test(location.pathname);
     // In Discord client I have usually 21 entries in it. In the overlay I usually have 19 entries
-    while (window.webpackJsonp.length < 18) {
+    while (window.webpackJsonp.length < (isOverlay ? 19 : 21)) {
       await sleep(1);
     }
 
