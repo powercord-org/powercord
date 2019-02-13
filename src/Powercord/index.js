@@ -9,6 +9,8 @@ module.exports = class Powercord extends EventEmitter {
   constructor () {
     super();
 
+    this._fetchBuildInfo();
+
     this.pluginManager = new PluginManager();
     this.settings = new SettingsManager('general');
     this.account = null;
@@ -96,5 +98,17 @@ module.exports = class Powercord extends EventEmitter {
     }
     console.debug('%c[Powercord]', 'color: #257dd4', 'Logged in!');
     this.isLinking = false;
+  }
+
+  _fetchBuildInfo () {
+    const consoleLog = console.log;
+    console.log = (...data) => {
+      if (data[0].includes('[BUILD INFO]')) {
+        [ , window.GLOBAL_ENV.BUILD_NUMBER, window.GLOBAL_ENV.VERSION_HASH ] = data[0].match(/build number: ([0-9]+), version hash: ([a-f0-9]+)/i);
+        this.buildInfo = `Release channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Build number: ${window.GLOBAL_ENV.BUILD_NUMBER}`;
+        console.log = consoleLog;
+      }
+      consoleLog(...data);
+    };
   }
 };
