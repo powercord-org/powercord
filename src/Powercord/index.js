@@ -9,8 +9,6 @@ module.exports = class Powercord extends EventEmitter {
   constructor () {
     super();
 
-    this._fetchBuildInfo();
-
     this.pluginManager = new PluginManager();
     this.settings = new SettingsManager('general');
     this.account = null;
@@ -45,6 +43,9 @@ module.exports = class Powercord extends EventEmitter {
     while (window.webpackJsonp.length < (isOverlay ? 19 : 21)) {
       await sleep(1);
     }
+
+    const buildId = require('powercord/webpack').getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ])._globalOptions.release;
+    this.buildInfo = `Release Channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Build Number: ${buildId}`;
 
     this.fetchAccount();
     if (this.settings.get('hideToken', true)) {
@@ -98,18 +99,5 @@ module.exports = class Powercord extends EventEmitter {
     }
     console.debug('%c[Powercord]', 'color: #257dd4', 'Logged in!');
     this.isLinking = false;
-  }
-
-  // @todo: make console log resetting actually work
-  _fetchBuildInfo () {
-    console._log = console.log;
-    console.log = (...data) => {
-      if (typeof data[0] === 'string' && data[0].includes('[BUILD INFO]')) {
-        [ , window.GLOBAL_ENV.BUILD_NUMBER, window.GLOBAL_ENV.VERSION_HASH ] = data[0].match(/build number: ([0-9]+), version hash: ([a-f0-9]+)/i);
-        this.buildInfo = `Release channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Build number: ${window.GLOBAL_ENV.BUILD_NUMBER}`;
-        console.log = console._log;
-      }
-      console._log(...data);
-    };
   }
 };
