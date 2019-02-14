@@ -33,7 +33,7 @@ module.exports = class GuildFolders extends Plugin {
 
     const DGuilds = await getModuleByDisplayName('Guilds');
     inject('pc-guilds', DGuilds.prototype, 'render', function (_, res) { // eslint-disable-line func-names
-      res.props.children[1].props.children[3].props.children[0] = React.createElement(Guilds, Object.assign({}, this.props, {
+      res.props.children[1].props.children[2].props.children[1] = React.createElement(Guilds, Object.assign({}, this.props, {
         setRef: (key, e) => this.guildRefs[key] = e,
         settings: _this.settings
       }));
