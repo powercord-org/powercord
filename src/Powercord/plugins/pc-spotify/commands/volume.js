@@ -3,7 +3,7 @@ module.exports = {
   description: 'Change Spotify volume',
   usage: '/volume <number between 1-100>',
 
-  func (SpotifyPlayer, args) {
+  func (SpotifyPlayer, [ args ]) {
     return SpotifyPlayer.setVolume(args);
   }
 };
