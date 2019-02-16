@@ -10,7 +10,8 @@ module.exports = class SeekBar extends React.Component {
       seeking: false,
       progress: null,
       wasPlaying: false,
-      renderInterval: null
+      renderInterval: null,
+      listeners: {}
     };
 
     this.seek = this.seek.bind(this);

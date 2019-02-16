@@ -76,7 +76,10 @@ module.exports = class Modal extends React.Component {
       this._settings = this.props.main.settings.get('showControls', true);
       return true;
     }
-    return this.repeatStruct[this.state.repeatState].next === newState.repeatState || this.state.repeatState === newState.repeatState;
+
+    return this.repeatStruct[this.state.repeatState].next === newState.repeatState ||
+      this.state.repeatState === newState.repeatState ||
+      this.state.displayState !== newState.displayState;
   }
 
   updateData (playerState) {
@@ -129,6 +132,8 @@ module.exports = class Modal extends React.Component {
           }
       }
     });
+
+    this.updateData(await SpotifyPlayer.getPlayer());
   }
 
   onButtonClick (method, ...args) {
@@ -138,6 +143,7 @@ module.exports = class Modal extends React.Component {
 
   render () {
     const { currentItem, isPlaying, displayState } = this.state;
+    console.log(displayState);
     const artists = concat(currentItem.artists);
 
     const shuffleColor = this.state.shuffleState ? '#1ed860' : '#fff';

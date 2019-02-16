@@ -12,7 +12,8 @@ module.exports = class Title extends React.Component {
   }
 
   render () {
-    this.canvas.font = getComputedStyle(document.querySelector(`.${this.props.className}`)).font;
+    // todo: make dynamic
+    this.canvas.font = 'normal normal 400 normal 14px / 14px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif';
     const titleWidth = Math.ceil(this.canvas.measureText(this.props.children).width);
     const animationDuration = (titleWidth - 84) * 90;
     let { className } = this.props;

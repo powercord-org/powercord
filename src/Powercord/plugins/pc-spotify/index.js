@@ -81,23 +81,10 @@ module.exports = class Spotify extends Plugin {
   }
 
   async _injectModal () {
-    await waitFor('.container-2Thooq');
+    const modal = React.createElement(Modal, { main: this });
+    const Account = await getModuleByDisplayName('FluxContainer(Account)');
 
-    const channels = document.querySelector('.channels-Ie2l6A');
-    const userBarContainer = channels.querySelector('.container-2Thooq');
-
-    const renderContainer = document.createElement('div');
-    userBarContainer.parentNode.insertBefore(renderContainer, userBarContainer);
-    ReactDOM.render(React.createElement(Modal, { main: this }), renderContainer);
-
-    const instance = getOwnerInstance(document.querySelector('.channels-Ie2l6A'));
-    inject('pc-spotify-update', instance, 'componentDidUpdate', () => {
-      const [ spotifyModal, userBar ] = document.querySelectorAll('.container-2Thooq');
-
-      spotifyModal
-        .closest('.channels-Ie2l6A')
-        .insertBefore(spotifyModal, userBar);
-    });
+    inject('pc-spotify-modal', Account.prototype, 'render', (args, res) => [ modal, res ]);
   }
 
   async _patchAutoPause (revert) {
