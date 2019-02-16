@@ -2,21 +2,22 @@ const { resolve } = require('path');
 const Plugin = require('powercord/Plugin');
 const { inject, uninject } = require('powercord/injector');
 const { ContextMenu: { Button } } = require('powercord/components');
-const { createElement, getOwnerInstance } = require('powercord/util');
 const { React, ReactDOM, getModuleByDisplayName } = require('powercord/webpack');
+const { createElement, getOwnerInstance, waitFor } = require('powercord/util');
 
 const Guilds = require('./components/Guilds.jsx');
 const CreateFolder = require('./components/CreateFolder.jsx');
 
 module.exports = class GuildFolders extends Plugin {
-  start () {
+  async start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuilds();
     // this._patchAddGuild();
     this._patchContextMenu();
 
     // Ensure new guild component is immediately displayed
-    getOwnerInstance(document.querySelector('.pc-guilds')).forceUpdate();
+    await waitFor('.pc-guilds');
+    getOwnerInstance(document.querySelector()).forceUpdate();
   }
 
   unload () {
@@ -31,9 +32,10 @@ module.exports = class GuildFolders extends Plugin {
   async _patchGuilds () {
     const _this = this;
 
+    // @todo: more durable solution as Discord likes breaking this everyday
     const DGuilds = await getModuleByDisplayName('Guilds');
     inject('pc-guilds', DGuilds.prototype, 'render', function (_, res) { // eslint-disable-line func-names
-      res.props.children[1].props.children[2].props.children[1] = React.createElement(Guilds, Object.assign({}, this.props, {
+      res.props.children[1].props.children[3] = React.createElement(Guilds, Object.assign({}, this.props, {
         setRef: (key, e) => this.guildRefs[key] = e,
         settings: _this.settings
       }));
