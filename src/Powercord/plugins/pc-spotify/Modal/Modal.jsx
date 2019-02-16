@@ -111,29 +111,35 @@ module.exports = class Modal extends React.Component {
     }
   }
 
-  async componentDidMount () {
-    this.props.main.on('event', async (data) => {
-      switch (data.type) {
-        case 'PLAYER_STATE_CHANGED':
-          return this.updateData(data.event.state);
+  async onData (data) {
+    switch (data.type) {
+      case 'PLAYER_STATE_CHANGED':
+        return this.updateData(data.event.state);
 
-        case 'DEVICE_STATE_CHANGED':
-          const { devices } = await SpotifyPlayer.getDevices(); // eslint-disable-line
-          if (!devices[0]) {
-            return this.setState({
-              displayState: 'hide'
-            });
-          }
-          break;
+      case 'DEVICE_STATE_CHANGED':
+        const { devices } = await SpotifyPlayer.getDevices(); // eslint-disable-line
+        if (!devices[0]) {
+          return this.setState({
+            displayState: 'hide'
+          });
+        }
+        break;
+
         case 'track':
-          if (data.identifier === this.state.currentItem.id) {
-            this.stopTimer();
-            this.setState({ inLibrary: !data.removed });
-          }
-      }
-    });
+        if (data.identifier === this.state.currentItem.id) {
+          this.stopTimer();
+          this.setState({ inLibrary: !data.removed });
+        }
+    }
+  }
 
+  async componentDidMount () {
+    this.props.main.on('event', this.onData);
     this.updateData(await SpotifyPlayer.getPlayer());
+  }
+
+  componentWillUnmount () {
+    this.props.main.off('event', this.onData);
   }
 
   onButtonClick (method, ...args) {
@@ -143,7 +149,6 @@ module.exports = class Modal extends React.Component {
 
   render () {
     const { currentItem, isPlaying, displayState } = this.state;
-    console.log(displayState);
     const artists = concat(currentItem.artists);
 
     const shuffleColor = this.state.shuffleState ? '#1ed860' : '#fff';
