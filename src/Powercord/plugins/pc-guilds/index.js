@@ -17,7 +17,7 @@ module.exports = class GuildFolders extends Plugin {
 
     // Ensure new guild component is immediately displayed
     await waitFor('.pc-guilds');
-    getOwnerInstance(document.querySelector()).forceUpdate();
+    getOwnerInstance(document.querySelector('.pc-guilds')).forceUpdate();
   }
 
   unload () {
