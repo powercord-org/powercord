@@ -11,6 +11,8 @@ module.exports = class Modal extends React.Component {
   constructor () {
     super();
 
+    this.onData = this.onData.bind(this);
+
     this.repeatStruct = {
       off: {
         tooltip: 'Repeat',
