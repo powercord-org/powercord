@@ -1,6 +1,6 @@
 const { randomBytes, scryptSync, createCipheriv, createDecipheriv } = require('crypto');
 const { get, post } = require('powercord/http');
-const { access, writeFile, mkdir, unlink } = require('fs').promises;
+const { access, writeFile, mkdir } = require('fs').promises;
 const { join } = require('path');
 
 const exists = (path) =>
@@ -69,12 +69,12 @@ module.exports = class SettingsManager {
     localStorage.setItem(this.category, JSON.stringify(this.config));
 
     if (this.writeToDisk) {
-      let settingsPath = join(__dirname, '..', '..', 'settings')
+      const settingsPath = join(__dirname, '..', '..', 'settings');
       if (!(await exists(settingsPath))) {
-        await mkdir(settingsPath)
+        await mkdir(settingsPath);
       }
 
-      await writeFile(join(settingsPath, `${this.category.replace(/^(pc-)/,"")}.json`), JSON.stringify(this.config, null, 2));
+      await writeFile(join(settingsPath, `${this.category.replace(/^(pc-)/, '')}.json`), JSON.stringify(this.config, null, 2));
     }
   }
 

@@ -6,15 +6,12 @@ const { BrowserWindow, app, session } = electron;
 const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
-console.log('Patching')
 
 let settings;
 try {
-  settings = require('../settings/general.json')
-  console.log(settings)
+  settings = require('../settings/general.json');
 } catch (err) {
-  console.log('catch')
-  settings = {}
+  settings = {};
 }
 
 const { transparentWindow, experimentalWebPlatform } = settings
@@ -26,21 +23,18 @@ class PatchedBrowserWindow extends BrowserWindow {
       global.originalPreload = opts.webPreferences.preload;
       opts.webPreferences.preload = join(__dirname, 'preload.js');
       opts.webPreferences.nodeIntegration = true;
+
+      if (transparentWindow) {
+        opts.transparent = true;
+        opts.backgroundColor = '#00000000';
+        opts.frame = false;
+      }
+
+      if (experimentalWebPlatform) {
+        opts.webPreferences.experimentalFeatures = true;
+      }
     }
 
-    if (transparentWindow) {
-      console.log('transparent')
-      opts.transparent = true
-      opts.backgroundColor = '#00000000'
-      opts.frame = false
-    }
-
-    if (experimentalWebPlatform) {
-      if (!opts.webPreferences) opts.webPreferences = {}
-      opts.webPreferences.experimentalFeatures = true
-    }
-
-    console.log(opts)
     return new BrowserWindow(opts);
   }
 }
