@@ -1,5 +1,5 @@
 const Module = require('module');
-const { join, dirname } = require('path');
+const { join, dirname, resolve } = require('path');
 const electron = require('electron');
 const { BrowserWindow, app, session } = electron;
 
@@ -9,7 +9,7 @@ const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
 let settings;
 try {
-  settings = require('../settings/general.json');
+  settings = require(resolve(__dirname, '../settings/general.json'));
 } catch (err) {
   settings = {};
 }
