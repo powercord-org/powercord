@@ -9,7 +9,7 @@ const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
 let settings;
 try {
-  settings = require(resolve(__dirname, '../settings/general.json'));
+  settings = require(resolve(__dirname, '..', 'settings', 'general.json'));
 } catch (err) {
   settings = {};
 }
