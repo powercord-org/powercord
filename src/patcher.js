@@ -14,7 +14,7 @@ try {
   settings = {};
 }
 
-const { transparentWindow, experimentalWebPlatform } = settings
+const { transparentWindow, experimentalWebPlatform } = settings;
 
 class PatchedBrowserWindow extends BrowserWindow {
   // noinspection JSAnnotator - Make JetBrains happy
