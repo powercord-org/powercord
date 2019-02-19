@@ -102,7 +102,7 @@ module.exports = class GeneralSettings extends React.Component {
           <SwitchItem
             note={
               <span>Makes any windows opened by Discord transparent, useful for themeing.<br/><b
-                style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> This will break window snapping on Windows. Hardware acceleration must be turned off on linux. Requires restart.</span>
+                style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> This will break window snapping on Windows. Hardware acceleration must be turned off on Linux. Requires restart.</span>
             }
             value={settings.transparentWindow}
             onChange={() => this._set('transparentWindow')}
