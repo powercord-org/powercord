@@ -6,6 +6,19 @@ const { BrowserWindow, app, session } = electron;
 const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
+console.log('Patching')
+
+let settings;
+try {
+  settings = require('../settings/general.json')
+  console.log(settings)
+} catch (err) {
+  console.log('catch')
+  settings = {}
+}
+
+const { transparentWindow, experimentalWebPlatform } = settings
+
 class PatchedBrowserWindow extends BrowserWindow {
   // noinspection JSAnnotator - Make JetBrains happy
   constructor (opts) {
@@ -15,6 +28,19 @@ class PatchedBrowserWindow extends BrowserWindow {
       opts.webPreferences.nodeIntegration = true;
     }
 
+    if (transparentWindow) {
+      console.log('transparent')
+      opts.transparent = true
+      opts.backgroundColor = '#00000000'
+      opts.frame = false
+    }
+
+    if (experimentalWebPlatform) {
+      if (!opts.webPreferences) opts.webPreferences = {}
+      opts.webPreferences.experimentalFeatures = true
+    }
+
+    console.log(opts)
     return new BrowserWindow(opts);
   }
 }
