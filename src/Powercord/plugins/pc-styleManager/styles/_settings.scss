@@ -28,6 +28,16 @@
   }
 }
 
+div[class*="switchItem-"] label {
+  display: flex;
+
+  button {
+    margin-left: 10px;
+    min-height: 25px;
+    height: 25px;
+  }
+}
+
 .powercord-settings-category {
   &-title {
     display: flex;

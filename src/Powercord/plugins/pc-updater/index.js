@@ -16,6 +16,7 @@ module.exports = class Updater extends Plugin {
   constructor () {
     super();
 
+    this.checking = false;
     this.cwd = {
       cwd: join(__dirname, ...Array(3).fill('..'))
     };
@@ -51,10 +52,12 @@ module.exports = class Updater extends Plugin {
       .unregister('pc-updater');
   }
 
-  async checkForUpdate () {
+  async checkForUpdate (callback) {
     if (!this.settings.get('checkForUpdates', true)) {
       return;
     }
+
+    this.checking = true;
 
     const branch = await exec('git branch', this.cwd)
       .then(({ stdout }) =>
@@ -76,6 +79,11 @@ module.exports = class Updater extends Plugin {
 
     if (localRevision !== currentRevision) {
       this.askUpdate();
+    }
+
+    this.checking = false;
+    if (callback) {
+      return callback();
     }
   }
 
