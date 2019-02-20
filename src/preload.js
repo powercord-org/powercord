@@ -15,9 +15,7 @@ const isOverlay = (/overlay/).test(location.pathname);
 const Powercord = require('./Powercord');
 global.powercord = new Powercord();
 
-// if (powercord.settings.get('openOverlayDevTools', false) && isOverlay) {
-if (isOverlay) {
-  // Discord is gay and localStorage is not the same in client and in overlay
+if (powercord.settings.get('openOverlayDevTools', false) && isOverlay) {
   setTimeout(() => {
     remote
       .getCurrentWindow()

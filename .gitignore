@@ -9,4 +9,4 @@ src/Powercord/plugins/*
 src/Powercord/plugins/pc-styleManager/themes/*
 !src/Powercord/plugins/pc-styleManager/themes/readme.txt
 
-settings/
+settings/*.json

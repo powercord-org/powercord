@@ -89,6 +89,27 @@ module.exports = class GeneralSettings extends React.Component {
 
           <SwitchItem
             note={
+              <span>Makes any windows opened by Discord transparent, useful for themeing.<br/><b
+                style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> This will break <b>window snapping</b> on Windows. <b>Hardware acceleration</b> must be turned <b>off</b> on Linux.
+                You may encounter issues and have black background in some cases, like when the window is cut off at the top or the bottom due to monitor resolution or when devtools are open and docked. <b>Requires restart</b>.</span>
+            }
+            value={settings.transparentWindow}
+            onChange={() => this._set('transparentWindow')}
+          >
+            Transparent Window
+          </SwitchItem>
+
+          <SwitchItem
+            note={
+              <span>Enables Chromium's experimental Web Platform features that are in development, such as CSS <code>backdrop-filter</code>. Since features are in development you may encounter issues and APIs may change at any time. <b>Requires restart</b>.</span>}
+            value={settings.experimentalWebPlatform}
+            onChange={() => this._set('experimentalWebPlatform')}
+          >
+            Experimental Web Platform features
+          </SwitchItem>
+
+          <SwitchItem
+            note={
               <span><b style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> Enabling this gives you access to features that can be <b>detected by Discord</b> and may result in an <b
                 style={{ color: 'rgb(240, 71, 71)' }}>account termination</b>.
                   Powercord is <b>not responsible</b> for what you do with this feature. Leave it disabled if you are unsure.</span>
@@ -97,25 +118,6 @@ module.exports = class GeneralSettings extends React.Component {
             onChange={() => this._set('experiments')}
           >
             Enable Discord Experiments
-          </SwitchItem>
-
-          <SwitchItem
-            note={
-              <span>Makes any windows opened by Discord transparent, useful for themeing.<br/><b
-                style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> This will break window snapping on Windows. Hardware acceleration must be turned off on Linux. Requires restart.</span>
-            }
-            value={settings.transparentWindow}
-            onChange={() => this._set('transparentWindow')}
-          >
-            Transparent Windows
-          </SwitchItem>
-
-          <SwitchItem
-            note={<span>Enables experimental Web Platform features that are in development, such as CSS <code>backdrop-filter</code>. Requires restart.</span>}
-            value={settings.experimentalWebPlatform}
-            onChange={() => this._set('experimentalWebPlatform')}
-          >
-            Experimental Web Platform features
           </SwitchItem>
         </Category>
       </div>

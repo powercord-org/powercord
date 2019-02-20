@@ -19,7 +19,7 @@ module.exports = class Hastebin extends Plugin {
     const domain = this.settings.get('domain', 'https://haste.aetheryx.xyz');
     const prefix = powercord.pluginManager
       .get('pc-commands').settings
-      .get('prefix', '.'); // todo: make not ugly at time other than 4:30am
+      .get('prefix', '.'); // @todo: make not ugly at time other than 4:30am
 
     powercord
       .pluginManager
@@ -35,7 +35,7 @@ module.exports = class Hastebin extends Plugin {
 
           const data = args.includes('--clipboard')
             ? clipboard.readText()
-            : await this.parseArguments(args)
+            : await this.parseArguments(args);
 
           if (!data) {
             return {
@@ -60,6 +60,11 @@ module.exports = class Hastebin extends Plugin {
       .pluginManager
       .get('pc-commands')
       .unregister('hastebin');
+
+    powercord
+      .pluginManager
+      .get('pc-settings')
+      .unregister('pc-hastebin');
   }
 
   parseArguments (args) {

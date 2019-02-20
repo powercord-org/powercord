@@ -1,33 +1,22 @@
 const { randomBytes, scryptSync, createCipheriv, createDecipheriv } = require('crypto');
 const { get, post } = require('powercord/http');
-const { access, writeFile, mkdir } = require('fs').promises;
+const { writeFile, mkdir } = require('fs').promises;
+const { existsSync } = require('fs');
 const { join } = require('path');
 
-const exists = (path) =>
-  access(path)
-    .then(() => true)
-    .catch(() => false);
+const settingsPath = join(__dirname, '..', '..', 'settings');
 
 module.exports = class SettingsManager {
-  constructor (category, writeToDisk) {
+  constructor (category) {
     if (!category) {
-      throw new TypeError('Missing SettingsManager category name');
+      throw new TypeError('Missing settings category name');
     }
 
-    this.category = category.startsWith('pc-') ? category : `pc-${category}`;
-    this.writeToDisk = !!writeToDisk;
-    this.config = this._readFromLS();
+    this.category = category;
+    this.settingsFile = join(settingsPath, `${this.category}.json`);
+    this.config = this._load();
 
     SettingsManager.instances = [ ...(SettingsManager.instances || []), this ];
-  }
-
-  _readFromLS () {
-    const entry = localStorage.getItem(this.category);
-    try {
-      return JSON.parse(entry) || {};
-    } catch (_) {
-      return {};
-    }
   }
 
   get (nodePath, defaultValue) {
@@ -65,19 +54,23 @@ module.exports = class SettingsManager {
     this._save();
   }
 
-  async _save () {
-    localStorage.setItem(this.category, JSON.stringify(this.config));
-
-    if (this.writeToDisk) {
-      const settingsPath = join(__dirname, '..', '..', 'settings');
-      if (!(await exists(settingsPath))) {
-        await mkdir(settingsPath);
-      }
-
-      await writeFile(join(settingsPath, `${this.category.replace(/^(pc-)/, '')}.json`), JSON.stringify(this.config, null, 2));
+  _load () {
+    try {
+      return require(this.settingsFile);
+    } catch (_) {
+      return {};
     }
   }
 
+  async _save () {
+    if (!existsSync(settingsPath)) {
+      await mkdir(settingsPath);
+    }
+
+    await writeFile(this.settingsFile, JSON.stringify(this.config, null, 2));
+  }
+
+  // @todo: Discord settings sync
   static async upload () {
     const settings = {};
     SettingsManager.instances.forEach(i => {

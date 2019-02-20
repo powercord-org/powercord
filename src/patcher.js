@@ -9,7 +9,7 @@ const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
 let settings;
 try {
-  settings = require(resolve(__dirname, '..', 'settings', 'general.json'));
+  settings = require(resolve(__dirname, '..', 'settings', 'pc-general.json'));
 } catch (err) {
   settings = {};
 }
@@ -26,8 +26,8 @@ class PatchedBrowserWindow extends BrowserWindow {
 
       if (transparentWindow) {
         opts.transparent = true;
-        opts.backgroundColor = '#00000000';
         opts.frame = false;
+        delete opts.backgroundColor;
       }
 
       if (experimentalWebPlatform) {

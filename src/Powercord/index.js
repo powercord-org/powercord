@@ -10,7 +10,7 @@ module.exports = class Powercord extends EventEmitter {
     super();
 
     this.pluginManager = new PluginManager();
-    this.settings = new SettingsManager('general', true);
+    this.settings = new SettingsManager('pc-general', true);
     this.account = null;
     this.isLinking = false;
     this.patchWebSocket();
@@ -39,8 +39,8 @@ module.exports = class Powercord extends EventEmitter {
   async init () {
     await Promise.all(modules.map(mdl => mdl()));
     const isOverlay = (/overlay/).test(location.pathname);
-    // In Discord client I have usually 21 entries in it. In the overlay I usually have 19 entries
-    while (window.webpackJsonp.length < (isOverlay ? 19 : 21)) {
+    // In Discord client I have usually 21 entries in it. In the overlay I usually have 18 entries
+    while (window.webpackJsonp.length < (isOverlay ? 18 : 21)) {
       await sleep(1);
     }
 
