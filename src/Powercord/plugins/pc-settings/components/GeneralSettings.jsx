@@ -18,7 +18,9 @@ module.exports = class GeneralSettings extends React.Component {
       hideToken: get('hideToken', true),
       backendURL: get('backendURL', 'https://powercord.xyz'),
       experiments: get('experiments', false),
-      advancedSettings: get('advancedSettings', false)
+      advancedSettings: get('advancedSettings', false),
+      experimentalWebPlatform: get('experimentalWebPlatform'),
+      transparentWindow: get('transparentWindow')
     };
   }
 
@@ -95,6 +97,25 @@ module.exports = class GeneralSettings extends React.Component {
             onChange={() => this._set('experiments')}
           >
             Enable Discord Experiments
+          </SwitchItem>
+
+          <SwitchItem
+            note={
+              <span>Makes any windows opened by Discord transparent, useful for themeing.<br/><b
+                style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> This will break window snapping on Windows. Hardware acceleration must be turned off on Linux. Requires restart.</span>
+            }
+            value={settings.transparentWindow}
+            onChange={() => this._set('transparentWindow')}
+          >
+            Transparent Windows
+          </SwitchItem>
+
+          <SwitchItem
+            note={<span>Enables experimental Web Platform features that are in development, such as CSS <code>backdrop-filter</code>. Requires restart.</span>}
+            value={settings.experimentalWebPlatform}
+            onChange={() => this._set('experimentalWebPlatform')}
+          >
+            Experimental Web Platform features
           </SwitchItem>
         </Category>
       </div>

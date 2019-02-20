@@ -1,13 +1,21 @@
 const { randomBytes, scryptSync, createCipheriv, createDecipheriv } = require('crypto');
 const { get, post } = require('powercord/http');
+const { access, writeFile, mkdir } = require('fs').promises;
+const { join } = require('path');
+
+const exists = (path) =>
+  access(path)
+    .then(() => true)
+    .catch(() => false);
 
 module.exports = class SettingsManager {
-  constructor (category) {
+  constructor (category, writeToDisk) {
     if (!category) {
       throw new TypeError('Missing SettingsManager category name');
     }
 
     this.category = category.startsWith('pc-') ? category : `pc-${category}`;
+    this.writeToDisk = !!writeToDisk;
     this.config = this._readFromLS();
 
     SettingsManager.instances = [ ...(SettingsManager.instances || []), this ];
@@ -57,8 +65,17 @@ module.exports = class SettingsManager {
     this._save();
   }
 
-  _save () {
+  async _save () {
     localStorage.setItem(this.category, JSON.stringify(this.config));
+
+    if (this.writeToDisk) {
+      const settingsPath = join(__dirname, '..', '..', 'settings');
+      if (!(await exists(settingsPath))) {
+        await mkdir(settingsPath);
+      }
+
+      await writeFile(join(settingsPath, `${this.category.replace(/^(pc-)/, '')}.json`), JSON.stringify(this.config, null, 2));
+    }
   }
 
   static async upload () {

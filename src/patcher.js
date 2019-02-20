@@ -1,10 +1,20 @@
 const Module = require('module');
-const { join, dirname } = require('path');
+const { join, dirname, resolve } = require('path');
 const electron = require('electron');
 const { BrowserWindow, app, session } = electron;
 
 const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
+
+
+let settings;
+try {
+  settings = require(resolve(__dirname, '..', 'settings', 'general.json'));
+} catch (err) {
+  settings = {};
+}
+
+const { transparentWindow, experimentalWebPlatform } = settings;
 
 class PatchedBrowserWindow extends BrowserWindow {
   // noinspection JSAnnotator - Make JetBrains happy
@@ -13,6 +23,16 @@ class PatchedBrowserWindow extends BrowserWindow {
       global.originalPreload = opts.webPreferences.preload;
       opts.webPreferences.preload = join(__dirname, 'preload.js');
       opts.webPreferences.nodeIntegration = true;
+
+      if (transparentWindow) {
+        opts.transparent = true;
+        opts.backgroundColor = '#00000000';
+        opts.frame = false;
+      }
+
+      if (experimentalWebPlatform) {
+        opts.webPreferences.experimentalFeatures = true;
+      }
     }
 
     return new BrowserWindow(opts);
