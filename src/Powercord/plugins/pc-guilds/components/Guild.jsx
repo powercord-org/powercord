@@ -42,7 +42,10 @@ const Guild = class Guilds extends React.Component {
       {(provided) => (
         <div
           className={this.guildClassName}
-          ref={provided.innerRef}
+          ref={(r) => {
+            provided.innerRef(r);
+            this.props.setRef(r);
+          }}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
