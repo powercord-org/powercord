@@ -151,8 +151,7 @@ module.exports = class EmojiUtility extends Plugin {
         const emoji = emojis.find(e => e.id === matcher[2]);
 
         if (emoji) {
-          const guild = getGuild(emoji.guildId);
-          emoji.guild = guild;
+          emoji.guild = getGuild(emoji.guildId);
 
           foundEmojis.push(emoji);
 
@@ -597,7 +596,7 @@ module.exports = class EmojiUtility extends Plugin {
               };
             }
 
-            if (!getCurrentUser().premium) {
+            if (!getCurrentUser().premiumType > 0) {
               return {
                 send: false,
                 result: `Looks like you do not have nitro, let me send that locally instead!\n${emojisAsString}`
