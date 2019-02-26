@@ -8,6 +8,43 @@
     height: 28px;
     position: relative;
   }
+  
+  &-playlist {
+    display: flex;
+    height: 60px;
+    padding: 4px;
+    align-items: center;
+    width: 45%;
+    border: 1px solid #2f3136;
+    border-radius: 4px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    color: white;
+
+    .image {
+      margin-right: 10px;
+      border-radius: 4px;
+    }
+
+    &-modal-header {
+      color: white;
+      font-weight: bold;
+    }
+
+    &-group {
+      display: flex;
+      justify-content: space-evenly;
+      padding-bottom: 10px;
+      flex-wrap: wrap;
+      padding-bottom: 5px;
+      color: white;
+    }
+  }
+
+  &-playlist:hover {
+    cursor: pointer;
+    background: #2f3136;
+  }
 
   .username {
     position: absolute;
@@ -61,8 +98,8 @@
     }
 
     &-duration {
-      min-width: 60px;
-      max-width: 60px;
+      min-width: 35px;
+      max-width: 35px;
     }
 
     &-btngrp {

@@ -56,6 +56,13 @@ module.exports = {
     ).then(r => r.body);
   },
 
+  addToPlaylist (playlistID, songURI) {
+    return this.genericRequest(
+      post(`${this.BASE_URL}/playlists/${playlistID}/tracks`)
+        .query('uris', songURI)
+    ).then(r => r.body);
+  },
+
   getAlbums () {
     return this.genericRequest(
       get(`${this.BASE_URL}/me/albums`)

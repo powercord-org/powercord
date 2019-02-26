@@ -264,6 +264,14 @@ module.exports = class Modal extends React.Component {
                   onClick={() => this.onButtonClick('setRepeatState', this.repeatStruct[this.state.repeatState].next)}
                 />
               </Tooltip>
+
+              <Tooltip text="Save to playlist" position="top">
+                <button
+                  style={{ color: '#fff' }}
+                  className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-plus-circle'
+                  onClick={ () => powercord.pluginManager.get('pc-spotify').openPlaylistModal(currentItem.uri) }
+                />
+              </Tooltip>
             </div>}
           </SeekBar>
         </div>
