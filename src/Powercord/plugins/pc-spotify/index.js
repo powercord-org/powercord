@@ -1,5 +1,6 @@
 const Plugin = require('powercord/Plugin');
 const { open: openModal } = require('powercord/modal');
+const { getOwnerInstance } = require('powercord/util');
 const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
 const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { resolve } = require('path');
@@ -81,7 +82,8 @@ module.exports = class Spotify extends Plugin {
 
   async _injectModal () {
     const modal = React.createElement(Modal, { main: this });
-    injectInFluxContainer('pc-spotify-modal', 'Account', 'render', (args, res) => [ modal, res ]);
+    await injectInFluxContainer('pc-spotify-modal', 'Account', 'render', (args, res) => [ modal, res ]);
+    getOwnerInstance(document.querySelector('.container-2Thooq')).forceUpdate();
   }
 
   async _patchAutoPause (revert) {
