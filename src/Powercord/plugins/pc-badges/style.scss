@@ -15,27 +15,15 @@
   img {
     filter: brightness(100);
   }
-
-  &s {
-    display: flex;
-
-    div:first-child div {
-      padding-left: 8px;
-      border-left: 1px #fff solid;
-    }
-  }
 }
 
-.pc-nameTag + .powercord-badges {
-  margin-top: 8px;
-
-  div:first-child div {
-    border-left: none;
-  }
+.pc-profileBadgeWrapper + .powercord-badge {
+  padding-left: 8px;
+  border-left: 1px #fff solid;
 }
 
 .pc-topSectionNormal {
-  .powercord-badges div:first-child div {
+  .pc-profileBadgeWrapper + .powercord-badge {
     border-left-color: #2f3136;
   }
 
