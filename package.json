@@ -6,7 +6,6 @@
   "scripts": {
     "plug": "node injectors/index.js inject",
     "unplug": "node injectors/index.js uninject",
-
     "inject": "node injectors/index.js inject",
     "uninject": "node injectors/index.js uninject"
   },

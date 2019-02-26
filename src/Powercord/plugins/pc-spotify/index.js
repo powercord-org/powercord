@@ -1,3 +1,4 @@
+const fs = require('fs').promises;
 const Plugin = require('powercord/Plugin');
 const { open: openModal } = require('powercord/modal');
 const { getOwnerInstance } = require('powercord/util');
@@ -10,6 +11,7 @@ const Settings = require('./Settings');
 const SpotifyPlayer = require('./SpotifyPlayer');
 const commands = require('./commands');
 const Modal = require('./Modal');
+const PlaylistModal = require('./Modal/PlaylistModal');
 
 module.exports = class Spotify extends Plugin {
   get SpotifyPlayer () {
@@ -96,6 +98,14 @@ module.exports = class Spotify extends Plugin {
         mdl.pause = () => void 0;
       }
     }
+  }
+
+  openPlaylistModal (songURI) {
+    openModal(() => React.createElement(PlaylistModal, { uri: songURI }));
+  }
+
+  getSpotifyLogo () {
+    return fs.readFile(`${__dirname}/spotify.png`, { encoding: 'base64' });
   }
 
   async _patchSpotifySocket () {
