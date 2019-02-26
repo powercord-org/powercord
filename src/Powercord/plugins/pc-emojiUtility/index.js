@@ -12,7 +12,7 @@ const {
   constants: {
     Routes,
     GuildFeatures,
-    Permissions, // eslint-disable-line no-shadow
+    Permissions,
     APP_URL_PREFIX,
     EMOJI_RE,
     EMOJI_MAX_LENGTH,
@@ -430,7 +430,7 @@ module.exports = class EmojiUtility extends Plugin {
     };
 
     const MessageContextMenu = await getModuleByDisplayName('MessageContextMenu');
-    inject('pc-emojiUtility-emojiContext', MessageContextMenu.prototype, 'render', function (args, res) { // eslint-disable-line func-names
+    inject('pc-emojiUtility-emojiContext', MessageContextMenu.prototype, 'render', function (args, res) {
       const { target } = this.props;
       if (target.classList.contains('emoji')) {
         const matcher = target.src.match(_this.getEmojiUrlRegex());
@@ -478,14 +478,14 @@ module.exports = class EmojiUtility extends Plugin {
       return res;
     };
 
-    inject('pc-emojiUtility-imageContext', MessageContextMenu.prototype, 'render', handleImageContext); // eslint-disable-line func-names
+    inject('pc-emojiUtility-imageContext', MessageContextMenu.prototype, 'render', handleImageContext);
 
     const NativeContextMenu = getModuleByDisplayName('NativeContextMenu');
-    inject('pc-emojiUtility-nativeContext', NativeContextMenu.prototype, 'render', handleImageContext); // eslint-disable-line func-names
+    inject('pc-emojiUtility-nativeContext', NativeContextMenu.prototype, 'render', handleImageContext);
 
     /* AnimatedComponent is used for reactions */
     const AnimatedComponent = getModule([ 'createAnimatedComponent' ]).div;
-    inject('pc-emojiUtility-reactionContext', AnimatedComponent.prototype, 'render', function (args, res) { // eslint-disable-line func-names
+    inject('pc-emojiUtility-reactionContext', AnimatedComponent.prototype, 'render', function (args, res) {
       if (this.props.className && this.props.className.includes('pc-reaction')) {
         res.props.onContextMenu = (e) => {
           const { props: propEmoji } = this.props.children.props.children[0];
@@ -621,7 +621,7 @@ module.exports = class EmojiUtility extends Plugin {
         'saveemote',
         'Save emotes to a specified directory',
         '{c} [emote]',
-        async (args) => { // eslint-disable-line complexity
+        async (args) => {
           if (!this.settings.get('filePath')) {
             return this.replyError('Please set your save directory in the settings');
           }
@@ -689,7 +689,7 @@ module.exports = class EmojiUtility extends Plugin {
         'cloneemote',
         'Clone an emote to your own server',
         '{c} [emote] [server]',
-        async (args) => { // eslint-disable-line complexity
+        async (args) => {
           if (args.length === 0) {
             return this.replyError('Please provide an emote');
           }

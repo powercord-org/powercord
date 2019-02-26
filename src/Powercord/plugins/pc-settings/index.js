@@ -62,7 +62,7 @@ module.exports = class Settings extends Plugin {
   async patchSettingsComponent () {
     const _this = this;
     const SettingsView = await getModuleByDisplayName('SettingsView');
-    inject('pc-settings-items', SettingsView.prototype, 'getPredicateSections', (args, sections) => { // eslint-disable-line
+    inject('pc-settings-items', SettingsView.prototype, 'getPredicateSections', (args, sections) => {
       const changelog = sections.find(c => c.section === 'changelog');
       if (changelog) {
         sections.splice(
@@ -77,7 +77,7 @@ module.exports = class Settings extends Plugin {
       }
 
       if (sections.find(c => c.section === 'CUSTOM')) {
-        sections.find(c => c.section === 'CUSTOM').element = ((_element) => function () { // eslint-disable-line
+        sections.find(c => c.section === 'CUSTOM').element = ((_element) => function () {
           const res = _element();
           if (res.props.children.length === 3) {
             res.props.children.unshift(

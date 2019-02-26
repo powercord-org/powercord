@@ -64,7 +64,7 @@ module.exports = class Announcements extends Plugin {
 
   _patchNotices () {
     const NoticeStore = getModule([ 'getNotice' ]);
-    inject('pc-custom-notices', NoticeStore, 'getNotice', (_, res) => { // eslint-disable-line
+    inject('pc-custom-notices', NoticeStore, 'getNotice', (_, res) => {
       if (!res) {
         this._renderNotice();
       }

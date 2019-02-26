@@ -113,7 +113,7 @@ module.exports = class Spotify extends Plugin {
   _patchPremiumDialog () {
     const PremiumDialog = getModuleByDisplayName('SpotifyPremiumUpgrade');
 
-    inject('pc-spotify-premium', PremiumDialog.prototype, 'render', function (args, res) { // eslint-disable-line func-names
+    inject('pc-spotify-premium', PremiumDialog.prototype, 'render', function (args, res) {
       if (this.props.isPowercord) {
         res.props.children[1].props.children[1].props.children = 'Sorry pal, looks like you aren\'t a Spotify Premium member! Premium members are able to control Spotify through Discord with Powercord\'s Spotify modal';
         res.props.children[1].props.children[1].props.className += ' powercord-spotify-premium';

@@ -34,7 +34,7 @@ module.exports = class GuildFolders extends Plugin {
 
     // @todo: more durable solution as Discord likes breaking this everyday
     const DGuilds = await getModuleByDisplayName('Guilds');
-    inject('pc-guilds', DGuilds.prototype, 'render', function (_, res) { // eslint-disable-line func-names
+    inject('pc-guilds', DGuilds.prototype, 'render', function (_, res) {
       res.props.children[1].props.children[3] = React.createElement(Guilds, Object.assign({}, this.props, {
         setRef: (key, e) => this.guildRefs[key] = e,
         settings: _this.settings
@@ -46,7 +46,6 @@ module.exports = class GuildFolders extends Plugin {
   _patchAddGuild () {
     const AddGuild = getModuleByDisplayName('AddGuildModal');
 
-    // eslint-disable-next-line func-names
     inject('pc-guilds-add', AddGuild.prototype, 'render', (_, res) => {
       res.props.className += ' pc-createGuildDialog';
       return res;
@@ -75,7 +74,7 @@ module.exports = class GuildFolders extends Plugin {
   async _patchContextMenu () {
     const GuildContextMenu = await getModuleByDisplayName('GuildContextMenu');
 
-    inject('pc-guilds-context', GuildContextMenu.prototype, 'render', function (_, res) { // eslint-disable-line func-names
+    inject('pc-guilds-context', GuildContextMenu.prototype, 'render', function (_, res) {
       if (this.props.isPowercord) {
         res.props.children.push(
           React.createElement(Button, {

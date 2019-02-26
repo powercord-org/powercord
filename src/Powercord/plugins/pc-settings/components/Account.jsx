@@ -1,5 +1,5 @@
 const { shell: { openExternal } } = require('electron');
-const { React } = require('powercord/webpack'); // eslint-disable-line no-unused-vars
+const { React } = require('powercord/webpack');
 
 module.exports = (props) => {
   const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');

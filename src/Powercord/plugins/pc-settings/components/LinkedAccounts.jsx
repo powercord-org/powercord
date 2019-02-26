@@ -1,4 +1,4 @@
-const { React } = require('powercord/webpack'); // eslint-disable-line no-unused-vars
+const { React } = require('powercord/webpack');
 
 const Account = require('./Account.jsx');
 
