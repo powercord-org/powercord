@@ -8,7 +8,7 @@ const paths = [
 
 exports.getAppDir = async () => {
   const discordPath = paths
-    .filter(path => existsSync(path))[0];
+    .find(path => existsSync(path));
 
   return join(
     discordPath,
