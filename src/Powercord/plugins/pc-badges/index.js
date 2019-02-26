@@ -31,7 +31,6 @@ module.exports = class Badges extends Plugin {
       }
     ], function (args, res) { // @todo: Fix for users without badges
       const Component = React.createElement(BadgesComponent, { user: this.props.user });
-      console.log(res);
       if (!res) {
         return Component;
       }
