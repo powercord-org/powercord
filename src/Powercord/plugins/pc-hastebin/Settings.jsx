@@ -7,7 +7,7 @@ module.exports = class HastebinSettings extends React.Component {
 
     this.settings = props.settings;
     this.state = {
-      domain: props.settings.get('domain', 'https://haste.aetheryx.xyz'),
+      domain: props.settings.get('domain', 'https://haste.aetheryx.xyz')
     };
   }
 

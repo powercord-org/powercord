@@ -119,7 +119,7 @@
     "no-undef": [ "error" ],
     "no-undef-init": [ "error" ],
     "no-undefined": [ "error" ],
-    "no-unused-vars": [ "error", { "varsIgnorePattern": "React" } ],
+    "no-unused-vars": [ "error" ],
     "no-use-before-define": [ "error" ],
     "callback-return": [ "error" ],
     "handle-callback-err": [ "error" ],
@@ -237,6 +237,7 @@
     "rest-spread-spacing": [ "error", "never" ],
     "symbol-description": [ "error" ],
     "template-curly-spacing": [ "error", "never" ],
+    "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": 1
   }
 }

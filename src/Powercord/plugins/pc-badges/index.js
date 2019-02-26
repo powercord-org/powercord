@@ -1,7 +1,7 @@
 const { resolve } = require('path');
 const Plugin = require('powercord/Plugin');
 const { injectRecursive, uninject } = require('powercord/injector');
-const { React, ReactDOM, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModuleByDisplayName } = require('powercord/webpack');
 
 const BadgesComponent = require('./Badges.jsx');
 

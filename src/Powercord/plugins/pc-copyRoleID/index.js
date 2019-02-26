@@ -4,7 +4,7 @@ const { ContextMenu } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
 const { clipboard } = require('electron');
 
-// todo figure out how to do the same on UserPopOuts. Discussed with Aeth but seems to be a bit more complicated
+// @todo figure out how to do the same on UserPopOuts. Discussed with Aeth but seems to be a bit more complicated
 module.exports = class CopyRoleID extends Plugin {
   async start () {
     const GuildRole = await getModuleByDisplayName('GuildRole');
