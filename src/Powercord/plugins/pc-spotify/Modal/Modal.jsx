@@ -118,16 +118,17 @@ module.exports = class Modal extends React.Component {
       case 'PLAYER_STATE_CHANGED':
         return this.updateData(data.event.state);
 
-      case 'DEVICE_STATE_CHANGED':
-        const { devices } = await SpotifyPlayer.getDevices(); // eslint-disable-line
+      case 'DEVICE_STATE_CHANGED': {
+        const { devices } = await SpotifyPlayer.getDevices();
         if (!devices[0]) {
           return this.setState({
             displayState: 'hide'
           });
         }
         break;
+      }
 
-        case 'track':
+      case 'track':
         if (data.identifier === this.state.currentItem.id) {
           this.stopTimer();
           this.setState({ inLibrary: !data.removed });

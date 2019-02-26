@@ -56,7 +56,6 @@
     "array-callback-return": [ "error", {
       "allowImplicit": true
     }],
-    "complexity": [ "error" ],
     "curly": [ "error", "all" ],
     "dot-location": [ "error", "property" ],
     "dot-notation": [ "error" ],
@@ -94,10 +93,6 @@
     "no-redeclare": [ "error", {
       "builtinGlobals": true
     }],
-    "no-shadow": [ "error", {
-      "builtinGlobals": true,
-      "allow": [ "Plugin", "name" ]
-    }],
     "no-return-await": [ "error" ],
     "no-self-assign": [ "error", {
       "props": true
@@ -124,7 +119,7 @@
     "no-undef": [ "error" ],
     "no-undef-init": [ "error" ],
     "no-undefined": [ "error" ],
-    "no-unused-vars": [ "error" ],
+    "no-unused-vars": [ "error", { "varsIgnorePattern": "React" } ],
     "no-use-before-define": [ "error" ],
     "callback-return": [ "error" ],
     "handle-callback-err": [ "error" ],
@@ -145,7 +140,6 @@
     "eol-last": [ "error", "always" ],
     "func-call-spacing": [ "error", "never" ],
     "func-name-matching": [ "error", "always" ],
-    "func-names": [ "error", "as-needed" ],
     "indent": [ "error", 2, {
       "SwitchCase": 1
     }],

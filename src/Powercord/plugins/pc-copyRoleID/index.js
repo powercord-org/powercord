@@ -8,7 +8,7 @@ const { clipboard } = require('electron');
 module.exports = class CopyRoleID extends Plugin {
   async start () {
     const GuildRole = await getModuleByDisplayName('GuildRole');
-    inject('pc-guildRole', GuildRole.prototype, 'render', (args, res) => { // eslint-disable-line func-names
+    inject('pc-guildRole', GuildRole.prototype, 'render', (args, res) => {
       res.props.children.props.onContextMenu = (e) => {
         const { pageX, pageY } = e;
         contextMenu.openContextMenu(e, () =>

@@ -23,7 +23,7 @@ module.exports = class Badges extends Plugin {
 
   async _patchUserComponent () {
     const UserProfile = await getModuleByDisplayName('UserProfile');
-    inject('pc-badges-fetch', UserProfile.prototype, 'fetchPowercordBadges', async function () { // eslint-disable-line
+    inject('pc-badges-fetch', UserProfile.prototype, 'fetchPowercordBadges', async function () {
       if (this.userID !== this.props.user.id) {
         this.badges = null;
         this.userID = this.props.user.id;
@@ -41,11 +41,11 @@ module.exports = class Badges extends Plugin {
       }
     });
 
-    inject('pc-badges-mount', UserProfile.prototype, 'componentDidMount', function () { // eslint-disable-line
+    inject('pc-badges-mount', UserProfile.prototype, 'componentDidMount', function () {
       this.fetchPowercordBadges();
     });
 
-    inject('pc-badges-update', UserProfile.prototype, 'componentDidUpdate', async function () { // eslint-disable-line
+    inject('pc-badges-update', UserProfile.prototype, 'componentDidUpdate', async function () {
       await this.fetchPowercordBadges();
       if (this.badges) {
         const badgesElement = document.querySelector('.pc-headerInfo .powercord-badges');
