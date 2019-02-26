@@ -10,3 +10,5 @@ src/Powercord/plugins/pc-styleManager/themes/*
 !src/Powercord/plugins/pc-styleManager/themes/readme.txt
 
 settings/*.json
+
+config.json
