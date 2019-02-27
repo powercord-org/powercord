@@ -1,6 +1,6 @@
 const { React, Flux, Router: { Link }, constants: { Routes }, contextMenu, getModuleByDisplayName } = require('powercord/webpack');
 const { Tooltip } = require('powercord/components');
-const { Draggable } = require('react-beautiful-dnd');
+const { Draggable } = window.ReactBeautifulDnd;
 
 const Guild = class Guilds extends React.Component {
   constructor (props) {

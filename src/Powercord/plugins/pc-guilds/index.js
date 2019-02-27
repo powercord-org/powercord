@@ -1,3 +1,5 @@
+window.ReactBeautifulDnd = require('./lib/react-beautiful-dnd');
+
 const { resolve } = require('path');
 const Plugin = require('powercord/Plugin');
 const { inject, uninject } = require('powercord/injector');
@@ -12,7 +14,7 @@ module.exports = class GuildFolders extends Plugin {
   async start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuilds();
-    // this._patchAddGuild();
+    this._patchAddGuild();
     this._patchContextMenu();
 
     // Ensure new guild component is immediately displayed
