@@ -92,8 +92,7 @@ module.exports = class Spotify extends Plugin {
   }
 
   async _injectListeningAlong () {
-    const ListeningAlong = await getModuleByDisplayName('ListeningAlong');
-    inject('pc-spotify-listeningAlong', ListeningAlong.prototype, 'render', (args, res) => {
+    await injectInFluxContainer('pc-spotify-listeningAlong', 'ListeningAlong', 'render', (args, res) => {
       this._listeningAlongComponent = res;
       if (this._forceUpdate) {
         this._forceUpdate();
