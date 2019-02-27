@@ -109,8 +109,8 @@ module.exports = class EmojiUtilitySettings extends React.Component {
         )}
 
         <Category
-          name='Hide emojis'
-          description={'Hide emojis from some servers. They won\'t show up in emoji picker, except in searches.'}
+          name='Hide emotes'
+          description={'Hide emotes from some servers. They won\'t show up in emote picker, except in searches.'}
           opened={this.state.categoryOpened}
           onChange={() => this.setState({ categoryOpened: !this.state.categoryOpened })}
         >
