@@ -267,13 +267,13 @@ module.exports = class Modal extends React.Component {
                 />
               </Tooltip>
 
-              <Tooltip text="Save to Playlist" position="top">
+              {powercord.account && powercord.account.spotify && <Tooltip text="Save to Playlist" position="top">
                 <button
                   style={{ color: '#fff' }}
                   className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-plus-circle'
                   onClick={() => powercord.pluginManager.get('pc-spotify').openPlaylistModal(currentItem.uri)}
                 />
-              </Tooltip>
+              </Tooltip>}
             </div>}
           </SeekBar>
         </div>
