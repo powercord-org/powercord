@@ -14,8 +14,8 @@ class Playlist extends React.Component {
   }
 
   render () {
-    const image = this.props.item.images[2]
-      ? <img className='image' src={this.props.item.images[2].url} />
+    const image = this.props.item.images[0]
+      ? <img className='image' src={this.props.item.images[0].url} height="60" width="60" />
       : <img className='image' src={this.props.spotifyImg} height="60" />;
     return (
       <div className='powercord-spotify-playlist' onClick={() => this.handleClick() }>
