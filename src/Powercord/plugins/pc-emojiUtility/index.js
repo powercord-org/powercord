@@ -516,7 +516,7 @@ module.exports = class EmojiUtility extends Plugin {
       return res;
     });
 
-    injectInFluxContainer('pc-emojiUtility-hideEmojis', 'EmojiPicker', 'componentDidMount', function () {
+    injectInFluxContainer('pc-emojiUtility-hideEmojisPicker', 'EmojiPicker', 'componentDidMount', function () {
       const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
       const hiddenNames = hiddenGuilds.map(id => getGuild(id).name);
 
@@ -541,6 +541,18 @@ module.exports = class EmojiUtility extends Plugin {
         previousOffset = category.offsetTop;
         return category;
       }).filter(category => !!category);
+    });
+
+    const Autocomplete = await getModuleByDisplayName('Autocomplete');
+    inject('pc-emojiUtility-hideEmojisComplete', Autocomplete.prototype, 'render', (args, res) => {
+      const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
+
+      if (res.props.children.props.children[0].key.includes('Emoji')) {
+        res.props.children.props.children[1] = res.props.children.props.children[1].filter(emoji =>
+          !emoji.props.emoji.guildId || !hiddenGuilds.includes(emoji.props.emoji.guildId)
+        );
+      }
+      return res;
     });
 
     powercord
@@ -790,7 +802,8 @@ module.exports = class EmojiUtility extends Plugin {
     uninject('pc-emojiUtility-imageContext');
     uninject('pc-emojiUtility-nativeContext');
     uninject('pc-emojiUtility-reactionContext');
-    uninject('pc-emojiUtility-hideEmojis');
+    uninject('pc-emojiUtility-hideEmojisPicker');
+    uninject('pc-emojiUtility-hideEmojisComplete');
 
     const { pluginManager } = powercord;
 
