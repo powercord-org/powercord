@@ -545,12 +545,14 @@ module.exports = class EmojiUtility extends Plugin {
 
     const Autocomplete = await getModuleByDisplayName('Autocomplete');
     inject('pc-emojiUtility-hideEmojisComplete', Autocomplete.prototype, 'render', (args, res) => {
-      const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
+      if (res) {
+        const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
 
-      if (res.props.children.props.children[0].key.includes('Emoji')) {
-        res.props.children.props.children[1] = res.props.children.props.children[1].filter(emoji =>
-          !emoji.props.emoji.guildId || !hiddenGuilds.includes(emoji.props.emoji.guildId)
-        );
+        if (res.props.children.props.children[0].key.includes('Emoji')) {
+          res.props.children.props.children[1] = res.props.children.props.children[1].filter(emoji =>
+            !emoji.props.emoji.guildId || !hiddenGuilds.includes(emoji.props.emoji.guildId)
+          );
+        }
       }
       return res;
     });
