@@ -25,16 +25,17 @@ module.exports = class Badges extends Plugin {
       { path: [ 'type', 'prototype' ] },
       { path: [ 'type' ] },
       { path: [ 'type', 'prototype' ] },
-      {
-        path: [ 'type', 'prototype' ],
-        prop: 'renderBadges'
+      { path: [ 'type', 'prototype' ] }
+    ], function (args, res) {
+      const Component = React.createElement(BadgesComponent, {
+        key: 'powercord',
+        user: this.props.user
+      });
+
+      if (!res.props.children.props.children[0].props.children[0].props.children[1].props.children[1]) {
+        return res.props.children.props.children[0].props.children[0].props.children[1].props.children[1] = React.createElement('div', { className: 'powercord-badges' }, Component);
       }
-    ], function (args, res) { // @todo: Fix for users without badges
-      const Component = React.createElement(BadgesComponent, { user: this.props.user });
-      if (!res) {
-        return Component;
-      }
-      res.props.children.push(Component);
+      res.props.children.props.children[0].props.children[0].props.children[1].props.children[1].props.children.push(Component);
       return res;
     });
   }
