@@ -50,9 +50,7 @@ module.exports = class PlaylistModal extends React.Component {
       }
     });
     return (
-      <Modal
-        size={Modal.Sizes.MEDIUM}
-      >
+      <Modal size={Modal.Sizes.MEDIUM}>
         <Modal.Header>
           <span className='powercord-spotify-playlist-modal-header'>
             Add to Playlist

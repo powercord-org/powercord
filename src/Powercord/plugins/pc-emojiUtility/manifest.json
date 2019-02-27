@@ -1,8 +1,8 @@
 {
   "name": "Emote Utility",
-  "version": "1.2.6",
+  "version": "1.3.0",
   "description": "Emote related commands",
-  "author": "Joakim#9814",
+  "author": "Joakim#9814, Bowser65",
   "license": "MIT",
   "repo": null,
   "dependencies": [
