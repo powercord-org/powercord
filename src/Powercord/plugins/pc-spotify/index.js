@@ -21,6 +21,7 @@ module.exports = class Spotify extends Plugin {
   async start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._injectModal();
+    this._injectListeningAlong();
     this._patchAutoPause();
     this._patchSpotifySocket();
     this._patchPremiumDialog();
@@ -57,6 +58,8 @@ module.exports = class Spotify extends Plugin {
   unload () {
     this.unloadCSS();
     this._patchAutoPause(true);
+    uninject('pc-spotify-modal');
+    uninject('pc-spotify-listeningAlong');
     uninject('pc-spotify-update');
     uninject('pc-spotify-premium');
 
@@ -86,6 +89,17 @@ module.exports = class Spotify extends Plugin {
     const modal = React.createElement(Modal, { main: this });
     await injectInFluxContainer('pc-spotify-modal', 'Account', 'render', (args, res) => [ modal, res ]);
     getOwnerInstance(document.querySelector('.container-2Thooq')).forceUpdate();
+  }
+
+  async _injectListeningAlong () {
+    const ListeningAlong = await getModuleByDisplayName('ListeningAlong');
+    inject('pc-spotify-listeningAlong', ListeningAlong.prototype, 'render', (args, res) => {
+      this._listeningAlongComponent = res;
+      if (this._forceUpdate) {
+        this._forceUpdate();
+      }
+      return null;
+    });
   }
 
   async _patchAutoPause (revert) {

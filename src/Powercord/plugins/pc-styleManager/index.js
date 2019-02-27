@@ -18,14 +18,14 @@ module.exports = class StyleManager extends Plugin {
 
   async start () {
     // Initialize worker
-    this.worker = new Worker(
-      window.URL.createObjectURL(
-        new Blob([
-          await readFile(resolve(__dirname, 'transpiler.js'))
-        ])
-      )
-    );
-    this.worker.onmessage = this._handleFinishedCompiling.bind(this);
+    // this.worker = new Worker(
+    //   window.URL.createObjectURL(
+    //     new Blob([
+    //       await readFile(resolve(__dirname, 'transpiler.js'))
+    //     ])
+    //   )
+    // );
+    // this.worker.onmessage = this._handleFinishedCompiling.bind(this);
 
     // Load global css
     this.load('Powercord-Globals', resolve(__dirname, 'styles', 'index.scss'));
@@ -146,12 +146,12 @@ module.exports = class StyleManager extends Plugin {
     }
 
     // Compile classes
-    if (css.includes('@powercordCompile')) {
-      this._ensureClassNamesLoaded();
-      this.worker.postMessage([ styleId, css, this.discordClassNames ]);
-    } else {
+    // if (css.includes('@powercordCompile')) {
+    //   this._ensureClassNamesLoaded();
+    //   this.worker.postMessage([ styleId, css, this.discordClassNames ]);
+    // } else {
       await this._handleFinishedCompiling([ styleId, css ]);
-    }
+    // }
   }
 
   async _handleFinishedCompiling (data) {

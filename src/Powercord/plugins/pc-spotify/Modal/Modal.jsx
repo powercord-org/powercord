@@ -137,6 +137,7 @@ module.exports = class Modal extends React.Component {
   }
 
   async componentDidMount () {
+    this.props.main._forceUpdate = this.forceUpdate.bind(this);
     this.props.main.on('event', this.onData);
     this.updateData(await SpotifyPlayer.getPlayer());
   }
@@ -188,7 +189,8 @@ module.exports = class Modal extends React.Component {
         />
       </Tooltip>)
       : '';
-    return (
+    return <>
+      {this.props.main._listeningAlongComponent}
       <div
         className={`container-2Thooq powercord-spotify${this.props.main.settings.get('showControls', true) ? '' : ' small'}`}
         id='powercord-spotify-modal'
@@ -269,14 +271,14 @@ module.exports = class Modal extends React.Component {
                 <button
                   style={{ color: '#fff' }}
                   className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-plus-circle'
-                  onClick={ () => powercord.pluginManager.get('pc-spotify').openPlaylistModal(currentItem.uri) }
+                  onClick={() => powercord.pluginManager.get('pc-spotify').openPlaylistModal(currentItem.uri)}
                 />
               </Tooltip>
             </div>}
           </SeekBar>
         </div>
       </div>
-    );
+    </>;
   }
 
 

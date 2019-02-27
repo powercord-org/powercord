@@ -1,3 +1,25 @@
+.pc-channels .pc-flex + .pc-container {
+  position: relative;
+  bottom: -7px;
+}
+
+.pc-app .pc-listeningAlong {
+  background-color: #2b2c31;
+  margin: 0;
+  padding-bottom: 0;
+  padding-top: 0;
+  position: relative;
+  bottom: -7px;
+
+  .pc-subtitle {
+    display: none;
+  }
+}
+
+.pc-app .powercord-spotify {
+  background-color: #2b2c31;
+}
+
 .powercord-spotify {
   position: relative;
   margin-bottom: 0;
@@ -8,7 +30,7 @@
     height: 28px;
     position: relative;
   }
-  
+
   &-playlist {
     display: flex;
     height: 60px;
@@ -34,7 +56,6 @@
     &-group {
       display: flex;
       justify-content: space-evenly;
-      padding-bottom: 10px;
       flex-wrap: wrap;
       padding-bottom: 5px;
       color: white;
