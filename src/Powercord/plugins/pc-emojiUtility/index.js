@@ -516,7 +516,7 @@ module.exports = class EmojiUtility extends Plugin {
       return res;
     });
 
-    injectInFluxContainer('pc-emojiUtility-hideEmojisPickerMount', 'EmojiPicker', 'removeEmotes', function () {
+    injectInFluxContainer('pc-emojiUtility-hideEmojisPickerRm', 'EmojiPicker', 'removeEmotes', function () {
       const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
       const hiddenNames = hiddenGuilds.map(id => getGuild(id).name);
 
@@ -820,6 +820,7 @@ module.exports = class EmojiUtility extends Plugin {
     uninject('pc-emojiUtility-nativeContext');
     uninject('pc-emojiUtility-reactionContext');
     uninject('pc-emojiUtility-hideEmojisPicker');
+    uninject('pc-emojiUtility-hideEmojisPickerRm');
     uninject('pc-emojiUtility-hideEmojisPickerMount');
     uninject('pc-emojiUtility-hideEmojisComplete');
 
