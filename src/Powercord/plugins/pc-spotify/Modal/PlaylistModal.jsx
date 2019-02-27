@@ -15,8 +15,8 @@ class Playlist extends React.Component {
 
   render () {
     const image = this.props.item.images[0]
-      ? <img className='image' src={this.props.item.images[0].url} height="60" width="60" />
-      : <img className='image' src={this.props.spotifyImg} height="60" />;
+      ? <img className='image' alt='cover' src={this.props.item.images[0].url} height="60" width="60" />
+      : <img className='image' alt='cover' src={this.props.spotifyImg} height="60" />;
     return (
       <div className='powercord-spotify-playlist' onClick={() => this.handleClick() }>
         {image}
@@ -55,12 +55,12 @@ module.exports = class PlaylistModal extends React.Component {
       >
         <Modal.Header>
           <span className='powercord-spotify-playlist-modal-header'>
-            ADD TO PLAYLIST
+            Add to Playlist
           </span>
         </Modal.Header>
         <Modal.Content>
           <div className='powercord-spotify-playlist-group'>
-            { playlistList }
+            {playlistList}
           </div>
         </Modal.Content>
       </Modal>

@@ -3,6 +3,10 @@
   bottom: -9px;
 }
 
+.pc-container .pc-container:last-of-type {
+  bottom: 0;
+}
+
 .pc-app .pc-listeningAlong {
   background-color: #2b2c31;
   margin: 0;
@@ -52,6 +56,7 @@
     &-modal-header {
       color: white;
       font-weight: bold;
+      text-transform: uppercase;
     }
 
     &-group {

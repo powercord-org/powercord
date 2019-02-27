@@ -63,6 +63,7 @@ module.exports = class Spotify extends Plugin {
     uninject('pc-spotify-update');
     uninject('pc-spotify-premium');
 
+    getOwnerInstance(document.querySelector('.container-2Thooq:not([id])')).forceUpdate();
     powercord.off('webSocketMessage:dealer.spotify.com', this._handler);
     powercord.pluginManager.get('pc-settings').unregister('pc-spotify');
     for (const [ commandName ] of Object.entries(commands)) {
@@ -83,6 +84,14 @@ module.exports = class Spotify extends Plugin {
       const PremiumDialog = getModuleByDisplayName('SpotifyPremiumUpgrade');
       openModal(() => React.createElement(PremiumDialog, { isPowercord: true }));
     }
+  }
+
+  openPlaylistModal (songURI) {
+    openModal(() => React.createElement(PlaylistModal, { uri: songURI }));
+  }
+
+  getSpotifyLogo () {
+    return fs.readFile(`${__dirname}/spotify.png`, { encoding: 'base64' });
   }
 
   async _injectModal () {
@@ -111,14 +120,6 @@ module.exports = class Spotify extends Plugin {
         mdl.pause = () => void 0;
       }
     }
-  }
-
-  openPlaylistModal (songURI) {
-    openModal(() => React.createElement(PlaylistModal, { uri: songURI }));
-  }
-
-  getSpotifyLogo () {
-    return fs.readFile(`${__dirname}/spotify.png`, { encoding: 'base64' });
   }
 
   async _patchSpotifySocket () {
