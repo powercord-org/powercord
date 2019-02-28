@@ -20,7 +20,10 @@ module.exports = class Commands extends Plugin {
     return [ ...this.commands.values() ]
       .map(command => ({
         command: command.name,
-        description: command.description
+        commandAndAliases: [ command.name, ...(command.aliases || []) ],
+        description: command.description,
+        func: command.func,
+        usage: command.usage
       }));
   }
 

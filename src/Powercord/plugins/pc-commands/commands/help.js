@@ -1,5 +1,6 @@
 module.exports = {
   name: 'help',
+  aliases: [ 'h' ],
   description: 'Gives you a list of commands or information on a specific command.',
   usage: '{c} [ commandName ]',
   func ([ commandName ], main) {

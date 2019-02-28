@@ -12,12 +12,13 @@ module.exports = async function monkeypatchMessages () {
       return sendMessage(id, message, ...params);
     }
 
-    const [ command, ...args ] = message.content.slice(this.prefix.length).split(' ');
-    if (!this.commands.has(command)) {
+    const [ cmd, ...args ] = message.content.slice(this.prefix.length).split(' ');
+    const command = this.customCommands.find(c => c.commandAndAliases.includes(cmd));
+    if (!command) {
       return sendMessage(id, message, ...params);
     }
 
-    const result = await this.commands.get(command).func(args, this);
+    const result = await command.func(args, this);
     if (!result) {
       return;
     }
