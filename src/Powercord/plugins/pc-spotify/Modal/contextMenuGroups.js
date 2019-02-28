@@ -125,7 +125,7 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden) => [
         SpotifyPlayer.addSong(state.currentItem.id)
     }, {
       type: 'button',
-      name: 'Add to Playlist',
+      name: 'Save to Playlist',
       onClick: () =>
         powercord.pluginManager.get('pc-spotify').openPlaylistModal(state.currentItem.id)
       } ]

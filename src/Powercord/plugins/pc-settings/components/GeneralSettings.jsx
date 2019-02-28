@@ -66,7 +66,7 @@ module.exports = class GeneralSettings extends React.Component {
             value={settings.backendURL}
             required={true}
             onChange={(e) => this._set('backendURL', e, 'https://powercord.xyz')}
-            note='URL used for Spotify linking, plugin management and other internal functions'
+            note='URL used for Spotify linking, plugin management and other internal functions.'
           >
             Backend URL
           </TextInput>
