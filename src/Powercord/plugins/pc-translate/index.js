@@ -1,13 +1,14 @@
 const Plugin = require('powercord/Plugin');
 const { inject, uninject } = require('powercord/injector');
 const { getModuleByDisplayName, React } = require('powercord/webpack');
-const { sleep, createElement } = require('powercord/util');
+const { sleep, createElement, getOwnerInstance } = require('powercord/util');
 const { ContextMenu: { Submenu } } = require('powercord/components');
 const translate = require('google-translate-api');
 const { resolve } = require('path');
 
 module.exports = class Translate extends Plugin {
   async start () {
+    this.translations = {};
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._injectTranslator();
   }
@@ -15,14 +16,36 @@ module.exports = class Translate extends Plugin {
   unload () {
     this.unloadCSS();
     uninject('pc-translate-context');
+    uninject('pc-translate-content');
+    uninject('pc-translate-contentRemove');
   }
 
   async _injectTranslator () {
     const languages = Object.keys(translate.languages)
       .filter(k => typeof translate.languages[k] === 'string');
 
-    const MessageContextMenu = await getModuleByDisplayName('messagecontextmenu');
-    // @todo: Inject into MessageContent component to update only raw contents and keep formatting (requires injecting before Discord's code, #78)
+    const _this = this;
+    const MessageContent = await getModuleByDisplayName('MessageContent');
+    inject('pc-translate-contentRemove', MessageContent.prototype, 'componentWillUnmount', function () {
+      if (_this.translations[this.props.message.id]) {
+        console.log('gay');
+        this.props.message.contentParsed = this.original;
+        _this.translations[this.props.message.id] = null;
+      }
+    });
+
+    inject('pc-translate-content', MessageContent.prototype, 'render', function (args) {
+      if (_this.translations[this.props.message.id]) {
+        this.original = [ ...this.props.message.contentParsed ];
+        this.props.message.contentParsed = [ _this.translations[this.props.message.id] ];
+      } else if (!_this.translations[this.props.message.id] && this.original) {
+        this.props.message.contentParsed = this.original;
+        this.original = null;
+      }
+      return args;
+    }, true);
+
+    const MessageContextMenu = await getModuleByDisplayName('MessageContextMenu');
     inject('pc-translate-context', MessageContextMenu.prototype, 'render', function (args, res) {
       const setText = async (opts) => {
         const message = this.props.target.closest('.pc-containerCozyBounded');
@@ -38,12 +61,11 @@ module.exports = class Translate extends Plugin {
           Promise.all(
             [ ...message.querySelectorAll('.pc-markup') ]
               .map(async (markup) => {
-                const { text, from } = await translate(markup.innerText, opts);
-                if (!timestamp.innerHTML.includes('Translated from')) {
-                  markup.dataset.original = markup.innerHTML;
-                }
-                markup.innerText = text;
+                const markupInstance = getOwnerInstance(markup);
+                const { text, from } = await translate(markupInstance.props.message.contentParsed.filter(c => typeof c === 'string').join(''), opts);
+                _this.translations[markupInstance.props.message.id] = text;
                 fromLang = translate.languages[from.language.iso];
+                markupInstance.forceUpdate();
               })
           )
         ]);
@@ -59,9 +81,9 @@ module.exports = class Translate extends Plugin {
 
                 message.querySelectorAll('.pc-markup')
                   .forEach(markup => {
-                    if (markup.dataset.original) {
-                      markup.firstChild.nodeValue = markup.dataset.original;
-                    }
+                    const markupInstance = getOwnerInstance(markup);
+                    _this.translations[markupInstance.props.message.id] = null;
+                    markupInstance.forceUpdate();
                   });
 
                 timestamp.removeChild(this);
