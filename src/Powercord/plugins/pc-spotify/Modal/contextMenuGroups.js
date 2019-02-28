@@ -123,7 +123,12 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden) => [
       name: 'Add to Library',
       onClick: () =>
         SpotifyPlayer.addSong(state.currentItem.id)
-    } ]
+    }, {
+      type: 'button',
+      name: 'Add to Playlist',
+      onClick: () =>
+        powercord.pluginManager.get('pc-spotify').openPlaylistModal(state.currentItem.id)
+      } ]
     : []) ],
 
   [ {

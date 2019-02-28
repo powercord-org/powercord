@@ -1,6 +1,7 @@
 const { React, contextMenu } = require('powercord/webpack');
 const { ContextMenu, Tooltip } = require('powercord/components');
 const { concat } = require('powercord/util');
+const { shell } = require('electron');
 
 const SpotifyPlayer = require('../SpotifyPlayer.js');
 const getContextMenuItemGroups = require('./contextMenuGroups');
@@ -204,6 +205,7 @@ module.exports = class Modal extends React.Component {
               backgroundImage: `url("${currentItem.img}")`,
               backgroundSize: 'contain'
             }}
+            onClick={() => shell.openExternal(currentItem.uri)}
           />
         </Tooltip>
 
