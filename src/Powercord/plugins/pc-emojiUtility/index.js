@@ -560,7 +560,6 @@ module.exports = class EmojiUtility extends Plugin {
 
     const Autocomplete = await getModuleByDisplayName('Autocomplete');
     inject('pc-emojiUtility-hideEmojisComplete', Autocomplete.prototype, 'render', (args, res) => {
-      console.log(res);
       if (res) {
         const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
 
