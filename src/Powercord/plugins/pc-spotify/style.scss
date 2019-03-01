@@ -1,28 +1,24 @@
-.pc-channels .pc-flex + .pc-container {
-  position: relative;
-  bottom: -9px;
-}
-
-.pc-container .pc-container:last-of-type {
-  bottom: 0;
-}
-
 .pc-app .pc-listeningAlong {
-  background-color: #2b2c31;
   margin: 0;
   padding-bottom: 0;
   padding-top: 0;
-  position: relative;
-  z-index: 69;
-  bottom: -9px;
 
   .pc-subtitle {
     display: none;
   }
 }
 
-.pc-app .powercord-spotify {
-  background-color: #2b2c31;
+.pc-listeningAlong + .powercord-spotify {
+  height: 37px;
+  padding-bottom: 8px;
+
+  &.small:hover {
+    padding-bottom: 23px;
+  }
+
+  &:hover {
+    padding-bottom: 33px;
+  }
 }
 
 .powercord-spotify {
