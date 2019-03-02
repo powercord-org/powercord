@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aetheryx/powercord.git"
+    "url": "git+https://github.com/powercord-org/powercord.git"
   },
   "keywords": [],
   "author": "Aetheryx",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/aetheryx/powercord/issues"
+    "url": "https://github.com/powercord-org/powercord/issues"
   },
-  "homepage": "https://github.com/aetheryx/powercord#readme",
+  "homepage": "https://github.com/powercord-org/powercord#readme",
   "dependencies": {
     "buble": "^0.19.6",
     "chokidar": "^2.0.4",
