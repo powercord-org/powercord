@@ -8,6 +8,8 @@ const getContextMenuItemGroups = require('./contextMenuGroups');
 const SeekBar = require('./SeekBar.jsx');
 const Title = require('./Title.jsx');
 
+let oldState = null;
+
 module.exports = class Modal extends React.Component {
   constructor () {
     super();
@@ -29,7 +31,7 @@ module.exports = class Modal extends React.Component {
       }
     };
 
-    this.state = {
+    this.state = oldState || {
       currentItem: {
         name: '',
         artists: [ '' ],
@@ -144,6 +146,7 @@ module.exports = class Modal extends React.Component {
   }
 
   componentWillUnmount () {
+    oldState = this.state;
     this.props.main.off('event', this.onData);
   }
 
