@@ -72,7 +72,7 @@ module.exports = class Updater extends Plugin {
     const localRevision = await exec(`git rev-parse ${branch}`, this.cwd)
       .then(r => r.stdout.toString().trim());
 
-    const currentRevision = await get(`https://api.github.com/REPO_URLs/${REPO_URL}/commits`)
+    const currentRevision = await get(`https://api.github.com/repos/${REPO_URL}/commits`)
       .set('Accept', 'application/vnd.github.v3+json')
       .query('sha', branch)
       .then(r => r.body[0].sha);
