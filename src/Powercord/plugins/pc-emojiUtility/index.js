@@ -28,7 +28,7 @@ const {
 const { CDN_HOST } = window.GLOBAL_ENV;
 
 const { ContextMenu, ContextMenu: { Submenu } } = require('powercord/components');
-
+const { getOwnerInstance } = require('powercord/util');
 const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
 const { open: openModal } = require('powercord/modal');
 
@@ -187,6 +187,7 @@ module.exports = class EmojiUtility extends Plugin {
       id,
       name,
       url,
+      animated: this.getExtension(url) === 'gif',
       fake: true
     };
   }
@@ -342,6 +343,8 @@ module.exports = class EmojiUtility extends Plugin {
 
     const EmojiNameModal = require('./components/EmojiNameModal.jsx');
     const getCreateableFeatures = (target) => {
+      const url = getOwnerInstance(target).props.href || target.src;
+
       const onGuildClick = (guild) => {
         if (!guild) {
           if (this.settings.get('defaultCloneIdUseCurrent')) {
@@ -362,7 +365,7 @@ module.exports = class EmojiUtility extends Plugin {
           }
         }
 
-        if (this.getEmojis(guild.id, this.getExtension(target.src) === 'gif').length >= this.getMaxEmojiSlots(guild.id)) {
+        if (this.getEmojis(guild.id, this.getExtension(url) === 'gif').length >= this.getMaxEmojiSlots(guild.id)) {
           return this.replyError(`**${guild.name}** does not have any more emote slots`);
         }
 
@@ -377,7 +380,7 @@ module.exports = class EmojiUtility extends Plugin {
             }
 
             try {
-              await uploadEmoji(guild.id, await this.getImageEncoded(target.src), name);
+              await uploadEmoji(guild.id, await this.getImageEncoded(url), name);
 
               this.replySuccess(`Created emote by the name of **${name}** in **${guild.name}**`);
             } catch (error) {
