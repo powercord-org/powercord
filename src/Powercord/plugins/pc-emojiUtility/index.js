@@ -208,7 +208,7 @@ module.exports = class EmojiUtility extends Plugin {
     this.loadCSS(resolve(__dirname, 'style.scss'));
 
     /* Default settings */
-    this.settings.set('useEmbeds', this.settings.get('useEmbeds', true));
+    this.settings.set('useEmbeds', this.settings.get('useEmbeds', false));
     this.settings.set('displayLink', this.settings.get('displayLink', true));
     this.settings.set('filePath', this.settings.get('filePath', null));
     this.settings.set('includeIdForSavedEmojis', this.settings.get('includeIdForSavedEmojis', true));
