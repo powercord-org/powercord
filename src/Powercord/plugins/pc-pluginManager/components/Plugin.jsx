@@ -60,7 +60,7 @@ module.exports = class Plugin extends React.Component {
       </div>
       <div className='powercord-plugin-footer'>
         <Button
-          onClick={() => openExternal(manifest.repo || 'https://github.com/aetheryx/powercord')}
+          onClick={() => openExternal(manifest.repo || 'https://github.com/powercord-org/powercord')}
           look={Button.Looks.LINK}
           size={Button.Sizes.SMALL}
           color={Button.Colors.TRANSPARENT}
