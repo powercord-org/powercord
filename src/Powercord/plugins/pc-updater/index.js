@@ -4,12 +4,12 @@ const { get } = require('powercord/http');
 const { sleep, createElement } = require('powercord/util');
 const { ReactDOM, React } = require('powercord/webpack');
 const { Toast } = require('powercord/components');
+const { REPO_URL } = require('powercord/constants');
 
 const { promisify } = require('util');
 const cp = require('child_process');
 const exec = promisify(cp.exec);
 
-const REPO = 'powercord-org/powercord';
 const Settings = require('./Settings.jsx');
 
 module.exports = class Updater extends Plugin {
@@ -72,7 +72,7 @@ module.exports = class Updater extends Plugin {
     const localRevision = await exec(`git rev-parse ${branch}`, this.cwd)
       .then(r => r.stdout.toString().trim());
 
-    const currentRevision = await get(`https://api.github.com/repos/${REPO}/commits`)
+    const currentRevision = await get(`https://api.github.com/REPO_URLs/${REPO_URL}/commits`)
       .set('Accept', 'application/vnd.github.v3+json')
       .query('sha', branch)
       .then(r => r.body[0].sha);

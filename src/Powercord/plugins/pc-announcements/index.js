@@ -5,9 +5,9 @@ const Plugin = require('powercord/Plugin');
 const { shell: { openExternal } } = require('electron');
 const { inject, uninject } = require('powercord/injector');
 const { React, ReactDOM, getModule } = require('powercord/webpack');
-const Notice = require('./Notice');
+const { DISCORD_INVITE, GUILD_ID } = require('powercord/constants');
 
-const INVITE = [ '5eSH46g', '538759280057122817' ];
+const Notice = require('./Notice');
 
 module.exports = class Announcements extends Plugin {
   constructor () {
@@ -27,8 +27,8 @@ module.exports = class Announcements extends Plugin {
           text: 'Join Server',
           onClick: () => {
             this.closeNotice('pc-first-welcome');
-            require('powercord/webpack').getModule([ 'acceptInvite' ]).acceptInvite(INVITE[0], {}, () => {
-              require('powercord/webpack').getModule([ 'selectGuild' ]).selectGuild(INVITE[1]);
+            getModule([ 'acceptInvite' ]).acceptInvite(DISCORD_INVITE, {}, () => {
+              getModule([ 'selectGuild' ]).selectGuild(GUILD_ID);
             });
           }
         }

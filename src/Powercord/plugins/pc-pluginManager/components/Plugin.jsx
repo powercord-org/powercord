@@ -1,6 +1,8 @@
 const { shell: { openExternal } } = require('electron');
 const { React } = require('powercord/webpack');
 const { Tooltip, Switch, Button, Spinner } = require('powercord/components');
+const { REPO_URL } = require('powercord/constants');
+
 const { Author, Version, Description, License, Info } = require('./Icons');
 
 module.exports = class Plugin extends React.Component {
@@ -60,7 +62,7 @@ module.exports = class Plugin extends React.Component {
       </div>
       <div className='powercord-plugin-footer'>
         <Button
-          onClick={() => openExternal(manifest.repo || 'https://github.com/powercord-org/powercord')}
+          onClick={() => openExternal(manifest.repo || `https://github.com/${REPO_URL}`)}
           look={Button.Looks.LINK}
           size={Button.Sizes.SMALL}
           color={Button.Colors.TRANSPARENT}

@@ -2,6 +2,7 @@ const { resolve } = require('path');
 const Plugin = require('powercord/Plugin');
 const { inject, uninject } = require('powercord/injector');
 const { getModuleByDisplayName, React, getModule } = require('powercord/webpack');
+
 const GeneralSettings = require('./components/GeneralSettings.jsx');
 
 module.exports = class Settings extends Plugin {
