@@ -6,12 +6,12 @@ const Guild = class Guilds extends React.Component {
   constructor (props) {
     super(props);
 
-    this.guildClasses = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.downloadAppButton)[0].exports;
+    this.guildClasses = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.dragPlaceholder)[0].exports;
     this.iconClasses = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.iconActiveMini)[0].exports;
   }
 
   get guildClassName () {
-    let className = this.guildClasses.guild;
+    let className = this.guildClasses.container;
     if (this.props.unread) {
       className += ` ${this.guildClasses.unread}`;
     }

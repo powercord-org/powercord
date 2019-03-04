@@ -11,7 +11,7 @@ const CreateFolder = require('./components/CreateFolder.jsx');
 module.exports = class GuildFolders extends Plugin {
   async start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
-    this._patchGuilds();
+    // this._patchGuilds();
     // this._patchAddGuild();
     this._patchContextMenu();
 
