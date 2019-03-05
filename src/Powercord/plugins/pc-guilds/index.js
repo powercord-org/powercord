@@ -34,10 +34,9 @@ module.exports = class GuildFolders extends Plugin {
   async _patchGuilds () {
     const _this = this;
 
-    // @todo: more durable solution as Discord likes breaking this everyday
     const DGuilds = await getModuleByDisplayName('Guilds');
     inject('pc-guilds', DGuilds.prototype, 'render', function (_, res) {
-      res.props.children[1].props.children[3] = React.createElement(Guilds, Object.assign({}, this.props, {
+      res.props.children[1].props.children[5] = React.createElement(Guilds, Object.assign({}, this.props, {
         setRef: (key, e) => this.guildRefs[key] = e,
         settings: _this.settings
       }));
