@@ -1,5 +1,5 @@
 const { React, getModule } = require('powercord/webpack');
-const { DragDropContext, Droppable } = require('react-beautiful-dnd');
+const { DragDropContext, Droppable } = window.ReactBeautifulDnd;
 
 const Guild = require('./Guild.jsx');
 
