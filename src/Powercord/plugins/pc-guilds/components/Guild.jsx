@@ -6,14 +6,14 @@ const Guild = class Guilds extends React.Component {
   constructor (props) {
     super(props);
 
-    // @todo: better solution lol
-    this.wrapperClass = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.wrapper && Object.keys(m.exports).length === 1)[1].exports.wrapper;
-    this.guildClasses = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.dragPlaceholder)[0].exports;
+    // this.wrapperClass = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.wrapper && Object.keys(m.exports).length === 1)[1].exports.wrapper;
+    this.guildClasses = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.downloadAppButton /* dragPlaceholder */)[0].exports;
     this.iconClasses = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.iconActiveMini)[0].exports;
   }
 
   get guildClassName () {
-    let className = this.guildClasses.container;
+    // let className = this.guildClasses.container;
+    let className = this.guildClasses.guild;
     if (this.props.unread) {
       className += ` ${this.guildClasses.unread}`;
     }
@@ -30,7 +30,8 @@ const Guild = class Guilds extends React.Component {
   }
 
   get iconClassName () {
-    let className = `${this.iconClasses.icon} ${this.iconClasses.iconSizeLarge} ${this.iconClasses.iconInactive} ${this.guildClasses.guildIcon}`;
+    let className = `${this.iconClasses.iconInactive} ${this.guildClasses.guildIcon}`;
+    // let className = `${this.iconClasses.icon} ${this.iconClasses.iconSizeLarge} ${this.iconClasses.iconInactive} ${this.guildClasses.guildIcon}`;
     if (!this.props.guild.icon) {
       className += ` ${this.iconClasses.noIcon}`;
     }
@@ -44,7 +45,7 @@ const Guild = class Guilds extends React.Component {
     return <Draggable draggableId={this.props.guild.id} index={this.props.index}>
       {(provided) => (
         <div
-          className={`${this.guildClassName} pc-guild`}
+          className={`${this.guildClassName} pc-guild-`}
           ref={(r) => {
             provided.innerRef(r);
             this.props.setRef(r);
@@ -53,7 +54,8 @@ const Guild = class Guilds extends React.Component {
           {...provided.dragHandleProps}
         >
           <Tooltip text={this.props.guild.name} position='right'>
-            <div className={`${this.wrapperClass} pc-guildInner`} onContextMenu={this.handleContextMenu.bind(this)}>
+            {/* <div className={`${this.wrapperClass} pc-guildInner`} onContextMenu={this.handleContextMenu.bind(this)}> */}
+            <div className={`${this.guildClasses.guildInner}`} onContextMenu={this.handleContextMenu.bind(this)}>
               <Link aria-label={this.props.guild.id} to={link}>
                 <div
                   className={this.iconClassName}
