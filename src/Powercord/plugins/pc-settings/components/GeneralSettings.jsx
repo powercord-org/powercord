@@ -1,6 +1,7 @@
+const { remote } = require('electron');
 const { React } = require('powercord/webpack');
 const { open: openModal, close: closeModal } = require('powercord/modal');
-const { TextInput, SwitchItem, Category } = require('powercord/components/settings');
+const { TextInput, SwitchItem, ButtonItem, Category } = require('powercord/components/settings');
 
 const PassphraseModal = require('./PassphraseModal.jsx');
 const Account = require('./PowercordAccount');
@@ -12,6 +13,7 @@ module.exports = class GeneralSettings extends React.Component {
     const get = powercord.settings.get.bind(powercord.settings);
 
     this.state = {
+      cleaning: false,
       prefix: get('prefix', '.'),
       settingsSync: get('settingsSync', false),
       openOverlayDevTools: get('openOverlayDevTools', false),
@@ -94,7 +96,10 @@ module.exports = class GeneralSettings extends React.Component {
                 You may encounter issues and have black background in some cases, like when the window is cut off at the top or the bottom due to monitor resolution or when devtools are open and docked. <b>Requires restart</b>.</span>
             }
             value={settings.transparentWindow}
-            onChange={() => this._set('transparentWindow')}
+            onChange={() => {
+              this._set('transparentWindow');
+              this.askRestart();
+            }}
           >
             Transparent Window
           </SwitchItem>
@@ -103,7 +108,10 @@ module.exports = class GeneralSettings extends React.Component {
             note={
               <span>Enables Chromium's experimental Web Platform features that are in development, such as CSS <code>backdrop-filter</code>. Since features are in development you may encounter issues and APIs may change at any time. <b>Requires restart</b>.</span>}
             value={settings.experimentalWebPlatform}
-            onChange={() => this._set('experimentalWebPlatform')}
+            onChange={() => {
+              this._set('experimentalWebPlatform');
+              this.askRestart();
+            }}
           >
             Experimental Web Platform features
           </SwitchItem>
@@ -112,7 +120,7 @@ module.exports = class GeneralSettings extends React.Component {
             note={
               <span><b style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> Enabling this gives you access to features that can be <b>detected by Discord</b> and may result in an <b
                 style={{ color: 'rgb(240, 71, 71)' }}>account termination</b>.
-                  Powercord is <b>not responsible</b> for what you do with this feature. Leave it disabled if you are unsure.</span>
+                  Powercord is <b>not responsible</b> for what you do with this feature. Leave it disabled if you are unsure. The Powercord Team will not provide any support regarding any experiment.</span>
             }
             value={settings.experiments}
             onChange={() => this._set('experiments')}
@@ -120,6 +128,15 @@ module.exports = class GeneralSettings extends React.Component {
             Enable Discord Experiments
           </SwitchItem>
         </Category>
+
+        <ButtonItem
+          note={'Removes everything stored in Discord\'s cache folder. This will make Discord slower, as all resources will have to be fetched again.'}
+          button={this.state.cleaning ? 'Clearing cache...' : 'Clear cache'}
+          disabled={this.state.cleaning}
+          onClick={() => this.clearCache()}
+        >
+          Clear cache
+        </ButtonItem>
       </div>
     );
   }
@@ -151,5 +168,14 @@ module.exports = class GeneralSettings extends React.Component {
     this.setState({
       [key]: value
     });
+  }
+
+  clearCache () {
+    this.setState({ clearing: true });
+    remote.getCurrentWindow().webContents.session.clearCache(() => this.setState({ clearing: false }));
+  }
+
+  askRestart () {
+    // @todo: Make the app able to restart automatically
   }
 };

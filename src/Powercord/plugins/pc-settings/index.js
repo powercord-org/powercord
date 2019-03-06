@@ -54,10 +54,12 @@ module.exports = class Settings extends Plugin {
   }
 
   patchExperiments () {
-    const experimentsModule = getModule(r => r.isDeveloper !== void 0);
-    Object.defineProperty(experimentsModule, 'isDeveloper', {
-      get: () => powercord.settings.get('experiments', false)
-    });
+    try {
+      const experimentsModule = getModule(r => r.isDeveloper !== void 0);
+      Object.defineProperty(experimentsModule, 'isDeveloper', {
+        get: () => powercord.settings.get('experiments', false)
+      });
+    } catch (_) {}
   }
 
   async patchSettingsComponent () {

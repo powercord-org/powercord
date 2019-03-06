@@ -35,7 +35,7 @@ div[class*="switchItem-"] label button {
   height: 25px;
 }
 
-.powercord-settings-category {
+.powercord-settings-item {
   &-title {
     display: flex;
     cursor: pointer;
@@ -52,6 +52,10 @@ div[class*="switchItem-"] label button {
       }
     }
 
+    > div {
+      flex: 1;
+    }
+
     .pc-title {
       height: 24px;
     }
@@ -63,6 +67,9 @@ div[class*="switchItem-"] label button {
 
   &-inner {
     margin-top: 20px;
+  }
+
+  &.powercord-category &-inner {
     margin-left: 12px;
     border-left: 1px rgba(114, 118, 125, .3) solid;
     padding-left: 33px;
