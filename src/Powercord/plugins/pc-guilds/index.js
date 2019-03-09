@@ -4,8 +4,8 @@ const { resolve } = require('path');
 const Plugin = require('powercord/Plugin');
 const { inject, uninject } = require('powercord/injector');
 const { ContextMenu: { Button } } = require('powercord/components');
-const { React, ReactDOM, getModuleByDisplayName } = require('powercord/webpack');
-const { createElement, getOwnerInstance, waitFor } = require('powercord/util');
+const { createElement, getOwnerInstance, waitFor, sleep } = require('powercord/util');
+const { React, ReactDOM, getModule, getModuleByDisplayName } = require('powercord/webpack');
 
 const Guilds = require('./components/Guilds.jsx');
 const CreateFolder = require('./components/CreateFolder.jsx');
@@ -73,16 +73,17 @@ module.exports = class GuildFolders extends Plugin {
   }
 
   async _patchContextMenu () {
+    const _this = this;
     const GuildContextMenu = await getModuleByDisplayName('GuildContextMenu');
 
     inject('pc-guilds-context', GuildContextMenu.prototype, 'render', function (_, res) {
       if (this.props.isPowercord) {
         res.props.children = [
           res.props.children.shift(),
-          // React.createElement(Button, {
-          //   name: 'memes',
-          //   onClick: () => console.log('memes')
-          // }),
+          React.createElement(Button, {
+            name: 'Mark All As Read',
+            onClick: () => _this._markAllAsRead()
+          }),
           ...res.props.children,
           React.createElement(Button, {
             name: this.props.hidden ? 'Show' : 'Hide',
@@ -93,5 +94,29 @@ module.exports = class GuildFolders extends Plugin {
       }
       return res;
     });
+  }
+
+  async _markAllAsRead () {
+    if (this.processingMark) {
+      return;
+    }
+
+    this.processingMark = true;
+    const acknowledger = getModule([ 'markGuildAsRead' ]);
+    const guildStore = getModule([ 'getGuilds' ]);
+
+    const unreads = getOwnerInstance(document.querySelector('.powercord-guilds').parentNode.parentNode.parentNode).props.unreadGuilds;
+    const guilds = Object.values(guildStore.getGuilds()).filter(g => unreads[g.id]);
+    await this._asyncForEach(guilds, async guild => {
+      acknowledger.markGuildAsRead(guild.id);
+      await sleep(1500);
+    });
+    this.processingMark = false;
+  }
+
+  async _asyncForEach (array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array); // eslint-disable-line callback-return
+    }
   }
 };
