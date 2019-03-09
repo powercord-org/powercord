@@ -16,6 +16,12 @@ module.exports = class ClassNameNormalizer extends Plugin {
     this.patchModules(this._fetchAllModules());
     this.normalizeElement(document.querySelector('#app-mount'));
 
+    // this is temporarily here ok, just making people think i'm doing stuff
+    require('powercord/injector').inject('pc-cnn-gh', require('powercord/webpack').getModuleByDisplayName('GuildHeader').prototype, 'render', function (args, res) {
+      res.props['data-guild-id'] = this.props.guild.id;
+      return res;
+    });
+
     if (window.__OVERLAY__) {
       document.body.classList.add('overlay');
     }
