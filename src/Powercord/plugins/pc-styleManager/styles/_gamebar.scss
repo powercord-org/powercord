@@ -1,0 +1,37 @@
+.pc-games-bar {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  -webkit-app-region: no-drag;
+  left: 50%;
+  transform: translateX(-50%);
+
+  .pc-game-img {
+    height: 16px;
+    width: 16px;
+    background-size: 16px;
+    padding: 0px 12px;
+    background-repeat: no-repeat;
+    transition: 0.5s;
+    cursor: pointer;
+    border-radius: 2px;
+
+    &.fas {
+      padding-left: 4px;
+    }
+
+    &:hover {
+      height: 36px;
+      width: 36px;
+      background-size: 36px;
+      padding: 0 2px;
+
+      &.fas {
+        padding: 0;
+        height: 32px;
+        width: 32px;
+        font-size: 36px;
+      }
+    }
+  }
+}
