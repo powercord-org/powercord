@@ -17,30 +17,24 @@ module.exports = class Badges extends Plugin {
   unload () {
     this.unloadCSS();
     uninject('pc-badges-users');
-    uninject('pc-badges-guilds');
+    uninject('pc-badges-guilds-header');
+    uninject('pc-badges-guilds-icon');
   }
 
   async _patchGuildHeaders () {
+    const _this = this;
     const GuildHeader = await getModuleByDisplayName('GuildHeader');
-    inject('pc-badges-guilds', GuildHeader.prototype, 'render', function (args, res) {
+    inject('pc-badges-guilds-header', GuildHeader.prototype, 'render', function (args, res) {
       if (this.props.guild.id === GUILD_ID) {
-        res.props.children.props.children.props.children.unshift(
-          React.createElement(Tooltip,
-            {
-              text: 'Official',
-              position: 'bottom'
-            },
-            React.createElement('img',
-              {
-                src: 'https://powercord.xyz/assets/logo.svg',
-                style: {
-                  transform: 'rotate(45deg)',
-                  width: 20,
-                  height: 20,
-                  marginRight: 5
-                }
-              }))
-        );
+        res.props.children.props.children.props.children.unshift(_this._renderBadge());
+      }
+      return res;
+    });
+
+    const GuildIcon = await getModuleByDisplayName('GuildIcon');
+    inject('pc-badges-guilds-icon', GuildIcon.prototype, 'render', function (args, res) {
+      if (this.props.guild.id === GUILD_ID) {
+        res.props.children.push(_this._renderBadge());
       }
       return res;
     });
@@ -68,5 +62,15 @@ module.exports = class Badges extends Plugin {
       res.props.children.props.children[0].props.children[0].props.children[1].props.children[1].props.children.push(Component);
       return res;
     });
+  }
+
+  _renderBadge () {
+    return React.createElement(Tooltip, {
+      text: 'Official',
+      position: 'bottom'
+    }, React.createElement('img', {
+      className: 'powercord-guild-badge',
+      src: 'https://powercord.xyz/assets/logo.svg'
+    }));
   }
 };

@@ -36,3 +36,18 @@
     filter: initial;
   }
 }
+
+.powercord-guild-badge {
+  transform: rotate(45deg);
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.pc-icon .powercord-guild-badge {
+  bottom: -2px;
+  height: 14px;
+  position: absolute;
+  right: -2px;
+  width: 14px;
+}

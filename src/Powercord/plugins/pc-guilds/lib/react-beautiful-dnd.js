@@ -7333,11 +7333,11 @@ const { React } = require('powercord/webpack');
   };
 
   var printFatalDevError = function printFatalDevError(error) {
-    var _console;
+    // var _console;
 
-    (_console = console).error.apply(_console, getFormattedMessage("\n      An error has occurred while a drag is occurring.\n      Any existing drag will be cancelled.\n\n      > " + error.message + "\n      "));
+    // (_console = console).error.apply(_console, getFormattedMessage("\n      An error has occurred while a drag is occurring.\n      Any existing drag will be cancelled.\n\n      > " + error.message + "\n      "));
 
-    console.error('raw', error);
+    // console.error('raw', error);
   };
 
   var DragDropContext = function (_React$Component) {
@@ -7359,7 +7359,7 @@ const { React } = require('powercord/webpack');
       };
 
       _this.onFatalError = function (error) {
-        printFatalDevError(error);
+        // printFatalDevError(error);
 
         var state = _this.store.getState();
 

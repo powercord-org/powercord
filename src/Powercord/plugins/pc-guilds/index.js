@@ -77,13 +77,19 @@ module.exports = class GuildFolders extends Plugin {
 
     inject('pc-guilds-context', GuildContextMenu.prototype, 'render', function (_, res) {
       if (this.props.isPowercord) {
-        res.props.children.push(
+        res.props.children = [
+          res.props.children.shift(),
+          // React.createElement(Button, {
+          //   name: 'memes',
+          //   onClick: () => console.log('memes')
+          // }),
+          ...res.props.children,
           React.createElement(Button, {
             name: this.props.hidden ? 'Show' : 'Hide',
             seperate: true,
             onClick: () => this.props.onHide()
           })
-        );
+        ];
       }
       return res;
     });

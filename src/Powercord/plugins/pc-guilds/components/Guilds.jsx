@@ -1,13 +1,14 @@
-const { React, getModule } = require('powercord/webpack');
 const { DragDropContext, Droppable } = window.ReactBeautifulDnd;
+const { React } = require('powercord/webpack');
 
+const GuildStore = require('../store');
 const Guild = require('./Guild.jsx');
 
 module.exports = class Guilds extends React.Component {
   constructor (props) {
     super(props);
 
-    this.onDragEnd = this._onDragEnd.bind(this);
+    this.store = new GuildStore(this.props.settings);
     this.state = {
       hidden: false,
       openedFolders: []
@@ -24,7 +25,7 @@ module.exports = class Guilds extends React.Component {
     const hiddenGuilds = this.props.settings.get('hidden', []);
     const guilds = this._getGuilds();
 
-    return <DragDropContext onDragEnd={this.onDragEnd}>
+    return <DragDropContext onDragEnd={this.store.handleDnD.bind(this.store)}>
       <Droppable droppableId="droppable">
         {(provided) => (
           <div
@@ -37,7 +38,7 @@ module.exports = class Guilds extends React.Component {
               {guilds.mentions.hidden > 0 && <div className='powercord-mentions-badge'>{guilds.mentions.hidden}</div>}
             </div>}
 
-            {guilds.items.map(({ guild, index }) => <Guild
+            {guilds.items.map((guild, index) => <Guild
               key={guild.id}
 
               guild={guild}
@@ -70,10 +71,10 @@ module.exports = class Guilds extends React.Component {
 
   _getGuilds () {
     const hiddenGuilds = this.props.settings.get('hidden', []);
-    let { guilds } = this.props;
+    let guilds = this.store.getGuilds();
     let toggledMentions = 0;
 
-    guilds = guilds.filter(({ guild }) => {
+    guilds = guilds.filter(guild => {
       if (hiddenGuilds.includes(guild.id)) {
         toggledMentions += this.state.hidden ? 0 : this.props.mentionCounts[guild.id];
         return this.state.hidden;
@@ -89,25 +90,5 @@ module.exports = class Guilds extends React.Component {
       },
       unreads: {}
     };
-  }
-
-  _onDragEnd (result) {
-    if (!result.destination) {
-      return;
-    }
-
-    const positions = this._reorder(this.props.guilds, result.source.index, result.destination.index).map(g => g.guild.id);
-    const settings = getModule([ 'updateRemoteSettings' ]);
-    settings.updateRemoteSettings({
-      guildPositions: positions
-    });
-  }
-
-  _reorder (list, startIndex, endIndex) {
-    const result = Array.from(list);
-    const [ removed ] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
   }
 };
