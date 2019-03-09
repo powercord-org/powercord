@@ -10,6 +10,7 @@ module.exports = class TitleBarGames extends Plugin {
     if (process.platform !== 'win32') {
       return this.warn('Exiting due to unsupported platform.');
     }
+
     this.applications = await getModule([ 'LAUNCHABLE_APPLICATIONS' ]);
     this.navigator = await getModule([ 'transitionTo' ]);
     this.patchTitlebar();
@@ -37,7 +38,7 @@ module.exports = class TitleBarGames extends Plugin {
         onClick: () => this.navigator.transitionTo('/library')
       }));
 
-      return applications;
+      return applications.slice(0, 40);
   }
 
   async patchTitlebar () {
@@ -73,5 +74,9 @@ module.exports = class TitleBarGames extends Plugin {
 
   unload () {
     uninject('pc-titleBarGames');
+    const bar = document.querySelector('.pc-games-bar');
+    if (bar) {
+      bar.remove();
+    }
   }
 };
