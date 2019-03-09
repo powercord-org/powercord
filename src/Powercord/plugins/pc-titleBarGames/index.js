@@ -1,7 +1,8 @@
+const { resolve } = require('path');
 const Plugin = require('powercord/Plugin');
 const { getOwnerInstance, waitFor, sleep } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
-const { React, getModule, constants } = require('powercord/webpack');
+const { React, getModule, getModuleByDisplayName, constants: { Routes } } = require('powercord/webpack');
 
 const webContents = require('electron').remote.getCurrentWindow();
 
@@ -11,6 +12,9 @@ module.exports = class TitleBarGames extends Plugin {
       return this.warn('Exiting due to unsupported platform.');
     }
 
+    this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.icon = await getModuleByDisplayName('Icon');
+    this.iconClass = await getModule([ 'linkButtonIcon' ]);
     this.applications = await getModule([ 'LAUNCHABLE_APPLICATIONS' ]);
     this.navigator = await getModule([ 'transitionTo' ]);
     this.patchTitlebar();
@@ -22,7 +26,7 @@ module.exports = class TitleBarGames extends Plugin {
 
   getApplications () {
     const applications = this.applications
-      .LAUNCHABLE_APPLICATIONS()
+      .LAUNCHABLE_APPLICATIONS() // eslint-disable-line
       .map(({ application }) =>
         React.createElement('div', {
           className: 'pc-game-img',
@@ -33,12 +37,13 @@ module.exports = class TitleBarGames extends Plugin {
         })
       );
 
-      applications.push(React.createElement('div', {
-        className: 'pc-game-img fas fa-gamepad',
-        onClick: () => this.navigator.transitionTo('/library')
-      }));
+    applications.push(React.createElement(this.icon, {
+      name: 'Library',
+      className: `pc-game-img ${this.iconClass.linkButtonIcon}`,
+      onClick: () => this.navigator.transitionTo(Routes.APPLICATION_LIBRARY)
+    }));
 
-      return applications.slice(0, 40);
+    return applications.slice(0, 40);
   }
 
   async patchTitlebar () {
@@ -62,10 +67,11 @@ module.exports = class TitleBarGames extends Plugin {
       }
     };
 
-    inject('pc-titleBarGames', instance.__proto__, 'render', () =>
+    inject('pc-titleBarGames', instance, 'render', () =>
       React.createElement(TitleBarComponent)
     );
 
+    // eslint-disable-next-line
     // re-render titlebar after discord updates with games
     // @todo automatic
     await sleep(5000);
