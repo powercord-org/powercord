@@ -5399,11 +5399,12 @@ const { React } = require('powercord/webpack');
   };
 
   var getDevMessage = function getDevMessage(message) {
-    return clean$1("\n  %creact-beautiful-dnd\n\n  %c" + clean$1(message) + "\n\n  %c\uD83D\uDC77\u200D This is a development only message. It will be removed in production builds.\n");
+    // Remove dev message
+    return ''; // clean$1("\n  %creact-beautiful-dnd\n\n  %c" + clean$1(message) + "\n\n  %c\uD83D\uDC77\u200D This is a development only message. It will be removed in production builds.\n");
   };
 
   var getFormattedMessage = function getFormattedMessage(message) {
-    return [getDevMessage(message), 'color: #00C584; font-size: 1.2em; font-weight: bold;', 'line-height: 1.5', 'color: #723874;'];
+    return ''; // [getDevMessage(message), 'color: #00C584; font-size: 1.2em; font-weight: bold;', 'line-height: 1.5', 'color: #723874;'];
   };
   var isDisabledFlag = '__react-beautiful-dnd-disable-dev-warnings';
   var warning$3 = function warning(message) {
