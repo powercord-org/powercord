@@ -33,7 +33,10 @@ module.exports = class GuildStore {
     const guilds = [];
     guildIds.forEach(guildId => {
       if (typeof guildId === 'string') {
-        guilds.push(this.guildStore.getGuild(guildId));
+        const guild = this.guildStore.getGuild(guildId);
+        if (guild) {
+          guilds.push(guild);
+        }
       } else {
         guilds.push({
           name: guildId.name,
