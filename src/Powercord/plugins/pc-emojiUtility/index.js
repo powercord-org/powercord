@@ -53,6 +53,11 @@ const { clipboard } = require('electron');
 
 const Settings = require('./components/Settings.jsx');
 
+const colors = {
+  error: 0xdd2d2d,
+  success: 0x1bbb1b
+}
+
 module.exports = class EmojiUtility extends Plugin {
   getEmojiRegex () {
     return /^<a?:([a-zA-Z0-9_]+):([0-9]+)>$/;
@@ -104,11 +109,11 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   replySuccess (content, embed) {
-    this.reply(content, Object.assign({ color: 65280 }, embed));
+    this.reply(content, Object.assign({ color: colors.success }, embed));
   }
 
   replyError (content, embed) {
-    this.reply(content, Object.assign({ color: 16711680 }, embed));
+    this.reply(content, Object.assign({ color: colors.error }, embed));
   }
 
   getExtension (url) {
@@ -612,7 +617,7 @@ module.exports = class EmojiUtility extends Plugin {
               result: {
                 type: 'rich',
                 description: foundEmojis.map(emoji => `${this.getFullEmoji(emoji)} is from **[${emoji.guild.name}](${this.getGuildUrl(emoji.guildId)})**`).join('\n'),
-                color: 65280,
+                color: colors.success,
                 footer: notFoundEmojis.length > 0
                   ? {
                     text: `${notFoundEmojis.length} of the provided arguments ${notFoundEmojis.length === 1 ? 'is not a custom emote' : 'are not custom emotes'}`
