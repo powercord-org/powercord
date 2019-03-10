@@ -1,31 +1,65 @@
 const Plugin = require('powercord/Plugin');
-const { createElement } = require('powercord/util');
+const { waitFor, getOwnerInstance, createElement } = require('powercord/util');
+const { getModule } = require('powercord/webpack');
+const { inject, uninject } = require('powercord/injector');
 const { clipboard } = require('electron');
 const { resolve } = require('path');
 
 module.exports = class Codeblocks extends Plugin {
   async start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.injectMessage();
 
-    powercord
-      .pluginManager
-      .get('pc-stateWatcher')
-      .on('codeblock', this.inject);
+    for (const codeblock of document.querySelectorAll('.hljs')) {
+      this.inject(codeblock);
+    }
+  }
 
-    document.querySelectorAll('.hljs').forEach(this.inject.bind(this));
+  async injectMessage () {
+    const _this = this;
+
+    const messageClasses = await getModule([ 'messageCompact', 'messageCozy' ]);
+    const messageQuery = `.${messageClasses.message.replace(/ /g, '.')}`;
+
+    const instance = getOwnerInstance(await waitFor(messageQuery));
+    inject('pc-message-codeblock', instance.__proto__, 'render', function (_, res) {
+      const hasCodeblock = res
+        .props.children[1]
+        .props.children[0]
+        .props.message.contentParsed
+        .find(el => el.type === 'pre');
+
+      setImmediate(() => {
+        if (
+          hasCodeblock &&
+          this.ref instanceof Element
+        ) {
+          /**
+           * @todo figure out how to actually inject modifications directly with react internals
+           * codeblocks seem to have their content initially passed with dangerouslySetInnerHTML
+           * and then re-rendered as a child
+           * even then, native injection attempts I made were heavily inconsistent
+           * https://haste.aetheryx.xyz/bawazexole.js
+           */
+          for (const codeblock of this.ref.querySelectorAll('.hljs')) {
+            _this.inject(codeblock);
+          }
+        }
+      });
+
+      return res;
+    });
+
+    instance.forceUpdate();
   }
 
   unload () {
     this.unloadCSS();
+    uninject('pc-message-codeblock');
 
-    powercord
-      .pluginManager
-      .get('pc-stateWatcher')
-      .off('codeblock', this.inject);
-
-    Array.from(document.querySelectorAll('.powercord-codeblock-copy-btn')).map(c => c.parentNode).forEach(c => {
-      c.innerHTML = c._originalInnerHTML;
-    });
+    for (const codeblock of document.querySelectorAll('.powercord-codeblock-copy-btn')) {
+      codeblock.parentNode.innerHTML = codeblock.parentNode._originalInnerHTML;
+    }
   }
 
   inject (codeblock) {
@@ -40,14 +74,12 @@ module.exports = class Codeblocks extends Plugin {
     codeblock.innerHTML = `<div>${codeblock.innerHTML}</div>`;
 
     const lang = codeblock.className.split(' ').find(c => !c.includes('-') && c !== 'hljs');
-    if (lang) {
-      codeblock.appendChild(
-        createElement('div', {
-          className: 'powercord-codeblock-lang',
-          innerHTML: lang
-        })
-      );
-    }
+    codeblock.appendChild(
+      createElement('div', {
+        className: 'powercord-codeblock-lang',
+        innerHTML: lang || '&#x2063;'
+      })
+    );
 
     codeblock.appendChild(createElement('div', { className: 'powercord-lines' }));
     codeblock.appendChild(
