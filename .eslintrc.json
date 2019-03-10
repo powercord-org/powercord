@@ -89,7 +89,6 @@
     "no-new-wrappers": [ "error" ],
     "no-octal": [ "error" ],
     "no-octal-escape": [ "error" ],
-    "no-proto": [ "error" ],
     "no-redeclare": [ "error", {
       "builtinGlobals": true
     }],
