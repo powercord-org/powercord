@@ -18,7 +18,6 @@ module.exports = class Badges extends Plugin {
     this.unloadCSS();
     uninject('pc-badges-users');
     uninject('pc-badges-guilds-header');
-    uninject('pc-badges-guilds-icon');
   }
 
   async _patchGuildHeaders () {
@@ -27,14 +26,6 @@ module.exports = class Badges extends Plugin {
     inject('pc-badges-guilds-header', GuildHeader.prototype, 'render', function (args, res) {
       if (this.props.guild.id === GUILD_ID) {
         res.props.children.props.children.props.children.unshift(_this._renderBadge());
-      }
-      return res;
-    });
-
-    const GuildIcon = await getModuleByDisplayName('GuildIcon');
-    inject('pc-badges-guilds-icon', GuildIcon.prototype, 'render', function (args, res) {
-      if (this.props.guild.id === GUILD_ID) {
-        res.props.children.push(_this._renderBadge());
       }
       return res;
     });
