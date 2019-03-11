@@ -18,8 +18,8 @@ module.exports = class GuildFolders extends Plugin {
     this._patchContextMenu();
 
     // Ensure new guild component is immediately displayed
-    await waitFor('.pc-guilds');
-    getOwnerInstance(document.querySelector('.pc-guilds')).forceUpdate();
+    waitFor('.pc-guilds')
+      .then(() => getOwnerInstance(document.querySelector('.pc-guilds')).forceUpdate());
   }
 
   unload () {
