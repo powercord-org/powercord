@@ -2,15 +2,23 @@ window.ReactBeautifulDnd = require('./lib/react-beautiful-dnd');
 
 const { resolve } = require('path');
 const Plugin = require('powercord/Plugin');
-const { inject, uninject } = require('powercord/injector');
+const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
+const { closeAll: closeModals, open: openModal, close: closeModal } = require('powercord/modal');
 const { ContextMenu: { Button } } = require('powercord/components');
-const { createElement, getOwnerInstance, waitFor, sleep } = require('powercord/util');
-const { React, ReactDOM, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { getOwnerInstance, waitFor, sleep } = require('powercord/util');
+const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 
+const GuildStore = require('./store');
 const Guilds = require('./components/Guilds.jsx');
 const CreateFolder = require('./components/CreateFolder.jsx');
+const NewFolderModal = require('./components/FolderModal.jsx');
 
 module.exports = class GuildFolders extends Plugin {
+  constructor () {
+    super();
+    this.store = new GuildStore(this.settings);
+  }
+
   async start () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuilds();
@@ -18,8 +26,21 @@ module.exports = class GuildFolders extends Plugin {
     this._patchContextMenu();
 
     // Ensure new guild component is immediately displayed
-    waitFor('.pc-guilds')
-      .then(() => getOwnerInstance(document.querySelector('.pc-guilds')).forceUpdate());
+    await waitFor('.pc-guilds');
+    getOwnerInstance(document.querySelector('.pc-guilds')).forceUpdate();
+  }
+
+  openCreateFolderModal () {
+    closeModals();
+    openModal(() => React.createElement(NewFolderModal, {
+      onConfirm: (name, icon) => {
+        this.store.createFolder(name, icon);
+        closeModal();
+      },
+      onCancel: () => {
+        closeModal();
+      }
+    }));
   }
 
   unload () {
@@ -38,37 +59,26 @@ module.exports = class GuildFolders extends Plugin {
     inject('pc-guilds', DGuilds.prototype, 'render', function (_, res) {
       res.props.children[1].props.children[5] = React.createElement(Guilds, Object.assign({}, this.props, {
         setRef: (key, e) => this.guildRefs[key] = e,
-        settings: _this.settings
+        settings: _this.settings,
+        store: _this.store
       }));
       return res;
     });
   }
 
-  _patchAddGuild () {
+  async _patchAddGuild () {
     const AddGuild = getModuleByDisplayName('AddGuildModal');
 
-    inject('pc-guilds-add', AddGuild.prototype, 'render', (_, res) => {
+    inject('pc-guilds-add-class', AddGuild.prototype, 'render', (_, res) => {
       res.props.className += ' pc-createGuildDialog';
       return res;
     });
 
-    inject('pc-guilds-add-mount', AddGuild.prototype, 'componentDidMount', () => {
-      const actions = document.querySelector('.pc-createGuildDialog header + .pc-actions');
-
-      if (actions) {
-        const element = createElement('div', { id: 'powercord-create-folder' });
-        ReactDOM.render(React.createElement(CreateFolder), element);
-        actions.parentElement.appendChild(element);
-      }
-    });
-
-    inject('pc-guilds-add-update', AddGuild.prototype, 'componentDidUpdate', () => {
-      const actions = document.querySelector('.pc-createGuildDialog header + .pc-actions');
-      if (actions && !document.querySelector('#powercord-create-folder')) {
-        const element = createElement('div', { id: 'powercord-create-folder' });
-        ReactDOM.render(React.createElement(CreateFolder), element);
-        actions.parentElement.appendChild(element);
-      }
+    injectInFluxContainer('pc-guilds-add-item', 'CreateOrJoinGuildSlide', 'render', (args, res) => {
+      res.props.children.props.children.push(React.createElement(CreateFolder, {
+        openModal: () => this.openCreateFolderModal()
+      }));
+      return res;
     });
   }
 

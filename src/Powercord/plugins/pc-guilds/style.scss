@@ -102,3 +102,32 @@
     margin-bottom: 20px;
   }
 }
+
+.powercord-folder-modal .pc-divider {
+  display: none;
+}
+
+.pc-folder {
+  height: 40px;
+
+  .pc-guildInner {
+    border-radius: 0;
+    background: transparent;
+  }
+
+  a {
+    position: relative;
+
+    span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(calc(-50% - 3px));
+    }
+  }
+
+  svg {
+    width: 50px;
+    height: 40px;
+  }
+}

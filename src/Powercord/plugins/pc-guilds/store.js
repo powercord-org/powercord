@@ -6,6 +6,24 @@ module.exports = class GuildStore {
     this.guildStore = getModule([ 'getGuilds' ]);
     this.updater = getModule([ 'updateRemoteSettings' ]);
     this.sortedGuildStore = getModule([ 'getSortedGuilds' ]);
+    this.snowflake = getModule([ 'extractTimestamp' ]);
+  }
+
+  createFolder (name, icon) {
+    const id = this.snowflake.fromTimestamp(Date.now());
+    const guilds = this.getGuildIds();
+    guilds.unshift({
+      id,
+      name,
+      icon,
+      guilds: []
+    });
+    this.settings.set('guilds', guilds);
+  }
+
+  deleteFolder (id) {
+    const guilds = this.getGuildIds();
+    this.settings.set('guilds', guilds.filter(g => !(typeof g === 'object' && g.id === id)));
   }
 
   getGuilds () {
@@ -16,12 +34,20 @@ module.exports = class GuildStore {
     return this._getGuildsFromId(guildIds);
   }
 
+  getGuildIds () {
+    const guildIds = this.settings.get('guilds', null);
+    if (!guildIds) {
+      return this.sortedGuildStore.getSortedGuilds().map(g => g.guild.id);
+    }
+    return guildIds;
+  }
+
   handleDnD (result) {
     if (!result.destination) {
       return;
     }
 
-    const guilds = Array.from(this.getGuilds().map(g => g.id));
+    const guilds = Array.from(this.getGuildIds());
     const [ removed ] = guilds.splice(result.source.index, 1);
     guilds.splice(result.destination.index, 0, removed);
     this.settings.set('guilds', guilds);
@@ -39,6 +65,7 @@ module.exports = class GuildStore {
         }
       } else {
         guilds.push({
+          id: guildId.id,
           name: guildId.name,
           icon: guildId.icon,
           guilds: this._getGuildsFromId(guildId.guilds)
