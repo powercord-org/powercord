@@ -74,12 +74,14 @@ module.exports = class Codeblocks extends Plugin {
     codeblock.innerHTML = `<div>${codeblock.innerHTML}</div>`;
 
     const lang = codeblock.className.split(' ').find(c => !c.includes('-') && c !== 'hljs');
-    codeblock.appendChild(
-      createElement('div', {
-        className: 'powercord-codeblock-lang',
-        innerHTML: lang || '&#x2063;'
-      })
-    );
+    if (lang) {
+      codeblock.appendChild(
+        createElement('div', {
+          className: 'powercord-codeblock-lang',
+          innerHTML: lang
+        })
+      );
+    }
 
     codeblock.appendChild(createElement('div', { className: 'powercord-lines' }));
     codeblock.appendChild(
