@@ -11,7 +11,7 @@ module.exports = class GuildStore {
 
   createFolder (name, icon) {
     const id = this.snowflake.fromTimestamp(Date.now());
-    const guilds = this.getGuildIds();
+    const guilds = this.getGuilds();
     guilds.unshift({
       id,
       name,
@@ -29,17 +29,13 @@ module.exports = class GuildStore {
   getGuilds () {
     const guildIds = this.settings.get('guilds', null);
     if (!guildIds) {
-      return this.sortedGuildStore.getSortedGuilds().map(g => g.guild);
-    }
-    return this._getGuildsFromId(guildIds);
-  }
-
-  getGuildIds () {
-    const guildIds = this.settings.get('guilds', null);
-    if (!guildIds) {
       return this.sortedGuildStore.getSortedGuilds().map(g => g.guild.id);
     }
-    return guildIds;
+    return this._ensureUpdated(guildIds);
+  }
+
+  getGuild (id) {
+    return this.guildStore.getGuild(id);
   }
 
   handleDnD (result) {
@@ -55,40 +51,36 @@ module.exports = class GuildStore {
     this._pushToAPI();
   }
 
-  _getGuildsFromId (guildIds) {
-    const guilds = [];
-    guildIds.forEach(guildId => {
-      if (typeof guildId === 'string') {
-        const guild = this.guildStore.getGuild(guildId);
-        if (guild) {
-          guilds.push(guild);
-        }
-      } else {
-        guilds.push({
-          id: guildId.id,
-          name: guildId.name,
-          icon: guildId.icon,
-          guilds: this._getGuildsFromId(guildId.guilds)
-        });
+  _ensureUpdated (guildIds) {
+    const discordGuilds = Object.values(this.guildStore.getGuilds());
+    // Step 1: Cleaning up removed guilds
+    const guilds = guildIds.filter(g => (g.guilds) ? true : this.guildStore.getGuild(g));
+
+    // Step 2: Adding missing guilds
+    discordGuilds.forEach(g => {
+      if (!guilds.includes(g.id)) {
+        guilds.unshift(g.id);
       }
     });
+
+    this.settings.set('guilds', guilds);
     return guilds;
   }
 
   _pushToAPI () {
-    const guildIds = this._flatGuildsIds(this.settings.get('guilds', null));
+    const guildIds = this._flatGuilds(this.getGuilds());
     this.updater.updateRemoteSettings({
       guildPositions: guildIds
     });
   }
 
-  _flatGuildsIds (guildIds) {
+  _flatGuilds (guildIds) {
     const guilds = [];
     guildIds.forEach(guildId => {
       if (typeof guildId === 'string') {
         guilds.push(guildId);
       } else {
-        guilds.push(...this._flatGuildsIds(guildId.guilds));
+        guilds.push(...this._flatGuilds(guildId.guilds));
       }
     });
     return guilds;

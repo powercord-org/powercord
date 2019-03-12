@@ -82,14 +82,18 @@ module.exports = class Guilds extends React.Component {
     let guilds = this.props.store.getGuilds();
     let toggledMentions = 0;
 
-    guilds = guilds.filter(guild => {
-      if (hiddenGuilds.includes(guild.id)) {
-        toggledMentions += this.state.hidden ? 0 : this.props.mentionCounts[guild.id];
-        return this.state.hidden;
+    guilds = guilds.map(guildId => {
+      const guild = this.props.store.getGuild(guildId);
+      if (!guild) {
+        return null;
       }
-      toggledMentions += !this.state.hidden ? 0 : this.props.mentionCounts[guild.id];
-      return !this.state.hidden;
-    });
+      if (hiddenGuilds.includes(guildId)) {
+        toggledMentions += this.state.hidden ? 0 : this.props.mentionCounts[guildId];
+        return this.state.hidden ? guild : null;
+      }
+      toggledMentions += !this.state.hidden ? 0 : this.props.mentionCounts[guildId];
+      return this.state.hidden ? null : guild;
+    }).filter(g => g);
 
     return {
       items: guilds,
