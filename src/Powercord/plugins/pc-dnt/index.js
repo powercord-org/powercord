@@ -1,10 +1,10 @@
 // based off of https://github.com/rauenzi/BetterDiscordAddons/blob/master/Plugins/DoNotTrack/DoNotTrack.plugin.js
 
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const webpack = require('powercord/webpack');
 
 module.exports = class DoNotTrack extends Plugin {
-  start () {
+  pluginDidLoad () {
     const Analytics = webpack.getModule([ 'AnalyticEventConfigs' ]);
     Analytics.__oldTrack = Analytics.track;
     Analytics.track = () => void 0;
@@ -32,7 +32,7 @@ module.exports = class DoNotTrack extends Plugin {
     Object.assign(window.console, Sentry._originalConsoleMethods);
   }
 
-  unload () {
+  pluginWillUnload () {
     const Analytics = webpack.getModule([ 'AnalyticEventConfigs' ]);
     Analytics.track = Analytics.__oldTrack;
 

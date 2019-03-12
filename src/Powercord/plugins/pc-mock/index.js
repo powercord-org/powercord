@@ -1,7 +1,7 @@
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 
 module.exports = class Mock extends Plugin {
-  start () {
+  pluginDidLoad () {
     powercord
       .pluginManager
       .get('pc-commands')
@@ -16,7 +16,7 @@ module.exports = class Mock extends Plugin {
       );
   }
 
-  unload () {
+  pluginWillUnload () {
     powercord
       .pluginManager
       .get('pc-commands')

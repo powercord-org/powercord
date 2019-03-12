@@ -1,4 +1,4 @@
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { waitFor, getOwnerInstance, createElement } = require('powercord/util');
 const { getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
@@ -6,12 +6,21 @@ const { clipboard } = require('electron');
 const { resolve } = require('path');
 
 module.exports = class Codeblocks extends Plugin {
-  async start () {
+  async pluginDidLoad () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this.injectMessage();
 
     for (const codeblock of document.querySelectorAll('.hljs')) {
       this.inject(codeblock);
+    }
+  }
+
+  pluginWillUnload () {
+    this.unloadCSS();
+    uninject('pc-message-codeblock');
+
+    for (const codeblock of document.querySelectorAll('.powercord-codeblock-copy-btn')) {
+      codeblock.parentNode.innerHTML = codeblock.parentNode._originalInnerHTML;
     }
   }
 
@@ -51,15 +60,6 @@ module.exports = class Codeblocks extends Plugin {
     });
 
     instance.forceUpdate();
-  }
-
-  unload () {
-    this.unloadCSS();
-    uninject('pc-message-codeblock');
-
-    for (const codeblock of document.querySelectorAll('.powercord-codeblock-copy-btn')) {
-      codeblock.parentNode.innerHTML = codeblock.parentNode._originalInnerHTML;
-    }
   }
 
   inject (codeblock) {

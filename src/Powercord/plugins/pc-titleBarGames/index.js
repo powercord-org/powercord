@@ -1,5 +1,5 @@
 const { resolve } = require('path');
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { getOwnerInstance, waitFor, sleep } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { React, getModule, getModuleByDisplayName, constants: { Routes } } = require('powercord/webpack');
@@ -7,7 +7,7 @@ const { React, getModule, getModuleByDisplayName, constants: { Routes } } = requ
 const webContents = require('electron').remote.getCurrentWindow();
 
 module.exports = class TitleBarGames extends Plugin {
-  async start () {
+  async pluginDidLoad () {
     if (process.platform !== 'win32') {
       return this.warn('Exiting due to unsupported platform.');
     }
@@ -18,6 +18,14 @@ module.exports = class TitleBarGames extends Plugin {
     this.applications = await getModule([ 'LAUNCHABLE_APPLICATIONS' ]);
     this.navigator = await getModule([ 'transitionTo' ]);
     this.patchTitlebar();
+  }
+
+  pluginWillUnload () {
+    uninject('pc-titleBarGames');
+    const bar = document.querySelector('.pc-games-bar');
+    if (bar) {
+      bar.remove();
+    }
   }
 
   launchApplication ({ id }) {
@@ -76,13 +84,5 @@ module.exports = class TitleBarGames extends Plugin {
     // @todo automatic
     await sleep(5000);
     instance.forceUpdate();
-  }
-
-  unload () {
-    uninject('pc-titleBarGames');
-    const bar = document.querySelector('.pc-games-bar');
-    if (bar) {
-      bar.remove();
-    }
   }
 };

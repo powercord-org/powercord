@@ -4,9 +4,7 @@
     "description": "Mock people",
     "author": "Melmsie",
     "license": "MIT",
-    "repo": null,
     "dependencies": [
       "pc-commands"
     ]
   }
-  

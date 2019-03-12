@@ -1,7 +1,7 @@
 window.ReactBeautifulDnd = require('./lib/react-beautiful-dnd');
 
 const { resolve } = require('path');
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
 const { closeAll: closeModals, open: openModal, close: closeModal } = require('powercord/modal');
 const { ContextMenu: { Button } } = require('powercord/components');
@@ -19,7 +19,7 @@ module.exports = class GuildFolders extends Plugin {
     this.store = new GuildStore(this.settings);
   }
 
-  async start () {
+  async pluginDidLoad () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuilds();
     // this._patchAddGuild();
@@ -28,6 +28,15 @@ module.exports = class GuildFolders extends Plugin {
     // Ensure new guild component is immediately displayed
     await waitFor('.pc-guilds');
     getOwnerInstance(document.querySelector('.pc-guilds')).forceUpdate();
+  }
+
+  pluginWillUnload () {
+    this.unloadCSS();
+    uninject('pc-guilds');
+    uninject('pc-guilds-add');
+    uninject('pc-guilds-add-mount');
+    uninject('pc-guilds-add-update');
+    uninject('pc-guilds-context');
   }
 
   openCreateFolderModal () {
@@ -41,15 +50,6 @@ module.exports = class GuildFolders extends Plugin {
         closeModal();
       }
     }));
-  }
-
-  unload () {
-    this.unloadCSS();
-    uninject('pc-guilds');
-    uninject('pc-guilds-add');
-    uninject('pc-guilds-add-mount');
-    uninject('pc-guilds-add-update');
-    uninject('pc-guilds-context');
   }
 
   async _patchGuilds () {

@@ -1,5 +1,5 @@
 const fs = require('fs').promises;
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { open: openModal } = require('powercord/modal');
 const { getOwnerInstance } = require('powercord/util');
 const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
@@ -18,7 +18,7 @@ module.exports = class Spotify extends Plugin {
     return SpotifyPlayer;
   }
 
-  async start () {
+  async pluginDidLoad () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._injectModal();
     this._injectListeningAlong();
@@ -55,7 +55,7 @@ module.exports = class Spotify extends Plugin {
     }
   }
 
-  unload () {
+  pluginWillUnload () {
     this.unloadCSS();
     this._patchAutoPause(true);
     uninject('pc-spotify-modal');

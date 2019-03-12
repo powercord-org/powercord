@@ -1,4 +1,4 @@
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { camelCaseify } = require('powercord/util');
 const { instance } = require('powercord/webpack');
 
@@ -12,7 +12,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
     this.ATTRIBUTE_BLACKLIST = [ 'px', 'ch', 'em', 'ms' ];
   }
 
-  start () {
+  pluginDidLoad () {
     this.patchModules(this._fetchAllModules());
     this.normalizeElement(document.querySelector('#app-mount'));
 

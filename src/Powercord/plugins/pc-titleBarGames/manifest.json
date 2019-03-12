@@ -3,6 +3,5 @@
   "version": "1.0.0",
   "description": "Displays your game library in the titlebar on Windows",
   "author": "Powercord Team",
-  "license": "MIT",
-  "repo": null
+  "license": "MIT"
 }

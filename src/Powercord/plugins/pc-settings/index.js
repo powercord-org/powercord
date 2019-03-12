@@ -1,5 +1,5 @@
 const { resolve } = require('path');
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
 const { getModuleByDisplayName, React, getModule } = require('powercord/webpack');
 
@@ -12,7 +12,7 @@ module.exports = class Settings extends Plugin {
     this.sections = [];
   }
 
-  start () {
+  pluginDidLoad () {
     // The reason why I do that is because settings may be required by plugins that are designed to work in overlay
     if (window.__OVERLAY__) {
       this.log('Note: started in compatibility mode');
@@ -24,7 +24,7 @@ module.exports = class Settings extends Plugin {
     this.register('pc-general', 'General Settings', GeneralSettings);
   }
 
-  unload () {
+  pluginWillUnload () {
     if (window.__OVERLAY__) {
       return;
     }

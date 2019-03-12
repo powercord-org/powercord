@@ -1,7 +1,7 @@
 const { resolve, join } = require('path');
 const { remote } = require('electron');
 const { readdir } = require('fs').promises;
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 
 // stolen from https://github.com/Inve1951/BetterDiscordStuff/blob/master/plugins/enableReactDevtools.plugin.js
 module.exports = class ReactDevtools extends Plugin {
@@ -19,16 +19,21 @@ module.exports = class ReactDevtools extends Plugin {
     return null;
   }
 
-  start () {
-    this.listener = this.listener.bind(this);
-    remote.getCurrentWindow().webContents.on('devtools-opened', this.listener);
-    if (remote.getCurrentWindow().webContents.isDevToolsOpened()) {
-      this.listener();
-    }
+  pluginDidLoad () {
+    /*
+     * This plugin generates some CPU leaks, and we need to find a better way of doing this.
+     * We should also download our own version of react devtools and use it instead of pulling it from Chrome
+     *
+     * this.listener = this.listener.bind(this);
+     * remote.getCurrentWindow().webContents.on('devtools-opened', this.listener);
+     * if (remote.getCurrentWindow().webContents.isDevToolsOpened()) {
+     *   this.listener();
+     * }
+     */
   }
 
-  unload () {
-    remote.getCurrentWindow().webContents.removeListener('devtools-opened', this.listener);
+  pluginWillUnload () {
+    // remote.getCurrentWindow().webContents.removeListener('devtools-opened', this.listener);
   }
 
   async listener () {

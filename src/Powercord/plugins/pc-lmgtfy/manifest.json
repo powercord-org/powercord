@@ -4,7 +4,6 @@
   "description": "Let me google that for you...",
   "author": "Powercord Team",
   "license": "MIT",
-  "repo": null,
   "dependencies": [
     "pc-commands"
   ]

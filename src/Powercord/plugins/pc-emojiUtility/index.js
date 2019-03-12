@@ -1,4 +1,4 @@
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 
 const {
   getModuleByDisplayName,
@@ -56,7 +56,7 @@ const Settings = require('./components/Settings.jsx');
 const colors = {
   error: 0xdd2d2d,
   success: 0x1bbb1b
-}
+};
 
 module.exports = class EmojiUtility extends Plugin {
   getEmojiRegex () {
@@ -209,7 +209,7 @@ module.exports = class EmojiUtility extends Plugin {
     return getGuild(guildId).hasFeature(GuildFeatures.MORE_EMOJI) ? EMOJI_MAX_SLOTS_MORE : EMOJI_MAX_SLOTS;
   }
 
-  async start () {
+  async pluginDidLoad () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
 
     /* Default settings */
@@ -824,7 +824,7 @@ module.exports = class EmojiUtility extends Plugin {
       );
   }
 
-  unload () {
+  pluginWillUnload () {
     this.unloadCSS();
 
     uninject('pc-emojiUtility-emojiContext');

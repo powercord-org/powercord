@@ -12,7 +12,7 @@ module.exports = class PluginManager {
     this.pluginDir = resolve(__dirname, 'plugins');
     this.plugins = new Map();
 
-    this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license', 'repo' ];
+    this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license' ];
     this.enforcedPlugins = [ 'pc-styleManager', 'pc-settings', 'pc-pluginManager', 'pc-keybindManager' ];
   }
 

@@ -1,4 +1,4 @@
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
 const { getModuleByDisplayName, React } = require('powercord/webpack');
 const { sleep, createElement, getOwnerInstance } = require('powercord/util');
@@ -7,13 +7,13 @@ const translate = require('google-translate-api');
 const { resolve } = require('path');
 
 module.exports = class Translate extends Plugin {
-  async start () {
+  async pluginDidLoad () {
     this.translations = {};
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._injectTranslator();
   }
 
-  unload () {
+  pluginWillUnload () {
     this.unloadCSS();
     uninject('pc-translate-context');
     uninject('pc-translate-content');

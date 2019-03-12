@@ -1,4 +1,4 @@
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { resolve, join } = require('path');
 const { get } = require('powercord/http');
 const { sleep, createElement } = require('powercord/util');
@@ -22,7 +22,7 @@ module.exports = class Updater extends Plugin {
     };
   }
 
-  async start () {
+  async pluginDidLoad () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     powercord
       .pluginManager
@@ -43,7 +43,7 @@ module.exports = class Updater extends Plugin {
     this.checkForUpdate();
   }
 
-  unload () {
+  pluginWillUnload () {
     this.unloadCSS();
     clearInterval(this._interval);
     powercord

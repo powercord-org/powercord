@@ -4,7 +4,6 @@
   "description": "Emote related commands",
   "author": "Joakim#9814, Bowser65",
   "license": "MIT",
-  "repo": null,
   "dependencies": [
     "pc-commands",
     "pc-settings"

@@ -1,4 +1,4 @@
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { get, post } = require('powercord/http');
 const { clipboard } = require('electron');
 const { React } = require('powercord/webpack');
@@ -6,7 +6,7 @@ const { React } = require('powercord/webpack');
 const Settings = require('./Settings.jsx');
 
 module.exports = class Hastebin extends Plugin {
-  start () {
+  pluginDidLoad () {
     powercord
       .pluginManager
       .get('pc-settings')
@@ -55,7 +55,7 @@ module.exports = class Hastebin extends Plugin {
       );
   }
 
-  unload () {
+  pluginWillUnload () {
     powercord
       .pluginManager
       .get('pc-commands')

@@ -4,7 +4,6 @@
   "description": "Quickly save and post a hastebin in the current channel",
   "author": "Powercord Team",
   "license": "MIT",
-  "repo": null,
   "dependencies": [
     "pc-commands",
     "pc-settings"

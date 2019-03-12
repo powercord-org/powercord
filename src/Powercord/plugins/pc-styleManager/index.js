@@ -1,4 +1,4 @@
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { createElement } = require('powercord/util');
 const chokidar = require('chokidar');
 const { render } = require('sass');
@@ -16,16 +16,18 @@ module.exports = class StyleManager extends Plugin {
     this.trackedFiles = [];
   }
 
-  async start () {
-    // Initialize worker
-    // this.worker = new Worker(
-    //   window.URL.createObjectURL(
-    //     new Blob([
-    //       await readFile(resolve(__dirname, 'transpiler.js'))
-    //     ])
-    //   )
-    // );
-    // this.worker.onmessage = this._handleFinishedCompiling.bind(this);
+  async pluignDidLoad () {
+    /*
+     * Initialize worker
+     * this.worker = new Worker(
+     *   window.URL.createObjectURL(
+     *     new Blob([
+     *       await readFile(resolve(__dirname, 'transpiler.js'))
+     *     ])
+     *   )
+     * );
+     * this.worker.onmessage = this._handleFinishedCompiling.bind(this);
+     */
 
     // Load global css
     this.load('Powercord-Globals', resolve(__dirname, 'styles', 'index.scss'));
@@ -51,6 +53,16 @@ module.exports = class StyleManager extends Plugin {
     }
   }
 
+  pluginWillUnload (styleId) {
+    if (!document.getElementById(`powercord-css-${styleId}`)) {
+      return this.error(`Tried to unload a non existing style! (Style ID: ${styleId})`);
+    }
+
+    this.trackedFiles.find(f => f.id === styleId).watchers.forEach(w => w.close());
+    this.trackedFiles = this.trackedFiles.filter(f => f.id !== styleId);
+    document.getElementById(`powercord-css-${styleId}`).remove();
+  }
+
   // Styles API
   async load (styleId, file) {
     if (!styleId.match(/^[a-z0-9_-]+$/i)) {
@@ -74,16 +86,6 @@ module.exports = class StyleManager extends Plugin {
     });
     await this._applyStyle(styleId, file, true);
     watcher.on('change', this.update.bind(this));
-  }
-
-  unload (styleId) {
-    if (!document.getElementById(`powercord-css-${styleId}`)) {
-      return this.error(`Tried to unload a non existing style! (Style ID: ${styleId})`);
-    }
-
-    this.trackedFiles.find(f => f.id === styleId).watchers.forEach(w => w.close());
-    this.trackedFiles = this.trackedFiles.filter(f => f.id !== styleId);
-    document.getElementById(`powercord-css-${styleId}`).remove();
   }
 
   // Initializing
@@ -145,12 +147,14 @@ module.exports = class StyleManager extends Plugin {
       css = result.css.toString();
     }
 
-    // Compile classes
-    // if (css.includes('@powercordCompile')) {
-    //   this._ensureClassNamesLoaded();
-    //   this.worker.postMessage([ styleId, css, this.discordClassNames ]);
-    // } else {
-      await this._handleFinishedCompiling([ styleId, css ]);
+    /*
+     * Compile classes
+     * if (css.includes('@powercordCompile')) {
+     *   this._ensureClassNamesLoaded();
+     *   this.worker.postMessage([ styleId, css, this.discordClassNames ]);
+     * } else {
+     */
+    await this._handleFinishedCompiling([ styleId, css ]);
     // }
   }
 
