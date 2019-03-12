@@ -43,7 +43,7 @@ module.exports = class GuildStore {
       return;
     }
 
-    const guilds = Array.from(this.getGuildIds());
+    const guilds = Array.from(this.getGuilds());
     const [ removed ] = guilds.splice(result.source.index, 1);
     guilds.splice(result.destination.index, 0, removed);
     this.settings.set('guilds', guilds);
@@ -63,7 +63,6 @@ module.exports = class GuildStore {
       }
     });
 
-    this.settings.set('guilds', guilds);
     return guilds;
   }
 
