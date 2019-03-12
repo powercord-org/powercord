@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/powercord-org/powercord#readme",
   "dependencies": {
-    "buble": "@0.19.6",
+    "buble": "0.19.6",
     "chokidar": "^2.0.4",
     "sass": "^1.15.1"
   },
