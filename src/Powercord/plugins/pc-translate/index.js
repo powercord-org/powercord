@@ -28,7 +28,6 @@ module.exports = class Translate extends Plugin {
     const MessageContent = await getModuleByDisplayName('MessageContent');
     inject('pc-translate-contentRemove', MessageContent.prototype, 'componentWillUnmount', function () {
       if (_this.translations[this.props.message.id]) {
-        console.log('gay');
         this.props.message.contentParsed = this.original;
         _this.translations[this.props.message.id] = null;
       }
