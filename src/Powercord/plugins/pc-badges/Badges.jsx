@@ -12,6 +12,7 @@ module.exports = class Badges extends React.PureComponent {
     this.state = badgesStore[props.id] || {
       developer: false,
       contributor: false,
+      early: false,
       hunter: false,
       tester: false
     };
