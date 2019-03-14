@@ -1,6 +1,6 @@
 const Plugin = require('powercord/Plugin');
 const { camelCaseify } = require('powercord/util');
-const { instance } = require('powercord/webpack');
+const { instance, getModuleByDisplayName } = require('powercord/webpack');
 
 // Based on BBD normalizer
 module.exports = class ClassNameNormalizer extends Plugin {
@@ -12,12 +12,13 @@ module.exports = class ClassNameNormalizer extends Plugin {
     this.ATTRIBUTE_BLACKLIST = [ 'px', 'ch', 'em', 'ms' ];
   }
 
-  start () {
+  async start () {
     this.patchModules(this._fetchAllModules());
     this.normalizeElement(document.querySelector('#app-mount'));
 
-    // this is temporarily here ok, just making people think i'm doing stuff
-    require('powercord/injector').inject('pc-cnn-gh', require('powercord/webpack').getModuleByDisplayName('GuildHeader').prototype, 'render', function (args, res) {
+    // this is temporarily here ok, just making people think i'm doing stuff. Bowserware confirmed
+    const GuildHeader = await getModuleByDisplayName('GuildHeader');
+    require('powercord/injector').inject('pc-cnn-gh', GuildHeader.prototype, 'render', function (args, res) {
       res.props['data-guild-id'] = this.props.guild.id;
       return res;
     });
