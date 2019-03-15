@@ -1,5 +1,6 @@
 const { inject: pcInject } = require('powercord/injector');
 const { waitFor, getOwnerInstance, sleep } = require('powercord/util');
+const { getModule } = require('powercord/webpack');
 
 module.exports = async function injectAutocomplete () {
   const _this = this;
@@ -72,10 +73,12 @@ module.exports = async function injectAutocomplete () {
       }
     };
 
-  await waitFor('.pc-channelTextArea');
+  const taClass = await getModule([ 'channelTextArea', 'channelTextAreaEnabled' ]).channelTextArea;
+
+  await waitFor(`.${taClass}`);
 
   const updateInstance = () =>
-    (this.instance = getOwnerInstance(document.querySelector('.pc-channelTextArea')));
+    (this.instance = getOwnerInstance(document.querySelector(`.${taClass}`)));
   const instancePrototype = Object.getPrototypeOf(updateInstance());
 
   pcInject('pc-commands-autocomplete', instancePrototype, 'componentDidMount', (args, originReturn) => {
