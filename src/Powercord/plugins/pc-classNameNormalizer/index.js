@@ -1,5 +1,5 @@
 const Plugin = require('powercord/Plugin');
-const { camelCaseify } = require('powercord/util');
+const { camelCaseify, sleep } = require('powercord/util');
 const { instance, getModuleByDisplayName } = require('powercord/webpack');
 
 // Based on BBD normalizer
@@ -13,6 +13,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
   }
 
   async start () {
+    await sleep(2000); // bowserware:tm:
     this.patchModules(this._fetchAllModules());
     this.normalizeElement(document.querySelector('#app-mount'));
 
