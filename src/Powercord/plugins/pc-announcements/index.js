@@ -30,8 +30,9 @@ module.exports = class Announcements extends Plugin {
               getModule([ 'selectGuild' ]).selectGuild(GUILD_ID);
             });
           }
-        }
-      }, true);
+        },
+        alwaysDisplay: true,
+      });
     }
 
     this.sendNotice({
@@ -52,8 +53,7 @@ module.exports = class Announcements extends Plugin {
     uninject('pc-custom-notices');
   }
 
-  sendNotice (notice, alwaysDisplay) {
-    notice.alwaysDisplay = alwaysDisplay || false; // append a new key to the corresponding notice; we'll use this to grab the value of alwaysDisplay outside of this method
+  sendNotice (notice) {
     if (!this.notices.find(n => n.id === notice.id) && (notice.alwaysDisplay || !this.settings.get('dismissed', []).includes(notice.id))) {
       this.notices.push(notice);
       this._renderNotice();
@@ -61,10 +61,10 @@ module.exports = class Announcements extends Plugin {
   }
 
   closeNotice (noticeId) {
-    this.notices = this.notices.filter(n => n.id !== noticeId);
-    if (this.notices.find(n => n.alwaysDisplay)) { // make sure that we're only adding notices found without alwaysDisplay to the 'dismissed' array
+    if (this.notices.find(n => n.id === noticeId && !n.alwaysDisplay)) { // make sure that we're only adding notices found without alwaysDisplay to the 'dismissed' array
       this.settings.set('dismissed', [ ...this.settings.get('dismissed', []), noticeId ]);
     }
+    this.notices = this.notices.filter(n => n.id !== noticeId);
     this._renderNotice();
   }
 
