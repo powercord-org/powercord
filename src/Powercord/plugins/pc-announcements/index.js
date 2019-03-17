@@ -7,8 +7,6 @@ const { inject, uninject } = require('powercord/injector');
 const { React, ReactDOM, getModule } = require('powercord/webpack');
 const { DISCORD_INVITE, GUILD_ID } = require('powercord/constants');
 
-const Notice = require('./Notice');
-
 module.exports = class Announcements extends Plugin {
   constructor () {
     super();
@@ -22,6 +20,7 @@ module.exports = class Announcements extends Plugin {
       await unlink(injectedFile);
       this.sendNotice({
         id: 'pc-first-welcome',
+        type: 'GREEN',
         message: 'Welcome! Powercord has been successfully injected into your Discord client. Feel free to join our Discord server for announcements, support and more!',
         button: {
           text: 'Join Server',
@@ -37,10 +36,14 @@ module.exports = class Announcements extends Plugin {
 
     this.sendNotice({
       id: 'pc-pewdiepie',
-      message: 'Subscribe to PewDiePie',
+      type: 'RED',
+      message: 'PewDiePie is in trouble and he needs your help to defeat T-Series!',
       button: {
-        text: 'Go to channel',
-        onClick: () => openExternal('https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw')
+        text: 'Subscribe to PewDiePie',
+        onClick: () => {
+          this.closeNotice('pc-pewdiepie');
+          openExternal('https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw?sub_confirmation=1');
+        }
       }
     });
   }
@@ -50,7 +53,8 @@ module.exports = class Announcements extends Plugin {
   }
 
   sendNotice (notice, alwaysDisplay) {
-    if (!this.notices.find(n => n.id === notice.id) && (alwaysDisplay || !this.settings.get('dismissed', []).includes(notice.id))) {
+    notice.alwaysDisplay = alwaysDisplay || false; // append a new key to the corresponding notice; we'll use this to grab the value of alwaysDisplay outside of this method
+    if (!this.notices.find(n => n.id === notice.id) && (notice.alwaysDisplay || !this.settings.get('dismissed', []).includes(notice.id))) {
       this.notices.push(notice);
       this._renderNotice();
     }
@@ -58,7 +62,9 @@ module.exports = class Announcements extends Plugin {
 
   closeNotice (noticeId) {
     this.notices = this.notices.filter(n => n.id !== noticeId);
-    this.settings.set('dismissed', [ ...this.settings.get('dismissed', []), noticeId ]);
+    if (this.notices.find(n => n.alwaysDisplay)) { // make sure that we're only adding notices found without alwaysDisplay to the 'dismissed' array
+      this.settings.set('dismissed', [ ...this.settings.get('dismissed', []), noticeId ]);
+    }
     this._renderNotice();
   }
 
@@ -73,16 +79,17 @@ module.exports = class Announcements extends Plugin {
   }
 
   _renderNotice () {
-    if (document.querySelector('.pc-guildsWrapper + .pc-flex > .pc-flexChild .pc-notice')) {
+    const Notice = require('./Notice');
+    if (document.querySelector('.pc-wrapper + .pc-flex > .pc-flexChild .pc-notice')) {
       return;
     }
 
-    const element = document.querySelector('.pc-guildsWrapper + .pc-flex .powercord-notice');
+    const element = document.querySelector('.pc-wrapper + .pc-flex .powercord-notice');
     if (element) {
       element.parentElement.remove();
     }
 
-    const noticeContainer = document.querySelector('.pc-guildsWrapper + .pc-flex');
+    const noticeContainer = document.querySelector('.pc-wrapper + .pc-flex');
     if (noticeContainer && this.notices.length > 0) {
       const div = document.createElement('div');
       noticeContainer.insertBefore(div, noticeContainer.firstChild);

@@ -26,7 +26,8 @@ Notice.TYPES = {
   BLURPLE_GRADIENT: classes.noticePremiumGrandfathered,
   SPOTIFY: classes.noticeSpotify,
   PURPLE: classes.noticeStreamerMode,
-  GREEN: classes.noticeSuccess
+  GREEN: classes.noticeSuccess,
+  SURVEY: classes.noticeSurvey // noticeInfo's (Notice.TYPES.BLUE) evil twin -- hovering over the CTA button greets you with some gloomy black text instead of the traditional white.
 };
 
 module.exports = Notice;
