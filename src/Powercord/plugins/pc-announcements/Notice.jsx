@@ -18,27 +18,24 @@ const Notice = class Notice extends React.Component {
   async componentDidMount () {
     if (!classesStore) {
       const classes = await getModule([ 'noticeBrand' ]);
-      Promise.all([ classes ])
-        .then(value => {
-          this.setState({
-            types: {
-              blurple: value[0].noticeBrand,
-              red: value[0].noticeDanger,
-              orange: value[0].noticeDefault,
-              facebook: value[0].noticeFacebook,
-              blue: value[0].noticeInfo,
-              dark: value[0].noticePremium,
-              blurple_gradient: value[0].noticePremiumGrandfathered,
-              spotify: value[0].noticeSpotify,
-              purple: value[0].noticeStreamerMode,
-              green: value[0].noticeSuccess,
-              survey: value[0].noticeSurvey
-            },
-            button: value[0].button,
-            dismiss: value[0].dismiss
-          });
-          classesStore = this.state;
-        });
+      this.setState({
+        types: {
+          blurple: classes.noticeBrand,
+          red: classes.noticeDanger,
+          orange: classes.noticeDefault,
+          facebook: classes.noticeFacebook,
+          blue: classes.noticeInfo,
+          dark: classes.noticePremium,
+          blurple_gradient: classes.noticePremiumGrandfathered,
+          spotify: classes.noticeSpotify,
+          purple: classes.noticeStreamerMode,
+          green: classes.noticeSuccess,
+          survey: classes.noticeSurvey
+        },
+        button: classes.button,
+        dismiss: classes.dismiss
+      });
+      classesStore = this.state;
     }
   }
 
