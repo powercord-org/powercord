@@ -1,4 +1,4 @@
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule, getComponentByDisplayName } = require('powercord/webpack');
 
 const Clickable = getComponentByDisplayName('Clickable');
 
@@ -43,7 +43,7 @@ const Notice = class Notice extends React.Component {
     const { notice, onClose } = this.props;
     const { types, button, dismiss } = this.state;
 
-    return <div className={`powercord-notice ${(types[notice.type] || types.blurple)}`}>
+    return <div className={`powercord-notice ${(types[notice.type] || types.BLURPLE)}`}>
       {notice.message}
       <Clickable className={dismiss} onClick={() => onClose()}/>
       {notice.button &&
