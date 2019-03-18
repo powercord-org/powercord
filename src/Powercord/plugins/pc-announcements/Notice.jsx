@@ -1,6 +1,6 @@
 const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 
-const Clickable = getModuleByDisplayName('Clickable');
+const Clickable = getComponentByDisplayName('Clickable');
 
 let classesStore = null;
 
@@ -20,17 +20,17 @@ const Notice = class Notice extends React.Component {
       const classes = await getModule([ 'noticeBrand' ]);
       this.setState({
         types: {
-          blurple: classes.noticeBrand,
-          red: classes.noticeDanger,
-          orange: classes.noticeDefault,
-          facebook: classes.noticeFacebook,
-          blue: classes.noticeInfo,
-          dark: classes.noticePremium,
-          blurple_gradient: classes.noticePremiumGrandfathered,
-          spotify: classes.noticeSpotify,
-          purple: classes.noticeStreamerMode,
-          green: classes.noticeSuccess,
-          survey: classes.noticeSurvey
+          BLURPLE: classes.noticeBrand,
+          RED: classes.noticeDanger,
+          ORANGE: classes.noticeDefault,
+          FACEBOOK: classes.noticeFacebook,
+          BLUE: classes.noticeInfo,
+          DARK: classes.noticePremium,
+          BLURPLE_GRADIENT: classes.noticePremiumGrandfathered,
+          SPOTIFY: classes.noticeSpotify,
+          PURPLE: classes.noticeStreamerMode,
+          GREEN: classes.noticeSuccess,
+          SURVEY: classes.noticeSurvey
         },
         button: classes.button,
         dismiss: classes.dismiss
@@ -43,7 +43,7 @@ const Notice = class Notice extends React.Component {
     const { notice, onClose } = this.props;
     const { types, button, dismiss } = this.state;
 
-    return <div className={`powercord-notice ${(types[notice.type.toLowerCase()] || types.blurple)}`}>
+    return <div className={`powercord-notice ${(types[notice.type] || types.blurple)}`}>
       {notice.message}
       <Clickable className={dismiss} onClick={() => onClose()}/>
       {notice.button &&
