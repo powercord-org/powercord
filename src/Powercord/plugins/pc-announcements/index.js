@@ -7,6 +7,8 @@ const { inject, uninject } = require('powercord/injector');
 const { React, ReactDOM, getModule } = require('powercord/webpack');
 const { DISCORD_INVITE, GUILD_ID } = require('powercord/constants');
 
+const Notice = require('./Notice');
+
 module.exports = class Announcements extends Plugin {
   constructor () {
     super();
@@ -31,7 +33,7 @@ module.exports = class Announcements extends Plugin {
             });
           }
         },
-        alwaysDisplay: true,
+        alwaysDisplay: true
       });
     }
 
@@ -79,7 +81,6 @@ module.exports = class Announcements extends Plugin {
   }
 
   _renderNotice () {
-    const Notice = require('./Notice');
     if (document.querySelector('.pc-wrapper + .pc-flex > .pc-flexChild .pc-notice')) {
       return;
     }
