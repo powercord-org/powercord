@@ -3,8 +3,9 @@ const { existsSync } = require('fs');
 const { unlink } = require('fs').promises;
 const Plugin = require('powercord/Plugin');
 const { shell: { openExternal } } = require('electron');
+const { React, getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
-const { React, ReactDOM, getModule } = require('powercord/webpack');
+const { getOwnerInstance, waitFor } = require('powercord/util');
 const { DISCORD_INVITE, GUILD_ID } = require('powercord/constants');
 
 const Notice = require('./Notice');
@@ -59,7 +60,7 @@ module.exports = class Announcements extends Plugin {
   sendNotice (notice) {
     if (!this.notices.find(n => n.id === notice.id) && (notice.alwaysDisplay || !this.settings.get('dismissed', []).includes(notice.id))) {
       this.notices.push(notice);
-      this._renderNotice();
+      this._forceUpdate();
     }
   }
 
@@ -68,41 +69,29 @@ module.exports = class Announcements extends Plugin {
       this.settings.set('dismissed', [ ...this.settings.get('dismissed', []), noticeId ]);
     }
     this.notices = this.notices.filter(n => n.id !== noticeId);
-    this._renderNotice();
+    this._forceUpdate();
   }
 
-  _patchNotices () {
-    const NoticeStore = getModule([ 'getNotice' ]);
-    inject('pc-custom-notices', NoticeStore, 'getNotice', (_, res) => {
-      if (!res) {
-        this._renderNotice();
-      }
+  async _patchNotices () {
+    const Component = getOwnerInstance(await waitFor('.pc-base > .pc-flex'));
+    inject('pc-custom-notices', Component.__proto__, 'render', (_, res) => {
+      res.props.children[1].props.children.unshift(this._renderNotice());
       return res;
     });
   }
 
+  async _forceUpdate () {
+    getOwnerInstance(await waitFor('.pc-base > .pc-flex')).forceUpdate();
+  }
+
   _renderNotice () {
-    if (document.querySelector('.pc-wrapper + .pc-flex > .pc-flexChild .pc-notice')) {
-      return;
-    }
-
-    const element = document.querySelector('.pc-wrapper + .pc-flex .powercord-notice');
-    if (element) {
-      element.parentElement.remove();
-    }
-
-    const noticeContainer = document.querySelector('.pc-wrapper + .pc-flex');
-    if (noticeContainer && this.notices.length > 0) {
-      const div = document.createElement('div');
-      noticeContainer.insertBefore(div, noticeContainer.firstChild);
-
+    if (this.notices.length > 0) {
       const notice = this.notices[this.notices.length - 1];
-      ReactDOM.render(
-        React.createElement(Notice, {
-          notice,
-          onClose: () => this.closeNotice(notice.id)
-        }), div
-      );
+      return React.createElement(Notice, {
+        notice,
+        onClose: () => this.closeNotice(notice.id)
+      });
     }
+    return null;
   }
 };
