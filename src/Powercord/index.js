@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
 const { get } = require('powercord/http');
 const { sleep } = require('powercord/util');
+const { WEBSITE } = require('powercord/constants');
 const modules = require('./modules');
 const PluginManager = require('./pluginManager');
 const SettingsManager = require('./settingsManager');
@@ -75,7 +76,7 @@ module.exports = class Powercord extends EventEmitter {
     this.isLinking = true;
     const token = this.settings.get('powercordToken', null);
     if (token) {
-      const baseUrl = this.settings.get('backendURL', 'https://powercord.xyz');
+      const baseUrl = this.settings.get('backendURL', WEBSITE);
       console.debug('%c[Powercord]', 'color: #257dd4', 'Logging in to your account...');
 
       const resp = await get(`${baseUrl}/api/users/@me`)
@@ -94,6 +95,7 @@ module.exports = class Powercord extends EventEmitter {
       }
 
       this.account = resp.body;
+      this.account.token = token;
     } else {
       this.account = null;
     }

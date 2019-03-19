@@ -1,8 +1,9 @@
 const { randomBytes, scryptSync, createCipheriv, createDecipheriv } = require('crypto');
-const { get, post } = require('powercord/http');
 const { writeFile, mkdir } = require('fs').promises;
 const { existsSync } = require('fs');
 const { join } = require('path');
+const { get, post } = require('powercord/http');
+const { WEBSITE } = require('powercord/constants');
 
 const settingsPath = join(__dirname, '..', '..', 'settings');
 
@@ -81,7 +82,7 @@ module.exports = class SettingsManager {
 
     const passphrase = powercord.settings.get('passphrase', '');
     const token = powercord.settings.get('powercordToken');
-    const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
+    const baseUrl = powercord.settings.get('backendURL', WEBSITE);
 
     let isEncrypted = false;
     let payload = JSON.stringify(settings);
@@ -114,7 +115,7 @@ module.exports = class SettingsManager {
   static async download () {
     const passphrase = powercord.settings.get('passphrase', '');
     const token = powercord.settings.get('powercordToken');
-    const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
+    const baseUrl = powercord.settings.get('backendURL', WEBSITE);
 
     let { isEncrypted, payload: settings } = (await get(`${baseUrl}/api/users/@me/settings`)
       .set('Authorization', token)

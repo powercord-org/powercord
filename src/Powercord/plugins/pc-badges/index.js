@@ -63,7 +63,7 @@ module.exports = class Badges extends Plugin {
       position: 'bottom'
     }, React.createElement('img', {
       className: 'powercord-guild-badge',
-      src: `https://${WEBSITE}/assets/logo.svg`
+      src: `${WEBSITE}/assets/logo.svg`
     }));
   }
 };

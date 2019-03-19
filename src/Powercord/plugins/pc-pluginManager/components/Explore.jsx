@@ -1,5 +1,6 @@
 const { get } = require('powercord/http');
 const { React } = require('powercord/webpack');
+const { WEBSITE } = require('powercord/constants');
 const { TextInput } = require('powercord/components/settings');
 const { Button, Divider, Spinner } = require('powercord/components');
 
@@ -97,7 +98,7 @@ module.exports = class Explore extends React.Component {
     }
 
     this.setState({ loading: true });
-    const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
+    const baseUrl = powercord.settings.get('backendURL', WEBSITE);
     const plugins = await get(`${baseUrl}/api/plugins?page=${this.state.page}`).then(r => r.body);
 
     this.setState({

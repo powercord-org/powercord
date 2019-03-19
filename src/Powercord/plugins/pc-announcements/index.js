@@ -12,6 +12,7 @@ const Notice = require('./Notice');
 module.exports = class Announcements extends Plugin {
   constructor () {
     super();
+    this.Notice = Notice;
     this.notices = [];
   }
 
@@ -22,7 +23,7 @@ module.exports = class Announcements extends Plugin {
       await unlink(injectedFile);
       this.sendNotice({
         id: 'pc-first-welcome',
-        type: 'GREEN',
+        type: Notice.TYPES.GREEN,
         message: 'Welcome! Powercord has been successfully injected into your Discord client. Feel free to join our Discord server for announcements, support and more!',
         button: {
           text: 'Join Server',
@@ -39,7 +40,7 @@ module.exports = class Announcements extends Plugin {
 
     this.sendNotice({
       id: 'pc-pewdiepie',
-      type: 'RED',
+      type: Notice.TYPES.RED,
       message: 'PewDiePie is in trouble and he needs your help to defeat T-Series!',
       button: {
         text: 'Subscribe to PewDiePie',

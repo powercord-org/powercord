@@ -1,5 +1,6 @@
 const { resolve } = require('path');
 const Plugin = require('powercord/Plugin');
+const { WEBSITE } = require('powercord/constants');
 const { inject, uninject } = require('powercord/injector');
 const { getModuleByDisplayName, React, getModule } = require('powercord/webpack');
 
@@ -86,7 +87,7 @@ module.exports = class Settings extends Plugin {
             res.props.children.unshift(
               Object.assign({}, res.props.children[0], {
                 props: Object.assign({}, res.props.children[0].props, {
-                  href: 'https://powercord.xyz',
+                  href: WEBSITE,
                   title: 'Powercord',
                   className: `${res.props.children[0].props.className} powercord-pc-icon`
                 })

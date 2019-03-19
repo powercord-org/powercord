@@ -17,28 +17,16 @@
     width: 17px;
   }
 
-  img {
-    filter: brightness(100);
+  svg {
+    color: #fff;
   }
 }
 
-.pc-profileBadgeWrapper + .powercord-badge {
-  padding-left: 8px;
-  border-left: 1px #fff solid;
-}
-
-.pc-topSectionNormal {
-  .pc-profileBadgeWrapper + .powercord-badge {
-    border-left-color: #2f3136;
-  }
-
-  .powercord-badge img {
-    filter: initial;
-  }
+.pc-topSectionNormal .powercord-badge svg {
+  color: var(--badge-color);
 }
 
 .powercord-guild-badge {
-  transform: rotate(45deg);
   width: 20px;
   height: 20px;
   margin-right: 5px;

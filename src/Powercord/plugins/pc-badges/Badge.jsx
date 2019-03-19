@@ -1,13 +1,14 @@
 const { React } = require('powercord/webpack');
 const { BadgeTooltips } = require('powercord/constants');
-const { Tooltip } = require('powercord/components');
+const { Tooltip, Icons: { badges } } = require('powercord/components');
 
-module.exports = ({ badge }) => {
-  const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
+module.exports = ({ badge, color }) => {
+  const Badge = badges[badge[0].toUpperCase() + badge.toLowerCase().slice(1)];
+
   return (
     <Tooltip text={BadgeTooltips[badge.toUpperCase()]} position='top'>
       <div className={`powercord-badge ${badge}`}>
-        <img src={`${baseUrl}/assets/badges/${badge}.svg`} alt={BadgeTooltips[badge]} />
+        <Badge style={{ '--badge-color': `#${color}` }}/>
       </div>
     </Tooltip>
   );

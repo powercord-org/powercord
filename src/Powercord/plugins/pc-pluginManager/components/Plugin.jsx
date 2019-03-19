@@ -3,7 +3,7 @@ const { React } = require('powercord/webpack');
 const { Tooltip, Switch, Button, Spinner } = require('powercord/components');
 const { REPO_URL } = require('powercord/constants');
 
-const { Author, Version, Description, License, Info } = require('./Icons');
+const { Author, Version, Description, License, Info } = require('../../../../fake_node_modules/powercord/components/Icons');
 
 module.exports = class Plugin extends React.Component {
   constructor (props) {

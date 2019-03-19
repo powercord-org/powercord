@@ -1,6 +1,9 @@
-module.exports = async () => (
+module.exports = () => {
+  const iframe = document.createElement('iframe');
   window.localStorage = document.body
-    .appendChild(document.createElement('iframe'))
+    .appendChild(iframe)
     .contentWindow
-    .localStorage
-);
+    .localStorage;
+
+  iframe.remove();
+};
