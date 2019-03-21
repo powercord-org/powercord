@@ -75,10 +75,10 @@ module.exports = async function injectAutocomplete () {
 
   const taClass = await getModule([ 'channelTextArea', 'channelTextAreaEnabled' ]).channelTextArea;
 
-  await waitFor(`.${taClass}`);
+  await waitFor(`.${taClass.replace(/ /g, '.')}`);
 
   const updateInstance = () =>
-    (this.instance = getOwnerInstance(document.querySelector(`.${taClass}`)));
+    (this.instance = getOwnerInstance(document.querySelector(`.${taClass.replace(/ /g, '.')}`)));
   const instancePrototype = Object.getPrototypeOf(updateInstance());
 
   pcInject('pc-commands-autocomplete', instancePrototype, 'componentDidMount', (args, originReturn) => {
