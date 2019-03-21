@@ -89,11 +89,12 @@ module.exports = class Modal extends React.Component {
 
   updateData (playerState) {
     if (playerState && playerState.currently_playing_type === 'track') {
-      return this.setState({
+      return powercord.pluginManager.get('pc-spotify').getSpotifyLogo().then(value => {
+       this.setState({
         currentItem: {
           name: playerState.item.name,
           artists: playerState.item.artists.map(artist => artist.name),
-          img: !playerState.item.is_local ? playerState.item.album.images[0].url : null,
+          img: !playerState.item.is_local ? playerState.item.album.images[0].url : `data:image/png;base64, ${value}`,
           albumName: playerState.item.album.name,
           url: playerState.item.external_urls.spotify,
           uri: playerState.item.uri,
@@ -113,6 +114,7 @@ module.exports = class Modal extends React.Component {
         deviceID: playerState.device.id,
         displayState: 'show'
       });
+     });
     }
   }
 
