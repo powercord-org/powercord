@@ -45,9 +45,6 @@ module.exports = class Powercord extends EventEmitter {
       await sleep(1);
     }
 
-    const buildId = require('powercord/webpack').getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ])._globalOptions.release;
-    this.buildInfo = `Release Channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Build Number: ${buildId}`;
-
     this.fetchAccount();
     if (this.settings.get('hideToken', true)) {
       require('powercord/webpack').getModule([ 'hideToken' ]).hideToken = () => void 0;
@@ -63,6 +60,10 @@ module.exports = class Powercord extends EventEmitter {
         SettingsManager.upload();
       }
     });
+
+    const buildId = require('powercord/webpack').getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ])._globalOptions.release;
+    const gitInfos = await this.pluginManager.get('pc-updater').getGitInfos();
+    this.buildInfo = `Release Channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Discord's Build Number: ${buildId} - Powercord's git revision: ${gitInfos.revision}@${gitInfos.branch}`;
   }
 
   async fetchAccount () {
