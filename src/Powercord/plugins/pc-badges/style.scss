@@ -17,13 +17,27 @@
     width: 17px;
   }
 
+  &.donor {
+    background-image: var(--custom-white);
+  }
+
   svg {
     color: #fff;
   }
 }
 
-.pc-topSectionNormal .powercord-badge svg {
-  color: var(--badge-color);
+.pc-topSectionNormal .powercord-badge {
+  &.donor {
+    background-image: var(--custom);
+
+    svg {
+      color: #E61727;
+    }
+  }
+
+  svg {
+    color: var(--badge-color);
+  }
 }
 
 .powercord-guild-badge {
