@@ -5,7 +5,7 @@ const { http, spotify, constants: { Endpoints } } = require('powercord/webpack')
 
 const revokedMessages = {
   SCOPES_UPDATED: 'Your Spotify account needs to be relinked to your Powercord account due to new authorizations required.',
-  ACCESS_DENIED: 'Powercord is no longer able to connect to your Spotify account. Therefore, it have been automatically unlinked.'
+  ACCESS_DENIED: 'Powercord is no longer able to connect to your Spotify account. Therefore, it has been automatically unlinked.'
 };
 
 module.exports = {
