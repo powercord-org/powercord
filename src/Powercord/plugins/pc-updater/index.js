@@ -52,8 +52,8 @@ module.exports = class Updater extends Plugin {
       .unregister('pc-updater');
   }
 
-  async checkForUpdate (callback) {
-    if (!this.settings.get('checkForUpdates', true)) {
+  async checkForUpdate (callback, force = false) {
+    if (!this.settings.get('checkForUpdates', true) && !force) {
       return;
     }
 
