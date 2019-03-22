@@ -34,19 +34,8 @@ module.exports = class Settings extends Plugin {
     this.unregister('pc-general');
   }
 
-  register (key, displayName, render) {
-    if (!key.match(/^[a-z0-9_-]+$/i)) {
-      return this.error(`Tried to register a settings panel with an invalid ID! You can only use letters, numbers, dashes and underscores. (ID: ${key})`);
-    }
-
-    if (this.sections.find(s => s.key === key)) {
-      return this.error(`Key ${key} is already used by another plugin!`);
-    }
-    this.sections.push({
-      section: key,
-      label: displayName,
-      element: this._renderSettingsPanel.bind(this, displayName, render)
-    });
+  register () {
+    console.error('FUCKING DEPRECATED SHIT');
   }
 
   unregister (key) {

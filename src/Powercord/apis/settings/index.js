@@ -9,22 +9,46 @@ module.exports = class Settings extends API {
     super();
 
     this.settings = {};
+    this.tabs = {};
   }
 
   // Classic stuff
   async apiDidLoad () {
-    await Settings.download();
+    await this.download();
     this._interval = setInterval(Settings.upload, 5 * 60 * 1000);
   }
 
   async apiWillUnload () {
-    await Settings.upload();
+    clearInterval(this._interval);
+    await this.upload();
+  }
+
+  // Categories
+  registerTab (key, displayName, render) {
+    if (!key.match(/^[a-z0-9_-]+$/i)) {
+      return this.error(`Tried to register a settings panel with an invalid ID! You can only use letters, numbers, dashes and underscores. (ID: ${key})`);
+    }
+
+    if (this.tabs.find(s => s.key === key)) {
+      return this.error(`Key ${key} is already used by another plugin!`);
+    }
+
+    this.tabs.push({
+      key,
+      label: displayName,
+      element: this._renderSettingsPanel.bind(this, displayName, render)
+    });
   }
 
   // Manage settings
+  getCategory (category) {
+    this._ensureCategory(category);
+    return this.settings[category];
+  }
+
   get (category, setting, defaultValue) {
     this._ensureCategory(category);
-    this.settings[category].get(setting, defaultValue);
+    return this.settings[category].get(setting, defaultValue);
   }
 
   set (category, setting, value) {
@@ -45,9 +69,9 @@ module.exports = class Settings extends API {
       settings[category] = this.settings[settings].config;
     });
 
-    const passphrase = powercord.settings.get('passphrase', '');
-    const token = powercord.settings.get('powercordToken');
-    const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
+    const passphrase = this.get('pc-general', 'passphrase', '');
+    const token = this.get('pc-general', 'powercordToken');
+    const baseUrl = this.get('pc-general', 'backendURL', 'https://powercord.xyz');
 
     let isEncrypted = false;
     let payload = JSON.stringify(settings);
@@ -78,9 +102,9 @@ module.exports = class Settings extends API {
   }
 
   async download () {
-    const passphrase = powercord.settings.get('passphrase', '');
-    const token = powercord.settings.get('powercordToken');
-    const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
+    const passphrase = this.get('pc-general', 'passphrase', '');
+    const token = this.get('pc-general', 'powercordToken');
+    const baseUrl = this.get('pc-general', 'backendURL', 'https://powercord.xyz');
 
     let { isEncrypted, payload: settings } = (await get(`${baseUrl}/api/users/@me/settings`)
       .set('Authorization', token)
