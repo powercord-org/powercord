@@ -25,7 +25,7 @@ module.exports = class Badges extends Plugin {
     const GuildHeader = await getModuleByDisplayName('GuildHeader');
     inject('pc-badges-guilds-header', GuildHeader.prototype, 'render', function (_, res) {
       if (this.props.guild.id === GUILD_ID) {
-        res.props.children.props.children.props.children.unshift(_this._renderBadge());
+        res.props.children.props.children[0].props.children.props.children.unshift(_this._renderBadge());
       }
       return res;
     });
@@ -63,7 +63,7 @@ module.exports = class Badges extends Plugin {
       position: 'bottom'
     }, React.createElement('img', {
       className: 'powercord-guild-badge',
-      src: `https://${WEBSITE}/assets/logo.svg`
+      src: `${WEBSITE}/assets/logo.svg`
     }));
   }
 };

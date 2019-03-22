@@ -3,6 +3,7 @@ const { shell: { openExternal } } = require('electron');
 
 const { React, Flux } = require('powercord/webpack');
 const { Spinner } = require('powercord/components');
+const { WEBSITE } = require('powercord/constants');
 
 const LinkedAccounts = require('./LinkedAccounts.jsx');
 
@@ -95,7 +96,7 @@ const PowercordAccount = class PowercordAccount extends React.Component {
         return console.error(err);
       }
 
-      const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
+      const baseUrl = powercord.settings.get('backendURL', WEBSITE);
       openExternal(`${baseUrl}/api/users/link`);
 
       const timeout = setTimeout(() => {

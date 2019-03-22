@@ -2,6 +2,7 @@ const { resolve } = require('path');
 const { readdirSync } = require('fs');
 const { get } = require('powercord/http');
 const { rmdirRf } = require('powercord/util');
+const { WEBSITE } = require('powercord/constants');
 
 const { promisify } = require('util');
 const cp = require('child_process');
@@ -27,7 +28,7 @@ module.exports = class PluginManager {
       return plugin.manifest.name;
     }
     // API request
-    const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
+    const baseUrl = powercord.settings.get('backendURL', WEBSITE);
     try {
       return (await get(`${baseUrl}/api/plugins/${pluginID}`).then(r => r.body)).manifest.name || void 0;
     } catch (e) {
@@ -98,7 +99,7 @@ module.exports = class PluginManager {
       return plugin.manifest.dependencies;
     }
 
-    const baseUrl = powercord.settings.get('backendURL', 'https://powercord.xyz');
+    const baseUrl = powercord.settings.get('backendURL', WEBSITE);
     try {
       return (await get(`${baseUrl}/api/plugins/${pluginID}`).then(r => r.body)).manifest.dependencies || [];
     } catch (e) {

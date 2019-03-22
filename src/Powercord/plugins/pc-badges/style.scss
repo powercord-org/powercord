@@ -17,28 +17,30 @@
     width: 17px;
   }
 
-  img {
-    filter: brightness(100);
+  &.donor {
+    background-image: var(--custom-white);
+  }
+
+  svg {
+    color: #fff;
   }
 }
 
-.pc-profileBadgeWrapper + .powercord-badge {
-  padding-left: 8px;
-  border-left: 1px #fff solid;
-}
+.pc-topSectionNormal .powercord-badge {
+  &.donor {
+    background-image: var(--custom);
 
-.pc-topSectionNormal {
-  .pc-profileBadgeWrapper + .powercord-badge {
-    border-left-color: #2f3136;
+    svg {
+      color: #E61727;
+    }
   }
 
-  .powercord-badge img {
-    filter: initial;
+  svg {
+    color: var(--badge-color);
   }
 }
 
 .powercord-guild-badge {
-  transform: rotate(45deg);
   width: 20px;
   height: 20px;
   margin-right: 5px;

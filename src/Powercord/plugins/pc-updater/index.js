@@ -52,13 +52,7 @@ module.exports = class Updater extends Plugin {
       .unregister('pc-updater');
   }
 
-  async checkForUpdate (callback) {
-    if (!this.settings.get('checkForUpdates', true)) {
-      return;
-    }
-
-    this.checking = true;
-
+  async getGitInfos () {
     const branch = await exec('git branch', this.cwd)
       .then(({ stdout }) =>
         stdout
@@ -69,15 +63,30 @@ module.exports = class Updater extends Plugin {
           .trim()
       );
 
-    const localRevision = await exec(`git rev-parse ${branch}`, this.cwd)
+    const revision = await exec(`git rev-parse ${branch}`, this.cwd)
       .then(r => r.stdout.toString().trim());
+
+    return {
+      branch,
+      revision
+    };
+  }
+
+  async checkForUpdate (callback, force = false) {
+    if (!this.settings.get('checkForUpdates', true) && !force) {
+      return;
+    }
+
+    this.checking = true;
+
+    const gitInfos = await this.getGitInfos();
 
     const currentRevision = await get(`https://api.github.com/repos/${REPO_URL}/commits`)
       .set('Accept', 'application/vnd.github.v3+json')
-      .query('sha', branch)
+      .query('sha', gitInfos.branch)
       .then(r => r.body[0].sha);
 
-    if (localRevision !== currentRevision) {
+    if (gitInfos.revision !== currentRevision) {
       this.askUpdate();
     }
 

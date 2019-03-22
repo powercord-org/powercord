@@ -6,7 +6,7 @@ const Guild = class Guild extends React.PureComponent {
   constructor (props) {
     super(props);
 
-    this.wrapperClass = Object.values(moduleCache).filter(m => m.exports && m.exports.wrapper && Object.keys(m.exports).length === 1)[1].exports.wrapper;
+    this.wrapperClass = Object.values(moduleCache).filter(m => m.exports && m.exports.wrapper && Object.keys(m.exports).length === 1)[2].exports.wrapper;
     this.guildClasses = Object.values(moduleCache).filter(m => m.exports && m.exports./* downloadAppButton */dragPlaceholder)[0].exports;
     this.iconClasses = Object.values(moduleCache).filter(m => m.exports && m.exports.iconActiveMini)[0].exports;
   }

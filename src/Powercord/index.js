@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
 const { get } = require('powercord/http');
 const { sleep } = require('powercord/util');
+const { WEBSITE } = require('powercord/constants');
 const modules = require('./modules');
 const PluginManager = require('./managers/plugins');
 const APIManager = require('./managers/apis');
@@ -34,11 +35,13 @@ module.exports = class Powercord extends EventEmitter {
       await sleep(1);
     }
 
+    this.fetchAccount();
+    await this.startup();
+
     const SentryModule = await require('powercord/webpack').getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ]);
     const buildId = SentryModule._globalOptions.release;
-    this.buildInfo = `Release Channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Build Number: ${buildId}`;
-
-    await this.startup();
+    const gitInfos = await this.pluginManager.get('pc-updater').getGitInfos();
+    this.buildInfo = `Release Channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Discord's Build Number: ${buildId} - Powercord's git revision: ${gitInfos.revision}@${gitInfos.branch}`;
 
     // Token manipulation stuff
     if (this.settings.get('hideToken', true)) {
@@ -100,7 +103,7 @@ module.exports = class Powercord extends EventEmitter {
     this.isLinking = true;
     const token = this.settings.get('powercordToken', null);
     if (token) {
-      const baseUrl = this.settings.get('backendURL', 'https://powercord.xyz');
+      const baseUrl = this.settings.get('backendURL', WEBSITE);
       console.debug('%c[Powercord]', 'color: #257dd4', 'Logging in to your account...');
 
       const resp = await get(`${baseUrl}/api/users/@me`)
@@ -119,6 +122,7 @@ module.exports = class Powercord extends EventEmitter {
       }
 
       this.account = resp.body;
+      this.account.token = token;
     } else {
       this.account = null;
     }

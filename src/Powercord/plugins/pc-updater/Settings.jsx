@@ -37,7 +37,7 @@ module.exports = class UpdaterSettings extends React.Component {
         Check for Updates
         <Button disabled={this.plugin.checking} onClick={() => {
           this.forceUpdate();
-          this.plugin.checkForUpdate(this.forceUpdate.bind(this));
+          this.plugin.checkForUpdate(this.forceUpdate.bind(this), true);
         }}>{this.plugin.checking ? 'Checking...' : 'Check now'}</Button>
       </SwitchItem>
 

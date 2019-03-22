@@ -1,9 +1,12 @@
+const { WEBSITE } = require('powercord/constants');
+const { shell: { openExternal } } = require('electron');
 const { get, put, post, del } = require('powercord/http');
-const {
-  http,
-  spotify,
-  constants: { Endpoints }
-} = require('powercord/webpack');
+const { http, spotify, constants: { Endpoints } } = require('powercord/webpack');
+
+const revokedMessages = {
+  SCOPES_UPDATED: 'Your Spotify account needs to be relinked to your Powercord account due to new authorizations required.',
+  ACCESS_DENIED: 'Powercord is no longer able to connect to your Spotify account. Therefore, it has been automatically unlinked.'
+};
 
 module.exports = {
   BASE_URL: 'https://api.spotify.com/v1',
@@ -12,11 +15,34 @@ module.exports = {
   player: null,
 
   async getAccessToken () {
-    await powercord.fetchAccount();
-    if (powercord.account && powercord.account.spotify) {
-      return powercord.account.spotify.token;
+    if (!powercord.account) {
+      await powercord.fetchAccount();
     }
 
+    if (powercord.account && powercord.account.spotify) {
+      const baseUrl = powercord.settings.get('backendURL', WEBSITE);
+      const resp = await get(`${baseUrl}/api/users/@me/spotify`)
+        .set('Authorization', powercord.account.token)
+        .then(r => r.body);
+
+      if (resp.revoked) {
+        const announcements = powercord.pluginManager.get('pc-announcements');
+        announcements.sendNotice({
+          id: 'pc-spotify-revoked',
+          type: announcements.Notice.TYPES.ORANGE,
+          message: revokedMessages[resp.revoked],
+          button: {
+            text: 'Link back Spotify',
+            onClick: () => openExternal(`${baseUrl}/oauth/spotify`)
+          },
+          alwaysDisplay: true
+        });
+      } else if (resp.token) {
+        return resp.token;
+      }
+    }
+
+    console.debug('%c[Powercord:Spotify]', 'color: #257dd4', 'No Spotify account linked to Powercord; Falling back to Discord\'s token');
     const spotifyUserID = await http.get(Endpoints.CONNECTIONS)
       .then(res =>
         res.body.find(connection =>
