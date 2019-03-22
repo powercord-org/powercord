@@ -3,7 +3,7 @@ const { writeFile, mkdir } = require('fs').promises;
 const { existsSync } = require('fs');
 const { join } = require('path');
 
-const settingsPath = join(__dirname, '..', '..', '..', 'settings');
+const settingsPath = join(__dirname, '..', '..', '..', '..', 'settings');
 
 module.exports = class Category {
   constructor (category) {

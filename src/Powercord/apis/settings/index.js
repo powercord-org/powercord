@@ -1,4 +1,5 @@
 const { randomBytes, scryptSync, createCipheriv, createDecipheriv } = require('crypto');
+const { WEBSITE } = require('powercord/constants');
 const { get, post } = require('powercord/http');
 const { API } = require('powercord/entities');
 
@@ -59,6 +60,7 @@ module.exports = class Settings extends API {
   _ensureCategory (category) {
     if (!this.settings[category]) {
       this.settings[category] = new Category(category);
+      this.settings[category]._load();
     }
   }
 
@@ -66,12 +68,12 @@ module.exports = class Settings extends API {
   async upload () {
     const settings = {};
     Object.keys(this.settings).forEach(category => {
-      settings[category] = this.settings[settings].config;
+      settings[category] = this.settings[category].config;
     });
 
     const passphrase = this.get('pc-general', 'passphrase', '');
     const token = this.get('pc-general', 'powercordToken');
-    const baseUrl = this.get('pc-general', 'backendURL', 'https://powercord.xyz');
+    const baseUrl = this.get('pc-general', 'backendURL', WEBSITE);
 
     let isEncrypted = false;
     let payload = JSON.stringify(settings);
@@ -97,14 +99,14 @@ module.exports = class Settings extends API {
       .set('Content-Type', 'application/json')
       .send({
         isEncrypted,
-        payload
+        powercord: payload
       });
   }
 
   async download () {
     const passphrase = this.get('pc-general', 'passphrase', '');
     const token = this.get('pc-general', 'powercordToken');
-    const baseUrl = this.get('pc-general', 'backendURL', 'https://powercord.xyz');
+    const baseUrl = this.get('pc-general', 'backendURL', WEBSITE);
 
     let { isEncrypted, payload: settings } = (await get(`${baseUrl}/api/users/@me/settings`)
       .set('Authorization', token)

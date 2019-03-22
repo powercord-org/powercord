@@ -35,8 +35,8 @@ module.exports = class Powercord extends EventEmitter {
       await sleep(1);
     }
 
-    this.fetchAccount();
     await this.startup();
+    this.fetchAccount();
 
     const SentryModule = await require('powercord/webpack').getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ]);
     const buildId = SentryModule._globalOptions.release;
