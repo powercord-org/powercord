@@ -584,17 +584,7 @@ module.exports = class EmojiUtility extends Plugin {
       return res;
     });
 
-    powercord
-      .pluginManager
-      .get('pc-settings')
-      .register(
-        'pc-emojiUtility',
-        'Emote Utility',
-        () =>
-          React.createElement(Settings, {
-            settings: this.settings
-          })
-      );
+    this.registerSettings('pc-emojiUtility', 'Emote Utility', () => React.createElement(Settings, { settings: this.settings }));
 
     powercord
       .pluginManager
@@ -844,8 +834,5 @@ module.exports = class EmojiUtility extends Plugin {
     pcCommands.unregister('massemote');
     pcCommands.unregister('saveemote');
     pcCommands.unregister('cloneemote');
-
-    const pcSettings = pluginManager.get('pc-settings');
-    pcSettings.unregister('pc-emojiUtility');
   }
 };

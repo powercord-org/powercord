@@ -24,14 +24,12 @@ module.exports = class Updater extends Plugin {
 
   async pluginDidLoad () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
-    powercord
-      .pluginManager
-      .get('pc-settings')
-      .register('pc-updater', 'Updater', () =>
-        React.createElement(Settings, {
-          settings: this.settings
-        })
-      );
+
+    this.registerSettings('pc-updater', 'Updater', () =>
+      React.createElement(Settings, {
+        settings: this.settings
+      })
+    );
 
     let minutes = Number(this.settings.get('interval', 15));
     if (minutes < 1) {
@@ -46,10 +44,6 @@ module.exports = class Updater extends Plugin {
   pluginWillUnload () {
     this.unloadCSS();
     clearInterval(this._interval);
-    powercord
-      .pluginManager
-      .get('pc-settings')
-      .unregister('pc-updater');
   }
 
   async getGitInfos () {

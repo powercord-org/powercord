@@ -5,7 +5,6 @@
   "author": "Joakim#9814, Bowser65",
   "license": "MIT",
   "dependencies": [
-    "pc-commands",
-    "pc-settings"
+    "pc-commands"
   ]
 }

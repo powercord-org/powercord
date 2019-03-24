@@ -53,7 +53,7 @@ module.exports = class StyleManager extends Plugin {
     }
   }
 
-  pluginWillUnload (styleId) {
+  unload (styleId) {
     if (!document.getElementById(`powercord-css-${styleId}`)) {
       return this.error(`Tried to unload a non existing style! (Style ID: ${styleId})`);
     }

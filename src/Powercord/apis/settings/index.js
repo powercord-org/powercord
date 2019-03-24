@@ -1,5 +1,6 @@
 const { randomBytes, scryptSync, createCipheriv, createDecipheriv } = require('crypto');
 const { WEBSITE } = require('powercord/constants');
+const { getComponentByDisplayName, React } = require('powercord/webpack');
 const { get, post } = require('powercord/http');
 const { API } = require('powercord/entities');
 
@@ -10,13 +11,13 @@ module.exports = class Settings extends API {
     super();
 
     this.settings = {};
-    this.tabs = {};
+    this.tabs = [];
   }
 
   // Classic stuff
   async apiDidLoad () {
     await this.download();
-    this._interval = setInterval(Settings.upload, 5 * 60 * 1000);
+    this._interval = setInterval(this.upload.bind(this), 10 * 60 * 1000);
   }
 
   async apiWillUnload () {
@@ -25,20 +26,24 @@ module.exports = class Settings extends API {
   }
 
   // Categories
-  registerTab (key, displayName, render) {
-    if (!key.match(/^[a-z0-9_-]+$/i)) {
-      return this.error(`Tried to register a settings panel with an invalid ID! You can only use letters, numbers, dashes and underscores. (ID: ${key})`);
+  registerTab (section, displayName, render) {
+    if (!section.match(/^[a-z0-9_-]+$/i)) {
+      return this.error(`Tried to register a settings panel with an invalid ID! You can only use letters, numbers, dashes and underscores. (ID: ${section})`);
     }
 
-    if (this.tabs.find(s => s.key === key)) {
-      return this.error(`Key ${key} is already used by another plugin!`);
+    if (this.tabs.find(s => s.section === section)) {
+      return this.error(`Key ${section} is already used by another plugin!`);
     }
 
     this.tabs.push({
-      key,
+      section,
       label: displayName,
       element: this._renderSettingsPanel.bind(this, displayName, render)
     });
+  }
+
+  unregisterTab (section) {
+    this.tabs = this.tabs.filter(s => s.section !== section);
   }
 
   // Manage settings
@@ -62,6 +67,19 @@ module.exports = class Settings extends API {
       this.settings[category] = new Category(category);
       this.settings[category]._load();
     }
+  }
+
+  _renderSettingsPanel (title, contents) {
+    let panelContents;
+    try {
+      panelContents = React.createElement(contents);
+    } catch (e) {
+      this.error('Failed to render settings panel, check if your function returns a valid React component!');
+      panelContents = null;
+    }
+
+    const h2 = React.createElement(getComponentByDisplayName('FormTitle'), { tag: 'h2' }, title);
+    return React.createElement(getComponentByDisplayName('FormSection'), {}, h2, panelContents);
   }
 
   // @todo: Discord settings sync

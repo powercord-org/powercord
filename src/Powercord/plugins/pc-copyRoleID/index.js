@@ -40,7 +40,12 @@ module.exports = class CopyRoleID extends Plugin {
   }
 
   generateContextMenuCallback (id) {
-    return (e) => {
+    return async (e) => {
+      const settings = await getModule([ 'developerMode' ]);
+      if (!settings.developerMode) {
+        return;
+      }
+
       const { pageX, pageY } = e;
       contextMenu.openContextMenu(e, () =>
         React.createElement(ContextMenu, {

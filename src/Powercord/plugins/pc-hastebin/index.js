@@ -7,14 +7,11 @@ const Settings = require('./Settings.jsx');
 
 module.exports = class Hastebin extends Plugin {
   pluginDidLoad () {
-    powercord
-      .pluginManager
-      .get('pc-settings')
-      .register('pc-hastebin', 'Hastebin', () =>
-        React.createElement(Settings, {
-          settings: this.settings
-        })
-      );
+    this.registerSettings('pc-hastebin', 'Hastebin', () =>
+      React.createElement(Settings, {
+        settings: this.settings
+      })
+    );
 
     const domain = this.settings.get('domain', 'https://haste.aetheryx.xyz');
     const prefix = powercord.pluginManager
@@ -60,11 +57,6 @@ module.exports = class Hastebin extends Plugin {
       .pluginManager
       .get('pc-commands')
       .unregister('hastebin');
-
-    powercord
-      .pluginManager
-      .get('pc-settings')
-      .unregister('pc-hastebin');
   }
 
   parseArguments (args) {

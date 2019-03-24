@@ -3,8 +3,5 @@
   "version": "1.0.0",
   "description": "Ensure Powercord is always up to date",
   "author": "Powercord Team",
-  "license": "MIT",
-  "dependencies": [
-    "pc-settings"
-  ]
+  "license": "MIT"
 }
