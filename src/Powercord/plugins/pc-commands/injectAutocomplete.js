@@ -73,7 +73,7 @@ module.exports = async function injectAutocomplete () {
       }
     };
 
-  const taClass = await getModule([ 'channelTextArea', 'channelTextAreaEnabled' ])
+  const taClass = (await getModule([ 'channelTextArea', 'channelTextAreaEnabled' ]))
     .channelTextArea.split(' ')[0];
 
   await waitFor(`.${taClass}`);
