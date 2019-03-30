@@ -3,10 +3,5 @@
   "version": "1.0.0",
   "description": "Powercord's settings API",
   "author": "Powercord Team",
-  "license": "MIT",
-  "repo": null,
-  "appMode": "both",
-  "dependencies": [
-    "pc-classNameNormalizer"
-  ]
+  "license": "MIT"
 }

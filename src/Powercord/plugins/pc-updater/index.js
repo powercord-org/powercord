@@ -1,4 +1,4 @@
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { resolve, join } = require('path');
 const { get } = require('powercord/http');
 const { sleep, createElement } = require('powercord/util');
@@ -22,16 +22,14 @@ module.exports = class Updater extends Plugin {
     };
   }
 
-  async start () {
+  async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
-    powercord
-      .pluginManager
-      .get('pc-settings')
-      .register('pc-updater', 'Updater', () =>
-        React.createElement(Settings, {
-          settings: this.settings
-        })
-      );
+
+    this.registerSettings('pc-updater', 'Updater', () =>
+      React.createElement(Settings, {
+        settings: this.settings
+      })
+    );
 
     let minutes = Number(this.settings.get('interval', 15));
     if (minutes < 1) {
@@ -43,13 +41,9 @@ module.exports = class Updater extends Plugin {
     this.checkForUpdate();
   }
 
-  unload () {
+  pluginWillUnload () {
     this.unloadCSS();
     clearInterval(this._interval);
-    powercord
-      .pluginManager
-      .get('pc-settings')
-      .unregister('pc-updater');
   }
 
   async getGitInfos () {

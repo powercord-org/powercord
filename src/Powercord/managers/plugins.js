@@ -10,10 +10,10 @@ const exec = promisify(cp.exec);
 
 module.exports = class PluginManager {
   constructor () {
-    this.pluginDir = resolve(__dirname, 'plugins');
+    this.pluginDir = resolve(__dirname, '..', 'plugins');
     this.plugins = new Map();
 
-    this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license', 'repo' ];
+    this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license' ];
     this.enforcedPlugins = [ 'pc-styleManager', 'pc-settings', 'pc-pluginManager', 'pc-keybindManager' ];
   }
 
@@ -152,7 +152,7 @@ module.exports = class PluginManager {
 
       this.plugins.set(pluginID, new PluginClass());
     } catch (e) {
-      console.error('%c[Powercord]', 'color: #257dd4', `An error occurred while initializing "${pluginID}"!`, e);
+      console.error('%c[Powercord:Plugin]', 'color: #257dd4', `An error occurred while initializing "${pluginID}"!`, e);
     }
   }
 
@@ -163,7 +163,7 @@ module.exports = class PluginManager {
       // chhhh
     }
     this.mount(pluginID);
-    this.plugins.get(pluginID)._start();
+    this.plugins.get(pluginID)._load();
   }
 
   async unmount (pluginID) {
@@ -192,7 +192,7 @@ module.exports = class PluginManager {
       return console.error('%c[Powercord]', 'color: #257dd4', `Tried to load an already loaded plugin (${pluginID})`);
     }
 
-    plugin._start();
+    plugin._load();
   }
 
   unload (pluginID) {
@@ -268,10 +268,10 @@ module.exports = class PluginManager {
     await rmdirRf(resolve(this.pluginDir, pluginID));
   }
 
-  // Start
+  // Start/Stop
   startPlugins () {
     const isOverlay = (/overlay/).test(location.pathname);
-    readdirSync(this.pluginDir).forEach(filename => this.mount(filename));
+    readdirSync(this.pluginDir).sort(this._sortPlugins).forEach(filename => this.mount(filename));
     for (const plugin of [ ...this.plugins.values() ]) {
       if (powercord.settings.get('disabledPlugins', []).includes(plugin.pluginID)) {
         continue;
@@ -285,6 +285,33 @@ module.exports = class PluginManager {
       } else {
         this.plugins.delete(plugin);
       }
+    }
+  }
+
+  shutdownPlugins () {
+    return this._bulkUnload([ ...powercord.pluginManager.plugins.keys() ]);
+  }
+
+  _sortPlugins (pluginA, pluginB) {
+    const priority = [ 'pc-settings', 'pc-pluginManager', 'pc-updater' ].reverse();
+    const priorityA = priority.indexOf(pluginA);
+    const priorityB = priority.indexOf(pluginB);
+    return (priorityA === priorityB ? 0 : (priorityA < priorityB ? 1 : -1));
+  }
+
+  async _bulkUnload (plugins) {
+    const nextPlugins = [];
+    for (const plugin of plugins) {
+      const deps = this.getDependenciesSync(plugin);
+      if (deps.filter(dep => this.get(dep) && this.get(dep).ready).length !== 0) {
+        nextPlugins.push(plugin);
+      } else {
+        await this.unmount(plugin);
+      }
+    }
+
+    if (nextPlugins.length !== 0) {
+      await this._bulkUnload(nextPlugins);
     }
   }
 };

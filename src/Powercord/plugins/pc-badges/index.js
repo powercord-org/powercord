@@ -1,5 +1,5 @@
 const { resolve } = require('path');
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { GUILD_ID, WEBSITE } = require('powercord/constants');
 const { Tooltip } = require('powercord/components');
 const { inject, injectRecursive, uninject } = require('powercord/injector');
@@ -8,13 +8,13 @@ const { React, getModuleByDisplayName } = require('powercord/webpack');
 const BadgesComponent = require('./Badges.jsx');
 
 module.exports = class Badges extends Plugin {
-  start () {
+  startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuildHeaders();
     this._patchUserComponent();
   }
 
-  unload () {
+  pluginWillUnload () {
     this.unloadCSS();
     uninject('pc-badges-users');
     uninject('pc-badges-guilds-header');

@@ -1,4 +1,4 @@
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { camelCaseify, sleep } = require('powercord/util');
 const { instance, getModuleByDisplayName } = require('powercord/webpack');
 
@@ -12,7 +12,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
     this.ATTRIBUTE_BLACKLIST = [ 'px', 'ch', 'em', 'ms' ];
   }
 
-  async start () {
+  async startPlugin () {
     await sleep(2000); // bowserware:tm:
     this.patchModules(this._fetchAllModules());
     this.normalizeElement(document.querySelector('#app-mount'));

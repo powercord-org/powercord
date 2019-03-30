@@ -1,5 +1,5 @@
 const fs = require('fs').promises;
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { open: openModal } = require('powercord/modal');
 const { getOwnerInstance } = require('powercord/util');
 const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
@@ -18,7 +18,7 @@ module.exports = class Spotify extends Plugin {
     return SpotifyPlayer;
   }
 
-  async start () {
+  async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._injectModal();
     this._injectListeningAlong();
@@ -32,17 +32,12 @@ module.exports = class Spotify extends Plugin {
       }
     });
 
-    powercord
-      .pluginManager
-      .get('pc-settings')
-      .register(
-        'pc-spotify',
-        'Spotify',
-        () => React.createElement(Settings, {
-          settings: this.settings,
-          patch: this._patchAutoPause.bind(this)
-        })
-      );
+    this.registerSettings('pc-spotify', 'Spotify', () =>
+      React.createElement(Settings, {
+        settings: this.settings,
+        patch: this._patchAutoPause.bind(this)
+      })
+    );
 
     for (const [ commandName, command ] of Object.entries(commands)) {
       command.func = command.func.bind(command, SpotifyPlayer);
@@ -55,7 +50,7 @@ module.exports = class Spotify extends Plugin {
     }
   }
 
-  unload () {
+  pluginWillUnload () {
     this.unloadCSS();
     this._patchAutoPause(true);
     uninject('pc-spotify-modal');
@@ -65,7 +60,7 @@ module.exports = class Spotify extends Plugin {
 
     getOwnerInstance(document.querySelector('.container-2Thooq:not([id])')).forceUpdate();
     powercord.off('webSocketMessage:dealer.spotify.com', this._handler);
-    powercord.pluginManager.get('pc-settings').unregister('pc-spotify');
+
     for (const [ commandName ] of Object.entries(commands)) {
       powercord
         .pluginManager

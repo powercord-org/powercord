@@ -1,4 +1,4 @@
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { contextMenu, getModule, getModuleByDisplayName, React } = require('powercord/webpack');
 const { waitFor, getOwnerInstance } = require('powercord/util');
 const { ContextMenu } = require('powercord/components');
@@ -6,9 +6,14 @@ const { inject, uninject } = require('powercord/injector');
 const { clipboard } = require('electron');
 
 module.exports = class CopyRoleID extends Plugin {
-  async start () {
+  startPlugin () {
     this.injectGuildRole();
     this.injectMemberRole();
+  }
+
+  pluginWillUnload () {
+    uninject('pc-guildRole');
+    uninject('pc-memberRole');
   }
 
   async injectGuildRole () {
@@ -35,7 +40,12 @@ module.exports = class CopyRoleID extends Plugin {
   }
 
   generateContextMenuCallback (id) {
-    return (e) => {
+    return async (e) => {
+      const settings = await getModule([ 'developerMode' ]);
+      if (!settings.developerMode) {
+        return;
+      }
+
       const { pageX, pageY } = e;
       contextMenu.openContextMenu(e, () =>
         React.createElement(ContextMenu, {
@@ -49,10 +59,5 @@ module.exports = class CopyRoleID extends Plugin {
         })
       );
     };
-  }
-
-  unload () {
-    uninject('pc-guildRole');
-    uninject('pc-memberRole');
   }
 };

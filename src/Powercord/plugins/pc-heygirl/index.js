@@ -1,6 +1,6 @@
 // idea based on http://heygirl.io/ (+used their images)
 
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 
 module.exports = class HeyGirl extends Plugin {
   constructor () {
@@ -18,6 +18,25 @@ module.exports = class HeyGirl extends Plugin {
     ));
   }
 
+  startPlugin () {
+    powercord
+      .pluginManager
+      .get('pc-commands')
+      .register(
+        'heygirl',
+        'Replaces every image with a random image of Ryan Gosling.',
+        '{c}',
+        this.heygirl.bind(this)
+      );
+  }
+
+  pluginWillUnload () {
+    powercord
+      .pluginManager
+      .get('pc-commands')
+      .unregister('heygirl');
+  }
+
   getRandomURL () {
     return this.URLs[Math.floor(Math.random() * this.URLs.length)];
   }
@@ -32,24 +51,5 @@ module.exports = class HeyGirl extends Plugin {
       .forEach(image => (
         image.src = this.getRandomURL()
       ));
-  }
-
-  start () {
-    powercord
-      .pluginManager
-      .get('pc-commands')
-      .register(
-        'heygirl',
-        'Replaces every image with a random image of Ryan Gosling.',
-        '{c}',
-        this.heygirl.bind(this)
-      );
-  }
-
-  unload () {
-    powercord
-      .pluginManager
-      .get('pc-commands')
-      .unregister('heygirl');
   }
 };

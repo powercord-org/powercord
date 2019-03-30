@@ -15,16 +15,6 @@ const isOverlay = (/overlay/).test(location.pathname);
 const Powercord = require('./Powercord');
 global.powercord = new Powercord();
 
-if (powercord.settings.get('openOverlayDevTools', false) && isOverlay) {
-  setTimeout(() => {
-    remote
-      .getCurrentWindow()
-      .openDevTools({
-        mode: 'detach'
-      });
-  }, 1500);
-}
-
 // https://github.com/electron/electron/issues/9047
 if (
   process.platform === 'darwin' &&
@@ -34,3 +24,22 @@ if (
 }
 
 require(remote.getGlobal('originalPreload'));
+
+
+(async () => {
+  const { sleep } = require('powercord/util');
+
+  while (!powercord.initialized) {
+    await sleep(1);
+  }
+
+  if (powercord.api.settings.get('pc-general', 'openOverlayDevTools', false) && isOverlay) {
+    setTimeout(() => {
+      remote
+        .getCurrentWindow()
+        .openDevTools({
+          mode: 'detach'
+        });
+    }, 1500);
+  }
+})();

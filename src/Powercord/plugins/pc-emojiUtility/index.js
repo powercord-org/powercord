@@ -1,4 +1,4 @@
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 
 const {
   getModuleByDisplayName,
@@ -56,7 +56,7 @@ const Settings = require('./components/Settings.jsx');
 const colors = {
   error: 0xdd2d2d,
   success: 0x1bbb1b
-}
+};
 
 module.exports = class EmojiUtility extends Plugin {
   getEmojiRegex () {
@@ -209,7 +209,7 @@ module.exports = class EmojiUtility extends Plugin {
     return getGuild(guildId).hasFeature(GuildFeatures.MORE_EMOJI) ? EMOJI_MAX_SLOTS_MORE : EMOJI_MAX_SLOTS;
   }
 
-  async start () {
+  async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
 
     /* Default settings */
@@ -584,17 +584,7 @@ module.exports = class EmojiUtility extends Plugin {
       return res;
     });
 
-    powercord
-      .pluginManager
-      .get('pc-settings')
-      .register(
-        'pc-emojiUtility',
-        'Emote Utility',
-        () =>
-          React.createElement(Settings, {
-            settings: this.settings
-          })
-      );
+    this.registerSettings('pc-emojiUtility', 'Emote Utility', () => React.createElement(Settings, { settings: this.settings }));
 
     powercord
       .pluginManager
@@ -824,7 +814,7 @@ module.exports = class EmojiUtility extends Plugin {
       );
   }
 
-  unload () {
+  pluginWillUnload () {
     this.unloadCSS();
 
     uninject('pc-emojiUtility-emojiContext');
@@ -844,8 +834,5 @@ module.exports = class EmojiUtility extends Plugin {
     pcCommands.unregister('massemote');
     pcCommands.unregister('saveemote');
     pcCommands.unregister('cloneemote');
-
-    const pcSettings = pluginManager.get('pc-settings');
-    pcSettings.unregister('pc-emojiUtility');
   }
 };

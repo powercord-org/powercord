@@ -1,5 +1,5 @@
 const { remote: { globalShortcut } } = require('electron');
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { React } = require('powercord/webpack');
 
 const Settings = require('./Settings.jsx');
@@ -12,15 +12,15 @@ module.exports = class KeybindManager extends Plugin {
     this.keybinds = [];
   }
 
-  start () {
+  startPlugin () {
     // Clear any previously set keybind
     Object.keys(this.settings.config).forEach(keybind => {
       this._safeUnregister(this.settings.get(keybind));
     });
   }
 
-  unload () {
-    this.start(); // pls don't laugh
+  pluginWillUnload () {
+    this.startPlugin(); // pls don't laugh
     powercord
       .pluginManager
       .get('pc-settings')

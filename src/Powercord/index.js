@@ -3,15 +3,17 @@ const { get } = require('powercord/http');
 const { sleep } = require('powercord/util');
 const { WEBSITE } = require('powercord/constants');
 const modules = require('./modules');
-const PluginManager = require('./pluginManager');
-const SettingsManager = require('./settingsManager');
+const PluginManager = require('./managers/plugins');
+const APIManager = require('./managers/apis');
 
 module.exports = class Powercord extends EventEmitter {
   constructor () {
     super();
 
+    this.api = {};
+    this.initialized = false;
     this.pluginManager = new PluginManager();
-    this.settings = new SettingsManager('pc-general', true);
+    this.apiManager = new APIManager();
     this.account = null;
     this.isLinking = false;
     this.patchWebSocket();
@@ -23,6 +25,59 @@ module.exports = class Powercord extends EventEmitter {
     }
   }
 
+  // Powercord initialization
+  async init () {
+    await Promise.all(modules.map(mdl => mdl()));
+    const isOverlay = (/overlay/).test(location.pathname);
+
+    // In Discord client I have usually 21 entries in it. In the overlay I usually have 18 entries
+    while (window.webpackJsonp.length < (isOverlay ? 18 : 21)) {
+      await sleep(1);
+    }
+
+    await this.startup();
+    this.fetchAccount();
+
+    const SentryModule = await require('powercord/webpack').getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ]);
+    const buildId = SentryModule._globalOptions.release;
+    const gitInfos = await this.pluginManager.get('pc-updater').getGitInfos();
+    this.buildInfo = `Release Channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Discord's Build Number: ${buildId} - Powercord's git revision: ${gitInfos.revision}@${gitInfos.branch}`;
+
+    // Token manipulation stuff
+    if (this.settings.get('hideToken', true)) {
+      const tokenModule = await require('powercord/webpack').getModule([ 'hideToken' ]);
+      tokenModule.hideToken = () => void 0;
+    }
+  }
+
+  // Powercord startup
+  async startup () {
+    // APIs
+    await this.apiManager.startAPIs();
+    this.settings = powercord.api.settings.getCategory('pc-general');
+
+    // Style Manager @todo
+
+    // Plugins
+    await this.pluginManager.startPlugins();
+
+    this.initialized = true;
+  }
+
+  // Powercord shutdown
+  async shutdown () {
+    this.initialized = false;
+
+    // Style Manager @todo
+
+    // Plugins
+    await this.pluginManager.shutdownPlugins();
+
+    // APIs
+    await this.apiManager.unload();
+  }
+
+  // Bad code
   patchWebSocket () {
     const _this = this;
 
@@ -35,35 +90,6 @@ module.exports = class Powercord extends EventEmitter {
         });
       }
     };
-  }
-
-  async init () {
-    await Promise.all(modules.map(mdl => mdl()));
-    const isOverlay = (/overlay/).test(location.pathname);
-    // In Discord client I have usually 21 entries in it. In the overlay I usually have 18 entries
-    while (window.webpackJsonp.length < (isOverlay ? 18 : 21)) {
-      await sleep(1);
-    }
-
-    this.fetchAccount();
-    if (this.settings.get('hideToken', true)) {
-      require('powercord/webpack').getModule([ 'hideToken' ]).hideToken = () => void 0;
-    }
-    this.pluginManager.startPlugins();
-
-    if (this.account && this.settings.get('settingsSync', false)) {
-      SettingsManager.download();
-    }
-
-    window.addEventListener('beforeunload', () => {
-      if (this.account && this.settings.get('settingsSync', false)) {
-        SettingsManager.upload();
-      }
-    });
-
-    const buildId = require('powercord/webpack').getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ])._globalOptions.release;
-    const gitInfos = await this.pluginManager.get('pc-updater').getGitInfos();
-    this.buildInfo = `Release Channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Discord's Build Number: ${buildId} - Powercord's git revision: ${gitInfos.revision}@${gitInfos.branch}`;
   }
 
   async fetchAccount () {

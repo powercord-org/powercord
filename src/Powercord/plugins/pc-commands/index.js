@@ -1,4 +1,4 @@
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 
 const commands = require('./commands');
 const monkeypatchMessages = require('./monkeypatchMessages.js');
@@ -27,7 +27,7 @@ module.exports = class Commands extends Plugin {
       }));
   }
 
-  async start () {
+  startPlugin () {
     monkeypatchMessages.call(this);
     injectAutocomplete.call(this);
     monkeypatchTyping.call(this);

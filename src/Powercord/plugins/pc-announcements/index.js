@@ -1,7 +1,7 @@
 const { resolve } = require('path');
 const { existsSync } = require('fs');
 const { unlink } = require('fs').promises;
-const Plugin = require('powercord/Plugin');
+const { Plugin } = require('powercord/entities');
 const { shell: { openExternal } } = require('electron');
 const { React, getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
@@ -17,7 +17,7 @@ module.exports = class Announcements extends Plugin {
     this.notices = [];
   }
 
-  async start () {
+  async startPlugin () {
     this._patchNotices();
     const injectedFile = resolve(__dirname, '..', '..', '..', '__injected.txt');
     if (existsSync(injectedFile)) {
@@ -53,7 +53,7 @@ module.exports = class Announcements extends Plugin {
     });
   }
 
-  unload () {
+  pluginWillUnload () {
     uninject('pc-custom-notices');
   }
 
