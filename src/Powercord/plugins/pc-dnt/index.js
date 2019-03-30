@@ -4,7 +4,7 @@ const { Plugin } = require('powercord/entities');
 const webpack = require('powercord/webpack');
 
 module.exports = class DoNotTrack extends Plugin {
-  pluginDidLoad () {
+  startPlugin () {
     const Analytics = webpack.getModule([ 'AnalyticEventConfigs' ]);
     Analytics.__oldTrack = Analytics.track;
     Analytics.track = () => void 0;

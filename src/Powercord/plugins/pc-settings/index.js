@@ -7,7 +7,7 @@ const { getModuleByDisplayName, getModule } = require('powercord/webpack');
 const GeneralSettings = require('./components/GeneralSettings.jsx');
 
 module.exports = class Settings extends Plugin {
-  pluginDidLoad () {
+  startPlugin () {
     this.registerSettings('pc-general', 'General Settings', GeneralSettings);
 
     this.loadCSS(resolve(__dirname, 'style.scss'));

@@ -6,7 +6,7 @@ const { React } = require('powercord/webpack');
 const Settings = require('./Settings.jsx');
 
 module.exports = class Hastebin extends Plugin {
-  pluginDidLoad () {
+  startPlugin () {
     this.registerSettings('pc-hastebin', 'Hastebin', () =>
       React.createElement(Settings, {
         settings: this.settings

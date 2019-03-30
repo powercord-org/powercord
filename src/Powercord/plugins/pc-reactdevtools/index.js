@@ -19,7 +19,7 @@ module.exports = class ReactDevtools extends Plugin {
     return null;
   }
 
-  pluginDidLoad () {
+  startPlugin () {
     /*
      * This plugin generates some CPU leaks, and we need to find a better way of doing this.
      * We should also download our own version of react devtools and use it instead of pulling it from Chrome

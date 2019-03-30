@@ -8,7 +8,7 @@ const { React, getModuleByDisplayName } = require('powercord/webpack');
 const BadgesComponent = require('./Badges.jsx');
 
 module.exports = class Badges extends Plugin {
-  pluginDidLoad () {
+  startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuildHeaders();
     this._patchUserComponent();

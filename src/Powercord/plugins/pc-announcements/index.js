@@ -17,7 +17,7 @@ module.exports = class Announcements extends Plugin {
     this.notices = [];
   }
 
-  async pluginDidLoad () {
+  async startPlugin () {
     this._patchNotices();
     const injectedFile = resolve(__dirname, '..', '..', '..', '__injected.txt');
     if (existsSync(injectedFile)) {

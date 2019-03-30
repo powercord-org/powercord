@@ -27,7 +27,7 @@ module.exports = class Commands extends Plugin {
       }));
   }
 
-  async pluginDidLoad () {
+  startPlugin () {
     monkeypatchMessages.call(this);
     injectAutocomplete.call(this);
     monkeypatchTyping.call(this);

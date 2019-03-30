@@ -6,7 +6,7 @@ const { inject, uninject } = require('powercord/injector');
 const { clipboard } = require('electron');
 
 module.exports = class CopyRoleID extends Plugin {
-  async pluginDidLoad () {
+  startPlugin () {
     this.injectGuildRole();
     this.injectMemberRole();
   }

@@ -18,7 +18,7 @@ module.exports = class Spotify extends Plugin {
     return SpotifyPlayer;
   }
 
-  async pluginDidLoad () {
+  async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._injectModal();
     this._injectListeningAlong();

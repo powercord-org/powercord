@@ -22,7 +22,7 @@ module.exports = class Updater extends Plugin {
     };
   }
 
-  async pluginDidLoad () {
+  async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
 
     this.registerSettings('pc-updater', 'Updater', () =>

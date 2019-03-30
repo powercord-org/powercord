@@ -209,7 +209,7 @@ module.exports = class EmojiUtility extends Plugin {
     return getGuild(guildId).hasFeature(GuildFeatures.MORE_EMOJI) ? EMOJI_MAX_SLOTS_MORE : EMOJI_MAX_SLOTS;
   }
 
-  async pluginDidLoad () {
+  async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
 
     /* Default settings */

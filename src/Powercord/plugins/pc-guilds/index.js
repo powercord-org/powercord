@@ -19,7 +19,7 @@ module.exports = class GuildFolders extends Plugin {
     this.store = new GuildStore(this.settings);
   }
 
-  async pluginDidLoad () {
+  async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuilds();
     // this._patchAddGuild();

@@ -7,7 +7,7 @@ const { React, getModule, getModuleByDisplayName, constants: { Routes } } = requ
 const webContents = require('electron').remote.getCurrentWindow();
 
 module.exports = class TitleBarGames extends Plugin {
-  async pluginDidLoad () {
+  async startPlugin () {
     if (process.platform !== 'win32') {
       return this.warn('Exiting due to unsupported platform.');
     }

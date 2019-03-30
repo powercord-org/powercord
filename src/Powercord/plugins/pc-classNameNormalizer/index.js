@@ -12,7 +12,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
     this.ATTRIBUTE_BLACKLIST = [ 'px', 'ch', 'em', 'ms' ];
   }
 
-  async pluginDidLoad () {
+  async startPlugin () {
     await sleep(2000); // bowserware:tm:
     this.patchModules(this._fetchAllModules());
     this.normalizeElement(document.querySelector('#app-mount'));

@@ -16,7 +16,7 @@ module.exports = class StyleManager extends Plugin {
     this.trackedFiles = [];
   }
 
-  async pluginDidLoad () {
+  async startPlugin () {
     /*
      * Initialize worker
      * this.worker = new Worker(

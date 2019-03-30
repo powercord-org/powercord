@@ -6,7 +6,7 @@ const { clipboard } = require('electron');
 const { resolve } = require('path');
 
 module.exports = class Codeblocks extends Plugin {
-  async pluginDidLoad () {
+  async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this.injectMessage();
 

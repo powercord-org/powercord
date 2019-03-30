@@ -12,7 +12,7 @@ module.exports = class KeybindManager extends Plugin {
     this.keybinds = [];
   }
 
-  pluginDidLoad () {
+  startPlugin () {
     // Clear any previously set keybind
     Object.keys(this.settings.config).forEach(keybind => {
       this._safeUnregister(this.settings.get(keybind));
@@ -20,7 +20,7 @@ module.exports = class KeybindManager extends Plugin {
   }
 
   pluginWillUnload () {
-    this.start(); // pls don't laugh
+    this.startPlugin(); // pls don't laugh
     powercord
       .pluginManager
       .get('pc-settings')

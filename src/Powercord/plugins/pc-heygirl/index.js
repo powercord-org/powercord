@@ -18,7 +18,7 @@ module.exports = class HeyGirl extends Plugin {
     ));
   }
 
-  pluginDidLoad () {
+  startPlugin () {
     powercord
       .pluginManager
       .get('pc-commands')

@@ -15,7 +15,7 @@ module.exports = class Settings extends API {
   }
 
   // Classic stuff
-  async apiDidLoad () {
+  async startAPI () {
     await this.download();
     this._interval = setInterval(this.upload.bind(this), 10 * 60 * 1000);
   }

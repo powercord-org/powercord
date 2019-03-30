@@ -7,7 +7,7 @@ const translate = require('google-translate-api');
 const { resolve } = require('path');
 
 module.exports = class Translate extends Plugin {
-  async pluginDidLoad () {
+  async startPlugin () {
     this.translations = {};
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._injectTranslator();
