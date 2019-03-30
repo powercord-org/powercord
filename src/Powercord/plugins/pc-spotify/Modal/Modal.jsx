@@ -52,7 +52,8 @@ module.exports = class Modal extends React.Component {
         progress: 0,
         progressAt: Date.now()
       },
-      displayState: 'hide'
+      displayState: 'hide',
+      spotifyLogo: ''
     };
   }
 
@@ -87,13 +88,21 @@ module.exports = class Modal extends React.Component {
       this.state.displayState !== newState.displayState;
   }
 
+  getSpotifyLogo () {
+    powercord.pluginManager.plugins.get('pc-spotify').getSpotifyLogo()
+      .then(value => {
+        const base64String = `data:image/png;base64,${value}`;
+        this.setState({ spotifyLogo: base64String });
+      });
+  }
+
   updateData (playerState) {
     if (playerState && playerState.currently_playing_type === 'track') {
       return this.setState({
         currentItem: {
           name: playerState.item.name,
           artists: playerState.item.artists.map(artist => artist.name),
-          img: !playerState.item.is_local ? playerState.item.album.images[0].url : null,
+          img: !playerState.item.is_local ? playerState.item.album.images[0].url : this.state.spotifyLogo,
           albumName: playerState.item.album.name,
           url: playerState.item.external_urls.spotify,
           uri: playerState.item.uri,
@@ -142,6 +151,7 @@ module.exports = class Modal extends React.Component {
   async componentDidMount () {
     this.props.main._forceUpdate = this.forceUpdate.bind(this);
     this.props.main.on('event', this.onData);
+    this.getSpotifyLogo();
     this.updateData(await SpotifyPlayer.getPlayer());
   }
 
@@ -285,18 +295,14 @@ module.exports = class Modal extends React.Component {
       </div>
     </>;
   }
-
-
   async injectContextMenu (e) {
     const { pageX, pageY } = e;
-
     const itemGroups = getContextMenuItemGroups(
       this.state,
       this.onButtonClick,
       powercord.account && powercord.account.spotify,
       !this.props.showAdvanced
     );
-
     contextMenu.openContextMenu(e, () =>
       React.createElement(ContextMenu, {
         pageX,
