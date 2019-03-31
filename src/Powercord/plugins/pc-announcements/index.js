@@ -2,7 +2,6 @@ const { resolve } = require('path');
 const { existsSync } = require('fs');
 const { unlink } = require('fs').promises;
 const { Plugin } = require('powercord/entities');
-const { shell: { openExternal } } = require('electron');
 const { React, getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 const { getOwnerInstance, waitFor } = require('powercord/util');
@@ -38,19 +37,6 @@ module.exports = class Announcements extends Plugin {
         alwaysDisplay: true
       });
     }
-
-    this.sendNotice({
-      id: 'pc-pewdiepie',
-      type: Notice.TYPES.RED,
-      message: 'PewDiePie is in trouble and he needs your help to defeat T-Series!',
-      button: {
-        text: 'Subscribe to PewDiePie',
-        onClick: () => {
-          this.closeNotice('pc-pewdiepie');
-          openExternal('https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw?sub_confirmation=1');
-        }
-      }
-    });
   }
 
   pluginWillUnload () {
