@@ -27,10 +27,13 @@ module.exports = class CopyRoleID extends Plugin {
   async injectMemberRole () {
     const _this = this;
 
+    // Server member list memes
+    const popoutClasses = await getModule([ 'userPopout' ]);
+    const popoutQuery = `.${popoutClasses.userPopout.replace(/ /g, '.')}`;
     const roleClasses = await getModule([ 'role', 'roleCircle' ]);
     const roleQuery = `.${roleClasses.role.replace(/ /g, '.')}`;
 
-    const instance = getOwnerInstance(await waitFor(roleQuery));
+    const instance = getOwnerInstance(await waitFor(`${popoutQuery} ${roleQuery}`));
     inject('pc-memberRole', instance.__proto__, 'render', function (_, res) {
       res.props.onContextMenu = _this.generateContextMenuCallback(this.props.role.id);
       return res;
@@ -40,11 +43,13 @@ module.exports = class CopyRoleID extends Plugin {
   }
 
   generateContextMenuCallback (id) {
-    return async (e) => {
-      const settings = await getModule([ 'developerMode' ]);
-      if (!settings.developerMode) {
-        return;
-      }
+    return (e) => { // async (e) => {
+      /*
+       * const settings = await getModule([ 'developerMode' ]);
+       * if (!settings.developerMode) {
+       *   return;
+       * }
+       */
 
       const { pageX, pageY } = e;
       contextMenu.openContextMenu(e, () =>
