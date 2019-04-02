@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'pause',
+  command: 'pause',
   description: 'Pause Spotify playback',
   usage: '/pause',
 

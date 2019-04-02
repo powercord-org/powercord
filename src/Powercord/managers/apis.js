@@ -10,6 +10,7 @@ module.exports = class APIManager {
   mount (api) {
     try {
       const APIClass = require(resolve(this.apiDir, api));
+      api = api.replace(/\.js$/, '');
       powercord.api[api] = new APIClass();
       this.apis.push(api);
     } catch (e) {

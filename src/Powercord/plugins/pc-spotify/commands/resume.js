@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'resume',
+  command: 'resume',
   description: 'Resume Spotify playback',
   usage: '/resume',
 

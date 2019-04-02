@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'previous',
+  command: 'previous',
   aliases: [ 'prev' ],
   description: 'Go back one Spotify song',
   usage: '/previous',

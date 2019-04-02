@@ -3,8 +3,6 @@ const { waitFor, getOwnerInstance, sleep } = require('powercord/util');
 const { getModule } = require('powercord/webpack');
 
 module.exports = async function injectAutocomplete () {
-  const _this = this;
-
   const disabledPlugins = powercord.settings.get('disabledPlugins', []);
   const plugins = [ ...powercord.pluginManager.plugins.keys() ]
     .filter(plugin => !disabledPlugins.includes(plugin));
@@ -16,11 +14,11 @@ module.exports = async function injectAutocomplete () {
 
   const inject = () =>
     this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS = {
-      getText: (index, { commands }) => this.prefix + commands[index].command,
-      matches: (isValid) => isValid && this.instance.props.value.startsWith(this.prefix),
+      getText: (index, { commands }) => powercord.api.commands.prefix + commands[index].command,
+      matches: (isValid) => isValid && this.instance.props.value.startsWith(powercord.api.commands.prefix),
       queryResults: () => ({
-        commands: this.customCommands.filter(c =>
-          c.command.startsWith(this.instance.props.value.slice(this.prefix.length))
+        commands: powercord.api.commands.commands.filter(c =>
+          c.command.startsWith(this.instance.props.value.slice(powercord.api.commands.prefix.length))
         )
       }),
       renderResults: (...args) => {
@@ -41,7 +39,7 @@ module.exports = async function injectAutocomplete () {
             ) {
               const commandPreviewChildren = rendered.props.children[1].props.children;
               if (commandPreviewChildren[0].startsWith('/')) {
-                commandPreviewChildren[0] = commandPreviewChildren[0].replace(`/${_this.prefix.slice(1)}`, _this.prefix);
+                commandPreviewChildren[0] = commandPreviewChildren[0].replace(`/${powercord.api.commands.prefix.slice(1)}`, powercord.api.commands.prefix);
               }
             }
 
@@ -60,8 +58,8 @@ module.exports = async function injectAutocomplete () {
               }
 
               const commandName = children[0].props;
-              if (!commandName.children.startsWith(_this.prefix)) {
-                commandName.children = _this.prefix + commandName.children;
+              if (!commandName.children.startsWith(powercord.api.commands.prefix)) {
+                commandName.children = powercord.api.commands.prefix + commandName.children;
               }
 
               return rendered;
@@ -73,7 +71,7 @@ module.exports = async function injectAutocomplete () {
       }
     };
 
-  const taClass = (await getModule([ 'channelTextArea', 'channelTextAreaEnabled' ]))
+  const taClass = await getModule([ 'channelTextArea', 'channelTextAreaEnabled' ])
     .channelTextArea.split(' ')[0];
 
   await waitFor(`.${taClass}`);

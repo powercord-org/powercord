@@ -39,15 +39,9 @@ module.exports = class Spotify extends Plugin {
       })
     );
 
-    for (const [ commandName, command ] of Object.entries(commands)) {
-      command.func = command.func.bind(command, SpotifyPlayer);
-
-      powercord
-        .pluginManager
-        .get('pc-commands')
-        .commands
-        .set(commandName, command);
-    }
+    Object.values(commands).forEach(command =>
+      this.registerCommand(command.command, command.aliases || [], command.description, command.usage, command.func)
+    );
   }
 
   pluginWillUnload () {
@@ -60,13 +54,6 @@ module.exports = class Spotify extends Plugin {
 
     getOwnerInstance(document.querySelector('.container-2Thooq:not([id])')).forceUpdate();
     powercord.off('webSocketMessage:dealer.spotify.com', this._handler);
-
-    for (const [ commandName ] of Object.entries(commands)) {
-      powercord
-        .pluginManager
-        .get('pc-commands')
-        .unregister(commandName);
-    }
 
     const el = document.querySelector('#powercord-spotify-modal');
     if (el) {

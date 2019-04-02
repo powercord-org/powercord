@@ -594,232 +594,224 @@ module.exports = class EmojiUtility extends Plugin {
 
     this.registerSettings('pc-emojiUtility', 'Emote Utility', () => React.createElement(Settings, { settings: this.settings }));
 
-    powercord
-      .pluginManager
-      .get('pc-commands')
-      .register(
-        'findemote',
-        'Find the server an emote is from',
-        '{c} [emote]',
-        (args) => {
-          const object = this.findEmojisForCommand(args);
-          if (!object) {
-            return;
-          }
+    this.registerCommand(
+      'findemote',
+      [],
+      'Find the server an emote is from',
+      '{c} [emote]',
+      (args) => {
+        const object = this.findEmojisForCommand(args);
+        if (!object) {
+          return;
+        }
 
-          const { foundEmojis, notFoundEmojis } = object;
+        const { foundEmojis, notFoundEmojis } = object;
 
-          if (this.settings.get('useEmbeds')) {
+        if (this.settings.get('useEmbeds')) {
+          return {
+            send: false,
+            result: {
+              type: 'rich',
+              description: foundEmojis.map(emoji => `${this.getFullEmoji(emoji)} is from **[${emoji.guild.name}](${this.getGuildUrl(emoji.guildId)})**`).join('\n'),
+              color: colors.success,
+              footer: notFoundEmojis.length > 0
+                ? {
+                  text: `${notFoundEmojis.length} of the provided arguments ${notFoundEmojis.length === 1 ? 'is not a custom emote' : 'are not custom emotes'}`
+                }
+                : null
+            }
+          };
+        }
+
+        let description = foundEmojis.map(emoji => `${this.getFullEmoji(emoji)} is from **${emoji.guild.name}**${this.settings.get('displayLink') ? ` (**${this.getGuildUrl(emoji.guildId)}**)` : ''}`).join('\n');
+        if (notFoundEmojis.length > 0) {
+          description += `${description.length > 0 ? '\n\n' : ''}**${notFoundEmojis.length}** of the provided arguments ${notFoundEmojis.length === 1 ? 'is not a custom emote' : 'are not custom emotes'}`;
+        }
+
+        return {
+          send: false,
+          result: description
+        };
+      }
+    );
+
+    this.registerCommand(
+      'massemote',
+      [],
+      'Send all emotes containing the specified name',
+      '{c} [emote name]',
+      (args) => {
+        const argument = args.join(' ').toLowerCase();
+        if (argument.length === 0) {
+          return this.replyError('Please provide an emote name');
+        }
+
+        const emojis = Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis);
+
+        const foundEmojis = emojis.filter(emoji => emoji.name.toLowerCase().includes(argument));
+        if (foundEmojis.length > 0) {
+          const emojisAsString = foundEmojis.map(emoji => this.getFullEmoji(emoji)).join('');
+          if (emojisAsString.length > 2000) {
             return {
               send: false,
-              result: {
-                type: 'rich',
-                description: foundEmojis.map(emoji => `${this.getFullEmoji(emoji)} is from **[${emoji.guild.name}](${this.getGuildUrl(emoji.guildId)})**`).join('\n'),
-                color: colors.success,
-                footer: notFoundEmojis.length > 0
-                  ? {
-                    text: `${notFoundEmojis.length} of the provided arguments ${notFoundEmojis.length === 1 ? 'is not a custom emote' : 'are not custom emotes'}`
-                  }
-                  : null
-              }
+              result: `That is more than 2000 characters, let me send that locally instead!\n${emojisAsString}`
             };
           }
 
-          let description = foundEmojis.map(emoji => `${this.getFullEmoji(emoji)} is from **${emoji.guild.name}**${this.settings.get('displayLink') ? ` (**${this.getGuildUrl(emoji.guildId)}**)` : ''}`).join('\n');
-          if (notFoundEmojis.length > 0) {
-            description += `${description.length > 0 ? '\n\n' : ''}**${notFoundEmojis.length}** of the provided arguments ${notFoundEmojis.length === 1 ? 'is not a custom emote' : 'are not custom emotes'}`;
+          if (!this.getCurrentUser().premiumType > 0) {
+            return {
+              send: false,
+              result: `Looks like you do not have nitro, let me send that locally instead!\n${emojisAsString}`
+            };
           }
 
           return {
-            send: false,
-            result: description
+            send: true,
+            result: emojisAsString
           };
         }
-      );
 
-    powercord
-      .pluginManager
-      .get('pc-commands')
-      .register(
-        'massemote',
-        'Send all emotes containing the specified name',
-        '{c} [emote name]',
-        (args) => {
-          const argument = args.join(' ').toLowerCase();
-          if (argument.length === 0) {
-            return this.replyError('Please provide an emote name');
-          }
+        return this.replyError(`Could not find any emotes containing **${argument}**`);
+      }
+    );
 
-          const emojis = Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis);
-
-          const foundEmojis = emojis.filter(emoji => emoji.name.toLowerCase().includes(argument));
-          if (foundEmojis.length > 0) {
-            const emojisAsString = foundEmojis.map(emoji => this.getFullEmoji(emoji)).join('');
-            if (emojisAsString.length > 2000) {
-              return {
-                send: false,
-                result: `That is more than 2000 characters, let me send that locally instead!\n${emojisAsString}`
-              };
-            }
-
-            if (!this.getCurrentUser().premiumType > 0) {
-              return {
-                send: false,
-                result: `Looks like you do not have nitro, let me send that locally instead!\n${emojisAsString}`
-              };
-            }
-
-            return {
-              send: true,
-              result: emojisAsString
-            };
-          }
-
-          return this.replyError(`Could not find any emotes containing **${argument}**`);
+    this.registerCommand(
+      'saveemote',
+      [],
+      'Save emotes to a specified directory',
+      '{c} [emote]',
+      async (args) => {
+        if (!this.settings.get('filePath')) {
+          return this.replyError('Please set your save directory in the settings');
         }
-      );
 
-    powercord
-      .pluginManager
-      .get('pc-commands')
-      .register(
-        'saveemote',
-        'Save emotes to a specified directory',
-        '{c} [emote]',
-        async (args) => {
-          if (!this.settings.get('filePath')) {
-            return this.replyError('Please set your save directory in the settings');
-          }
-
-          if (!existsSync(this.settings.get('filePath'))) {
-            return this.replyError('The specified save directory does no longer exist, please update it in the settings');
-          }
-
-          const object = this.findEmojisForCommand(args);
-          if (!object) {
-            return;
-          }
-
-          const { foundEmojis, notFoundEmojis } = object;
-
-          if (notFoundEmojis.length > 0) {
-            return this.replyError(`**${notFoundEmojis.length}** of the provided arguments ${notFoundEmojis.length === 1 ? 'is not a custom emote' : 'are not custom emotes'}`);
-          }
-
-          if (foundEmojis.length < 5) {
-            for (const emoji of foundEmojis) {
-              try {
-                const name = this.settings.get('includeIdForSavedEmojis') ? `${emoji.name} (${emoji.id})` : emoji.name;
-
-                await writeFile(resolve(this.settings.get('filePath'), name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
-
-                this.replySuccess(`Downloaded ${this.getFullEmoji(emoji)}`);
-              } catch (error) {
-                console.error(error);
-
-                this.replyError(`Failed to download ${this.getFullEmoji(emoji)}, check the console for more information`, {
-                  description: `Failed to download ${this.getFullEmoji(emoji)}`,
-                  footer: {
-                    text: 'Check the console for more information'
-                  }
-                });
-              }
-            }
-          } else {
-            this.replySuccess(`Downloading **${foundEmojis.length}** emotes, I will report back to you when I am done`);
-
-            const failedDownloads = [];
-
-            for (const emoji of foundEmojis) {
-              try {
-                const name = this.settings.get('includeIdForSavedEmojis') ? `${emoji.name} (${emoji.id})` : emoji.name;
-
-                await writeFile(resolve(this.settings.get('filePath'), name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
-              } catch (error) {
-                console.error(error);
-
-                failedDownloads.push(emoji);
-              }
-            }
-
-            this.replySuccess(`Successfully downloaded **${foundEmojis.length - failedDownloads.length}**/**${foundEmojis.length}** emotes`);
-          }
+        if (!existsSync(this.settings.get('filePath'))) {
+          return this.replyError('The specified save directory does no longer exist, please update it in the settings');
         }
-      );
 
-    powercord
-      .pluginManager
-      .get('pc-commands')
-      .register(
-        'cloneemote',
-        'Clone an emote to your own server',
-        '{c} [emote] [server]',
-        async (args) => {
-          if (args.length === 0) {
-            return this.replyError('Please provide an emote');
-          }
+        const object = this.findEmojisForCommand(args);
+        if (!object) {
+          return;
+        }
 
-          const emojiRaw = args[0];
-          const matcher = emojiRaw.match(this.getEmojiRegex());
-          if (!matcher) {
-            return this.replyError(`**${emojiRaw}** is not a custom emote`);
-          }
+        const { foundEmojis, notFoundEmojis } = object;
 
-          let guild;
+        if (notFoundEmojis.length > 0) {
+          return this.replyError(`**${notFoundEmojis.length}** of the provided arguments ${notFoundEmojis.length === 1 ? 'is not a custom emote' : 'are not custom emotes'}`);
+        }
 
-          const guildArg = args.slice(1).join(' ');
-          if (guildArg.length > 0) {
-            guild = this.getGuildByIdOrName(guildArg);
-            if (!guild) {
-              return this.replyError('That is not a valid server');
-            }
-          } else {
-            if (this.settings.get('defaultCloneIdUseCurrent')) {
-              guild = this.getGuild(this.getChannel(getChannelId()).guild_id);
-            } else if (this.settings.get('defaultCloneId')) {
-              guild = this.getGuild(this.settings.get('defaultCloneId'));
-              if (!guild) {
-                return this.replyError('You are no longer in your default clone server, please update your settings');
-              }
-            }
-
-            if (!guild) {
-              return this.replyError('No server argument was provided');
-            }
-          }
-
-          const emoji = Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis).find(e => e.id === matcher[2]);
-          if (emoji) {
+        if (foundEmojis.length < 5) {
+          for (const emoji of foundEmojis) {
             try {
-              if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
-                return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
-              }
+              const name = this.settings.get('includeIdForSavedEmojis') ? `${emoji.name} (${emoji.id})` : emoji.name;
 
-              if (this.getEmojis(guild.id, emoji.animated).length >= this.getMaxEmojiSlots(guild.id)) {
-                return this.replyError(`**${guild.name}** does not have any more emote slots`);
-              }
+              await writeFile(resolve(this.settings.get('filePath'), name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
 
-              await this.uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
-
-              return this.replySuccess(`Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`);
+              this.replySuccess(`Downloaded ${this.getFullEmoji(emoji)}`);
             } catch (error) {
               console.error(error);
 
-              if (error.body.message) {
-                return this.replyError(error.body.message);
-              }
-              return this.replyError('Failed to clone emote, check the console for more information', {
-                description: 'Failed to clone emote',
+              this.replyError(`Failed to download ${this.getFullEmoji(emoji)}, check the console for more information`, {
+                description: `Failed to download ${this.getFullEmoji(emoji)}`,
                 footer: {
                   text: 'Check the console for more information'
                 }
               });
             }
-          } else {
-            return this.replyError(`Could not find emote ${emojiRaw}`);
+          }
+        } else {
+          this.replySuccess(`Downloading **${foundEmojis.length}** emotes, I will report back to you when I am done`);
+
+          const failedDownloads = [];
+
+          for (const emoji of foundEmojis) {
+            try {
+              const name = this.settings.get('includeIdForSavedEmojis') ? `${emoji.name} (${emoji.id})` : emoji.name;
+
+              await writeFile(resolve(this.settings.get('filePath'), name + extname(parse(emoji.url).pathname)), (await get(emoji.url)).raw);
+            } catch (error) {
+              console.error(error);
+
+              failedDownloads.push(emoji);
+            }
+          }
+
+          this.replySuccess(`Successfully downloaded **${foundEmojis.length - failedDownloads.length}**/**${foundEmojis.length}** emotes`);
+        }
+      }
+    );
+
+    this.registerCommand(
+      'cloneemote',
+      [],
+      'Clone an emote to your own server',
+      '{c} [emote] [server]',
+      async (args) => {
+        if (args.length === 0) {
+          return this.replyError('Please provide an emote');
+        }
+
+        const emojiRaw = args[0];
+        const matcher = emojiRaw.match(this.getEmojiRegex());
+        if (!matcher) {
+          return this.replyError(`**${emojiRaw}** is not a custom emote`);
+        }
+
+        let guild;
+
+        const guildArg = args.slice(1).join(' ');
+        if (guildArg.length > 0) {
+          guild = this.getGuildByIdOrName(guildArg);
+          if (!guild) {
+            return this.replyError('That is not a valid server');
+          }
+        } else {
+          if (this.settings.get('defaultCloneIdUseCurrent')) {
+            guild = this.getGuild(this.getChannel(getChannelId()).guild_id);
+          } else if (this.settings.get('defaultCloneId')) {
+            guild = this.getGuild(this.settings.get('defaultCloneId'));
+            if (!guild) {
+              return this.replyError('You are no longer in your default clone server, please update your settings');
+            }
+          }
+
+          if (!guild) {
+            return this.replyError('No server argument was provided');
           }
         }
-      );
+
+        const emoji = Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis).find(e => e.id === matcher[2]);
+        if (emoji) {
+          try {
+            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
+              return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
+            }
+
+            if (this.getEmojis(guild.id, emoji.animated).length >= this.getMaxEmojiSlots(guild.id)) {
+              return this.replyError(`**${guild.name}** does not have any more emote slots`);
+            }
+
+            await this.uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
+
+            return this.replySuccess(`Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`);
+          } catch (error) {
+            console.error(error);
+
+            if (error.body.message) {
+              return this.replyError(error.body.message);
+            }
+            return this.replyError('Failed to clone emote, check the console for more information', {
+              description: 'Failed to clone emote',
+              footer: {
+                text: 'Check the console for more information'
+              }
+            });
+          }
+        } else {
+          return this.replyError(`Could not find emote ${emojiRaw}`);
+        }
+      }
+    );
   }
 
   pluginWillUnload () {
@@ -834,13 +826,5 @@ module.exports = class EmojiUtility extends Plugin {
     uninject('pc-emojiUtility-hideEmojisPickerMount');
     uninject('pc-emojiUtility-hideEmojisComplete');
     uninject('pc-emojiUtility-hideEmojisCompleteEvent');
-
-    const { pluginManager } = powercord;
-
-    const pcCommands = pluginManager.get('pc-commands');
-    pcCommands.unregister('findemote');
-    pcCommands.unregister('massemote');
-    pcCommands.unregister('saveemote');
-    pcCommands.unregister('cloneemote');
   }
 };

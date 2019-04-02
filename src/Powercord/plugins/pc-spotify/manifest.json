@@ -3,8 +3,5 @@
   "version": "1.0.0",
   "description": "Better Spotify integration in Discord",
   "author": "Powercord Team",
-  "license": "MIT",
-  "dependencies": [
-    "pc-commands"
-  ]
+  "license": "MIT"
 }

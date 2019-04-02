@@ -21,10 +21,6 @@ module.exports = class KeybindManager extends Plugin {
 
   pluginWillUnload () {
     this.startPlugin(); // pls don't laugh
-    powercord
-      .pluginManager
-      .get('pc-settings')
-      .unregister('pc-keybinds');
   }
 
   // @see https://github.com/electron/electron/blob/master/docs/api/accelerator.md for keybind syntax
@@ -52,15 +48,12 @@ module.exports = class KeybindManager extends Plugin {
   _registerSettingsTab () {
     if (!this.registered) {
       this.registered = true;
-      powercord
-        .pluginManager
-        .get('pc-settings')
-        .register('pc-keybinds', 'Keybinds', () =>
-          React.createElement(Settings, {
-            onChange: this._handleChange.bind(this),
-            onRecord: this._handleRecord.bind(this)
-          })
-        );
+      this.registerSettings('pc-keybinds', 'Keybinds', () =>
+        React.createElement(Settings, {
+          onChange: this._handleChange.bind(this),
+          onRecord: this._handleRecord.bind(this)
+        })
+      );
     }
   }
 

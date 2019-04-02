@@ -3,8 +3,5 @@
   "version": "1.0.0",
   "description": "Quickly save and post a hastebin in the current channel",
   "author": "Powercord Team",
-  "license": "MIT",
-  "dependencies": [
-    "pc-commands"
-  ]
+  "license": "MIT"
 }
