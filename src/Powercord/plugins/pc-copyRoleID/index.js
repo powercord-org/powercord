@@ -19,7 +19,7 @@ module.exports = class CopyRoleID extends Plugin {
   async injectGuildRole () {
     const GuildRole = await getModuleByDisplayName('GuildRole');
     inject('pc-guildRole', GuildRole.prototype, 'render', (_, res) => {
-      res.props.onItemSelect = this.handleSelectedRole(res.props.id);
+      res.props.onItemSelect = this.handleSelectedRole(res.props.id, res.props.onItemSelect);
       res.props.children.props.onContextMenu = this.generateContextMenuCallback(res.props.id);
       return res;
     });
@@ -43,11 +43,10 @@ module.exports = class CopyRoleID extends Plugin {
     instance.forceUpdate();
   }
 
-  handleSelectedRole (id) {
-    return async () => {
-      const { selectRole } = await getModule([ 'selectRole' ]);
+  handleSelectedRole (id, originalHandler) {
+    return async (...args) => {
       contextMenu.closeContextMenu();
-      selectRole(id);
+      originalHandler(...args);
     };
   }
 
