@@ -1,10 +1,8 @@
 const { Plugin } = require('powercord/entities');
 const { resolve, join } = require('path');
-const { get } = require('powercord/http');
 const { sleep, createElement } = require('powercord/util');
 const { ReactDOM, React } = require('powercord/webpack');
 const { Toast } = require('powercord/components');
-const { REPO_URL } = require('powercord/constants');
 
 const { promisify } = require('util');
 const cp = require('child_process');
@@ -73,14 +71,10 @@ module.exports = class Updater extends Plugin {
 
     this.checking = true;
 
-    const gitInfos = await this.getGitInfos();
+    await exec('git fetch', this.cwd);
+    const gitStatus = await exec('git status -uno', this.cwd).then(({ stdout }) => stdout.toString());
 
-    const currentRevision = await get(`https://api.github.com/repos/${REPO_URL}/commits`)
-      .set('Accept', 'application/vnd.github.v3+json')
-      .query('sha', gitInfos.branch)
-      .then(r => r.body[0].sha);
-
-    if (gitInfos.revision !== currentRevision) {
+    if (gitStatus.includes('git pull')) {
       this.askUpdate();
     }
 
