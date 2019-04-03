@@ -45,7 +45,7 @@ module.exports = class PlaylistModal extends React.Component {
     const { playlists } = this.state;
     const playlistList = [];
     playlists.forEach(playlist => {
-      if (playlist.owner.display_name === powercord.account.spotify.name || playlist.collaborative) {
+      if (playlist.owner.display_name === powercord.account.spotify || playlist.collaborative) {
         playlistList.push(<Playlist className="powercord-spotify-playlist" spotifyImg={this.state.spotifyImg} item={playlist}/>);
       }
     });
