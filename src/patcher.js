@@ -40,7 +40,13 @@ class PatchedBrowserWindow extends BrowserWindow {
 }
 
 Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
-require.cache[electronPath].exports = {};
+require.cache[electronPath].exports = {
+  // TODO: Thoroughly investigate every Electron export
+  // and see which ones are dependent on each other
+  // to prevent having to "whitelist" modules on 
+  // a cat-and-mouse basis
+  deprecate: electron.deprecate
+};
 
 const failedExports = [];
 for (const prop in electron) {
