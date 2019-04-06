@@ -29,9 +29,11 @@ module.exports = class Announcements extends Plugin {
           text: 'Join Server',
           onClick: () => {
             this.closeNotice('pc-first-welcome');
-            getModule([ 'acceptInvite' ]).acceptInvite(DISCORD_INVITE, {}, () => {
-              getModule([ 'flushSelection' ]).selectGuild(GUILD_ID);
-            });
+            if (!Object.values(getModule([ 'getGuilds' ]).getGuilds()).find(guild => guild.id === GUILD_ID)) {
+              getModule([ 'acceptInvite' ]).acceptInvite(DISCORD_INVITE);
+            }
+
+            getModule([ 'flushSelection' ]).selectGuild(GUILD_ID);
           }
         },
         alwaysDisplay: true
