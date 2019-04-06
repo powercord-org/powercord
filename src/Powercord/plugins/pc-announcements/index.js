@@ -30,7 +30,7 @@ module.exports = class Announcements extends Plugin {
           onClick: () => {
             this.closeNotice('pc-first-welcome');
             getModule([ 'acceptInvite' ]).acceptInvite(DISCORD_INVITE, {}, () => {
-              getModule([ 'selectGuild' ]).selectGuild(GUILD_ID);
+              getModule([ 'flushSelection' ]).selectGuild(GUILD_ID);
             });
           }
         },
