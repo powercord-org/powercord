@@ -2,8 +2,14 @@
   color: #00b0f4;
   cursor: pointer;
   margin-left: 3px;
+  font-size: 0.75rem;
 
   &:hover {
     text-decoration: underline;
   }
+}
+
+.pc-translate-reset-compact-container {
+  margin-top: 4px;
+  margin-left: 8ch;
 }

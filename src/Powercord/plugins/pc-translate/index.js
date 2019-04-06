@@ -47,14 +47,15 @@ module.exports = class Translate extends Plugin {
     const MessageContextMenu = await getModuleByDisplayName('MessageContextMenu');
     inject('pc-translate-context', MessageContextMenu.prototype, 'render', function (args, res) {
       const setText = async (opts) => {
-        const message = this.props.target.closest('.pc-containerCozyBounded');
+        const cozy = !!this.props.target.closest('.pc-containerCozyBounded');
+        const message = cozy ? this.props.target.closest('.pc-containerCozyBounded') : this.props.target.parentElement.parentElement;
 
         message.style.transition = '0.2s';
         message.style.opacity = '0';
 
         let fromLang = '';
 
-        const timestamp = message.querySelector('.pc-timestampCozy');
+        const timestamp = cozy ? message.querySelector('.pc-timestampCozy') : message;
         await Promise.all([
           sleep(200),
           Promise.all(
@@ -70,10 +71,9 @@ module.exports = class Translate extends Plugin {
         ]);
 
         if (!timestamp.innerHTML.includes('Translated from')) {
-          timestamp.appendChild(
-            createElement('span', {
-              innerHTML: `(Translated from ${fromLang})`,
-              className: 'powercord-translate-reset',
+          const translateReset = createElement('span', {
+            innerHTML: `(Translated from ${fromLang})`,
+            className: 'powercord-translate-reset',
               async onclick () {
                 message.style.opacity = '0';
                 await sleep(200);
@@ -85,11 +85,18 @@ module.exports = class Translate extends Plugin {
                     markupInstance.forceUpdate();
                   });
 
-                timestamp.removeChild(this);
+                timestamp.removeChild(cozy ? this : this.parentElement);
                 message.style.opacity = '1';
               }
-            })
-          );
+          });
+          if (cozy) timestamp.appendChild(translateReset);
+          else {
+            let translateResetContainer = createElement('div', {
+              className: 'pc-translate-reset-compact-container'
+            });
+            translateResetContainer.appendChild(translateReset);
+            timestamp.appendChild(translateResetContainer);
+          }
         }
 
         message.style.opacity = '1';
