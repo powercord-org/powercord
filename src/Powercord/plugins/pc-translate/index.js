@@ -92,7 +92,7 @@ module.exports = class Translate extends Plugin {
           if (cozy) timestamp.appendChild(translateReset);
           else {
             let translateResetContainer = createElement('div', {
-              className: 'pc-translate-reset-compact-container'
+              className: 'powercord-translate-reset-compact-container'
             });
             translateResetContainer.appendChild(translateReset);
             timestamp.appendChild(translateResetContainer);
