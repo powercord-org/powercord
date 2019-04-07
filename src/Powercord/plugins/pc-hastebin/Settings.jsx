@@ -36,6 +36,13 @@ module.exports = class HastebinSettings extends React.Component {
         >
           Domain
         </TextInput>
+        <SwitchItem
+            note='Whether the Hastebin link is sent in chat by default or not.'
+            value={settings.send}
+            onChange={() => set('send')}
+          >
+            Send Link
+        </SwitchItem>
       </div>
     );
   }
