@@ -135,7 +135,7 @@ module.exports = class GeneralSettings extends React.Component {
           disabled={this.state.cleaning}
           onClick={() => this.clearCache()}
         >
-          Clear cache
+          Clear Cache
         </ButtonItem>
       </div>
     );

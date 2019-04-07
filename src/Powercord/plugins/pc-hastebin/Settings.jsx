@@ -1,5 +1,5 @@
 const { React } = require('powercord/webpack');
-const { TextInput } = require('powercord/components/settings');
+const { TextInput, SwitchItem } = require('powercord/components/settings');
 
 module.exports = class HastebinSettings extends React.Component {
   constructor (props) {
@@ -7,7 +7,8 @@ module.exports = class HastebinSettings extends React.Component {
 
     this.settings = props.settings;
     this.state = {
-      domain: props.settings.get('domain', 'https://haste.aetheryx.xyz')
+      domain: props.settings.get('domain', 'https://haste.aetheryx.xyz'),
+      send: props.settings.get('send', false)
     };
   }
 
@@ -35,6 +36,13 @@ module.exports = class HastebinSettings extends React.Component {
         >
           Domain
         </TextInput>
+        <SwitchItem
+            note='Whether the Hastebin link is sent in chat by default or not.'
+            value={settings.send}
+            onChange={() => set('send')}
+          >
+            Send Link
+        </SwitchItem>
       </div>
     );
   }
