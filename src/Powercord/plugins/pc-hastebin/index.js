@@ -28,7 +28,7 @@ module.exports = class Hastebin extends Plugin {
         async (args) => {
           const send = args.includes('--send')
             ? !!args.splice(args.indexOf('--send'), 1)
-            : false;
+            : this.settings.get('send', false);
 
           const data = args.includes('--clipboard')
             ? clipboard.readText()
