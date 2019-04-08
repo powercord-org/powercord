@@ -45,11 +45,12 @@ module.exports = class TitleBarGames extends Plugin {
         })
       );
 
-    applications.push(React.createElement(this.icon, {
-      name: 'Library',
+    applications.push(React.createElement('div', {
       className: `pc-game-img ${this.iconClass.linkButtonIcon}`,
-      onClick: () => this.navigator.transitionTo(Routes.APPLICATION_LIBRARY)
-    }));
+          onClick: () => this.navigator.transitionTo(Routes.APPLICATION_LIBRARY)
+      }, [
+        React.createElement(this.icon, { name: 'Library' })
+    ]));
 
     return applications.slice(0, 40);
   }
