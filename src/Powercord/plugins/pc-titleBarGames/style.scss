@@ -16,6 +16,7 @@
     transition: 0.5s;
     cursor: pointer;
     border-radius: 2px;
+	  margin-right: 0;
 
     &:hover {
       height: 36px;
@@ -28,6 +29,20 @@
         height: 32px;
         width: 32px;
         font-size: 36px;
+      }
+    }
+  }
+  
+  &:last-child {
+    &svg {
+      margin-left: 12px;
+    }
+    
+    &:hover {
+      &svg {
+        height: 36px;
+        width: 36px;
+        margin-left: 0px;
       }
     }
   }
