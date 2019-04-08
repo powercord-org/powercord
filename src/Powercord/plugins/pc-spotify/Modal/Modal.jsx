@@ -4,7 +4,7 @@ const { concat } = require('powercord/util');
 const { shell } = require('electron');
 
 const SpotifyPlayer = require('../SpotifyPlayer.js');
-const getContextMenuItemGroups = require('./contextMenuGroups');
+let getContextMenuItemGroups = require('./contextMenuGroups');
 const SeekBar = require('./SeekBar.jsx');
 const Title = require('./Title.jsx');
 
@@ -296,6 +296,7 @@ module.exports = class Modal extends React.Component {
     </>;
   }
   async injectContextMenu (e) {
+    getContextMenuItemGroups = require('./contextMenuGroups'); // override reference from require cache in the event of any mods
     const { pageX, pageY } = e;
     const itemGroups = getContextMenuItemGroups(
       this.state,
