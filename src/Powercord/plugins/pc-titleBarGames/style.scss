@@ -6,7 +6,7 @@
   left: 50%;
   transform: translateX(-50%);
 
-  .pc-game-img, .pc-game-img svg {
+  .pc-game-img {
     color: #888;
     height: 16px;
     width: 16px;
@@ -16,7 +16,8 @@
     transition: 0.5s;
     cursor: pointer;
     border-radius: 2px;
-	  margin-right: 0;
+    margin-right: 0;
+	background-position: center center;
 
     &:hover {
       height: 36px;
