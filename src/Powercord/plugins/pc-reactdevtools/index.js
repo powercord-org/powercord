@@ -31,7 +31,7 @@ module.exports = class ReactDevtools extends Plugin {
   }
 
   pluginWillUnload () {
-    // remote.getCurrentWindow().webContents.removeListener('devtools-opened', this.listener);
+    remote.getCurrentWindow().webContents.removeListener('devtools-opened', this.listener);
   }
 
   async listener () {

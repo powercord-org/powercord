@@ -3,6 +3,7 @@ const { API } = require('powercord/entities');
 module.exports = class Commands extends API {
   constructor () {
     super();
+
     this.commands = [];
   }
 
