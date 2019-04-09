@@ -650,7 +650,7 @@ module.exports = class EmojiUtility extends Plugin {
             return this.replyError('Please provide an emote name');
           }
 
-          const emojis = Object.values(this.emojiStore.getGuilds()).flatMap(r => r.emojis);
+          const emojis = Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis);
 
           const foundEmojis = emojis.filter(emoji => emoji.name.toLowerCase().includes(argument));
           if (foundEmojis.length > 0) {
@@ -788,7 +788,7 @@ module.exports = class EmojiUtility extends Plugin {
             }
           }
 
-          const emoji = Object.values(this.emojiStore.getGuilds()).flatMap(r => r.emojis).find(e => e.id === matcher[2]);
+          const emoji = Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis).find(e => e.id === matcher[2]);
           if (emoji) {
             try {
               if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
