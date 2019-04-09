@@ -1,4 +1,4 @@
-.pc-games-bar {
+.powercord-games-bar {
   display: flex;
   flex-direction: row;
   position: absolute;
@@ -6,7 +6,7 @@
   left: 50%;
   transform: translateX(-50%);
 
-  .pc-game-img {
+  .powercord-game-img {
     color: #888;
     height: 16px;
     width: 16px;
@@ -17,7 +17,7 @@
     cursor: pointer;
     border-radius: 2px;
     margin-right: 0;
-	background-position: center center;
+    background-position: center center;
 
     &:hover {
       height: 36px;
@@ -34,8 +34,8 @@
     }
   }
   
-  &:last-child {
-    &svg {
+  :last-child {
+    svg {
       margin-left: 12px;
     }
     

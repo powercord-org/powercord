@@ -22,7 +22,7 @@ module.exports = class TitleBarGames extends Plugin {
 
   pluginWillUnload () {
     uninject('pc-titleBarGames');
-    const bar = document.querySelector('.pc-games-bar');
+    const bar = document.querySelector('.powercord-games-bar');
     if (bar) {
       bar.remove();
     }
@@ -37,7 +37,7 @@ module.exports = class TitleBarGames extends Plugin {
       .LAUNCHABLE_APPLICATIONS() // eslint-disable-line
       .map(({ application }) =>
         React.createElement('div', {
-          className: 'pc-game-img',
+          className: 'powercord-game-img',
           onClick: () => this.launchApplication(application),
           style: {
             backgroundImage: `url(https://cdn.discordapp.com/app-icons/${application.id}/${application.icon}.webp?size=256&keep_aspect_ratio=false)`
@@ -47,7 +47,7 @@ module.exports = class TitleBarGames extends Plugin {
 
     applications.push(
       React.createElement('div', {
-        className: `pc-game-img ${this.iconClass.linkButtonIcon}`,
+        className: `powercord-game-img ${this.iconClass.linkButtonIcon}`,
         onClick: () => this.navigator.transitionTo(Routes.APPLICATION_LIBRARY)
       }, React.createElement(this.icon, { name: 'Library' }))
     );
@@ -68,7 +68,7 @@ module.exports = class TitleBarGames extends Plugin {
 
         directTitleBar.props.children.splice(1, 0,
           React.createElement('div', {
-            className: 'pc-games-bar'
+            className: 'powercord-games-bar'
           }, ..._this.getApplications())
         );
 
@@ -76,7 +76,7 @@ module.exports = class TitleBarGames extends Plugin {
       }
     };
 
-    inject('pc-titleBarGames', instance, 'render', () =>
+    inject('powercord-titleBarGames', instance, 'render', () =>
       React.createElement(TitleBarComponent)
     );
 
