@@ -39,19 +39,10 @@ const { get } = require('powercord/http');
 const { extname, resolve } = require('path');
 const { parse } = require('url');
 
-const emojiStore = getModule([ 'getGuildEmoji' ]);
-
-const { getGuild } = getModule([ 'getGuild' ]);
-const { uploadEmoji } = getModule([ 'uploadEmoji' ]);
-const { getGuilds } = getModule([ 'getGuilds' ]);
-const { getChannel } = getModule([ 'getChannel' ]);
-const { getGuildPermissions } = getModule([ 'getGuildPermissions' ]);
-const { transitionTo } = getModule([ 'transitionTo' ]);
-const { getCurrentUser } = getModule([ 'getCurrentUser' ]);
-
 const { clipboard } = require('electron');
 
 const Settings = require('./components/Settings.jsx');
+const EmojiNameModal = require('./components/EmojiNameModal.jsx');
 
 const colors = {
   error: 0xdd2d2d,
@@ -59,6 +50,22 @@ const colors = {
 };
 
 module.exports = class EmojiUtility extends Plugin {
+  async importModule (functionName) {
+    this[functionName] = (await getModule([ functionName ]))[functionName];
+  }
+
+  async import () {
+    this.emojiStore = await getModule([ 'getGuildEmoji' ]);
+
+    await this.importModule('getGuild');
+    await this.importModule('getGuilds');
+    await this.importModule('uploadEmoji');
+    await this.importModule('getChannel');
+    await this.importModule('getGuildPermissions');
+    await this.importModule('transitionTo');
+    await this.importModule('getCurrentUser');
+  }
+
   getEmojiRegex () {
     return /^<a?:([a-zA-Z0-9_]+):([0-9]+)>$/;
   }
@@ -128,11 +135,11 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   getGuildByIdOrName (input) {
-    let guild = getGuild(input);
+    let guild = this.getGuild(input);
     if (!guild) {
       input = input.toLowerCase();
 
-      guild = Object.values(getGuilds()).find(g => g.name.toLowerCase().includes(input));
+      guild = Object.values(this.getGuilds()).find(g => g.name.toLowerCase().includes(input));
     }
 
     return guild;
@@ -145,7 +152,7 @@ module.exports = class EmojiUtility extends Plugin {
       return this.replyError('Please provide an emote');
     }
 
-    const emojis = Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis);
+    const emojis = Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis);
 
     const foundEmojis = [];
     const notFoundEmojis = [];
@@ -156,7 +163,7 @@ module.exports = class EmojiUtility extends Plugin {
         const emoji = emojis.find(e => e.id === matcher[2]);
 
         if (emoji) {
-          emoji.guild = getGuild(emoji.guildId);
+          emoji.guild = this.getGuild(emoji.guildId);
 
           foundEmojis.push(emoji);
 
@@ -182,7 +189,7 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   hasPermission (guildId, permission) {
-    const permissions = getGuildPermissions(guildId);
+    const permissions = this.getGuildPermissions(guildId);
 
     return permissions && (permissions & permission) !== 0;
   }
@@ -198,18 +205,20 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   getEmojis (guildId, animated = null) {
-    return emojiStore.getGuilds()[guildId].emojis.filter(e => animated === null || e.animated === animated);
+    return this.emojiStore.getGuilds()[guildId].emojis.filter(e => animated === null || e.animated === animated);
   }
 
   getEmojiById (id) {
-    return Object.values(emojiStore.getGuilds()).flatMap(g => g.emojis).find(e => e.id === id);
+    return Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis).find(e => e.id === id);
   }
 
   getMaxEmojiSlots (guildId) {
-    return getGuild(guildId).hasFeature(GuildFeatures.MORE_EMOJI) ? EMOJI_MAX_SLOTS_MORE : EMOJI_MAX_SLOTS;
+    return this.getGuild(guildId).hasFeature(GuildFeatures.MORE_EMOJI) ? EMOJI_MAX_SLOTS_MORE : EMOJI_MAX_SLOTS;
   }
 
   async startPlugin () {
+    await this.import();
+
     this.loadCSS(resolve(__dirname, 'style.scss'));
 
     /* Default settings */
@@ -226,9 +235,9 @@ module.exports = class EmojiUtility extends Plugin {
       const onGuildClick = async (guild) => {
         if (!guild) {
           if (this.settings.get('defaultCloneIdUseCurrent')) {
-            guild = getGuild(getChannel(getChannelId()).guild_id);
+            guild = this.getGuild(this.getChannel(getChannelId()).guild_id);
           } else if (this.settings.get('defaultCloneId')) {
-            guild = getGuild(this.settings.get('defaultCloneId'));
+            guild = this.getGuild(this.settings.get('defaultCloneId'));
             if (!guild) {
               return this.replyError('You are no longer in your default server, please update your settings');
             }
@@ -248,7 +257,7 @@ module.exports = class EmojiUtility extends Plugin {
         }
 
         try {
-          await uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
+          await this.uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
 
           this.replySuccess(`Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`);
         } catch (error) {
@@ -269,7 +278,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCloneableGuilds = () => {
         const items = [];
-        const clonableGuilds = Object.values(getGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+        const clonableGuilds = Object.values(this.getGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
 
         for (const guild of clonableGuilds) {
           items.push({
@@ -332,7 +341,7 @@ module.exports = class EmojiUtility extends Plugin {
           type: 'button',
           name: 'Go to server',
           onClick: () => {
-            transitionTo(this.getGuildRoute(emoji.guildId));
+            this.transitionTo(this.getGuildRoute(emoji.guildId));
           }
         });
       }
@@ -346,16 +355,15 @@ module.exports = class EmojiUtility extends Plugin {
       return features;
     };
 
-    const EmojiNameModal = require('./components/EmojiNameModal.jsx');
     const getCreateableFeatures = (target) => {
       const url = getOwnerInstance(target).props.href || target.src;
 
       const onGuildClick = (guild) => {
         if (!guild) {
           if (this.settings.get('defaultCloneIdUseCurrent')) {
-            guild = getGuild(getChannel(getChannelId()).guild_id);
+            guild = this.getGuild(this.getChannel(getChannelId()).guild_id);
           } else if (this.settings.get('defaultCloneId')) {
-            guild = getGuild(this.settings.get('defaultCloneId'));
+            guild = this.getGuild(this.settings.get('defaultCloneId'));
             if (!guild) {
               return this.replyError('You are no longer in your default server, please update your settings');
             }
@@ -385,7 +393,7 @@ module.exports = class EmojiUtility extends Plugin {
             }
 
             try {
-              await uploadEmoji(guild.id, await this.getImageEncoded(url), name);
+              await this.uploadEmoji(guild.id, await this.getImageEncoded(url), name);
 
               this.replySuccess(`Created emote by the name of **${name}** in **${guild.name}**`);
             } catch (error) {
@@ -410,7 +418,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCreateableGuilds = () => {
         const items = [];
-        const createableGuilds = Object.values(getGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+        const createableGuilds = Object.values(this.getGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
 
         for (const guild of createableGuilds) {
           items.push({
@@ -487,11 +495,11 @@ module.exports = class EmojiUtility extends Plugin {
 
     inject('pc-emojiUtility-imageContext', MessageContextMenu.prototype, 'render', handleImageContext);
 
-    const NativeContextMenu = getModuleByDisplayName('NativeContextMenu');
+    const NativeContextMenu = await getModuleByDisplayName('NativeContextMenu');
     inject('pc-emojiUtility-nativeContext', NativeContextMenu.prototype, 'render', handleImageContext);
 
     /* AnimatedComponent is used for reactions */
-    const AnimatedComponent = getModule([ 'createAnimatedComponent' ]).div;
+    const AnimatedComponent = (await getModule([ 'createAnimatedComponent' ])).div;
     inject('pc-emojiUtility-reactionContext', AnimatedComponent.prototype, 'render', function (args, res) {
       if (this.props.className && this.props.className.includes('pc-reaction')) {
         res.props.onContextMenu = (e) => {
@@ -526,7 +534,7 @@ module.exports = class EmojiUtility extends Plugin {
 
     injectInFluxContainer('pc-emojiUtility-hideEmojisPickerRm', 'EmojiPicker', 'removeEmotes', function () {
       const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
-      const hiddenNames = hiddenGuilds.map(id => getGuild(id).name);
+      const hiddenNames = hiddenGuilds.map(id => this.getGuild(id).name);
 
       this.setState({
         metaData: this.state.metaData.map(meta => ({
@@ -642,7 +650,7 @@ module.exports = class EmojiUtility extends Plugin {
             return this.replyError('Please provide an emote name');
           }
 
-          const emojis = Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis);
+          const emojis = Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis);
 
           const foundEmojis = emojis.filter(emoji => emoji.name.toLowerCase().includes(argument));
           if (foundEmojis.length > 0) {
@@ -654,7 +662,7 @@ module.exports = class EmojiUtility extends Plugin {
               };
             }
 
-            if (!getCurrentUser().premiumType > 0) {
+            if (!this.getCurrentUser().premiumType > 0) {
               return {
                 send: false,
                 result: `Looks like you do not have nitro, let me send that locally instead!\n${emojisAsString}`
@@ -767,9 +775,9 @@ module.exports = class EmojiUtility extends Plugin {
             }
           } else {
             if (this.settings.get('defaultCloneIdUseCurrent')) {
-              guild = getGuild(getChannel(getChannelId()).guild_id);
+              guild = this.getGuild(this.getChannel(getChannelId()).guild_id);
             } else if (this.settings.get('defaultCloneId')) {
-              guild = getGuild(this.settings.get('defaultCloneId'));
+              guild = this.getGuild(this.settings.get('defaultCloneId'));
               if (!guild) {
                 return this.replyError('You are no longer in your default clone server, please update your settings');
               }
@@ -780,7 +788,7 @@ module.exports = class EmojiUtility extends Plugin {
             }
           }
 
-          const emoji = Object.values(emojiStore.getGuilds()).flatMap(r => r.emojis).find(e => e.id === matcher[2]);
+          const emoji = Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis).find(e => e.id === matcher[2]);
           if (emoji) {
             try {
               if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
@@ -791,7 +799,7 @@ module.exports = class EmojiUtility extends Plugin {
                 return this.replyError(`**${guild.name}** does not have any more emote slots`);
               }
 
-              await uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
+              await this.uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
 
               return this.replySuccess(`Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`);
             } catch (error) {
