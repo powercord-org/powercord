@@ -8,6 +8,7 @@ const webContents = require('electron').remote.getCurrentWindow();
 
 module.exports = class TitleBarGames extends Plugin {
   async startPlugin () {
+    return this.warn('this broke and aeth is too lazy to fix it atm');
     if (process.platform !== 'win32') {
       return this.warn('Exiting due to unsupported platform.');
     }
