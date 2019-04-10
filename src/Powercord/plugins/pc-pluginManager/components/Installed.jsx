@@ -1,5 +1,5 @@
 const { React } = require('powercord/webpack');
-const { Button, Switch, Divider } = require('powercord/components');
+const { Button, Divider } = require('powercord/components');
 const { TextInput } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { asyncArray: { map } } = require('powercord/util');
@@ -20,8 +20,8 @@ module.exports = class Installed extends React.Component {
     const plugins = this._getPlugins();
 
     return <div className='powercord-plugins'>
-      <div className='powercord-plugins-wip'>This part of Powercord is a WIP. Expect unavailable features and crashes
-        here
+      <div className='powercord-plugins-wip'>
+        This part of Powercord is a WIP. Expect unavailable features and crashes here
       </div>
       <div className='powercord-plugins-header'>
         <h3>Installed plugins</h3>
@@ -36,10 +36,6 @@ module.exports = class Installed extends React.Component {
         >
           Search plugins...
         </TextInput>
-        <div className='powercord-plugins-topbar-show'>
-          <span className='powercord-title'>Show hidden plugins</span>
-          <Switch value={this.state.hidden} onChange={() => this.setState({ hidden: !this.state.hidden })}/>
-        </div>
       </div>
       <div className='powercord-plugins-container'>
         {plugins.map(plugin => <Plugin
@@ -163,12 +159,7 @@ module.exports = class Installed extends React.Component {
   }
 
   _getPlugins () {
-    let plugins = powercord.pluginManager.getPlugins();
-    if (this.state.hidden) {
-      plugins.push(...powercord.pluginManager.getHiddenPlugins());
-    }
-
-    plugins = plugins.map(p => powercord.pluginManager.plugins.get(p));
+    let plugins = powercord.pluginManager.getPlugins().map(p => powercord.pluginManager.plugins.get(p));
 
     if (this.state.search !== '') {
       const search = this.state.search.toLowerCase();
