@@ -46,15 +46,11 @@ module.exports = class Installed extends React.Component {
           id={plugin.pluginID}
           installed={true}
           enabled={powercord.pluginManager.isEnabled(plugin.pluginID)}
-          enforced={powercord.pluginManager.isEnforced(plugin.pluginID)}
           hidden={powercord.settings.get('hiddenPlugins', []).includes(plugin.pluginID)}
           manifest={plugin.manifest}
 
           onEnable={() => this.enable(plugin.pluginID)}
           onDisable={() => this.disable(plugin.pluginID)}
-
-          onShow={() => this.show(plugin.pluginID)}
-          onHide={() => this.hide(plugin.pluginID)}
 
           onUninstall={() => this.uninstall(plugin.pluginID)}
         />)}
@@ -100,16 +96,6 @@ module.exports = class Installed extends React.Component {
     }));
 
     openModal(() => this._renderInstall(pluginID, plugins, true));
-  }
-
-  show (pluginID) {
-    powercord.pluginManager.show(pluginID);
-    this.forceUpdate();
-  }
-
-  hide (pluginID) {
-    powercord.pluginManager.hide(pluginID);
-    this.forceUpdate();
   }
 
   _renderEnable (plugin, plugins, disable = false) {

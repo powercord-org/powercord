@@ -1,11 +1,13 @@
 const { shell: { openExternal } } = require('electron');
 const { React } = require('powercord/webpack');
-const { Tooltip, Switch, Button, Spinner } = require('powercord/components');
 const { REPO_URL } = require('powercord/constants');
+const {
+  Tooltip, Switch, Button, Spinner, Icons: {
+    Author, Version, Description, License, Info
+  }
+} = require('powercord/components');
 
-const { Author, Version, Description, License, Info } = require('../../../../fake_node_modules/powercord/components/Icons');
-
-module.exports = class Plugin extends React.Component {
+module.exports = class PluginManager extends React.Component {
   constructor (props) {
     super(props);
 
@@ -16,8 +18,8 @@ module.exports = class Plugin extends React.Component {
 
   render () {
     const {
-      id, enforced, installed, enabled, hidden, manifest, // Properties
-      onEnable, onDisable, onInstall, onUninstall, onShow, onHide // Events
+      id, installed, enabled, manifest, // Properties
+      onEnable, onDisable, onInstall, onUninstall // Events
     } = this.props;
     const versionInt = parseInt(manifest.version.replace(/\./g, ''));
 
@@ -25,9 +27,9 @@ module.exports = class Plugin extends React.Component {
       <div className='powercord-plugin-header'>
         <h4>{manifest.name}</h4>
         {installed &&
-        <Tooltip text={enforced ? 'You can\'t disable this plugin' : (enabled ? 'Disable' : 'Enable')} position='top'>
+        <Tooltip text={enabled ? 'Disable' : 'Enable'} position='top'>
           <div>
-            <Switch value={enabled} onChange={enabled ? onDisable : onEnable} disabled={enforced}/>
+            <Switch value={enabled} onChange={enabled ? onDisable : onEnable}/>
           </div>
         </Tooltip>}
       </div>
@@ -43,9 +45,11 @@ module.exports = class Plugin extends React.Component {
             <Version/>
           </Tooltip>
           <span>v{manifest.version}</span>
-          {versionInt < 100 && <Tooltip text='This plugin is in beta' position='top'>
+          {versionInt < 100 &&
+          <Tooltip text='This plugin is in beta' position='top'>
             <Info/>
-          </Tooltip>}
+          </Tooltip>
+          }
         </div>
         <div className='license'>
           <Tooltip text='License' position='top'>
@@ -62,7 +66,7 @@ module.exports = class Plugin extends React.Component {
       </div>
       <div className='powercord-plugin-footer'>
         <Button
-          onClick={() => openExternal(manifest.repo || `https://github.com/${REPO_URL}`)}
+          onClick={() => openExternal(`https://github.com/${REPO_URL}`)}
           look={Button.Looks.LINK}
           size={Button.Sizes.SMALL}
           color={Button.Colors.TRANSPARENT}
@@ -71,15 +75,6 @@ module.exports = class Plugin extends React.Component {
         </Button>
 
         <div className='btn-group'>
-          {this.props.installed && <Button
-            onClick={() => hidden ? onShow() : onHide()}
-            look={Button.Looks.OUTLINED}
-            color={hidden ? Button.Colors.GREEN : Button.Colors.RED}
-            size={Button.Sizes.SMALL}
-          >
-            {hidden ? 'Show' : 'Hide'}
-          </Button>}
-
           {!id.startsWith('pc-') && <Button
             disabled={this.state.installing}
             onClick={() => this.process(installed ? onUninstall : onInstall)}
