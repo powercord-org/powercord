@@ -3,7 +3,7 @@ const { createElement } = require('powercord/util');
 const chokidar = require('chokidar');
 const { render } = require('sass');
 const { existsSync } = require('fs');
-const { readdir, readFile } = require('fs').promises;
+const { readFile } = require('fs').promises;
 const { resolve, dirname } = require('path');
 
 // @todo: Install and manage themes using StyleManager
@@ -13,7 +13,6 @@ module.exports = class StyleManager extends Plugin {
 
     this.themesDir = resolve(__dirname, 'themes');
     this.discordClassNames = [];
-    this.trackedFiles = [];
   }
 
   async startPlugin () {
@@ -29,28 +28,30 @@ module.exports = class StyleManager extends Plugin {
      * this.worker.onmessage = this._handleFinishedCompiling.bind(this);
      */
 
-    // Load global css
-    this.load('Powercord-Globals', resolve(__dirname, 'styles', 'index.scss'));
-
-    // Load themes @todo: Use a manifest to get file
-    const dir = await readdir(this.themesDir);
-    for (const filename of dir) {
-      if (!filename.match(/\.s?css$/) || filename.match(/^_.*\.s?css$/)) {
-        continue;
-      }
-
-      const styleId = filename.split('.').shift();
-      const file = resolve(this.themesDir, filename);
-      const watcher = chokidar.watch(file);
-      this.trackedFiles.push({
-        id: `Theme-${styleId}`,
-        file: file.replace(/\\/g, '/'),
-        includes: [],
-        watchers: [ watcher ]
-      });
-      await this._applyStyle(`Theme-${styleId}`, file, true);
-      watcher.on('change', this.update.bind(this));
-    }
+    /*
+     * // Load global css
+     * this.load('Powercord-Globals', resolve(__dirname, 'styles', 'index.scss'));
+     *
+     * // Load themes @todo: Use a manifest to get file
+     * const dir = await readdir(this.themesDir);
+     * for (const filename of dir) {
+     * if (!filename.match(/\.s?css$/) || filename.match(/^_.*\.s?css$/)) {
+     * continue;
+     * }
+     *
+     * const styleId = filename.split('.').shift();
+     * const file = resolve(this.themesDir, filename);
+     * const watcher = chokidar.watch(file);
+     * this.trackedFiles.push({
+     * id: `Theme-${styleId}`,
+     * file: file.replace(/\\/g, '/'),
+     * includes: [],
+     * watchers: [ watcher ]
+     * });
+     * await this._applyStyle(`Theme-${styleId}`, file, true);
+     * watcher.on('change', this.update.bind(this));
+     * }
+     */
   }
 
   unload (styleId) {

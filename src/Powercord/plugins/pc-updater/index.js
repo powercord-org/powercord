@@ -40,7 +40,6 @@ module.exports = class Updater extends Plugin {
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
     clearInterval(this._interval);
   }
 

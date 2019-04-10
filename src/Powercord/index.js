@@ -4,6 +4,7 @@ const { sleep } = require('powercord/util');
 const { WEBSITE } = require('powercord/constants');
 const modules = require('./modules');
 const PluginManager = require('./managers/plugins');
+const StyleManager = require('./managers/styles');
 const APIManager = require('./managers/apis');
 
 module.exports = class Powercord extends EventEmitter {
@@ -12,6 +13,7 @@ module.exports = class Powercord extends EventEmitter {
 
     this.api = {};
     this.initialized = false;
+    this.styleManager = new StyleManager();
     this.pluginManager = new PluginManager();
     this.apiManager = new APIManager();
     this.account = null;
@@ -56,7 +58,8 @@ module.exports = class Powercord extends EventEmitter {
     await this.apiManager.startAPIs();
     this.settings = powercord.api.settings.getCategory('pc-general');
 
-    // Style Manager @todo
+    // Style Manager
+    this.styleManager.loadThemes();
 
     // Plugins
     await this.pluginManager.startPlugins();
@@ -67,11 +70,11 @@ module.exports = class Powercord extends EventEmitter {
   // Powercord shutdown
   async shutdown () {
     this.initialized = false;
-
-    // Style Manager @todo
-
     // Plugins
     await this.pluginManager.shutdownPlugins();
+
+    // Style Manager
+    this.styleManager.unloadThemes();
 
     // APIs
     await this.apiManager.unload();

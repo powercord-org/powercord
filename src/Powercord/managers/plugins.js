@@ -188,7 +188,7 @@ module.exports = class PluginManager {
 
   enable (pluginID) {
     if (!this.get(pluginID)) {
-      throw new Error(`Tried to unload a non installed plugin (${pluginID})`);
+      throw new Error(`Tried to enable a non installed plugin (${pluginID})`);
     }
 
     powercord.settings.set(
@@ -203,7 +203,7 @@ module.exports = class PluginManager {
     const plugin = this.get(pluginID);
 
     if (!plugin) {
-      throw new Error(`Tried to unload a non installed plugin (${pluginID})`);
+      throw new Error(`Tried to disable a non installed plugin (${pluginID})`);
     }
 
     powercord.settings.set('disabledPlugins', [

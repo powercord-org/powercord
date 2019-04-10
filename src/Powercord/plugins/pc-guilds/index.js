@@ -32,7 +32,6 @@ module.exports = class GuildFolders extends Plugin {
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
     uninject('pc-guilds');
     uninject('pc-guilds-add');
     uninject('pc-guilds-add-mount');

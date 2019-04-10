@@ -16,7 +16,6 @@ module.exports = class Settings extends Plugin {
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
     uninject('pc-settings-items');
     uninject('pc-settings-errorHandler');
   }

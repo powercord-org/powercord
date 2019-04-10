@@ -11,7 +11,6 @@ module.exports = class Installed extends React.Component {
     super(props);
 
     this.state = {
-      hidden: false,
       search: ''
     };
   }

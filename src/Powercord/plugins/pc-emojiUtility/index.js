@@ -815,8 +815,6 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
-
     uninject('pc-emojiUtility-emojiContext');
     uninject('pc-emojiUtility-imageContext');
     uninject('pc-emojiUtility-nativeContext');

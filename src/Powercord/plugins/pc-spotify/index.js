@@ -45,7 +45,6 @@ module.exports = class Spotify extends Plugin {
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
     this._patchAutoPause(true);
     uninject('pc-spotify-modal');
     uninject('pc-spotify-listeningAlong');

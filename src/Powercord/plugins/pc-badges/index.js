@@ -15,7 +15,6 @@ module.exports = class Badges extends Plugin {
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
     uninject('pc-badges-users');
     uninject('pc-badges-guilds-header');
   }

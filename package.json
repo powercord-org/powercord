@@ -22,11 +22,13 @@
   "homepage": "https://github.com/powercord-org/powercord#readme",
   "dependencies": {
     "buble": "0.19.6",
-    "chokidar": "^2.0.4",
-    "sass": "^1.15.1"
+    "less": "^3.9.0",
+    "node-watch": "^0.6.1",
+    "sass": "^1.18.0",
+    "stylus": "^0.54.5"
   },
   "devDependencies": {
-    "eslint": "^5.11.1",
-    "eslint-plugin-react": "^7.12.0"
+    "eslint": "^5.16.0",
+    "eslint-plugin-react": "^7.12.4"
   }
 }
