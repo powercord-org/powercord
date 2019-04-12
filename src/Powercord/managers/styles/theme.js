@@ -3,7 +3,9 @@ const { resolve, dirname } = require('path');
 const { readFile } = require('fs').promises;
 const { existsSync } = require('fs');
 const watch = require('node-watch');
-const { render } = require('sass');
+const { render: renderSCSS } = require('sass');
+const stylus = require('stylus');
+const less = require('less');
 
 const regex = /\.((s?c|le)ss|styl)$/;
 
@@ -92,10 +94,10 @@ module.exports = class Theme {
     return stylesheet;
   }
 
-  _renderSCSS (scss) {
+  _renderSCSS (rawScss) {
     return new Promise((res, rej) => {
-      render({
-        data: scss,
+      renderSCSS({
+        data: rawScss,
         includePaths: [ dirname(this.manifest.theme) ],
         importer: (url, prev) => {
           url = url.replace('file:///', '');
@@ -124,14 +126,39 @@ module.exports = class Theme {
     });
   }
 
-  _renderLess (less) {
-    // @todo
-    return less;
+  async _renderLess (rawLess) {
+    const results = await less.render(rawLess, {
+      paths: [ dirname(this.manifest.theme) ]
+    });
+
+    return {
+      data: results.css,
+      includes:  [
+        this.manifest.theme,
+        ...results.imports.filter(i => !i.startsWith('http'))
+      ]
+    };
   }
 
-  _renderStylus (stylus) {
-    // @todo
-    return stylus;
+  _renderStylus (rawStylus) {
+    return new Promise((res, rej) => {
+      const renderer = stylus(rawStylus)
+        .include(dirname(this.manifest.theme));
+
+      renderer.render((err, css) => {
+        if (err) {
+          return rej(err);
+        }
+
+        res({
+          data: css,
+          includes: [
+            this.manifest.theme,
+            ...renderer.deps()
+          ]
+        });
+      });
+    });
   }
 
   // eslint-disable-next-line no-unused-vars
