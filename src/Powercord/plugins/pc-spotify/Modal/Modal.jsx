@@ -295,6 +295,7 @@ module.exports = class Modal extends React.Component {
       </div>
     </>;
   }
+
   async injectContextMenu (e) {
     getContextMenuItemGroups = require('./contextMenuGroups'); // override reference from require cache in the event of any mods
     const { pageX, pageY } = e;
