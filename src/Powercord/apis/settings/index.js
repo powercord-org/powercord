@@ -1,10 +1,14 @@
 const { randomBytes, scryptSync, createCipheriv, createDecipheriv } = require('crypto');
 const { WEBSITE } = require('powercord/constants');
-const { getComponentByDisplayName, React } = require('powercord/webpack');
+const { getModuleByDisplayName, React } = require('powercord/webpack');
+const { AsyncComponent } = require('powercord/components');
 const { get, post } = require('powercord/http');
 const { API } = require('powercord/entities');
 
 const Category = require('./category');
+
+const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
+const FormSection = AsyncComponent.from(getModuleByDisplayName('FormSection'));
 
 module.exports = class Settings extends API {
   constructor () {
@@ -78,8 +82,8 @@ module.exports = class Settings extends API {
       panelContents = null;
     }
 
-    const h2 = React.createElement(getComponentByDisplayName('FormTitle'), { tag: 'h2' }, title);
-    return React.createElement(getComponentByDisplayName('FormSection'), {}, h2, panelContents);
+    const h2 = React.createElement(FormTitle, { tag: 'h2' }, title);
+    return React.createElement(FormSection, {}, h2, panelContents);
   }
 
   // @todo: Discord settings sync

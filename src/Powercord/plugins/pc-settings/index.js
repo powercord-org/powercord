@@ -20,9 +20,9 @@ module.exports = class Settings extends Plugin {
     uninject('pc-settings-errorHandler');
   }
 
-  patchExperiments () {
+  async patchExperiments () {
     try {
-      const experimentsModule = getModule(r => r.isDeveloper !== void 0);
+      const experimentsModule = await getModule(r => r.isDeveloper !== void 0);
       Object.defineProperty(experimentsModule, 'isDeveloper', {
         get: () => powercord.settings.get('experiments', false)
       });

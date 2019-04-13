@@ -1,10 +1,5 @@
-const webpack = require('powercord/webpack');
-const {
-  messages: { createBotMessage, receiveMessage },
-  channels: { getChannelId }
-} = webpack;
-
-const messages = webpack.getModule(webpack.moduleFilters.messages[0]);
+const { messages, channels: { getChannelId } } = require('powercord/webpack');
+const { createBotMessage, receiveMessage } = messages;
 
 module.exports = async function monkeypatchMessages () {
   messages.sendMessage = (sendMessage => async (id, message, ...params) => {

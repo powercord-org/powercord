@@ -1,7 +1,7 @@
-const { React, getModule, getComponentByDisplayName } = require('powercord/webpack');
+const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { AsyncComponent } = require('powercord/components');
 
-const Clickable = getComponentByDisplayName('Clickable');
-
+const Clickable = AsyncComponent.from(getModuleByDisplayName('Clickable'));
 let classesStore = null;
 
 const Notice = class Notice extends React.Component {

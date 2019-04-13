@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
 const { get } = require('powercord/http');
 const { sleep } = require('powercord/util');
+const Webpack = require('powercord/webpack');
 const { WEBSITE } = require('powercord/constants');
 const modules = require('./modules');
 const PluginManager = require('./managers/plugins');
@@ -29,6 +30,10 @@ module.exports = class Powercord extends EventEmitter {
 
   // Powercord initialization
   async init () {
+    // Webpack
+    await Webpack.init();
+
+    // Modules
     await Promise.all(modules.map(mdl => mdl()));
     const isOverlay = (/overlay/).test(location.pathname);
 

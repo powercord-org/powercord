@@ -1,23 +1,23 @@
 // based off of https://github.com/rauenzi/BetterDiscordAddons/blob/master/Plugins/DoNotTrack/DoNotTrack.plugin.js
 
 const { Plugin } = require('powercord/entities');
-const webpack = require('powercord/webpack');
+const { getModule } = require('powercord/webpack');
 
 module.exports = class DoNotTrack extends Plugin {
-  startPlugin () {
-    const Analytics = webpack.getModule([ 'AnalyticEventConfigs' ]);
+  async startPlugin () {
+    const Analytics = await getModule([ 'AnalyticEventConfigs' ]);
     Analytics.__oldTrack = Analytics.track;
     Analytics.track = () => void 0;
 
-    const Warning = webpack.getModule([ 'consoleWarning' ]);
+    const Warning = await getModule([ 'consoleWarning' ]);
     Warning.__oldConsoleWarning = Warning.consoleWarning;
     Warning.consoleWarning = () => void 0;
 
-    const MethodWrapper = webpack.getModule([ 'wrapMethod' ]);
+    const MethodWrapper = await getModule([ 'wrapMethod' ]);
     MethodWrapper.__oldWrapMethod = MethodWrapper.wrapMethod;
     MethodWrapper.wrapMethod = () => void 0;
 
-    const Sentry = webpack.getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ]);
+    const Sentry = await getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ]);
     Sentry.__old_breadcrumbEventHandler = Sentry._breadcrumbEventHandler;
     Sentry.__oldCaptrureBreadcrumb = Sentry.captrureBreadcrumb;
     Sentry.__old_sendProcessedPayload = Sentry._sendProcessedPayload;
@@ -32,17 +32,17 @@ module.exports = class DoNotTrack extends Plugin {
     Object.assign(window.console, Sentry._originalConsoleMethods);
   }
 
-  pluginWillUnload () {
-    const Analytics = webpack.getModule([ 'AnalyticEventConfigs' ]);
+  async pluginWillUnload () {
+    const Analytics = getModule([ 'AnalyticEventConfigs' ], false);
     Analytics.track = Analytics.__oldTrack;
 
-    const Warning = webpack.getModule([ 'consoleWarning' ]);
+    const Warning = getModule([ 'consoleWarning' ], false);
     Warning.consoleWarning = Warning.__oldConsoleWarning;
 
-    const MethodWrapper = webpack.getModule([ 'wrapMethod' ]);
+    const MethodWrapper = getModule([ 'wrapMethod' ], false);
     MethodWrapper.wrapMethod = MethodWrapper.__oldWrapMethod;
 
-    const Sentry = webpack.getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ]);
+    const Sentry = getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ], false);
     Sentry.install();
     Sentry._breadcrumbEventHandler = Sentry.__old_breadcrumbEventHandler;
     Sentry.captrureBreadcrumb = Sentry.__oldCaptrureBreadcrumb;

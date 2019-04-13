@@ -60,9 +60,9 @@ module.exports = class Spotify extends Plugin {
     }
   }
 
-  openPremiumDialog () {
+  async openPremiumDialog () {
     if (!document.querySelector('.powercord-spotify-premium')) {
-      const PremiumDialog = getModuleByDisplayName('SpotifyPremiumUpgrade');
+      const PremiumDialog = await getModuleByDisplayName('SpotifyPremiumUpgrade');
       openModal(() => React.createElement(PremiumDialog, { isPowercord: true }));
     }
   }
@@ -93,7 +93,7 @@ module.exports = class Spotify extends Plugin {
 
   async _patchAutoPause (revert) {
     if (this.settings.get('noAutoPause', true)) {
-      const mdl = getModule([ 'SpotifyResourceTypes' ]);
+      const mdl = await getModule([ 'SpotifyResourceTypes' ]);
       if (revert) {
         mdl.pause = mdl._pause;
       } else {
@@ -115,8 +115,8 @@ module.exports = class Spotify extends Plugin {
     });
   }
 
-  _patchPremiumDialog () {
-    const PremiumDialog = getModuleByDisplayName('SpotifyPremiumUpgrade');
+  async _patchPremiumDialog () {
+    const PremiumDialog = await getModuleByDisplayName('SpotifyPremiumUpgrade');
 
     inject('pc-spotify-premium', PremiumDialog.prototype, 'render', function (args, res) {
       if (this.props.isPowercord) {

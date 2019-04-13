@@ -20,15 +20,15 @@ module.exports = class GuildFolders extends Plugin {
   }
 
   async startPlugin () {
+    await this.store.init();
+
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuilds();
     // this._patchAddGuild();
     this._patchContextMenu();
 
     // Ensure new guild component is immediately displayed
-    waitFor('.pc-guilds').then(guilds =>
-      getOwnerInstance(guilds).forceUpdate()
-    );
+    getOwnerInstance(await waitFor('.pc-guilds')).forceUpdate();
   }
 
   pluginWillUnload () {
@@ -67,7 +67,7 @@ module.exports = class GuildFolders extends Plugin {
   }
 
   async _patchAddGuild () {
-    const AddGuild = getModuleByDisplayName('AddGuildModal');
+    const AddGuild = await getModuleByDisplayName('AddGuildModal');
 
     inject('pc-guilds-add-class', AddGuild.prototype, 'render', (_, res) => {
       res.props.className += ' pc-createGuildDialog';
@@ -112,8 +112,8 @@ module.exports = class GuildFolders extends Plugin {
     }
 
     this.processingMark = true;
-    const acknowledger = getModule([ 'markGuildAsRead' ]);
-    const guildStore = getModule([ 'getSortedGuilds' ]);
+    const acknowledger = await getModule([ 'markGuildAsRead' ]);
+    const guildStore = await getModule([ 'getSortedGuilds' ]);
 
     const unreads = getOwnerInstance(document.querySelector('.powercord-guilds').parentNode.parentNode.parentNode).props.unreadGuilds;
     const guilds = Object.values(guildStore.getSortedGuilds()).map(g => g.guild).filter(g => unreads[g.id]);
