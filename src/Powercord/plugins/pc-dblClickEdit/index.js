@@ -37,14 +37,16 @@ class DblClickEdit extends Plugin {
   }
 
   handleMessageEdit (channelId, messageId, content) {
-    return async () => {
-      const { startEditMessage } = await getModule([ 'editMessage' ]);
-      startEditMessage(channelId, messageId, content);
+    return async (e) => {
+      if (e.target.className && e.target.className.includes('pc-markup')) {
+        const editMessage = await getModule([ 'editMessage' ]).startEditMessage;
+        editMessage(channelId, messageId, content);
+      }
     };
   }
 
   /*
-   * DISCLAIMER: the following method was taken from .intrnl#6380's 'twitchEmotes'
+   * DISCLAIMER: the following method was taken from .intrnl#6380's 'blackboxTags'
    * plug-in - this snippet of code does not belong to me.
    */
   forceUpdate (query) {
