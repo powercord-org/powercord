@@ -49,18 +49,6 @@ module.exports = class PluginManager {
   }
 
   // Resolvers
-  async resolveDependencies (plugin, deps = []) {
-    const dependencies = await this.getDependencies(plugin);
-
-    await Promise.all(dependencies.map(async dep => {
-      if (!deps.includes(dep)) {
-        deps.push(dep);
-        deps.push(...(await this.resolveDependencies(dep, deps)));
-      }
-    }));
-    return deps.filter((d, p) => deps.indexOf(d) === p);
-  }
-
   resolveDependents (plugin, dept = []) {
     const dependents = this.getPlugins().filter(p => this.getDependenciesSync(p).includes(plugin));
     dependents.forEach(dpt => {
@@ -72,36 +60,14 @@ module.exports = class PluginManager {
     return dept.filter((d, p) => dept.indexOf(d) === p);
   }
 
-  async getDependencies (pluginID) {
-    const plugin = this.get(pluginID);
-    if (plugin) {
-      return plugin.manifest.dependencies;
-    }
-
-    const baseUrl = powercord.settings.get('backendURL', WEBSITE);
-    try {
-      return (await get(`${baseUrl}/api/plugins/${pluginID}`).then(r => r.body)).manifest.dependencies || [];
-    } catch (e) {
-      return [];
-    }
-  }
-
-  getDependenciesSync (pluginID) {
-    const plugin = this.get(pluginID);
-    if (plugin) {
-      return plugin.manifest.dependencies;
-    }
-    // Just return empty array
-    return [];
-  }
-
   // Mount/load/enable/install shit
   mount (pluginID) {
     let manifest;
     try {
       manifest = Object.assign({
         appMode: 'app',
-        dependencies: []
+        dependencies: [],
+        optionalDependencies: []
       }, require(resolve(this.pluginDir, pluginID, 'manifest.json')));
     } catch (e) {
       return console.error('%c[Powercord]', 'color: #257dd4', `Plugin ${pluginID} doesn't have a valid manifest - Skipping`);
@@ -162,6 +128,7 @@ module.exports = class PluginManager {
     this.plugins.delete(pluginID);
   }
 
+  // Load
   load (pluginID) {
     const plugin = this.get(pluginID);
     if (!plugin) {
@@ -186,6 +153,7 @@ module.exports = class PluginManager {
     plugin._unload();
   }
 
+  // Enable
   enable (pluginID) {
     if (!this.get(pluginID)) {
       throw new Error(`Tried to enable a non installed plugin (${pluginID})`);
@@ -214,6 +182,7 @@ module.exports = class PluginManager {
     this.unload(pluginID);
   }
 
+  // Install
   async install (pluginID) {
     await exec(`git clone https://github.com/powercord-org/${pluginID}`, this.pluginDir);
     this.mount(pluginID);
@@ -228,7 +197,7 @@ module.exports = class PluginManager {
     await rmdirRf(resolve(this.pluginDir, pluginID));
   }
 
-  // Start/Stop
+  // Start
   startPlugins () {
     const isOverlay = (/overlay/).test(location.pathname);
     readdirSync(this.pluginDir).sort(this._sortPlugins).forEach(filename => this.mount(filename));
@@ -262,7 +231,7 @@ module.exports = class PluginManager {
   async _bulkUnload (plugins) {
     const nextPlugins = [];
     for (const plugin of plugins) {
-      const deps = this.getDependenciesSync(plugin);
+      const deps = this.get(plugin).allDependencies;
       if (deps.filter(dep => this.get(dep) && this.get(dep).ready).length !== 0) {
         nextPlugins.push(plugin);
       } else {

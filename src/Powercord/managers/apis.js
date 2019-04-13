@@ -32,6 +32,7 @@ module.exports = class APIManager {
 
   // Start
   async startAPIs () {
+    this.apis = [];
     readdirSync(this.apiDir).forEach(filename => this.mount(filename));
     await this.load();
   }
