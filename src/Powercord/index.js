@@ -61,7 +61,7 @@ module.exports = class Powercord extends EventEmitter {
   async startup () {
     // APIs
     await this.apiManager.startAPIs();
-    this.settings = powercord.api.settings.getCategory('pc-general');
+    this.settings = powercord.api.settings.buildCategoryObject('pc-general');
 
     // Style Manager
     this.styleManager.loadThemes();

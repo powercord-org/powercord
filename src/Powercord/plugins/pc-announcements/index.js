@@ -27,14 +27,18 @@ module.exports = class Announcements extends Plugin {
         message: 'Welcome! Powercord has been successfully injected into your Discord client. Feel free to join our Discord server for announcements, support and more!',
         button: {
           text: 'Join Server',
-          onClick: () => {
+          onClick: async () => {
             this.closeNotice('pc-first-welcome');
-            if (getModule([ 'getGuilds' ]).getGuilds()[GUILD_ID]) {
-              getModule([ 'acceptInvite' ]).acceptInvite(DISCORD_INVITE, {}, () => {
-                getModule([ 'flushSelection' ]).selectGuild(GUILD_ID);
+            const { getGuilds } = await getModule([ 'getGuilds' ]);
+            const { acceptInvite } = await getModule([ 'acceptInvite' ]);
+            const { selectGuild } = await getModule([ 'flushSelection', 'selectGuild' ]);
+
+            if (getGuilds()[GUILD_ID]) {
+              acceptInvite(DISCORD_INVITE, {}, () => {
+                selectGuild(GUILD_ID);
               });
             } else {
-              getModule([ 'flushSelection' ]).selectGuild(GUILD_ID);
+              selectGuild(GUILD_ID);
             }
           }
         },

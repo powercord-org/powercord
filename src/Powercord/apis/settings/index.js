@@ -1,11 +1,12 @@
 const { randomBytes, scryptSync, createCipheriv, createDecipheriv } = require('crypto');
-const { WEBSITE } = require('powercord/constants');
-const { getModuleByDisplayName, React } = require('powercord/webpack');
+const { React, Flux, getModuleByDisplayName } = require('powercord/webpack');
 const { AsyncComponent } = require('powercord/components');
+const { WEBSITE } = require('powercord/constants');
 const { get, post } = require('powercord/http');
 const { API } = require('powercord/entities');
 
-const Category = require('./category');
+const store = require('./store');
+const actions = require('./store/actions');
 
 const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
 const FormSection = AsyncComponent.from(getModuleByDisplayName('FormSection'));
@@ -14,13 +15,15 @@ module.exports = class Settings extends API {
   constructor () {
     super();
 
-    this.settings = {};
+    this.actions = actions;
+    this.store = store;
     this.tabs = [];
   }
 
   // Classic stuff
   async startAPI () {
-    await this.download();
+    // defer download a bit
+    setTimeout(this.download.bind(this), 1500);
     this._interval = setInterval(this.upload.bind(this), 10 * 60 * 1000);
   }
 
@@ -30,7 +33,7 @@ module.exports = class Settings extends API {
   }
 
   // Categories
-  registerTab (section, displayName, render) {
+  registerTab (pluginID, section, displayName, render) {
     if (!section.match(/^[a-z0-9_-]+$/i)) {
       return this.error(`Tried to register a settings panel with an invalid ID! You can only use letters, numbers, dashes and underscores. (ID: ${section})`);
     }
@@ -42,7 +45,7 @@ module.exports = class Settings extends API {
     this.tabs.push({
       section,
       label: displayName,
-      element: this._renderSettingsPanel.bind(this, displayName, render)
+      element: Flux.connectStores([ this.store ], this._renderSettingsPanel.bind(this, displayName, render, store.getSettings(pluginID)))
     });
   }
 
@@ -50,33 +53,23 @@ module.exports = class Settings extends API {
     this.tabs = this.tabs.filter(s => s.section !== section);
   }
 
-  // Manage settings
-  getCategory (category) {
-    this._ensureCategory(category);
-    return this.settings[category];
+  buildCategoryObject (category) {
+    return {
+      get: (setting, defaultValue) => powercord.api.settings.store.getSetting(category, setting, defaultValue),
+      set: (setting, newValue) => {
+        if (newValue === void 0) {
+          return powercord.api.settings.actions.toggleSetting(category, setting);
+        }
+        powercord.api.settings.actions.updateSetting(category, setting, newValue);
+      }
+    };
   }
 
-  get (category, setting, defaultValue) {
-    this._ensureCategory(category);
-    return this.settings[category].get(setting, defaultValue);
-  }
-
-  set (category, setting, value) {
-    this._ensureCategory(category);
-    this.settings[category].set(setting, value);
-  }
-
-  _ensureCategory (category) {
-    if (!this.settings[category]) {
-      this.settings[category] = new Category(category);
-      this.settings[category]._load();
-    }
-  }
-
-  _renderSettingsPanel (title, contents) {
+  // Renderer
+  _renderSettingsPanel (title, contents, settings) {
     let panelContents;
     try {
-      panelContents = React.createElement(contents);
+      panelContents = React.createElement(contents, { settings });
     } catch (e) {
       this.error('Failed to render settings panel, check if your function returns a valid React component!');
       panelContents = null;
@@ -88,17 +81,12 @@ module.exports = class Settings extends API {
 
   // @todo: Discord settings sync
   async upload () {
-    const settings = {};
-    Object.keys(this.settings).forEach(category => {
-      settings[category] = this.settings[category].config;
-    });
-
     const passphrase = this.get('pc-general', 'passphrase', '');
     const token = this.get('pc-general', 'powercordToken');
     const baseUrl = this.get('pc-general', 'backendURL', WEBSITE);
 
     let isEncrypted = false;
-    let payload = JSON.stringify(settings);
+    let payload = JSON.stringify(this.store.settings);
 
     if (passphrase !== '') {
       // key + IV
@@ -126,9 +114,9 @@ module.exports = class Settings extends API {
   }
 
   async download () {
-    const passphrase = this.get('pc-general', 'passphrase', '');
-    const token = this.get('pc-general', 'powercordToken');
-    const baseUrl = this.get('pc-general', 'backendURL', WEBSITE);
+    const passphrase = this.store.getSetting('pc-general', 'passphrase', '');
+    const token = this.store.getSetting('pc-general', 'powercordToken');
+    const baseUrl = this.store.getSetting('pc-general', 'backendURL', WEBSITE);
 
     let { isEncrypted, payload: settings } = (await get(`${baseUrl}/api/users/@me/settings`)
       .set('Authorization', token)
@@ -150,10 +138,7 @@ module.exports = class Settings extends API {
 
     try {
       const data = JSON.parse(settings);
-      Object.keys(data).forEach(category => {
-        this._ensureCategory(category);
-        this.settings[category]._setConfig(data[category]);
-      });
+      Object.keys(data).forEach(category => actions.updateSettings(category, data[category]));
     } catch (e) {
       return console.error('%c[Powercord:SettingsManager]', 'color: #257dd4', 'Unable to sync settings!', e);
     }
