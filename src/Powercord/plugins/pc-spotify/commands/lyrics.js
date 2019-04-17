@@ -8,7 +8,7 @@ module.exports = {
 
   async func (SpotifyPlayer, [ args ]) {
     try {
-      let data = await get(`https://ksoft.derpyenterprises.org/lyrics?input=${args || SpotifyPlayer.player.item.name + SpotifyPlayer.player.item.artists[0].name}&limit=1`).then(res => res.body);
+      let data = await get(`https://ksoft.derpyenterprises.org/lyrics?input=${args || SpotifyPlayer.player.item.name + SpotifyPlayer.player.item.artists[0].name}`).then(res => res.body);
       if (!data.data[0].lyrics) {
         return {
           send: false,
