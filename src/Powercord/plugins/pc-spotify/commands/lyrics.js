@@ -3,7 +3,7 @@ const { messages, channels } = require('powercord/webpack');
 
 module.exports = {
   name: 'lyrics',
-  description: 'Send lyrics to a specific song or the current song in chat!',
+  description: 'Send lyrics to a specific song or the currently playing song in chat!',
   usage: '/lyrics <song || ???>',
 
   async func (SpotifyPlayer, [ args ]) {
