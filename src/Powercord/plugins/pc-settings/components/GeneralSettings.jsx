@@ -1,5 +1,6 @@
 const { remote } = require('electron');
 const { React } = require('powercord/webpack');
+const { WEBSITE } = require('powercord/constants');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { TextInput, SwitchItem, ButtonItem, Category } = require('powercord/components/settings');
 
@@ -18,7 +19,7 @@ module.exports = class GeneralSettings extends React.Component {
       settingsSync: get('settingsSync', false),
       openOverlayDevTools: get('openOverlayDevTools', false),
       hideToken: get('hideToken', true),
-      backendURL: get('backendURL', 'https://powercord.dev'),
+      backendURL: get('backendURL', WEBSITE),
       experiments: get('experiments', false),
       advancedSettings: get('advancedSettings', false),
       experimentalWebPlatform: get('experimentalWebPlatform'),
