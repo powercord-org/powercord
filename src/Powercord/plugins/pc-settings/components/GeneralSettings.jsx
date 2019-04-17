@@ -18,7 +18,7 @@ module.exports = class GeneralSettings extends React.Component {
       settingsSync: get('settingsSync', false),
       openOverlayDevTools: get('openOverlayDevTools', false),
       hideToken: get('hideToken', true),
-      backendURL: get('backendURL', 'https://powercord.xyz'),
+      backendURL: get('backendURL', 'https://powercord.dev'),
       experiments: get('experiments', false),
       advancedSettings: get('advancedSettings', false),
       experimentalWebPlatform: get('experimentalWebPlatform'),
