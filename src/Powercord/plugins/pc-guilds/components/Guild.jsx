@@ -79,9 +79,7 @@ const Guild = class Guild extends React.PureComponent {
   }
 
   handleContextMenu (e) {
-    console.log('memes?');
     const GuildContextMenu = getModuleByDisplayName('GuildContextMenu');
-    console.log(GuildContextMenu);
 
     contextMenu.openContextMenu(e, (props) =>
       React.createElement(GuildContextMenu, {
