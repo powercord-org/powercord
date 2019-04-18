@@ -1,6 +1,6 @@
 const { Plugin } = require('powercord/entities');
 const { camelCaseify, sleep } = require('powercord/util');
-const { instance, getModuleByDisplayName } = require('powercord/webpack');
+const { instance, getModuleByDisplayName, getModule } = require('powercord/webpack');
 
 // Based on BBD normalizer
 module.exports = class ClassNameNormalizer extends Plugin {
@@ -14,6 +14,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
 
   async startPlugin () {
     await sleep(2000); // bowserware:tm:
+    this.layerContainer = (await getModule([ 'layerContainer' ])).layerContainer; // aethware:tm:
     this.patchModules(this._fetchAllModules());
     this.normalizeElement(document.querySelector('#app-mount'));
 
@@ -51,6 +52,19 @@ module.exports = class ClassNameNormalizer extends Plugin {
         } // Shouldn't ever happen since they passed the moduleFilter, but you never know
 
         const camelCase = camelCaseify(match);
+
+        /**
+         * for some reason, layerContainer(-yqaFcK) being normalized
+         * causes Discord's internal getParentLayerContainer call to shit itself
+         * despite it calling classList.contains instead of a strict equality check.
+         * meaning normalizing it SHOULD be fine, but clearly it's not,
+         * which is why we have the condition below
+         * @todo figure out why Discord's call doesn't like this class to be normalized
+         */
+        if (classNames[baseClassName].includes(this.layerContainer)) {
+          continue;
+        }
+
         // noinspection JSUnfilteredForInLoop
         classNames[baseClassName] += ` pc-${camelCase}`;
       }

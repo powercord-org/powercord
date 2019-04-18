@@ -45,6 +45,7 @@ const Guild = class Guild extends React.PureComponent {
     return <Draggable draggableId={this.props.guild.id} index={this.props.index}>
       {(provided) => (
         <div
+          onContextMenu={this.handleContextMenu.bind(this)}
           className={`${this.guildClassName} pc-guild`}
           ref={(r) => {
             provided.innerRef(r);
@@ -54,7 +55,7 @@ const Guild = class Guild extends React.PureComponent {
           {...provided.dragHandleProps}
         >
           <Tooltip text={this.props.guild.name} position='right'>
-            <div className={`${this.wrapperClass} pc-guildInner`} onContextMenu={this.handleContextMenu.bind(this)}>
+            <div className={`${this.wrapperClass} pc-guildInner`}>
               {/* <div className={`${this.guildClasses.guildInner}`} onContextMenu={this.handleContextMenu.bind(this)}> */}
               <Link aria-label={this.props.guild.id} to={link}>
                 <div
