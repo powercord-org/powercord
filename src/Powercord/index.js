@@ -1,10 +1,12 @@
+const { shell: { openExternal } } = require('electron');
 const EventEmitter = require('events');
 const { get } = require('powercord/http');
 const { sleep } = require('powercord/util');
 const { WEBSITE } = require('powercord/constants');
-const modules = require('./modules');
+
 const PluginManager = require('./managers/plugins');
 const APIManager = require('./managers/apis');
+const modules = require('./modules');
 
 module.exports = class Powercord extends EventEmitter {
   constructor () {
@@ -111,6 +113,28 @@ module.exports = class Powercord extends EventEmitter {
         .catch(e => e);
 
       if (resp.statusCode === 401) {
+        if (!resp.body.error && resp.body.error !== 'DISCORD_REVOKED') {
+          const announcements = powercord.pluginManager.get('pc-announcements');
+          if (announcements) {
+            // even if the plugin is not ready yet, we can perform actions
+            announcements.sendNotice({
+              id: 'pc-account-discord-unlinked',
+              type: announcements.Notice.TYPES.RED,
+              message: 'Your Powercord account is no longer linked to your Discord account! Some integration will be disabled.',
+              button: {
+                text: 'Link it back',
+                onClick: () => {
+                  announcements.closeNotice('pc-account-discord-unlinked');
+                  openExternal(`${WEBSITE}/oauth/discord`);
+                }
+              },
+              alwaysDisplay: true
+            });
+          }
+
+          this.isLinking = false;
+          return; // keep token stored
+        }
         this.settings.set('powercordToken', null);
         this.account = null;
         this.isLinking = false;
