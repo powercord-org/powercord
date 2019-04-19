@@ -10,47 +10,35 @@ const Account = require('./PowercordAccount');
 module.exports = class GeneralSettings extends React.Component {
   constructor () {
     super();
-
-    const get = powercord.settings.get.bind(powercord.settings);
-
-    this.state = {
-      cleaning: false,
-      prefix: get('prefix', '.'),
-      settingsSync: get('settingsSync', false),
-      openOverlayDevTools: get('openOverlayDevTools', false),
-      hideToken: get('hideToken', true),
-      backendURL: get('backendURL', WEBSITE),
-      experiments: get('experiments', false),
-      advancedSettings: get('advancedSettings', false),
-      experimentalWebPlatform: get('experimentalWebPlatform'),
-      transparentWindow: get('transparentWindow')
-    };
+    this.state = { cleaning: false };
   }
 
   render () {
-    const settings = this.state;
+    const { getSetting, toggleSetting, updateSetting } = this.props;
 
     return (
       <div>
-        <Account passphrase={this.passphrase.bind(this)} onAccount={() => this.forceUpdate()}/>
+        <Account
+          passphrase={this.passphrase.bind(this)}
+          onAccount={() => this.forceUpdate()}
+        />
 
         <TextInput
-          defaultValue={settings.prefix}
-          required={true}
-          onChange={e => this._set('prefix', e, '.')}
+          defaultValue={getSetting('prefix', '.')}
+          onChange={p => updateSetting('prefix', !p ? '.' : p)}
         >
           Command Prefix
         </TextInput>
 
         <SwitchItem
           note='Sync all of your Powercord settings across devices. Requires a Powercord account!'
-          value={powercord.account && settings.settingsSync}
+          value={powercord.account && getSetting('settingsSync', false)}
           disabled={!powercord.account}
           onChange={() => {
-            if (!settings.settingsSync) {
+            if (!getSetting('settingsSync', false)) {
               this.passphrase(true);
             } else {
-              this._set('settingsSync');
+              toggleSetting('settingsSync');
             }
           }}
         >
@@ -62,13 +50,12 @@ module.exports = class GeneralSettings extends React.Component {
           description={
             <span>Exercise caution changing anything in this category if you don't know what you're doing. <b>Seriously.</b></span>
           }
-          opened={settings.advancedSettings}
-          onChange={() => this._set('advancedSettings')}
+          opened={getSetting('advancedSettings', false)}
+          onChange={() => toggleSetting('advancedSettings')}
         >
           <TextInput
-            value={settings.backendURL}
-            required={true}
-            onChange={(e) => this._set('backendURL', e, 'https://powercord.xyz')}
+            value={getSetting('backendURL', WEBSITE)}
+            onChange={p => updateSetting('backendURL', !p ? WEBSITE : p)}
             note='URL used for Spotify linking, plugin management and other internal functions.'
           >
             Backend URL
@@ -76,16 +63,16 @@ module.exports = class GeneralSettings extends React.Component {
 
           <SwitchItem
             note='Should Powercord open overlay devtools when it gets injected? (useful for developing themes)'
-            value={settings.openOverlayDevTools}
-            onChange={() => this._set('openOverlayDevTools')}
+            value={getSetting('openOverlayDevTools', false)}
+            onChange={() => toggleSetting('openOverlayDevTools')}
           >
             Overlay DevTools
           </SwitchItem>
 
           <SwitchItem
             note='Prevents Discord from removing your token from localStorage, reducing the numbers of unwanted logouts.'
-            value={settings.hideToken}
-            onChange={() => this._set('hideToken')}
+            value={getSetting('hideToken', true)}
+            onChange={() => toggleSetting('hideToken')}
           >
             Keep token stored
           </SwitchItem>
@@ -96,9 +83,9 @@ module.exports = class GeneralSettings extends React.Component {
                 style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> This will break <b>window snapping</b> on Windows. <b>Hardware acceleration</b> must be turned <b>off</b> on Linux.
                 You may encounter issues and have black background in some cases, like when the window is cut off at the top or the bottom due to monitor resolution or when devtools are open and docked. <b>Requires restart</b>.</span>
             }
-            value={settings.transparentWindow}
+            value={getSetting('transparentWindow', false)}
             onChange={() => {
-              this._set('transparentWindow');
+              toggleSetting('transparentWindow');
               this.askRestart();
             }}
           >
@@ -108,9 +95,9 @@ module.exports = class GeneralSettings extends React.Component {
           <SwitchItem
             note={
               <span>Enables Chromium's experimental Web Platform features that are in development, such as CSS <code>backdrop-filter</code>. Since features are in development you may encounter issues and APIs may change at any time. <b>Requires restart</b>.</span>}
-            value={settings.experimentalWebPlatform}
+            value={getSetting('experimentalWebPlatform', false)}
             onChange={() => {
-              this._set('experimentalWebPlatform');
+              toggleSetting('experimentalWebPlatform');
               this.askRestart();
             }}
           >
@@ -123,8 +110,8 @@ module.exports = class GeneralSettings extends React.Component {
                 style={{ color: 'rgb(240, 71, 71)' }}>account termination</b>.
                   Powercord is <b>not responsible</b> for what you do with this feature. Leave it disabled if you are unsure. The Powercord Team will not provide any support regarding any experiment.</span>
             }
-            value={settings.experiments}
-            onChange={() => this._set('experiments')}
+            value={getSetting('experiments', false)}
+            onChange={() => toggleSetting('experiments')}
           >
             Enable Discord Experiments
           </SwitchItem>
@@ -145,30 +132,19 @@ module.exports = class GeneralSettings extends React.Component {
   passphrase (updateSync = false) {
     openModal(() => <PassphraseModal
       onConfirm={(passphrase) => {
-        powercord.settings.set('passphrase', passphrase);
+        this.props.updateSetting('passphrase', passphrase);
         closeModal();
         if (updateSync) {
-          this._set('settingsSync');
+          this.props.toggleSetting('settingsSync');
         }
       }}
       onCancel={() => {
         closeModal();
         if (updateSync) {
-          this._set('settingsSync');
+          this.props.toggleSetting('settingsSync');
         }
       }}
     />);
-  }
-
-  _set (key, value = !this.state[key], defaultValue) {
-    if (!value && defaultValue) {
-      value = defaultValue;
-    }
-
-    powercord.settings.set(key, value);
-    this.setState({
-      [key]: value
-    });
   }
 
   clearCache () {

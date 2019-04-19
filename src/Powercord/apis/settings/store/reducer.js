@@ -4,7 +4,6 @@ const { SETTINGS_FOLDER, FluxActions: { Settings: ActionTypes } } = require('pow
 module.exports = function () {
   return {
     [ActionTypes.LOAD_SETTINGS]: ({ category }) => {
-      console.log(category);
       let settings = {};
       try {
         settings = require(join(SETTINGS_FOLDER, `${category}.json`));
@@ -25,21 +24,23 @@ module.exports = function () {
     },
 
     [ActionTypes.TOGGLE_SETTING]: ({ category, setting }) => {
+      const settings = this.settings[category] || {};
       this.settings = {
         ...this.settings,
         [category]: {
-          ...this.settings[category],
-          [setting]: !this.settings[category][setting]
+          ...settings,
+          [setting]: !settings[setting]
         }
       };
       this._persist(category);
     },
 
     [ActionTypes.UPDATE_SETTING]: ({ category, setting, value }) => {
+      const settings = this.settings[category] || {};
       this.settings = {
         ...this.settings,
         [category]: {
-          ...this.settings[category],
+          ...settings,
           [setting]: value
         }
       };

@@ -22,12 +22,7 @@ module.exports = class Updater extends Plugin {
 
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
-
-    this.registerSettings('pc-updater', 'Updater', () =>
-      React.createElement(Settings, {
-        settings: this.settings
-      })
-    );
+    this.registerSettings('pc-updater', 'Updater', Settings);
 
     let minutes = Number(this.settings.get('interval', 15));
     if (minutes < 1) {

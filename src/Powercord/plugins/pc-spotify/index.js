@@ -32,10 +32,10 @@ module.exports = class Spotify extends Plugin {
       }
     });
 
-    this.registerSettings('pc-spotify', 'Spotify', () =>
+    this.registerSettings('pc-spotify', 'Spotify', (props) =>
       React.createElement(Settings, {
-        settings: this.settings,
-        patch: this._patchAutoPause.bind(this)
+        patch: this._patchAutoPause.bind(this),
+        ...props
       })
     );
 
@@ -76,13 +76,13 @@ module.exports = class Spotify extends Plugin {
   }
 
   async _injectModal () {
-    const modal = React.createElement(Modal, { main: this });
-    await injectInFluxContainer('pc-spotify-modal', 'Account', 'render', (args, res) => [ modal, res ]);
+    const modal = React.createElement(this.settings.connectStore(Modal), { main: this });
+    await injectInFluxContainer('pc-spotify-modal', 'Account', 'render', (_, res) => [ modal, res ]);
     getOwnerInstance(document.querySelector('.container-2Thooq')).forceUpdate();
   }
 
   async _injectListeningAlong () {
-    await injectInFluxContainer('pc-spotify-listeningAlong', 'ListeningAlong', 'render', (args, res) => {
+    await injectInFluxContainer('pc-spotify-listeningAlong', 'ListeningAlong', 'render', (_, res) => {
       this._listeningAlongComponent = res;
       if (this._forceUpdate) {
         this._forceUpdate();

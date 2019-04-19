@@ -33,7 +33,7 @@ module.exports = class Settings extends API {
   }
 
   // Categories
-  registerTab (pluginID, section, displayName, render) {
+  registerTab (pluginID, section, displayName, render, connectStore = false) {
     if (!section.match(/^[a-z0-9_-]+$/i)) {
       return this.error(`Tried to register a settings panel with an invalid ID! You can only use letters, numbers, dashes and underscores. (ID: ${section})`);
     }
@@ -45,7 +45,7 @@ module.exports = class Settings extends API {
     this.tabs.push({
       section,
       label: displayName,
-      element: Flux.connectStores([ this.store ], this._renderSettingsPanel.bind(this, displayName, render, store.getSettings(pluginID)))
+      element: this._renderSettingsPanel.bind(this, displayName, connectStore ? this._connectStores(pluginID)(render) : render)
     });
   }
 
@@ -55,6 +55,7 @@ module.exports = class Settings extends API {
 
   buildCategoryObject (category) {
     return {
+      connectStore: (component) => this._connectStores(category)(component),
       get: (setting, defaultValue) => powercord.api.settings.store.getSetting(category, setting, defaultValue),
       set: (setting, newValue) => {
         if (newValue === void 0) {
@@ -65,11 +66,20 @@ module.exports = class Settings extends API {
     };
   }
 
-  // Renderer
-  _renderSettingsPanel (title, contents, settings) {
+  // React + Redux
+  _connectStores (category) {
+    return Flux.connectStores([ this.store ], () => ({
+      settings: this.store.getSettings(category),
+      getSetting: (setting, defaultValue) => this.store.getSetting(category, setting, defaultValue),
+      updateSetting: (setting, value) => this.actions.updateSetting(category, setting, value),
+      toggleSetting: (setting) => this.actions.toggleSetting(category, setting)
+    }));
+  }
+
+  _renderSettingsPanel (title, contents) {
     let panelContents;
     try {
-      panelContents = React.createElement(contents, { settings });
+      panelContents = React.createElement(contents);
     } catch (e) {
       this.error('Failed to render settings panel, check if your function returns a valid React component!');
       panelContents = null;

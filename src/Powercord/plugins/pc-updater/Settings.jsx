@@ -3,36 +3,19 @@ const { Button } = require('powercord/components');
 const { TextInput, SwitchItem } = require('powercord/components/settings');
 
 module.exports = class UpdaterSettings extends React.Component {
-  constructor (props) {
+  constructor () {
     super();
-
     this.plugin = powercord.pluginManager.get('pc-updater');
-    this.settings = props.settings;
-    this.state = {
-      checkForUpdates: props.settings.get('checkForUpdates', true),
-      interval: props.settings.get('interval', 15)
-    };
   }
 
   render () {
-    const settings = this.state;
+    const { getSetting, toggleSetting, updateSetting } = this.props;
 
-    const set = (key, value = !settings[key], defaultValue) => {
-      if (!value && defaultValue) {
-        value = defaultValue;
-      }
-
-      this.settings.set(key, value);
-      this.setState({
-        [key]: value
-      });
-    };
-
-    return <>
+    return <div>
       <SwitchItem
         note='Whether Powercord should check for updates.'
-        value={settings.checkForUpdates}
-        onChange={() => set('checkForUpdates')}
+        value={getSetting('checkForUpdates', true)}
+        onChange={() => toggleSetting('checkForUpdates')}
       >
         Check for Updates
         <Button disabled={this.plugin.checking} onClick={() => {
@@ -43,12 +26,12 @@ module.exports = class UpdaterSettings extends React.Component {
 
       <TextInput
         note='How frequently Powercord checks for updates (in minutes).'
-        defaultValue={settings.interval}
+        defaultValue={getSetting('interval', 15)}
         required={true}
-        onChange={val => set('interval', (Number(val) && Number(val) >= 1) ? Number(val) : 1, 15)}
+        onChange={val => updateSetting('interval', (Number(val) && Number(val) >= 1) ? Number(val) : 1, 15)}
       >
         Interval
       </TextInput>
-    </>;
+    </div>;
   }
 };

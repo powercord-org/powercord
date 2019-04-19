@@ -8,7 +8,7 @@ const GeneralSettings = require('./components/GeneralSettings.jsx');
 
 module.exports = class Settings extends Plugin {
   startPlugin () {
-    this.registerSettings('pc-general', 'General Settings', GeneralSettings);
+    this.registerSettings('pc-general', 'General Settings', powercord.settings.connectStore(GeneralSettings), false);
 
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this.patchSettingsComponent();

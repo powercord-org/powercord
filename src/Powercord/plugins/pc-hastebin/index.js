@@ -1,17 +1,12 @@
 const { Plugin } = require('powercord/entities');
 const { get, post } = require('powercord/http');
 const { clipboard } = require('electron');
-const { React } = require('powercord/webpack');
 
 const Settings = require('./Settings.jsx');
 
 module.exports = class Hastebin extends Plugin {
   startPlugin () {
-    this.registerSettings('pc-hastebin', 'Hastebin', () =>
-      React.createElement(Settings, {
-        settings: this.settings
-      })
-    );
+    this.registerSettings('pc-hastebin', 'Hastebin', Settings);
 
     const domain = this.settings.get('domain', 'https://haste.aetheryx.xyz');
     this.registerCommand(

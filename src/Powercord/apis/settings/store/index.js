@@ -34,7 +34,6 @@ class SettingsStore extends Flux.Store {
   }
 
   async _persist (category) {
-    console.log(category);
     if (!existsSync(SETTINGS_FOLDER)) {
       await mkdir(SETTINGS_FOLDER);
     }

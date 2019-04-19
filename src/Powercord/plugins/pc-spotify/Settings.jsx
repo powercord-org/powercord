@@ -1,58 +1,25 @@
 const { React } = require('powercord/webpack');
-const { getOwnerInstance } = require('powercord/util');
 const { SwitchItem } = require('powercord/components/settings');
 
-module.exports = class Settings extends React.Component {
-  constructor (props) {
-    super(props);
+module.exports = ({ getSetting, toggleSetting, patch }) => (
+  <div>
+    <SwitchItem
+      note='Adds shuffle, repeat and other controls to the Spotify modal. Increases the height if enabled, if not these controls are available in the context menu.'
+      value={getSetting('showControls', true)}
+      onChange={() => toggleSetting('showControls')}
+    >
+      Show advanced controls
+    </SwitchItem>
 
-    const get = props.settings.get.bind(props.settings);
-
-    this.state = {
-      showControls: get('showControls', true),
-      noAutoPause: get('noAutoPause', true)
-    };
-  }
-
-  render () {
-    const { showControls, noAutoPause } = this.state;
-
-    return (
-      <div>
-        <SwitchItem
-          note='Adds shuffle, repeat and other controls to the Spotify modal. Increases the height if enabled, if not these controls are available in the context menu.'
-          value={showControls}
-          onChange={() => {
-            this._set('showControls');
-            const el = document.querySelector('#powercord-spotify-modal');
-            if (el) {
-              getOwnerInstance(el).forceUpdate();
-            }
-          }}
-        >
-          Show advanced controls
-        </SwitchItem>
-
-        <SwitchItem
-          note={'Prevents Discord from automatically pausing Spotify playback if you\'re sending voice for more than 30 seconds.'}
-          value={noAutoPause}
-          onChange={() => {
-            this.props.patch(noAutoPause);
-            this._set('noAutoPause');
-          }}
-        >
-          No auto pause
-        </SwitchItem>
-      </div>
-    );
-  }
-
-  _set (key, value = !this.state[key], defaultValue) {
-    if (!value && defaultValue) {
-      value = defaultValue;
-    }
-
-    this.props.settings.set(key, value);
-    this.setState({ [key]: value });
-  }
-};
+    <SwitchItem
+      note={'Prevents Discord from automatically pausing Spotify playback if you\'re sending voice for more than 30 seconds.'}
+      value={getSetting('noAutoPause', true)}
+      onChange={() => {
+        patch(getSetting('noAutoPause', true));
+        toggleSetting('noAutoPause');
+      }}
+    >
+      No auto pause
+    </SwitchItem>
+  </div>
+);
