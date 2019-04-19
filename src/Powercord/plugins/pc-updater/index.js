@@ -8,7 +8,7 @@ const { promisify } = require('util');
 const cp = require('child_process');
 const exec = promisify(cp.exec);
 
-const Settings = require('./Settings.jsx');
+const Settings = require('./components/Settings.jsx');
 
 module.exports = class Updater extends Plugin {
   constructor () {
