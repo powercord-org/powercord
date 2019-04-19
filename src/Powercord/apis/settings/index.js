@@ -84,6 +84,10 @@ module.exports = class Settings extends API {
 
   // @todo: Discord settings sync
   async upload () {
+    if (!powercord.account || !this.settings['pc-general'].get('settingsSync', false)) {
+      return;
+    }
+
     const settings = {};
     Object.keys(this.settings).forEach(category => {
       settings[category] = this.settings[category].config;
@@ -122,6 +126,10 @@ module.exports = class Settings extends API {
   }
 
   async download () {
+    if (!powercord.account || !this.settings['pc-general'].get('settingsSync', false)) {
+      return;
+    }
+
     const passphrase = this.get('pc-general', 'passphrase', '');
     const token = this.get('pc-general', 'powercordToken');
     const baseUrl = this.get('pc-general', 'backendURL', WEBSITE);
