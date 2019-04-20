@@ -58,7 +58,7 @@ module.exports = class GuildFolders extends Plugin {
 
     const DGuilds = await getModuleByDisplayName('Guilds');
     inject('pc-guilds', DGuilds.prototype, 'render', function (_, res) {
-      res.props.children[1].props.children[5] = React.createElement(Guilds, Object.assign({}, this.props, {
+      res.props.children[1].props.children[4] = React.createElement(Guilds, Object.assign({}, this.props, {
         setRef: (key, e) => this.guildRefs[key] = e,
         settings: _this.settings,
         store: _this.store
