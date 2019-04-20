@@ -33,7 +33,7 @@ module.exports = class Settings extends API {
   }
 
   // Categories
-  registerTab (pluginID, section, displayName, render, connectStore = false) {
+  registerTab (pluginID, section, displayName, render, connectStore = true) {
     if (!section.match(/^[a-z0-9_-]+$/i)) {
       return this.error(`Tried to register a settings panel with an invalid ID! You can only use letters, numbers, dashes and underscores. (ID: ${section})`);
     }
