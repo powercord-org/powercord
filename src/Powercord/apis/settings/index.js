@@ -91,7 +91,7 @@ module.exports = class Settings extends API {
 
   // @todo: Discord settings sync
   async upload () {
-    if (!powercord.account || !this.settings['pc-general'].get('settingsSync', false)) {
+    if (!powercord.account || !this.store.settings['pc-general'].get('settingsSync', false)) {
       return;
     }
 
@@ -128,7 +128,7 @@ module.exports = class Settings extends API {
   }
 
   async download () {
-    if (!powercord.account || !this.settings['pc-general'].get('settingsSync', false)) {
+    if (!powercord.account || !this.store.settings['pc-general'].get('settingsSync', false)) {
       return;
     }
 
