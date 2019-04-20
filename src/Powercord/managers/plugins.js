@@ -222,7 +222,7 @@ module.exports = class PluginManager {
   }
 
   _sortPlugins (pluginA, pluginB) {
-    const priority = [ 'pc-settings', 'pc-pluginManager', 'pc-updater' ].reverse();
+    const priority = [ 'pc-classNameNormalizer', 'pc-commands', 'pc-settings', 'pc-pluginManager', 'pc-updater' ].reverse();
     const priorityA = priority.indexOf(pluginA);
     const priorityB = priority.indexOf(pluginB);
     return (priorityA === priorityB ? 0 : (priorityA < priorityB ? 1 : -1));
