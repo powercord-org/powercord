@@ -8,7 +8,6 @@ const webContents = require('electron').remote.getCurrentWindow();
 
 module.exports = class TitleBarGames extends Plugin {
   async startPlugin () {
-    return this.warn('this broke and aeth is too lazy to fix it atm');
     if (process.platform !== 'win32') {
       return this.warn('Exiting due to unsupported platform.');
     }
@@ -65,7 +64,7 @@ module.exports = class TitleBarGames extends Plugin {
     const DirectTitleBarComponent = instance._reactInternalFiber.child.child.type;
     const TitleBarComponent = class PatchedTitleBarComponent extends React.Component {
       render () {
-        const directTitleBar = new DirectTitleBarComponent();
+        const directTitleBar = new DirectTitleBarComponent({});
 
         directTitleBar.props.children.splice(1, 0,
           React.createElement('div', {
