@@ -26,7 +26,7 @@ class ClickableEdits extends Plugin {
     const messageQuery = `.${messageClasses.message.replace(/ /g, '.')}`;
 
     const instance = getOwnerInstance(await waitFor(messageQuery));
-    const currentUser = await getModule([ 'getCurrentUser' ]).getCurrentUser();
+    const currentUser = (await getModule([ 'getCurrentUser' ])).getCurrentUser();
 
     function renderMessage (_, res) {
       const { message, channel } = this.props;
@@ -49,11 +49,21 @@ class ClickableEdits extends Plugin {
         e.button === (this.settings.get('rightClickEdits', false)
           ? 2
           : 0) && e.detail === 1;
+      const doubleClick = e.button === (this.settings.get('rightClickEdits', false) ? 2 : 0) &&
+        e.detail > 1;
 
-      if (this.settings.get('useShiftKey', false) ? shiftKey : e.button === (this.settings.get('rightClickEdits', false) ? 2 : 0) && e.detail > 1) {
+      let args = [ channelId, messageId, this.settings.get('clearContent', false) ? '' : content ];
+
+      const dualControl = (this.settings.get('dualControlEdits', false) && shiftKey
+        ? args = [ channelId, messageId, '' ]
+        : doubleClick
+          ? args = [ channelId, messageId, content ]
+          : false);
+
+      if (this.settings.get('dualControlEdits', false) ? dualControl : this.settings.get('useShiftKey', false) ? shiftKey : doubleClick) {
         if (e.target.className && e.target.className.includes('pc-markup')) {
-          const editMessage = await getModule([ 'editMessage' ]).startEditMessage;
-          editMessage(channelId, messageId, this.settings.get('clearContent', false) ? '' : content);
+          const editMessage = (await getModule([ 'editMessage' ])).startEditMessage;
+          editMessage(args[0], args[1], args[2]);
 
           setTimeout(() => {
             const elem = document.getElementsByClassName('pc-textAreaEdit')[0];
