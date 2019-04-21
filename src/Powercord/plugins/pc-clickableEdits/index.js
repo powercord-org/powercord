@@ -49,8 +49,9 @@ class ClickableEdits extends Plugin {
         e.button === (this.settings.get('rightClickEdits', false)
           ? 2
           : 0) && e.detail === 1;
-      const doubleClick = e.button === (this.settings.get('rightClickEdits', false) ? 2 : 0) &&
-        e.detail > 1;
+      const doubleClick = e.button === (this.settings.get('rightClickEdits', false)
+        ? 2
+        : 0) && e.detail > 1;
 
       let args = [ channelId, messageId, this.settings.get('clearContent', false) ? '' : content ];
 
