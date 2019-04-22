@@ -2,26 +2,61 @@ const { existsSync, lstatSync } = require('fs');
 const { React, getModule } = require('powercord/webpack');
 const { SwitchItem, TextInput, Category } = require('powercord/components/settings');
 
-const { getGuild } = getModule([ 'getGuild' ]);
-const { getSortedGuilds } = getModule([ 'getSortedGuilds' ]);
+let getGuild, getSortedGuilds;
 
 module.exports = class EmojiUtilitySettings extends React.Component {
   constructor (props) {
     super();
 
     this.settings = props.settings;
-    this.state = Object.assign({
-      isFilePathValid: props.settings.get('filePath') ? existsSync(props.settings.get('filePath')) : true,
-      initialFilePathValue: props.settings.get('filePath') || null,
 
-      isCloneIdValid: props.settings.get('defaultCloneId') ? getGuild(props.settings.get('defaultCloneId')) : true,
-      initialCloneIdValue: props.settings.get('defaultCloneId') || null,
+    if (getGuild && getSortedGuilds) {
+      this._setState(false);
+    }
+  }
 
-      hiddenGuilds: props.settings.get('hiddenGuilds', [])
-    }, this.settings.config);
+  _setState (update = true) {
+    const state = {
+      useEmbeds: this.settings.get('useEmbeds', false),
+      displayLink: this.settings.get('displayLink', true),
+
+      includeIdForSavedEmojis: this.settings.get('includeIdForSavedEmojis', true),
+
+      filePath: this.settings.get('filePath', null),
+
+      defaultCloneId: this.settings.get('defaultCloneId', null),
+      defaultCloneIdUseCurrent: this.settings.get('defaultCloneIdUseCurrent', false),
+
+      hiddenGuilds: this.settings.get('hiddenGuilds', [])
+    };
+
+    state.isFilePathValid = state.filePath ? existsSync(state.filePath) : true;
+    state.initialFilePathValue = state.filePath;
+
+    state.isCloneIdValid = state.defaultCloneId ? !!getGuild(state.defaultCloneId) : true;
+    state.initialCloneIdValue = state.defaultCloneId;
+
+    if (update) {
+      this.setState(state);
+    } else {
+      this.state = state;
+    }
+  }
+
+  async componentDidMount () {
+    if (!(getGuild && getSortedGuilds)) {
+      ({ getGuild } = await getModule([ 'getGuild' ]));
+      ({ getSortedGuilds } = await getModule([ 'getSortedGuilds' ]));
+
+      this._setState();
+    }
   }
 
   render () {
+    if (!(getGuild && getSortedGuilds)) {
+      return null;
+    }
+
     const settings = this.state;
 
     return (

@@ -4,11 +4,7 @@ const {
   getModuleByDisplayName,
   getModule,
   React,
-  contextMenu,
-  channels: {
-    getSelectedChannelState,
-    getChannelId
-  },
+  /* contextMenu, */
   constants: {
     Routes,
     GuildFeatures,
@@ -18,16 +14,12 @@ const {
     EMOJI_MAX_LENGTH,
     EMOJI_MAX_SLOTS,
     EMOJI_MAX_SLOTS_MORE
-  },
-  messages: {
-    createBotMessage,
-    receiveMessage
   }
 } = require('powercord/webpack');
 
-const { CDN_HOST } = window.GLOBAL_ENV;
+/* const { CDN_HOST } = window.GLOBAL_ENV; */
 
-const { ContextMenu, ContextMenu: { Submenu } } = require('powercord/components');
+const { /* ContextMenu, */ ContextMenu: { Submenu } } = require('powercord/components');
 const { getOwnerInstance } = require('powercord/util');
 const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
 const { open: openModal } = require('powercord/modal');
@@ -50,20 +42,28 @@ const colors = {
 };
 
 module.exports = class EmojiUtility extends Plugin {
-  async importModule (functionName) {
-    this[functionName] = (await getModule([ functionName ]))[functionName];
+  async import (filter, functionName = filter) {
+    if (typeof filter === 'string') {
+      filter = [ filter ];
+    }
+
+    this[functionName] = (await getModule(filter))[functionName];
   }
 
-  async import () {
+  async doImport () {
     this.emojiStore = await getModule([ 'getGuildEmoji' ]);
 
-    await this.importModule('getGuild');
-    await this.importModule('getGuilds');
-    await this.importModule('uploadEmoji');
-    await this.importModule('getChannel');
-    await this.importModule('getGuildPermissions');
-    await this.importModule('transitionTo');
-    await this.importModule('getCurrentUser');
+    await this.import('getGuild');
+    await this.import('getGuilds');
+    await this.import('uploadEmoji');
+    await this.import('getChannel');
+    await this.import('getGuildPermissions');
+    await this.import('transitionTo');
+    await this.import('getCurrentUser');
+    await this.import('createBotMessage');
+    await this.import('receiveMessage');
+    await this.import('getSelectedChannelState');
+    await this.import('getChannelId');
   }
 
   getEmojiRegex () {
@@ -75,7 +75,7 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   getGuildRoute (guildId) {
-    const selectedChannelId = getSelectedChannelState()[guildId];
+    const selectedChannelId = this.getSelectedChannelState()[guildId];
 
     /* eslint-disable new-cap */
     return selectedChannelId
@@ -93,7 +93,7 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   sendBotMessage (content) {
-    const receivedMessage = createBotMessage(getChannelId(), '');
+    const receivedMessage = this.createBotMessage(this.getChannelId(), '');
 
     if (typeof content === 'string') {
       receivedMessage.content = content;
@@ -101,7 +101,7 @@ module.exports = class EmojiUtility extends Plugin {
       receivedMessage.embeds.push(content);
     }
 
-    return receiveMessage(receivedMessage.channel_id, receivedMessage);
+    return this.receiveMessage(receivedMessage.channel_id, receivedMessage);
   }
 
   reply (content, embed) {
@@ -217,16 +217,14 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   async startPlugin () {
-    await this.import();
+    await this.doImport();
 
     this.loadCSS(resolve(__dirname, 'style.scss'));
 
     /* Default settings */
     this.settings.set('useEmbeds', this.settings.get('useEmbeds', false));
     this.settings.set('displayLink', this.settings.get('displayLink', true));
-    this.settings.set('filePath', this.settings.get('filePath', null));
     this.settings.set('includeIdForSavedEmojis', this.settings.get('includeIdForSavedEmojis', true));
-    this.settings.set('defaultCloneId', this.settings.get('defaultCloneId', null));
     this.settings.set('defaultCloneIdUseCurrent', this.settings.get('defaultCloneIdUseCurrent', false));
 
     const _this = this;
@@ -235,7 +233,7 @@ module.exports = class EmojiUtility extends Plugin {
       const onGuildClick = async (guild) => {
         if (!guild) {
           if (this.settings.get('defaultCloneIdUseCurrent')) {
-            guild = this.getGuild(this.getChannel(getChannelId()).guild_id);
+            guild = this.getGuild(this.getChannel(this.getChannelId()).guild_id);
           } else if (this.settings.get('defaultCloneId')) {
             guild = this.getGuild(this.settings.get('defaultCloneId'));
             if (!guild) {
@@ -361,7 +359,7 @@ module.exports = class EmojiUtility extends Plugin {
       const onGuildClick = (guild) => {
         if (!guild) {
           if (this.settings.get('defaultCloneIdUseCurrent')) {
-            guild = this.getGuild(this.getChannel(getChannelId()).guild_id);
+            guild = this.getGuild(this.getChannel(this.getChannelId()).guild_id);
           } else if (this.settings.get('defaultCloneId')) {
             guild = this.getGuild(this.settings.get('defaultCloneId'));
             if (!guild) {
@@ -498,39 +496,42 @@ module.exports = class EmojiUtility extends Plugin {
     const NativeContextMenu = await getModuleByDisplayName('NativeContextMenu');
     inject('pc-emojiUtility-nativeContext', NativeContextMenu.prototype, 'render', handleImageContext);
 
-    /* AnimatedComponent is used for reactions */
-    const AnimatedComponent = (await getModule([ 'createAnimatedComponent' ])).div;
-    inject('pc-emojiUtility-reactionContext', AnimatedComponent.prototype, 'render', function (args, res) {
-      if (this.props.className && this.props.className.includes('pc-reaction')) {
-        res.props.onContextMenu = (e) => {
-          const { props: propEmoji } = this.props.children.props.children[0];
+    /*
+      Discord broke this in a recent update so TODO: Figure out a new way of adding the emote context to reactions
 
-          if (propEmoji.emojiId) {
-            let emoji = _this.getEmojiById(propEmoji.emojiId);
-            if (emoji) {
-              emoji.fake = false;
-            } else {
-              emoji = _this.createFakeEmoji(propEmoji.emojiId, propEmoji.emojiName, `https://${CDN_HOST}/emojis/${propEmoji.emojiId}.${propEmoji.animated ? 'gif' : 'png'}`);
+      const AnimatedComponent = (await getModule([ 'createAnimatedComponent' ])).div;
+      inject('pc-emojiUtility-reactionContext', AnimatedComponent.prototype, 'render', function (args, res) {
+        if (this.props.className && this.props.className.includes('pc-reaction')) {
+          res.props.onContextMenu = (e) => {
+            const { props: propEmoji } = this.props.children.props.children[0];
+
+            if (propEmoji.emojiId) {
+              let emoji = _this.getEmojiById(propEmoji.emojiId);
+              if (emoji) {
+                emoji.fake = false;
+              } else {
+                emoji = _this.createFakeEmoji(propEmoji.emojiId, propEmoji.emojiName, `https://${CDN_HOST}/emojis/${propEmoji.emojiId}.${propEmoji.animated ? 'gif' : 'png'}`);
+              }
+
+              const { pageX, pageY } = e;
+              contextMenu.openContextMenu(e, () =>
+                React.createElement(ContextMenu, {
+                  pageX,
+                  pageY,
+                  itemGroups: [ [ {
+                    type: 'submenu',
+                    name: 'Emote',
+                    getItems: () => getCloneableFeatures(emoji)
+                  } ] ]
+                })
+              );
             }
+          };
+        }
 
-            const { pageX, pageY } = e;
-            contextMenu.openContextMenu(e, () =>
-              React.createElement(ContextMenu, {
-                pageX,
-                pageY,
-                itemGroups: [ [ {
-                  type: 'submenu',
-                  name: 'Emote',
-                  getItems: () => getCloneableFeatures(emoji)
-                } ] ]
-              })
-            );
-          }
-        };
-      }
-
-      return res;
-    });
+        return res;
+      });
+    */
 
     injectInFluxContainer('pc-emojiUtility-hideEmojisPickerRm', 'EmojiPicker', 'removeEmotes', function () {
       const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
@@ -767,7 +768,7 @@ module.exports = class EmojiUtility extends Plugin {
           }
         } else {
           if (this.settings.get('defaultCloneIdUseCurrent')) {
-            guild = this.getGuild(this.getChannel(getChannelId()).guild_id);
+            guild = this.getGuild(this.getChannel(this.getChannelId()).guild_id);
           } else if (this.settings.get('defaultCloneId')) {
             guild = this.getGuild(this.settings.get('defaultCloneId'));
             if (!guild) {
