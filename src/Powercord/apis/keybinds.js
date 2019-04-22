@@ -10,7 +10,7 @@ module.exports = class Keybinds extends API {
   }
 
   // @see https://github.com/electron/electron/blob/master/docs/api/accelerator.md for keybind syntax
-  registerKeybind (id, name, description, func, keybind, global) {
+  registerKeybind (id, name, description, func, keybind, isGlobal) {
     if (this.keybinds.find(k => k.id === id)) {
       throw new Error(`ID ${id} is already used by another plugin!`);
     }
@@ -24,7 +24,7 @@ module.exports = class Keybinds extends API {
       description
     });
 
-    this._register(keybind, func, global);
+    this._register(keybind, func, isGlobal);
   }
 
   updateKeybind (id, keybind) {
@@ -49,9 +49,9 @@ module.exports = class Keybinds extends API {
     }
   }
 
-  _register (keybind, func, global) {
+  _register (keybind, func, isGlobal) {
     try {
-      if (global) {
+      if (isGlobal) {
         globalShortcut.register(keybind, func);
       } else {
         localShortcut.register(keybind, func);
@@ -61,9 +61,9 @@ module.exports = class Keybinds extends API {
     }
   }
 
-  _unregister (keybind, global) {
+  _unregister (keybind, isGlobal) {
     try {
-      if (global) {
+      if (isGlobal) {
         globalShortcut.unregister(keybind);
       } else {
         localShortcut.unregister(keybind);

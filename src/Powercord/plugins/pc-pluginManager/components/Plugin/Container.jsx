@@ -1,6 +1,7 @@
 const { React } = require('powercord/webpack');
 const {
-  Tooltip, Icons: {
+  Tooltip,
+  Icons: {
     Author, Version, Description, License, Info
   }
 } = require('powercord/components');
