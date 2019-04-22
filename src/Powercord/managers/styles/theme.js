@@ -21,21 +21,12 @@ module.exports = class Theme {
     this.trackedFiles = [];
   }
 
-  apply () {
+  async apply () {
     const element = document.head.querySelector(`#powercord-css-${this.themeID}`);
     if (!element) {
       document.head.appendChild(
         createElement('style', { id: `powercord-css-${this.themeID}` })
       );
-    }
-
-    this.refresh();
-  }
-
-  async refresh () {
-    const element = document.head.querySelector(`#powercord-css-${this.themeID}`);
-    if (!element) {
-      return this.apply();
     }
 
     const stylesheet = await this._compileStylesheet();
@@ -164,7 +155,7 @@ module.exports = class Theme {
   // eslint-disable-next-line no-unused-vars
   _handleUpdate (evt, _) {
     if (evt === 'update') {
-      this.refresh();
+      this.apply();
     } else if (evt === 'remove') {
       this.remove();
     }
