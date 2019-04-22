@@ -22,10 +22,10 @@ module.exports = class Theme {
   }
 
   async apply () {
-    const element = document.head.querySelector(`#powercord-css-${this.themeID}`);
+    let element = document.head.querySelector(`#powercord-css-${this.themeID}`);
     if (!element) {
       document.head.appendChild(
-        createElement('style', { id: `powercord-css-${this.themeID}` })
+        element = createElement('style', { id: `powercord-css-${this.themeID}` })
       );
     }
 
@@ -155,7 +155,7 @@ module.exports = class Theme {
   // eslint-disable-next-line no-unused-vars
   _handleUpdate (evt, _) {
     if (evt === 'update') {
-      this.apply();
+      this.refresh();
     } else if (evt === 'remove') {
       this.remove();
     }
