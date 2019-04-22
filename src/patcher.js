@@ -1,3 +1,4 @@
+/* global appSettings */
 const Module = require('module');
 const { join, dirname, resolve } = require('path');
 const electron = require('electron');
@@ -23,6 +24,7 @@ class PatchedBrowserWindow extends BrowserWindow {
       global.originalPreload = opts.webPreferences.preload;
       opts.webPreferences.preload = join(__dirname, 'preload.js');
       opts.webPreferences.nodeIntegration = true;
+      opts.webPreferences.allowRunningInsecureContent = true;
 
       if (transparentWindow) {
         opts.transparent = true;
@@ -64,6 +66,15 @@ for (const prop in electron) {
 require.cache[electronPath].exports.BrowserWindow = PatchedBrowserWindow;
 
 app.once('ready', () => {
+  session.defaultSession.webRequest.onBeforeRequest({
+    urls: [ 'https://canary.discordapp.com/_powercord/*' ]
+  }, (details, done) => {
+    appSettings.set('_POWERCORD_ROUTE', details.url);
+    appSettings.save();
+    // @todo: Redirect to the last classic route saved
+    done({ redirectURL: 'https://canary.discordapp.com/app' });
+  });
+
   session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
     Object.keys(responseHeaders)
       .filter(k => (/^content-security-policy/i).test(k))

@@ -1,7 +1,8 @@
 {
   "globals": {
     "powercord": true,
-    "webpackJsonp": true
+    "webpackJsonp": true,
+    "DiscordNative": false
   },
   "parserOptions": {
     "ecmaVersion": 2018,
