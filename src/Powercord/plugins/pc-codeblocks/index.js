@@ -31,14 +31,27 @@ module.exports = class Codeblocks extends Plugin {
 
     const instance = getOwnerInstance(await waitFor(messageQuery));
     inject('pc-message-codeblock', instance.__proto__, 'render', function (_, res) {
-      const hasCodeblock = (res.props.children[0] !== false
-        ? res
-          .props.children[1]
-          .props.children[0]
-        : res
-          .props.children[1])
-        .props.message.contentParsed
-        .find(el => el.type === 'pre');
+      const { message } = res.props.children[1]
+        ? (res.props.children[0] !== false
+          ? res
+            .props.children[1]
+            .props.children[0]
+          : res
+            .props.children[1])
+          .props
+        : null;
+
+      let hasCodeblock;
+
+      try {
+        if (message.contentParsed.find(el => el.type === 'pre') ||
+          message.embeds[0].description.find(el => el.type === 'pre')
+        ) {
+          hasCodeblock = true;
+        }
+      } catch (_) {
+        hasCodeblock = false;
+      }
 
       setImmediate(() => {
         if (
