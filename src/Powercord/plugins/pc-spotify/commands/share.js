@@ -1,7 +1,7 @@
 const { messages, channels } = require('powercord/webpack');
 
 module.exports = {
-  name: 'share',
+  command: 'share',
   description: 'Send currently playing song to channel.',
   usage: '/share',
 

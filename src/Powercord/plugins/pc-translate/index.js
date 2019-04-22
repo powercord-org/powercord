@@ -14,7 +14,6 @@ module.exports = class Translate extends Plugin {
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
     uninject('pc-translate-context');
     uninject('pc-translate-content');
     uninject('pc-translate-contentRemove');
@@ -74,24 +73,25 @@ module.exports = class Translate extends Plugin {
           const translateReset = createElement('span', {
             innerHTML: `(Translated from ${fromLang})`,
             className: 'powercord-translate-reset',
-              async onclick () {
-                message.style.opacity = '0';
-                await sleep(200);
+            async onclick () {
+              message.style.opacity = '0';
+              await sleep(200);
 
-                message.querySelectorAll('.pc-markup')
-                  .forEach(markup => {
-                    const markupInstance = getOwnerInstance(markup);
-                    _this.translations[markupInstance.props.message.id] = null;
-                    markupInstance.forceUpdate();
-                  });
+              message.querySelectorAll('.pc-markup')
+                .forEach(markup => {
+                  const markupInstance = getOwnerInstance(markup);
+                  _this.translations[markupInstance.props.message.id] = null;
+                  markupInstance.forceUpdate();
+                });
 
-                timestamp.removeChild(cozy ? this : this.parentElement);
-                message.style.opacity = '1';
-              }
+              timestamp.removeChild(cozy ? this : this.parentElement);
+              message.style.opacity = '1';
+            }
           });
-          if (cozy) timestamp.appendChild(translateReset);
-          else {
-            let translateResetContainer = createElement('div', {
+          if (cozy) {
+            timestamp.appendChild(translateReset);
+          } else {
+            const translateResetContainer = createElement('div', {
               className: 'powercord-translate-reset-compact-container'
             });
             translateResetContainer.appendChild(translateReset);

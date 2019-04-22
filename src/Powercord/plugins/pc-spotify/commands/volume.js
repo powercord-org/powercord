@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'volume',
+  command: 'volume',
   aliases: [ 'vol' ],
   description: 'Change Spotify volume',
   usage: '/volume <number between 0-100>',

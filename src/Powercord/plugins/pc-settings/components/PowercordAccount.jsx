@@ -1,8 +1,8 @@
 const http = require('http');
 const { shell: { openExternal } } = require('electron');
 
-const { React, Flux } = require('powercord/webpack');
-const { Spinner } = require('powercord/components');
+const { React, Flux, getModule } = require('powercord/webpack');
+const { AsyncComponent, Spinner } = require('powercord/components');
 const { WEBSITE } = require('powercord/constants');
 
 const LinkedAccounts = require('./LinkedAccounts.jsx');
@@ -117,5 +117,14 @@ const PowercordAccount = class PowercordAccount extends React.Component {
   }
 };
 
-const fluxShit = Object.values(require('powercord/webpack').instance.cache).filter(m => m.exports && m.exports.cacheKey && m.exports.cacheKey === 'StreamerModeStore')[0].exports;
-module.exports = Flux.connectStores([ fluxShit ], () => ({ streamerMode: fluxShit.getSettings() }))(PowercordAccount);
+let connectedModule = null;
+module.exports = (props) => <AsyncComponent
+  _provider={async () => {
+    if (!connectedModule) {
+      const fluxShit = await getModule([ 'enabled', 'hidePersonalInformation' ]);
+      connectedModule = Flux.connectStores([ fluxShit ], (e) => ({ streamerMode: fluxShit.getSettings() }))(PowercordAccount);
+    }
+    return connectedModule;
+  }}
+  {...props}
+/>;

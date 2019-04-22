@@ -32,26 +32,19 @@ module.exports = class Spotify extends Plugin {
       }
     });
 
-    this.registerSettings('pc-spotify', 'Spotify', () =>
+    this.registerSettings('pc-spotify', 'Spotify', (props) =>
       React.createElement(Settings, {
-        settings: this.settings,
-        patch: this._patchAutoPause.bind(this)
+        patch: this._patchAutoPause.bind(this),
+        ...props
       })
     );
 
-    for (const [ commandName, command ] of Object.entries(commands)) {
-      command.func = command.func.bind(command, SpotifyPlayer);
-
-      powercord
-        .pluginManager
-        .get('pc-commands')
-        .commands
-        .set(commandName, command);
-    }
+    Object.values(commands).forEach(command =>
+      this.registerCommand(command.command, command.aliases || [], command.description, command.usage, command.func)
+    );
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
     this._patchAutoPause(true);
     uninject('pc-spotify-modal');
     uninject('pc-spotify-listeningAlong');
@@ -61,22 +54,15 @@ module.exports = class Spotify extends Plugin {
     getOwnerInstance(document.querySelector('.container-2Thooq:not([id])')).forceUpdate();
     powercord.off('webSocketMessage:dealer.spotify.com', this._handler);
 
-    for (const [ commandName ] of Object.entries(commands)) {
-      powercord
-        .pluginManager
-        .get('pc-commands')
-        .unregister(commandName);
-    }
-
     const el = document.querySelector('#powercord-spotify-modal');
     if (el) {
       el.remove();
     }
   }
 
-  openPremiumDialog () {
+  async openPremiumDialog () {
     if (!document.querySelector('.powercord-spotify-premium')) {
-      const PremiumDialog = getModuleByDisplayName('SpotifyPremiumUpgrade');
+      const PremiumDialog = await getModuleByDisplayName('SpotifyPremiumUpgrade');
       openModal(() => React.createElement(PremiumDialog, { isPowercord: true }));
     }
   }
@@ -90,13 +76,13 @@ module.exports = class Spotify extends Plugin {
   }
 
   async _injectModal () {
-    const modal = React.createElement(Modal, { main: this });
-    await injectInFluxContainer('pc-spotify-modal', 'Account', 'render', (args, res) => [ modal, res ]);
+    const modal = React.createElement(this.settings.connectStore(Modal), { main: this });
+    await injectInFluxContainer('pc-spotify-modal', 'Account', 'render', (_, res) => [ modal, res ]);
     getOwnerInstance(document.querySelector('.container-2Thooq')).forceUpdate();
   }
 
   async _injectListeningAlong () {
-    await injectInFluxContainer('pc-spotify-listeningAlong', 'ListeningAlong', 'render', (args, res) => {
+    await injectInFluxContainer('pc-spotify-listeningAlong', 'ListeningAlong', 'render', (_, res) => {
       this._listeningAlongComponent = res;
       if (this._forceUpdate) {
         this._forceUpdate();
@@ -107,7 +93,7 @@ module.exports = class Spotify extends Plugin {
 
   async _patchAutoPause (revert) {
     if (this.settings.get('noAutoPause', true)) {
-      const mdl = getModule([ 'SpotifyResourceTypes' ]);
+      const mdl = await getModule([ 'SpotifyResourceTypes' ]);
       if (revert) {
         mdl.pause = mdl._pause;
       } else {
@@ -129,8 +115,8 @@ module.exports = class Spotify extends Plugin {
     });
   }
 
-  _patchPremiumDialog () {
-    const PremiumDialog = getModuleByDisplayName('SpotifyPremiumUpgrade');
+  async _patchPremiumDialog () {
+    const PremiumDialog = await getModuleByDisplayName('SpotifyPremiumUpgrade');
 
     inject('pc-spotify-premium', PremiumDialog.prototype, 'render', function (args, res) {
       if (this.props.isPowercord) {

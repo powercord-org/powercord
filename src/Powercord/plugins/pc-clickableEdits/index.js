@@ -26,7 +26,7 @@ class ClickableEdits extends Plugin {
     const messageQuery = `.${messageClasses.message.replace(/ /g, '.')}`;
 
     const instance = getOwnerInstance(await waitFor(messageQuery));
-    const currentUser = await getModule([ 'getCurrentUser' ]).getCurrentUser();
+    const currentUser = (await getModule([ 'getCurrentUser' ])).getCurrentUser();
 
     function renderMessage (_, res) {
       const { message, channel } = this.props;

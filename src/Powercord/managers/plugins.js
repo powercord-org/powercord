@@ -14,7 +14,6 @@ module.exports = class PluginManager {
     this.plugins = new Map();
 
     this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license' ];
-    this.enforcedPlugins = [ 'pc-styleManager', 'pc-settings', 'pc-pluginManager', 'pc-keybindManager' ];
   }
 
   // Getters
@@ -27,6 +26,7 @@ module.exports = class PluginManager {
     if (plugin) {
       return plugin.manifest.name;
     }
+
     // API request
     const baseUrl = powercord.settings.get('backendURL', WEBSITE);
     try {
@@ -37,15 +37,7 @@ module.exports = class PluginManager {
   }
 
   getPlugins () {
-    return Array.from(this.plugins.keys()).filter(p => !powercord.settings.get('hiddenPlugins', []).includes(p));
-  }
-
-  getHiddenPlugins () {
-    return Array.from(this.plugins.keys()).filter(p => powercord.settings.get('hiddenPlugins', []).includes(p));
-  }
-
-  getAllPlugins () {
-    return Array.from(this.plugins.keys());
+    return [ ...this.plugins.keys() ];
   }
 
   isInstalled (plugin) {
@@ -56,34 +48,9 @@ module.exports = class PluginManager {
     return !powercord.settings.get('disabledPlugins', []).includes(plugin);
   }
 
-  isEnforced (plugin, iterate = true) {
-    if (this.enforcedPlugins.includes(plugin)) {
-      return true;
-    }
-
-    if (!iterate) {
-      return false;
-    }
-
-    const dependents = this.resolveDependents(plugin);
-    return dependents.filter(p => this.isEnforced(p, false)).length !== 0;
-  }
-
   // Resolvers
-  async resolveDependencies (plugin, deps = []) {
-    const dependencies = await this.getDependencies(plugin);
-
-    await Promise.all(dependencies.map(async dep => {
-      if (!deps.includes(dep)) {
-        deps.push(dep);
-        deps.push(...(await this.resolveDependencies(dep, deps)));
-      }
-    }));
-    return deps.filter((d, p) => deps.indexOf(d) === p);
-  }
-
   resolveDependents (plugin, dept = []) {
-    const dependents = this.getAllPlugins().filter(p => this.getDependenciesSync(p).includes(plugin));
+    const dependents = this.getPlugins().filter(p => this.getDependenciesSync(p).includes(plugin));
     dependents.forEach(dpt => {
       if (!dept.includes(dpt)) {
         dept.push(dpt);
@@ -93,36 +60,14 @@ module.exports = class PluginManager {
     return dept.filter((d, p) => dept.indexOf(d) === p);
   }
 
-  async getDependencies (pluginID) {
-    const plugin = this.get(pluginID);
-    if (plugin) {
-      return plugin.manifest.dependencies;
-    }
-
-    const baseUrl = powercord.settings.get('backendURL', WEBSITE);
-    try {
-      return (await get(`${baseUrl}/api/plugins/${pluginID}`).then(r => r.body)).manifest.dependencies || [];
-    } catch (e) {
-      return [];
-    }
-  }
-
-  getDependenciesSync (pluginID) {
-    const plugin = this.get(pluginID);
-    if (plugin) {
-      return plugin.manifest.dependencies;
-    }
-    // Just return empty array
-    return [];
-  }
-
-  // Mount/load/enable/install/hide shit
+  // Mount/load/enable/install shit
   mount (pluginID) {
     let manifest;
     try {
       manifest = Object.assign({
         appMode: 'app',
-        dependencies: []
+        dependencies: [],
+        optionalDependencies: []
       }, require(resolve(this.pluginDir, pluginID, 'manifest.json')));
     } catch (e) {
       return console.error('%c[Powercord]', 'color: #257dd4', `Plugin ${pluginID} doesn't have a valid manifest - Skipping`);
@@ -183,6 +128,7 @@ module.exports = class PluginManager {
     this.plugins.delete(pluginID);
   }
 
+  // Load
   load (pluginID) {
     const plugin = this.get(pluginID);
     if (!plugin) {
@@ -207,22 +153,10 @@ module.exports = class PluginManager {
     plugin._unload();
   }
 
-  show (plugin) {
-    powercord.settings.set(
-      'hiddenPlugins',
-      powercord.settings.get('hiddenPlugins', []).filter(p => p !== plugin)
-    );
-  }
-
-  hide (plugin) {
-    const disabled = powercord.settings.get('hiddenPlugins', []);
-    disabled.push(plugin);
-    powercord.settings.set('hiddenPlugins', disabled);
-  }
-
+  // Enable
   enable (pluginID) {
     if (!this.get(pluginID)) {
-      throw new Error(`Tried to unload a non installed plugin (${pluginID})`);
+      throw new Error(`Tried to enable a non installed plugin (${pluginID})`);
     }
 
     powercord.settings.set(
@@ -237,11 +171,9 @@ module.exports = class PluginManager {
     const plugin = this.get(pluginID);
 
     if (!plugin) {
-      throw new Error(`Tried to unload a non installed plugin (${pluginID})`);
+      throw new Error(`Tried to disable a non installed plugin (${pluginID})`);
     }
-    if (this.enforcedPlugins.includes(pluginID)) {
-      throw new Error(`You cannot disable an enforced plugin. (Tried to disable ${pluginID})`);
-    }
+
     powercord.settings.set('disabledPlugins', [
       ...powercord.settings.get('disabledPlugins', []),
       pluginID
@@ -250,16 +182,13 @@ module.exports = class PluginManager {
     this.unload(pluginID);
   }
 
+  // Install
   async install (pluginID) {
     await exec(`git clone https://github.com/powercord-org/${pluginID}`, this.pluginDir);
     this.mount(pluginID);
   }
 
   async uninstall (pluginID) {
-    if (this.enforcedPlugins.includes(pluginID)) {
-      throw new Error(`You cannot uninstall an enforced plugin. (Tried to uninstall ${pluginID})`);
-    }
-
     if (pluginID.startsWith('pc-')) {
       throw new Error(`You cannot uninstall an internal plugin. (Tried to uninstall ${pluginID})`);
     }
@@ -268,7 +197,7 @@ module.exports = class PluginManager {
     await rmdirRf(resolve(this.pluginDir, pluginID));
   }
 
-  // Start/Stop
+  // Start
   startPlugins () {
     const isOverlay = (/overlay/).test(location.pathname);
     readdirSync(this.pluginDir).sort(this._sortPlugins).forEach(filename => this.mount(filename));
@@ -293,7 +222,7 @@ module.exports = class PluginManager {
   }
 
   _sortPlugins (pluginA, pluginB) {
-    const priority = [ 'pc-settings', 'pc-pluginManager', 'pc-updater' ].reverse();
+    const priority = [ 'pc-classNameNormalizer', 'pc-commands', 'pc-settings', 'pc-pluginManager', 'pc-updater' ].reverse();
     const priorityA = priority.indexOf(pluginA);
     const priorityB = priority.indexOf(pluginB);
     return (priorityA === priorityB ? 0 : (priorityA < priorityB ? 1 : -1));
@@ -302,7 +231,7 @@ module.exports = class PluginManager {
   async _bulkUnload (plugins) {
     const nextPlugins = [];
     for (const plugin of plugins) {
-      const deps = this.getDependenciesSync(plugin);
+      const deps = this.get(plugin).allDependencies;
       if (deps.filter(dep => this.get(dep) && this.get(dep).ready).length !== 0) {
         nextPlugins.push(plugin);
       } else {

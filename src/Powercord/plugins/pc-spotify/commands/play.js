@@ -1,7 +1,7 @@
 const urlRegex = /\/track\/([A-z0-9]*)/;
 
 module.exports = {
-  name: 'play',
+  command: 'play',
   description: 'Play a Spotify URL',
   usage: '/play <URL>',
 

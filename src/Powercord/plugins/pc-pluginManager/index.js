@@ -8,8 +8,4 @@ module.exports = class PluginManager extends Plugin {
     this.loadCSS(resolve(__dirname, 'scss', 'style.scss'));
     this.registerSettings('pc-pluginManager', 'Plugins', Settings);
   }
-
-  pluginWillUnload () {
-    this.unloadCSS();
-  }
 };

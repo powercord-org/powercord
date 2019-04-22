@@ -16,7 +16,6 @@ module.exports = class Codeblocks extends Plugin {
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
     uninject('pc-message-codeblock');
 
     for (const codeblock of document.querySelectorAll('.powercord-codeblock-copy-btn')) {

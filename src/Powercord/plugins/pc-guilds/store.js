@@ -3,10 +3,13 @@ const { getModule } = require('powercord/webpack');
 module.exports = class GuildStore {
   constructor (settingsManager) {
     this.settings = settingsManager;
-    this.guildStore = getModule([ 'getGuilds' ]);
-    this.updater = getModule([ 'updateRemoteSettings' ]);
-    this.sortedGuildStore = getModule([ 'getSortedGuilds' ]);
-    this.snowflake = getModule([ 'extractTimestamp' ]);
+  }
+
+  async init () {
+    this.guildStore = await getModule([ 'getGuilds' ]);
+    this.updater = await getModule([ 'updateRemoteSettings' ]);
+    this.sortedGuildStore = await getModule([ 'getSortedGuilds' ]);
+    this.snowflake = await getModule([ 'extractTimestamp' ]);
   }
 
   createFolder (name, icon) {

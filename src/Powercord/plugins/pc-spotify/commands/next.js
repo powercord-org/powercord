@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'next',
+  command: 'next',
   description: 'Skip Spotify song',
   usage: '/next',
 

@@ -34,7 +34,7 @@ module.exports = class CopyRoleID extends Plugin {
     const popoutClasses = await getModule([ 'userPopout' ]);
     const popoutQuery = `.${popoutClasses.userPopout.replace(/ /g, '.')}`;
     const roleClasses = await getModule([ 'role', 'roleCircle' ]);
-    const roleQuery = `.${roleClasses.role.replace(/ /g, '.')}`;
+    const roleQuery = `.${roleClasses.role.replace(/ /g, '.')}:not(.${roleClasses.addButton.split(' ').shift()})`;
 
     const instance = getOwnerInstance(await waitFor(`${popoutQuery} ${roleQuery}`));
     inject('pc-memberRole', instance.__proto__, 'render', function (_, res) {

@@ -6,43 +6,13 @@ const monkeypatchTyping = require('./monkeypatchTyping.js');
 const injectAutocomplete = require('./injectAutocomplete.js');
 
 module.exports = class Commands extends Plugin {
-  constructor () {
-    super();
-
-    this.commands = new Map(Object.entries(commands));
-  }
-
-  get prefix () {
-    return powercord.settings.get('prefix', '.');
-  }
-
-  get customCommands () {
-    return [ ...this.commands.values() ]
-      .map(command => ({
-        command: command.name,
-        commandAndAliases: [ command.name, ...(command.aliases || []) ],
-        description: command.description,
-        func: command.func,
-        usage: command.usage
-      }));
-  }
-
   startPlugin () {
+    Object.values(commands).forEach(command =>
+      this.registerCommand(command.command, command.aliases || [], command.description, command.usage, command.func)
+    );
+
     monkeypatchMessages.call(this);
     injectAutocomplete.call(this);
     monkeypatchTyping.call(this);
-  }
-
-  register (name, description, usage, func) {
-    return this.commands.set(name, {
-      description,
-      usage,
-      name,
-      func
-    });
-  }
-
-  unregister (name) {
-    this.commands.delete(name);
   }
 };

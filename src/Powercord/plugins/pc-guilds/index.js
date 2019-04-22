@@ -2,11 +2,11 @@ window.ReactBeautifulDnd = require('./lib/react-beautiful-dnd');
 
 const { resolve } = require('path');
 const { Plugin } = require('powercord/entities');
-const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
-const { closeAll: closeModals, open: openModal, close: closeModal } = require('powercord/modal');
 const { ContextMenu: { Button } } = require('powercord/components');
-const { getOwnerInstance, waitFor, sleep } = require('powercord/util');
 const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
+const { getOwnerInstance, waitFor, sleep, forceUpdateElement } = require('powercord/util');
+const { closeAll: closeModals, open: openModal, close: closeModal } = require('powercord/modal');
 
 const GuildStore = require('./store');
 const Guilds = require('./components/Guilds.jsx');
@@ -20,24 +20,25 @@ module.exports = class GuildFolders extends Plugin {
   }
 
   async startPlugin () {
+    await this.store.init();
+
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuilds();
     // this._patchAddGuild();
     this._patchContextMenu();
 
     // Ensure new guild component is immediately displayed
-    waitFor('.pc-guilds').then(guilds =>
-      getOwnerInstance(guilds).forceUpdate()
-    );
+    getOwnerInstance(await waitFor('.pc-layer > .pc-flex > .pc-wrapper')).forceUpdate();
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
     uninject('pc-guilds');
     uninject('pc-guilds-add');
     uninject('pc-guilds-add-mount');
     uninject('pc-guilds-add-update');
     uninject('pc-guilds-context');
+
+    forceUpdateElement('.pc-layer > .pc-flex > .pc-wrapper');
   }
 
   openCreateFolderModal () {
@@ -68,7 +69,7 @@ module.exports = class GuildFolders extends Plugin {
   }
 
   async _patchAddGuild () {
-    const AddGuild = getModuleByDisplayName('AddGuildModal');
+    const AddGuild = await getModuleByDisplayName('AddGuildModal');
 
     inject('pc-guilds-add-class', AddGuild.prototype, 'render', (_, res) => {
       res.props.className += ' pc-createGuildDialog';
@@ -113,8 +114,8 @@ module.exports = class GuildFolders extends Plugin {
     }
 
     this.processingMark = true;
-    const acknowledger = getModule([ 'markGuildAsRead' ]);
-    const guildStore = getModule([ 'getSortedGuilds' ]);
+    const acknowledger = await getModule([ 'markGuildAsRead' ]);
+    const guildStore = await getModule([ 'getSortedGuilds' ]);
 
     const unreads = getOwnerInstance(document.querySelector('.powercord-guilds').parentNode.parentNode.parentNode).props.unreadGuilds;
     const guilds = Object.values(guildStore.getSortedGuilds()).map(g => g.guild).filter(g => unreads[g.id]);

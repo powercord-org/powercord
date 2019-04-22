@@ -33,7 +33,7 @@ require(remote.getGlobal('originalPreload'));
     await sleep(1);
   }
 
-  if (powercord.api.settings.get('pc-general', 'openOverlayDevTools', false) && isOverlay) {
+  if (powercord.api.settings.store.getSetting('pc-general', 'openOverlayDevTools', false) && isOverlay) {
     setTimeout(() => {
       remote
         .getCurrentWindow()

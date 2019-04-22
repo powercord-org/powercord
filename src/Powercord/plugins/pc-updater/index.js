@@ -8,7 +8,7 @@ const { promisify } = require('util');
 const cp = require('child_process');
 const exec = promisify(cp.exec);
 
-const Settings = require('./Settings.jsx');
+const Settings = require('./components/Settings.jsx');
 
 module.exports = class Updater extends Plugin {
   constructor () {
@@ -22,12 +22,7 @@ module.exports = class Updater extends Plugin {
 
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
-
-    this.registerSettings('pc-updater', 'Updater', () =>
-      React.createElement(Settings, {
-        settings: this.settings
-      })
-    );
+    this.registerSettings('pc-updater', 'Updater', Settings);
 
     let minutes = Number(this.settings.get('interval', 15));
     if (minutes < 1) {
@@ -40,7 +35,6 @@ module.exports = class Updater extends Plugin {
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
     clearInterval(this._interval);
   }
 

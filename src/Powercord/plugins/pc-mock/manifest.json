@@ -1,10 +1,7 @@
 {
-    "name": "Mock",
-    "version": "1.0.0",
-    "description": "Mock people",
-    "author": "Melmsie",
-    "license": "MIT",
-    "dependencies": [
-      "pc-commands"
-    ]
-  }
+  "name": "Mock",
+  "version": "1.0.0",
+  "description": "Mock people",
+  "author": "Melmsie",
+  "license": "MIT"
+}

@@ -68,7 +68,7 @@ module.exports = class Modal extends React.Component {
       this.stopTimer();
       this.setState({ inLibrary: '' });
       this.libraryTimer = setTimeout(() => {
-        if (this.props.main.settings.get('showControls', true) && powercord.account && powercord.account.spotify) {
+        if (this.props.getSetting('showControls', true) && powercord.account && powercord.account.spotify) {
           SpotifyPlayer.checkLibrary(this.state.currentItem.id).then((r) => {
             this.setState({ inLibrary: r.body[0] });
           });
@@ -77,9 +77,9 @@ module.exports = class Modal extends React.Component {
     }
   }
 
-  shouldComponentUpdate (newProps, newState) {
-    if (!this._settings === this.props.main.settings.get('showControls', true)) {
-      this._settings = this.props.main.settings.get('showControls', true);
+  shouldComponentUpdate (_, newState) {
+    if (!this._settings === this.props.getSetting('showControls', true)) {
+      this._settings = this.props.getSetting('showControls', true);
       return true;
     }
 
@@ -206,7 +206,7 @@ module.exports = class Modal extends React.Component {
     return <>
       {this.props.main._listeningAlongComponent}
       <div
-        className={`container-2Thooq powercord-spotify${this.props.main.settings.get('showControls', true) ? '' : ' small'}`}
+        className={`container-2Thooq powercord-spotify${this.props.getSetting('showControls', true) ? '' : ' small'}`}
         id='powercord-spotify-modal'
         onContextMenu={this.injectContextMenu.bind(this)}
         style={displayState === 'hide' ? { display: 'none' } : {}}
@@ -263,7 +263,7 @@ module.exports = class Modal extends React.Component {
               }
             })}
           >
-            {this.props.main.settings.get('showControls', true) && <div className="powercord-spotify-seek-btngrp">
+            {this.props.getSetting('showControls', true) && <div className="powercord-spotify-seek-btngrp">
               {libraryButton}
 
               <Tooltip text="Shuffle" position="top">
@@ -295,6 +295,7 @@ module.exports = class Modal extends React.Component {
       </div>
     </>;
   }
+
   async injectContextMenu (e) {
     getContextMenuItemGroups = require('./contextMenuGroups'); // override reference from require cache in the event of any mods
     const { pageX, pageY } = e;

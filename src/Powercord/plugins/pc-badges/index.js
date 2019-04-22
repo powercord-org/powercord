@@ -1,5 +1,6 @@
 const { resolve } = require('path');
 const { Plugin } = require('powercord/entities');
+const { forceUpdateElement } = require('powercord/util');
 const { GUILD_ID, WEBSITE } = require('powercord/constants');
 const { Tooltip } = require('powercord/components');
 const { inject, injectRecursive, uninject } = require('powercord/injector');
@@ -15,9 +16,10 @@ module.exports = class Badges extends Plugin {
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
     uninject('pc-badges-users');
     uninject('pc-badges-guilds-header');
+
+    forceUpdateElement('.pc-channels .pc-hasDropdown');
   }
 
   async _patchGuildHeaders () {

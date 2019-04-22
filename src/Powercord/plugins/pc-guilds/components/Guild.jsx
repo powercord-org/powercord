@@ -1,5 +1,5 @@
-const { React, Flux, Router: { Link }, constants: { Routes }, contextMenu, getModuleByDisplayName, instance: { cache: moduleCache } } = require('powercord/webpack');
-const { Tooltip } = require('powercord/components');
+const { React, Flux, Router: { Link }, constants: { Routes }, contextMenu, getModule, getModuleByDisplayName, instance: { cache: moduleCache } } = require('powercord/webpack');
+const { AsyncComponent, Tooltip } = require('powercord/components');
 const { Draggable } = window.ReactBeautifulDnd;
 
 const Guild = class Guild extends React.PureComponent {
@@ -167,7 +167,7 @@ const Guild = class Guild extends React.PureComponent {
   }
 
   handleContextMenu (e) {
-    const GuildContextMenu = getModuleByDisplayName('GuildContextMenu');
+    const GuildContextMenu = getModuleByDisplayName('GuildContextMenu', false);
 
     contextMenu.openContextMenu(e, (props) =>
       React.createElement(GuildContextMenu, {
@@ -184,5 +184,14 @@ const Guild = class Guild extends React.PureComponent {
   }
 };
 
-const fluxShit = require('powercord/webpack').getModule([ 'getLastSelectedChannelId' ]);
-module.exports = Flux.connectStores([ fluxShit ], (e) => ({ selectedChannelId: fluxShit.getChannelId(e.guild.id) }))(Guild);
+let connectedModule = null;
+module.exports = (props) => <AsyncComponent
+  _provider={async () => {
+    if (!connectedModule) {
+      const fluxShit = await getModule([ 'getLastSelectedChannelId' ]);
+      connectedModule = Flux.connectStores([ fluxShit ], (e) => ({ selectedChannelId: fluxShit.getChannelId(e.guild.id) }))(Guild);
+    }
+    return connectedModule;
+  }}
+  {...props}
+/>;

@@ -4,7 +4,7 @@ module.exports = async function monkeypatchTyping () {
   typing.sendTyping = (
     _sendTyping => (id) =>
       setImmediate(() => {
-        if (this.instance && this.instance.props.value.startsWith(this.prefix)) {
+        if (this.instance && this.instance.props.value.startsWith(powercord.api.commands.prefix)) {
           return;
         }
 

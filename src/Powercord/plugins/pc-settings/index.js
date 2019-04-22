@@ -8,7 +8,7 @@ const GeneralSettings = require('./components/GeneralSettings.jsx');
 
 module.exports = class Settings extends Plugin {
   startPlugin () {
-    this.registerSettings('pc-general', 'General Settings', GeneralSettings);
+    this.registerSettings('pc-general', 'General Settings', powercord.settings.connectStore(GeneralSettings), false);
 
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this.patchSettingsComponent();
@@ -16,14 +16,13 @@ module.exports = class Settings extends Plugin {
   }
 
   pluginWillUnload () {
-    this.unloadCSS();
     uninject('pc-settings-items');
     uninject('pc-settings-errorHandler');
   }
 
-  patchExperiments () {
+  async patchExperiments () {
     try {
-      const experimentsModule = getModule(r => r.isDeveloper !== void 0);
+      const experimentsModule = await getModule(r => r.isDeveloper !== void 0);
       Object.defineProperty(experimentsModule, 'isDeveloper', {
         get: () => powercord.settings.get('experiments', false)
       });

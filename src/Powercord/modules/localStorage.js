@@ -4,6 +4,4 @@ module.exports = () => {
     .appendChild(iframe)
     .contentWindow
     .localStorage;
-
-  iframe.remove();
 };

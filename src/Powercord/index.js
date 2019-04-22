@@ -2,9 +2,11 @@ const { shell: { openExternal } } = require('electron');
 const EventEmitter = require('events');
 const { get } = require('powercord/http');
 const { sleep } = require('powercord/util');
+const Webpack = require('powercord/webpack');
 const { WEBSITE } = require('powercord/constants');
 
 const PluginManager = require('./managers/plugins');
+const StyleManager = require('./managers/styles');
 const APIManager = require('./managers/apis');
 const modules = require('./modules');
 
@@ -14,6 +16,7 @@ module.exports = class Powercord extends EventEmitter {
 
     this.api = {};
     this.initialized = false;
+    this.styleManager = new StyleManager();
     this.pluginManager = new PluginManager();
     this.apiManager = new APIManager();
     this.account = null;
@@ -29,6 +32,10 @@ module.exports = class Powercord extends EventEmitter {
 
   // Powercord initialization
   async init () {
+    // Webpack
+    await Webpack.init();
+
+    // Modules
     await Promise.all(modules.map(mdl => mdl()));
     const isOverlay = (/overlay/).test(location.pathname);
 
@@ -56,9 +63,10 @@ module.exports = class Powercord extends EventEmitter {
   async startup () {
     // APIs
     await this.apiManager.startAPIs();
-    this.settings = powercord.api.settings.getCategory('pc-general');
+    this.settings = powercord.api.settings.buildCategoryObject('pc-general');
 
-    // Style Manager @todo
+    // Style Manager
+    this.styleManager.loadThemes();
 
     // Plugins
     await this.pluginManager.startPlugins();
@@ -69,11 +77,11 @@ module.exports = class Powercord extends EventEmitter {
   // Powercord shutdown
   async shutdown () {
     this.initialized = false;
-
-    // Style Manager @todo
-
     // Plugins
     await this.pluginManager.shutdownPlugins();
+
+    // Style Manager
+    this.styleManager.unloadThemes();
 
     // APIs
     await this.apiManager.unload();
