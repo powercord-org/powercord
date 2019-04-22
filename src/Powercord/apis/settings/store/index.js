@@ -13,7 +13,11 @@ class SettingsStore extends Flux.Store {
     this._actionHandlers = reducer.call(this);
 
     this.settings = {};
-    readdirSync(SETTINGS_FOLDER).map(file => file.split('.')[0]).forEach(loadSettings);
+    try {
+      readdirSync(SETTINGS_FOLDER).map(file => file.split('.')[0]).forEach(loadSettings);
+    } catch (_) {
+      // heck
+    }
   }
 
   getSettings (category) {
