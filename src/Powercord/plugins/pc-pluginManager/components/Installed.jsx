@@ -4,6 +4,8 @@ const { TextInput } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { asyncArray: { map } } = require('powercord/util');
 const { Confirm } = require('powercord/components/modal');
+const { spawn } = require('child_process');
+const { resolve } = require('path');
 const Plugin = require('./Plugin');
 
 module.exports = class Installed extends React.Component {
@@ -13,6 +15,15 @@ module.exports = class Installed extends React.Component {
     this.state = {
       search: ''
     };
+
+    this.openPluginsFolder = function() {
+        const cmds = {
+            "win32": "explorer",
+            "darwin": "open",
+            "linux": "xdg-open"
+        }
+        spawn(cmds[process.platform], [resolve(__dirname, '..', '..')]);
+    }
   }
 
   render () {
@@ -25,6 +36,8 @@ module.exports = class Installed extends React.Component {
       <div className='powercord-plugins-header'>
         <h3>Installed plugins</h3>
         <Button onClick={() => this.props.goToExplore()}>Explore Plugins</Button>
+        <span>{String.fromCharCode(8195)}</span>
+        <a onClick={() => this.openPluginsFolder()}>Open Plugins Folder</a>
       </div>
       <Divider/>
       <div className='powercord-plugins-topbar'>
