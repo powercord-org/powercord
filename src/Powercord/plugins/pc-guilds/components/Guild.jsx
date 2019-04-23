@@ -66,6 +66,26 @@ const Guild = class Guild extends React.PureComponent {
     return notifStyle;
   }
 
+  get guildClassNames () {
+    let className = listItemClasses.listItem;
+    if (this.props.unread) {
+      className += ' pc-unread';
+    }
+    if (this.props.selected) {
+      className += ' pc-selected';
+    }
+    if (this.props.audio) {
+      className += ' pc-guild-audio';
+    }
+    if (this.props.video) {
+      className += ' pc-guild-video';
+    }
+    if (this.props.mentions > 0) {
+      className += ' pc-mentioned';
+    }
+    return className;
+  }
+
   async componentDidMount () {
     if (!guildClasses) {
       badgesLength = await getModule([ 'getBadgeWidthForValue' ]);
@@ -99,7 +119,7 @@ const Guild = class Guild extends React.PureComponent {
           onContextMenu={this.handleContextMenu.bind(this)}
           onMouseEnter={() => this.setState({ hovered: true })}
           onMouseLeave={() => this.setState({ hovered: false })}
-          className={listItemClasses.listItem}
+          className={this.guildClassNames}
           ref={(r) => {
             provided.innerRef(r);
             this.props.setRef(r);
