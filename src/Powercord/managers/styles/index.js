@@ -87,7 +87,7 @@ module.exports = class StyleManager {
       throw new Error(`Tried to unmount a non installed theme (${themeID})`);
     }
 
-    themeID.remove();
+    theme.remove();
     this.themes.delete(themeID);
   }
 
