@@ -60,6 +60,8 @@ module.exports = class Theme {
     if (element) {
       element.remove();
     }
+    this.trackedFiles.forEach(tf => tf.watcher.close());
+    this.trackedFiles = [];
   }
 
   async _compileStylesheet () {

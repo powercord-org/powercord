@@ -56,6 +56,41 @@ module.exports = class StyleManager {
     this.themes.get(themeID).remove();
   }
 
+  async mount (themeID, filename) {
+    const stat = await lstat(resolve(this.themesDir, filename));
+    let theme;
+
+    try {
+      if (stat.isFile()) {
+        theme = Theme.fromFile(themeID, filename);
+      } else {
+        const manifest = require(resolve(this.themesDir, filename, 'powercord_manifest.json'));
+        if (!this.manifestKeys.every(key => manifest.hasOwnProperty(key))) {
+          return console.error('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" doesn't have a valid manifest - Skipping`);
+        }
+
+        theme = new Theme(themeID, {
+          ...manifest,
+          theme: resolve(resolve(this.themesDir, filename, manifest.theme))
+        });
+      }
+    } catch (e) {
+      return console.error('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" doesn't have a valid manifest or is not a valid file - Skipping`);
+    }
+
+    this.themes.set(themeID, theme);
+  }
+
+  unmount (themeID) {
+    const theme = this.themes.get(themeID);
+    if (!theme) {
+      throw new Error(`Tried to unmount a non installed theme (${themeID})`);
+    }
+
+    themeID.remove();
+    this.themes.delete(themeID);
+  }
+
   /*
    * @todo
    * async install (pluginID) {
@@ -91,33 +126,10 @@ module.exports = class StyleManager {
       }
 
       const themeID = filename.split('.').shift().toLowerCase();
-      const stat = await lstat(resolve(this.themesDir, filename));
-      let theme;
-
-      try {
-        if (stat.isFile()) {
-          theme = Theme.fromFile(themeID, filename);
-        } else {
-          const manifest = require(resolve(this.themesDir, filename, 'powercord_manifest.json'));
-          if (!this.manifestKeys.every(key => manifest.hasOwnProperty(key))) {
-            console.error('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" doesn't have a valid manifest - Skipping`);
-            continue;
-          }
-
-          theme = new Theme(themeID, {
-            ...manifest,
-            theme: resolve(resolve(this.themesDir, filename, manifest.theme))
-          });
-        }
-      } catch (e) {
-        console.error('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" doesn't have a valid manifest or is not a valid file - Skipping`);
-        continue;
-      }
-
-      this.themes.set(themeID, theme);
+      await this.mount(themeID, filename);
 
       if (!powercord.settings.get('disabledThemes', []).includes(themeID)) {
-        theme.apply();
+        this.themes.get(themeID).apply();
       }
     }
   }
