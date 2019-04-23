@@ -593,7 +593,7 @@ module.exports = class EmojiUtility extends Plugin {
       return res;
     });
 
-    this.registerSettings('pc-emojiUtility', 'Emote Utility', () => React.createElement(Settings, { settings: this.settings }));
+    this.registerSettings('pc-emojiUtility', 'Emote Utility', Settings);
 
     this.registerCommand(
       'findemote',

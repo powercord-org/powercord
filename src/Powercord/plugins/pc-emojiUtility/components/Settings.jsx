@@ -6,9 +6,7 @@ let getGuild, getSortedGuilds;
 
 module.exports = class EmojiUtilitySettings extends React.Component {
   constructor (props) {
-    super();
-
-    this.settings = props.settings;
+    super(props);
 
     if (getGuild && getSortedGuilds) {
       this._setState(false);
@@ -17,17 +15,17 @@ module.exports = class EmojiUtilitySettings extends React.Component {
 
   _setState (update = true) {
     const state = {
-      useEmbeds: this.settings.get('useEmbeds', false),
-      displayLink: this.settings.get('displayLink', true),
+      useEmbeds: this.props.getSetting('useEmbeds', false),
+      displayLink: this.props.getSetting('displayLink', true),
 
-      includeIdForSavedEmojis: this.settings.get('includeIdForSavedEmojis', true),
+      includeIdForSavedEmojis: this.props.getSetting('includeIdForSavedEmojis', true),
 
-      filePath: this.settings.get('filePath', null),
+      filePath: this.props.getSetting('filePath', null),
 
-      defaultCloneId: this.settings.get('defaultCloneId', null),
-      defaultCloneIdUseCurrent: this.settings.get('defaultCloneIdUseCurrent', false),
+      defaultCloneId: this.props.getSetting('defaultCloneId', null),
+      defaultCloneIdUseCurrent: this.props.getSetting('defaultCloneIdUseCurrent', false),
 
-      hiddenGuilds: this.settings.get('hiddenGuilds', [])
+      hiddenGuilds: this.props.getSetting('hiddenGuilds', [])
     };
 
     state.isFilePathValid = state.filePath ? existsSync(state.filePath) : true;
@@ -165,7 +163,7 @@ module.exports = class EmojiUtilitySettings extends React.Component {
       value = defaultValue;
     }
 
-    this.settings.set(key, value);
+    this.props.updateSetting(key, value);
     this.setState({
       [key]: value
     });
