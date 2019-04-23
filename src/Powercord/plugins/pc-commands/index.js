@@ -1,4 +1,5 @@
 const { Plugin } = require('powercord/entities');
+const { uninject } = require('powercord/injector');
 
 const commands = require('./commands');
 const monkeypatchMessages = require('./monkeypatchMessages.js');
@@ -14,5 +15,9 @@ module.exports = class Commands extends Plugin {
     monkeypatchMessages.call(this);
     injectAutocomplete.call(this);
     monkeypatchTyping.call(this);
+  }
+
+  pluginWillUnload () {
+    uninject('pc-commands-autocomplete');
   }
 };

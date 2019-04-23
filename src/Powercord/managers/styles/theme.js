@@ -37,11 +37,11 @@ module.exports = class Theme {
     // Filter no longer used watchers
     this.trackedFiles = this.trackedFiles.filter(tf => {
       if (!stylesheet.includes.includes(tf.file)) {
-        // noinspection JSPrimitiveTypeWrapperUsage
-        stylesheet.includes = stylesheet.includes.filter(i => i !== tf.file);
         tf.watcher.close();
         return false;
       }
+      // noinspection JSPrimitiveTypeWrapperUsage
+      stylesheet.includes = stylesheet.includes.filter(i => i !== tf.file);
       return true;
     });
 
