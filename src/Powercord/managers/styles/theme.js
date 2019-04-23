@@ -110,7 +110,7 @@ module.exports = class Theme {
           data: compiled.css.toString(),
           includes: [
             this.manifest.theme,
-            ...compiled.stats.includedFiles.map(f => decodeURI(f).replace(/\\/g, '/'))
+            ...compiled.stats.includedFiles.map(f => decodeURI(f).replace(/\\/g, '/').replace(/https?:\/\/(?:[a-z]+\.)?discordapp\.com/i, ''))
           ]
         });
       });
