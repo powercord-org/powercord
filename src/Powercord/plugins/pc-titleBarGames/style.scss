@@ -33,17 +33,20 @@
       }
     }
   }
-  
+
   :last-child {
     svg {
+      height: 16px;
+      width: 16px;
       margin-left: 12px;
+      transition: 0.5s;
     }
-    
+
     &:hover {
-      &svg {
+      svg {
         height: 36px;
         width: 36px;
-        margin-left: 0px;
+        margin-left: 0;
       }
     }
   }
