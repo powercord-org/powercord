@@ -24,7 +24,6 @@ class PatchedBrowserWindow extends BrowserWindow {
       global.originalPreload = opts.webPreferences.preload;
       opts.webPreferences.preload = join(__dirname, 'preload.js');
       opts.webPreferences.nodeIntegration = true;
-      opts.webPreferences.allowRunningInsecureContent = true;
 
       if (transparentWindow) {
         opts.transparent = true;
