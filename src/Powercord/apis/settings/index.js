@@ -136,7 +136,7 @@ module.exports = class Settings extends API {
     const token = this.store.getSetting('pc-general', 'powercordToken');
     const baseUrl = this.store.getSetting('pc-general', 'backendURL', WEBSITE);
 
-    let { isEncrypted, payload: settings } = (await get(`${baseUrl}/api/users/@me/settings`)
+    let { isEncrypted, powercord: settings } = (await get(`${baseUrl}/api/users/@me/settings`)
       .set('Authorization', token)
       .then(r => r.body));
 
