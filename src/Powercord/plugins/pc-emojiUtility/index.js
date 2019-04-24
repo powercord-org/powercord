@@ -535,7 +535,7 @@ module.exports = class EmojiUtility extends Plugin {
 
     injectInFluxContainer('pc-emojiUtility-hideEmojisPickerRm', 'EmojiPicker', 'removeEmotes', function () {
       const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
-      const hiddenNames = hiddenGuilds.map(id => this.getGuild(id).name);
+      const hiddenNames = hiddenGuilds.map(id => _this.getGuild(id).name);
 
       this.setState({
         metaData: this.state.metaData.map(meta => ({
