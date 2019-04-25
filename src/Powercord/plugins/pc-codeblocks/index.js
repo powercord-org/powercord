@@ -31,6 +31,10 @@ module.exports = class Codeblocks extends Plugin {
 
     const instance = getOwnerInstance(await waitFor(messageQuery));
     inject('pc-message-codeblock', instance.__proto__, 'render', function (_, res) {
+      if (!res.props.children[1]) {
+        return res;
+      }
+
       const { message } = res.props.children[1]
         ? (res.props.children[0] !== false
           ? res
