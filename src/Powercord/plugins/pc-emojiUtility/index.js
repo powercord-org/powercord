@@ -417,7 +417,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCreateableGuilds = () => {
         const items = [];
-        const createableGuilds = Object.values(this.getGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+        const createableGuilds = Object.values(this.getSortedGuilds()).map(g => g.guild).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
 
         for (const guild of createableGuilds) {
           items.push({
