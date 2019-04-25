@@ -1,6 +1,6 @@
 const { Plugin } = require('powercord/entities');
 const { getOwnerInstance, waitFor } = require('powercord/util');
-const { contextMenu, getModule, React } = require('powercord/webpack');
+const { contextMenu, getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 
 const Settings = require('./Settings');
@@ -8,11 +8,7 @@ const Settings = require('./Settings');
 class ClickableEdits extends Plugin {
   startPlugin () {
     this.patchMessageContent();
-    this.registerSettings('pc-clickableEdits', 'Clickable Edits', () =>
-      React.createElement(Settings, {
-        settings: this.settings
-      })
-    );
+    this.registerSettings('pc-clickableEdits', 'Clickable Edits', Settings);
   }
 
   pluginWillUnload () {
