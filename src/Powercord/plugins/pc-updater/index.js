@@ -101,7 +101,7 @@ module.exports = class Updater extends Plugin {
             this.update(setState)
               .then(() => container.remove())
         }, {
-          text: 'Update and reboot',
+          text: 'Update and reload',
           onClick: (setState) =>
             this.update(setState)
               .then(success =>
