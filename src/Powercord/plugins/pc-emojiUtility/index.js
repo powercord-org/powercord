@@ -55,6 +55,7 @@ module.exports = class EmojiUtility extends Plugin {
 
     await this.import('getGuild');
     await this.import('getGuilds');
+    await this.import('getSortedGuilds');
     await this.import('uploadEmoji');
     await this.import('getChannel');
     await this.import('getGuildPermissions');
@@ -276,7 +277,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCloneableGuilds = () => {
         const items = [];
-        const clonableGuilds = Object.values(this.getGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+        const clonableGuilds = Object.values(this.getSortedGuilds()).map(g => g.guild).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
 
         for (const guild of clonableGuilds) {
           items.push({
