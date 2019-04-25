@@ -117,8 +117,6 @@ const Guild = class Guild extends React.PureComponent {
       {(provided) => (
         <div
           onContextMenu={this.handleContextMenu.bind(this)}
-          onMouseEnter={() => this.setState({ hovered: true })}
-          onMouseLeave={() => this.setState({ hovered: false })}
           className={this.guildClassNames}
           ref={(r) => {
             provided.innerRef(r);
@@ -130,7 +128,10 @@ const Guild = class Guild extends React.PureComponent {
           <div className={`${blobContainerClasses.pill} ${wrapperItemClasses.wrapper}`}>
             <span className={wrapperItemClasses.item} style={this.notifStyle}/>
           </div>
-          <Tooltip text={this.props.guild.name} position='right'>
+          <Tooltip
+            text={this.props.guild.name}
+            position='right'
+          >
             <div className={blobContainerClasses.blobContainer}>
               <BlobMask
                 lowerBadge={this.props.mentions > 0
@@ -146,7 +147,13 @@ const Guild = class Guild extends React.PureComponent {
                 selected={this.props.selected || this.state.hovered}
                 lowerBadgeWidth={badgesLength.getBadgeWidthForValue(this.props.mentions)}
               >
-                <Link className={guildClasses.wrapper} aria-label='aa' to={link}>
+                <Link
+                  onMouseEnter={() => this.setState({ hovered: true })}
+                  onMouseLeave={() => this.setState({ hovered: false })}
+                  className={guildClasses.wrapper}
+                  aria-label='aa'
+                  to={link}
+                >
                   {this.props.guild.icon
                     ? <img
                       className={guildClasses.icon} alt='Server Icon' width='48' height='48'
