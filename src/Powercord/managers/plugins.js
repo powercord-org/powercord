@@ -184,7 +184,7 @@ module.exports = class PluginManager {
 
   // Install
   async install (pluginID) {
-    await exec(`git clone https://github.com/powercord-org/${pluginID}`, this.pluginDir);
+    await exec(`git clone https://github.com/powercord-community/${pluginID}`, this.pluginDir);
     this.mount(pluginID);
   }
 
