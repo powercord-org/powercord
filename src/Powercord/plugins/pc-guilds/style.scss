@@ -16,13 +16,11 @@
   height: 500px;
 }
 
-.powercord-guilds {
-  .pc-guild {
-    margin-bottom: 10px;
+.pc-guild {
+  margin-bottom: 8px;
 
-    &:nth-child(1) {
-      margin-top: 0;
-    }
+  &[style*="top"] {
+    transform: translateY(-20px);
   }
 }
 

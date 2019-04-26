@@ -1,7 +1,7 @@
 const fs = require('fs').promises;
 const { Plugin } = require('powercord/entities');
 const { open: openModal } = require('powercord/modal');
-const { getOwnerInstance } = require('powercord/util');
+const { getOwnerInstance, waitFor } = require('powercord/util');
 const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
 const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { resolve } = require('path');
@@ -20,6 +20,7 @@ module.exports = class Spotify extends Plugin {
 
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.containerClasses = await getModule([ 'container', 'accountDetails' ]);
     this._injectModal();
     this._injectListeningAlong();
     this._patchAutoPause();
@@ -51,7 +52,7 @@ module.exports = class Spotify extends Plugin {
     uninject('pc-spotify-update');
     uninject('pc-spotify-premium');
 
-    getOwnerInstance(document.querySelector('.container-2Thooq:not([id])')).forceUpdate();
+    getOwnerInstance(document.querySelector(`.${this.containerClasses.container.replace(/ /g, '.')}:not([id])`)).forceUpdate();
     powercord.off('webSocketMessage:dealer.spotify.com', this._handler);
 
     const el = document.querySelector('#powercord-spotify-modal');
@@ -76,12 +77,16 @@ module.exports = class Spotify extends Plugin {
   }
 
   async _injectModal () {
+    const container = await waitFor(`.${this.containerClasses.container.replace(/ /g, '.')}`);
+    const instance = getOwnerInstance(container);
+
     const modal = React.createElement(this.settings.connectStore(Modal), { main: this });
-    await injectInFluxContainer('pc-spotify-modal', 'Account', 'render', (_, res) => [ modal, res ]);
-    getOwnerInstance(document.querySelector('.container-2Thooq')).forceUpdate();
+    await inject('pc-spotify-modal', instance.__proto__, 'render', (_, res) => [ modal, res ]);
+    instance.forceUpdate();
   }
 
   async _injectListeningAlong () {
+    // @todo: Remove deprecated FluxContainer injection
     await injectInFluxContainer('pc-spotify-listeningAlong', 'ListeningAlong', 'render', (_, res) => {
       this._listeningAlongComponent = res;
       if (this._forceUpdate) {

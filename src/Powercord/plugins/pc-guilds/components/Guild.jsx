@@ -67,7 +67,7 @@ const Guild = class Guild extends React.PureComponent {
   }
 
   get guildClassNames () {
-    let className = listItemClasses.listItem;
+    let className = `${listItemClasses.listItem} pc-guild`;
     if (this.props.unread) {
       className += ' pc-unread';
     }
