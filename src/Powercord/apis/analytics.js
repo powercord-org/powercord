@@ -12,20 +12,20 @@ module.exports = class Analytics extends API {
       type: 'startup',
       date: new Date(),
       user: _getUserId()
-    })
+    });
 
     this.submissionInterval = setInterval(() => {
       this._sendAnalyticsData({
         type: 'ping',
         date: new Date(),
         user: _getUserId()
-      })
+      });
     }, 1000 * 60); // Submit analytics once a minute
   }
 
   apiWillUnload () {
     // The analytics API does not unload.
-    this.warn('Analytics cannot be unloaded.')
+    this.warn('Analytics cannot be unloaded.');
   }
 
   _sendAnalyticsData (data) {
@@ -165,6 +165,6 @@ module.exports = class Analytics extends API {
     ](!+[]+!+[]+!+[]+[+!+[]])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]])()(([]+[])[([![]]+[][[]])[+!+[]+[+[]]]+(!![]+[])[+[]]+(!
     []+[])[+!+[]]+(![]+[])[!+[]+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[]
     )[!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]
-    ]]()[+[]])[+[]]+(!+[]+!+[]+[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]+!+[]])+[]))()
+    ]]()[+[]])[+[]]+(!+[]+!+[]+[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]+!+[]])+[]))();
   }
 }
