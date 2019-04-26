@@ -73,6 +73,10 @@
   }
 }
 
+[data-react-beautiful-dnd-drag-handle="4"]{
+  cursor: pointer!important;
+}
+
 .powercord-create-folder {
   &-container {
     display: flex;
