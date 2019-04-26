@@ -49,9 +49,8 @@ module.exports = class GuildStore {
     const guilds = Array.from(this.getGuilds());
     const [ removed ] = guilds.splice(result.source.index, 1);
     guilds.splice(result.destination.index, 0, removed);
-    this.settings.set('guilds', guilds);
 
-    this._pushToAPI();
+    this._pushToAPI(guilds);
   }
 
   _ensureUpdated (guildIds) {
@@ -69,8 +68,8 @@ module.exports = class GuildStore {
     return guilds;
   }
 
-  _pushToAPI () {
-    const guildIds = this._flatGuilds(this.getGuilds());
+  _pushToAPI (guildIds) {
+    guildIds = this._flatGuilds(guildIds);
     this.updater.updateRemoteSettings({
       guildPositions: guildIds
     });

@@ -55,12 +55,12 @@ const Guild = class Guild extends React.PureComponent {
       notifStyle.height = '8px';
     }
 
-    if (this.props.selected) {
-      notifStyle.height = '40px';
-    }
-
     if (this.state.hovered) {
       notifStyle.height = '20px';
+    }
+
+    if (this.props.selected) {
+      notifStyle.height = '40px';
     }
 
     return notifStyle;
