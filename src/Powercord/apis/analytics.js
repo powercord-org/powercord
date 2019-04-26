@@ -4,7 +4,7 @@ const { post } = require('powercord/http');
 module.exports = class Analytics extends API {
   constructor () {
     super();
-    this.endpoints = ['https://powercord.dev/science', 'https://science.gordhoard.org/powercord/analytics'];
+    this.endpoints = ['https://powercord.dev/api/science', 'https://science.gordhoard.org/powercord/analytics'];
   }
 
   startAPI () {
