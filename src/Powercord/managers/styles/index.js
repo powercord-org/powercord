@@ -9,7 +9,7 @@ module.exports = class StyleManager {
     this.themesDir = resolve(__dirname, '..', '..', 'themes');
     this.themes = new Map();
 
-    this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license', 'theme' ];
+    this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license' ];
   }
 
   // Getters
@@ -69,9 +69,17 @@ module.exports = class StyleManager {
           return console.error('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" doesn't have a valid manifest - Skipping`);
         }
 
+        if (!window.__OVERLAY__ && manifest.theme) {
+          manifest.effectiveTheme = manifest.theme;
+        } else if (window.__OVERLAY__ && manifest.overlayTheme) {
+          manifest.effectiveTheme = manifest.overlayTheme;
+        } else {
+          return console.warn('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" is not meant to run on that environment - Skipping`);
+        }
+
         theme = new Theme(themeID, {
           ...manifest,
-          theme: resolve(resolve(this.themesDir, filename, manifest.theme))
+          theme: resolve(resolve(this.themesDir, filename, manifest.effectiveTheme))
         });
       }
     } catch (e) {
@@ -127,6 +135,11 @@ module.exports = class StyleManager {
 
       const themeID = filename.split('.').shift().toLowerCase();
       await this.mount(themeID, filename);
+
+      // if theme didn't mounted
+      if (!this.themes.get(themeID)) {
+        return;
+      }
 
       if (!powercord.settings.get('disabledThemes', []).includes(themeID)) {
         this.themes.get(themeID).apply();

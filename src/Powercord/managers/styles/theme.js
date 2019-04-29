@@ -170,7 +170,8 @@ module.exports = class Theme {
       description: 'No description provided',
       author: 'Unknown',
       license: 'Unknown',
-      theme: file
+      theme: file,
+      overlayTheme: file
     });
   }
 };
