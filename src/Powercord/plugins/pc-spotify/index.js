@@ -41,7 +41,7 @@ module.exports = class Spotify extends Plugin {
     );
 
     Object.values(commands).forEach(command =>
-      this.registerCommand(command.command, command.aliases || [], command.description, command.usage, command.func)
+      this.registerCommand(command.command, command.aliases || [], command.description, command.usage, command.func.bind(null, this.SpotifyPlayer))
     );
   }
 

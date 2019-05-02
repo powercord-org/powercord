@@ -65,7 +65,7 @@ module.exports = class Theme {
   }
 
   async _compileStylesheet () {
-    let stylesheet = (await readFile(this.manifest.theme)).toString();
+    let stylesheet = await readFile(this.manifest.theme, 'utf8');
     switch (this.manifest.theme.split('.').pop()) {
       case 'scss':
         stylesheet = await this._renderSCSS(stylesheet);
