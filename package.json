@@ -4,10 +4,17 @@
   "description": "A lightweight @discordapp client mod focused on simplicity and performance",
   "main": "index.js",
   "scripts": {
-    "plug": "node injectors/index.js inject",
-    "unplug": "node injectors/index.js uninject",
-    "inject": "node injectors/index.js inject",
-    "uninject": "node injectors/index.js uninject"
+    "_env:stable": "cross-env DISCORDTYPE=stable",
+    "_env:ptb": "cross-env DISCORDTYPE=ptb",
+    "_env:canary": "cross-env DISCORDTYPE=canary",
+    "plug": "npm run _env:stable -- node injectors/index.js inject",
+    "plug:ptb": "npm run _env:ptb -- node injectors/index.js inject",
+    "plug:canary": "npm run _env:canary -- node injectors/index.js inject",
+    "unplug": "npm run _env:stable -- node injectors/index.js uninject",
+    "unplug:ptb": "npm run _env:ptb -- node injectors/index.js uninject",
+    "unplug:canary": "npm run _env:canary -- node injectors/index.js uninject",
+    "inject": "npm run _env:canary -- node injectors/index.js inject",
+    "uninject": "npm run _env:canary -- node injectors/index.js uninject"
   },
   "repository": {
     "type": "git",
@@ -28,6 +35,7 @@
     "stylus": "^0.54.5"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
     "eslint-plugin-react": "^7.12.4"
   }

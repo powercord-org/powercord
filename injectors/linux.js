@@ -1,15 +1,16 @@
 const { existsSync } = require('fs');
 const { join } = require('path');
+const DiscordTypes = require('./discord-type').linuxTypes;
 
 const paths = [
-  '/usr/share/discord-canary',
-  '/usr/lib64/discord-canary',
-  '/opt/discord-canary'
+  '/usr/share/',
+  '/usr/lib64/',
+  '/opt/'
 ];
 
 exports.getAppDir = async () => {
   const discordPath = paths
-    .find(path => existsSync(path));
+    .map(x => join(x, DiscordTypes[process.env.DISCORDTYPE])).find(path => existsSync(path));
 
   return join(
     discordPath,

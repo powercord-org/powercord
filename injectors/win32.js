@@ -1,8 +1,10 @@
 const { readdir } = require('fs').promises;
 const { join } = require('path');
+const DiscordTypes = require('./discord-type').winTypes;
 
 exports.getAppDir = async () => {
-  const discordPath = join(process.env.LOCALAPPDATA, 'DiscordCanary');
+  console.log(`Discord Type: ${process.env.DISCORDTYPE}`);
+  const discordPath = join(process.env.LOCALAPPDATA, DiscordTypes[process.env.DISCORDTYPE]);
   const discordDirectory = await readdir(discordPath);
 
   const currentBuild = discordDirectory

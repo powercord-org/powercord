@@ -1,2 +1,2 @@
-exports.getAppDir = async () =>
-  '/Applications/Discord Canary.app/Contents/Resources/app';
+const discordTypes = require('./discord-type').darwinTypes;
+exports.getAppDir = async () => (`/Applications/${(discordTypes[process.env.DISCORDTYPE])}.app/Contents/Resources/app`);
