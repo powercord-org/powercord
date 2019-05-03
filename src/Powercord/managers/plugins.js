@@ -48,6 +48,15 @@ module.exports = class PluginManager {
     return !powercord.settings.get('disabledPlugins', []).includes(plugin);
   }
 
+  getDependenciesSync (plugin) {
+    try {
+      return plugin.dependencies || [];
+    } catch (ex) {
+      console.error(ex, plugin);
+      return [];
+    }
+  }
+
   // Resolvers
   resolveDependents (plugin, dept = []) {
     const dependents = this.getPlugins().filter(p => this.getDependenciesSync(p).includes(plugin));

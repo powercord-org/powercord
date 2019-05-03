@@ -77,7 +77,7 @@ module.exports = class Installed extends React.Component {
   }
 
   async enable (pluginID) {
-    const willEnable = (await powercord.pluginManager.resolveDependencies(pluginID)).filter(p => !powercord.pluginManager.isEnabled(p));
+    const willEnable = (await powercord.pluginManager.resolveDependents(pluginID)).filter(p => !powercord.pluginManager.isEnabled(p));
     if (willEnable.length !== 0) {
       const plugins = await map(willEnable, async p => ({
         name: await powercord.pluginManager.getPluginName(p),
