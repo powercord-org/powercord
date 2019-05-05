@@ -56,6 +56,7 @@ module.exports = class Powercord extends EventEmitter {
     if (this.settings.get('hideToken', true)) {
       const tokenModule = await require('powercord/webpack').getModule([ 'hideToken' ]);
       tokenModule.hideToken = () => void 0;
+      tokenModule.showToken(); // just to be sure
     }
   }
 

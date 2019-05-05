@@ -76,7 +76,7 @@ module.exports = class TitleBarGames extends Plugin {
       }
     };
 
-    inject('powercord-titleBarGames', instance, 'render', () =>
+    inject('pc-titleBarGames', instance, 'render', () =>
       React.createElement(TitleBarComponent)
     );
 
