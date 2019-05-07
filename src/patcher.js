@@ -40,6 +40,8 @@ class PatchedBrowserWindow extends BrowserWindow {
 }
 
 Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
+electron.deprecate.promisify = ((dep) => (fn) => fn ? dep(fn) : (() => void 0))(electron.deprecate.promisify);
+
 require.cache[electronPath].exports = {
   /*
    * TODO: Thoroughly investigate every Electron export
