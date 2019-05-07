@@ -63,6 +63,7 @@ module.exports = class StyleManager {
     try {
       if (stat.isFile()) {
         theme = Theme.fromFile(themeID, filename);
+        console.warn('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" loaded in development mode`);
       } else {
         const manifest = require(resolve(this.themesDir, filename, 'powercord_manifest.json'));
         if (!this.manifestKeys.every(key => manifest.hasOwnProperty(key))) {
@@ -82,11 +83,11 @@ module.exports = class StyleManager {
           theme: resolve(resolve(this.themesDir, filename, manifest.effectiveTheme))
         });
       }
+
+      this.themes.set(themeID, theme);
     } catch (e) {
       return console.error('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" doesn't have a valid manifest or is not a valid file - Skipping`);
     }
-
-    this.themes.set(themeID, theme);
   }
 
   unmount (themeID) {
