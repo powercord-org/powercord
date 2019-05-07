@@ -83,11 +83,11 @@ module.exports = class StyleManager {
           theme: resolve(resolve(this.themesDir, filename, manifest.effectiveTheme))
         });
       }
-
-      this.themes.set(themeID, theme);
     } catch (e) {
       return console.error('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" doesn't have a valid manifest or is not a valid file - Skipping`);
     }
+
+    this.themes.set(themeID, theme);
   }
 
   unmount (themeID) {
@@ -130,7 +130,7 @@ module.exports = class StyleManager {
 
     const files = readdirSync(this.themesDir);
     for (const filename of files) {
-      if (filename === '.exists') {
+      if (filename === '.exists' || filename === '.DS_Store') {
         continue;
       }
 
@@ -139,7 +139,7 @@ module.exports = class StyleManager {
 
       // if theme didn't mounted
       if (!this.themes.get(themeID)) {
-        return;
+        continue;
       }
 
       if (!powercord.settings.get('disabledThemes', []).includes(themeID)) {
