@@ -2,6 +2,7 @@ const { React, Flux, Router: { Link }, constants: { Routes }, contextMenu, getMo
 const { AsyncComponent, Icon: DiscordIcon, Tooltip } = require('powercord/components');
 const { Draggable } = window.ReactBeautifulDnd;
 
+const NumberBadge = require('./NumberBadge.jsx');
 const BlobMask = AsyncComponent.from(getModuleByDisplayName('BlobMask'));
 
 let badgesLength,
@@ -15,18 +16,7 @@ const Icon = ({ name }) => <div className={`${numberBadgeClasses.iconBadge} ${li
   <DiscordIcon className={numberBadgeClasses.icon} name={name}/>
 </div>;
 
-const NumberBadge = ({ count }) => <div
-  className={`${numberBadgeClasses.numberBadge} ${numberBadgeClasses.base}`}
-  style={{
-    backgroundColor: 'rgb(240, 71, 71)',
-    width: badgesLength.getBadgeWidthForValue(count),
-    paddingRight: 1
-  }}
->
-  {count}
-</div>;
-
-const Guild = class Guild extends React.PureComponent {
+const Guild = class Guild extends React.Component {
   constructor (props) {
     super(props);
 

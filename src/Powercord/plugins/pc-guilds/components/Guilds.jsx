@@ -3,6 +3,7 @@ const { React } = require('powercord/webpack');
 
 const Guild = require('./Guild.jsx');
 const Folder = require('./Folder.jsx');
+const NumberBadge = require('./NumberBadge.jsx');
 
 module.exports = class Guilds extends React.Component {
   constructor (props) {
@@ -34,7 +35,7 @@ module.exports = class Guilds extends React.Component {
             {hiddenGuilds.length > 0 &&
             <div className='powercord-hidden-btn' onClick={() => this.setState({ hidden: !this.state.hidden })}>
               {this.state.hidden ? 'Visible' : 'Hidden'}
-              {guilds.mentions.hidden > 0 && <div className='powercord-mentions-badge'>{guilds.mentions.hidden}</div>}
+              {guilds.mentions.hidden > 0 && <NumberBadge count={guilds.mentions.hidden}/>}
             </div>}
 
             {guilds.items.map((guild, index) => this.renderItem(guild, index))}
