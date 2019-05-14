@@ -1,5 +1,8 @@
-require('../polyfills');
+// Perform checks
+require('./env_check')();
 
+// And then do stuff
+require('../polyfills');
 const main = require('./main.js');
 
 let platformModule;
