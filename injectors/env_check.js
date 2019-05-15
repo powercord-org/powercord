@@ -2,6 +2,13 @@ const { resolve } = require('path');
 const { execSync } = require('child_process');
 
 module.exports = () => {
+  // Don't clone in System32
+  if (__dirname.toLowerCase().includes('/windows/system32/')) {
+    console.error('Powercord shouldn\'t be cloned in System32, as this will generate conflicts, and bloats your Windows installation. Please remove it and clone it in another place.\n' +
+      'Note: Not opening cmd as administrator will be enough.');
+    process.exit(1);
+  }
+
   // Verify if we're on node 10.x
   const fs = require('fs');
   if (!fs.promises) {
