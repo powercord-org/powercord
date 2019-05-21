@@ -1,14 +1,14 @@
 const { typing } = require('powercord/webpack');
 
 module.exports = async function monkeypatchTyping () {
-  typing.sendTyping = (
-    _sendTyping => (id) =>
+  typing.startTyping = (
+    _startTyping => (id) =>
       setImmediate(() => {
         if (this.instance && this.instance.props.value.startsWith(powercord.api.commands.prefix)) {
           return;
         }
 
-        _sendTyping(id);
+        _startTyping(id);
       })
-  )(this.oldSendTyping = typing.sendTyping);
+  )(this.oldStartTyping = typing.startTyping);
 };
