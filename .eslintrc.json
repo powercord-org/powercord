@@ -1,7 +1,8 @@
 {
   "globals": {
     "powercord": true,
-    "webpackJsonp": true
+    "webpackJsonp": true,
+    "GLOBAL_ENV": true
   },
   "parserOptions": {
     "ecmaVersion": 2018,

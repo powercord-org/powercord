@@ -101,8 +101,7 @@ const Guild = class Guild extends React.Component {
     }
 
     // eslint-disable-next-line new-cap
-    const link = this.props.selectedChannelId ? Routes.CHANNEL(this.props.guild.id, this.props.selectedChannelId) : Routes.GUILD(this.props.guild.id);
-
+    const link = Routes.CHANNEL(this.props.guild.id, this.props.selectedChannelId);
     return <Draggable draggableId={this.props.guild.id} index={this.props.index}>
       {(provided) => (
         <div
