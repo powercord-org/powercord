@@ -1,9 +1,9 @@
 const { resolve } = require('path');
 const { Plugin } = require('powercord/entities');
 const { Tooltip } = require('powercord/components');
+const { inject, uninject } = require('powercord/injector');
 const { GUILD_ID, WEBSITE } = require('powercord/constants');
 const { React, getModuleByDisplayName } = require('powercord/webpack');
-const { inject, injectRecursive, uninject } = require('powercord/injector');
 const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 
 const BadgesComponent = require('./Badges.jsx');
@@ -19,7 +19,9 @@ module.exports = class Badges extends Plugin {
     uninject('pc-badges-users');
     uninject('pc-badges-guilds-header');
 
-    // forceUpdateElement('.pc-channels .pc-hasDropdown');
+    if (document.querySelector('.pc-channels .pc-hasDropdown')) {
+      forceUpdateElement('.pc-channels .pc-hasDropdown');
+    }
   }
 
   async _patchGuildHeaders () {
