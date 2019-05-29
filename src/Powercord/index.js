@@ -162,4 +162,8 @@ module.exports = class Powercord extends EventEmitter {
     console.debug('%c[Powercord]', 'color: #257dd4', 'Logged in!');
     this.isLinking = false;
   }
+
+  isEmmaCute () {
+    return true;
+  }
 };

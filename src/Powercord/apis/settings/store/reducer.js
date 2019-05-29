@@ -1,50 +1,61 @@
 const { join } = require('path');
 const { SETTINGS_FOLDER, FluxActions: { Settings: ActionTypes } } = require('powercord/constants');
 
-module.exports = function () {
-  return {
-    [ActionTypes.LOAD_SETTINGS]: ({ category }) => {
-      let settings = {};
-      try {
-        settings = require(join(SETTINGS_FOLDER, `${category}.json`));
-      } catch (_) {}
+let settings =  {};
 
-      this.settings = {
-        ...this.settings,
-        [category]: settings
-      };
-    },
+module.exports = {
+  getSettings: () => settings,
 
-    [ActionTypes.UPDATE_SETTINGS]: ({ category, settings }) => {
-      this.settings = {
-        ...this.settings,
-        [category]: settings
-      };
-      this._persist(category);
-    },
-
-    [ActionTypes.TOGGLE_SETTING]: ({ category, setting }) => {
-      const settings = this.settings[category] || {};
-      this.settings = {
-        ...this.settings,
-        [category]: {
-          ...settings,
-          [setting]: !settings[setting]
+  reducer (persist) {
+    return {
+      [ActionTypes.LOAD_SETTINGS]: ({ category }) => {
+        let categorySettings = {};
+        try {
+          categorySettings = require(join(SETTINGS_FOLDER, `${category}.json`));
+        } catch (_) {
         }
-      };
-      this._persist(category);
-    },
 
-    [ActionTypes.UPDATE_SETTING]: ({ category, setting, value }) => {
-      const settings = this.settings[category] || {};
-      this.settings = {
-        ...this.settings,
-        [category]: {
+        settings = {
           ...settings,
+          [category]: categorySettings
+        };
+      },
+
+      [ActionTypes.UPDATE_SETTINGS]: ({ category, categorySettings }) => {
+        settings = {
+          ...settings,
+          [category]: categorySettings
+        };
+        persist(category, categorySettings);
+      },
+
+      [ActionTypes.TOGGLE_SETTING]: ({ category, setting }) => {
+        let categorySettings = settings[category] || {};
+        categorySettings = {
+          ...categorySettings,
+          [setting]: !categorySettings[setting]
+        };
+
+        settings = {
+          ...settings,
+          [category]: categorySettings
+        };
+        persist(category, categorySettings);
+      },
+
+      [ActionTypes.UPDATE_SETTING]: ({ category, setting, value }) => {
+        let categorySettings = settings[category] || {};
+        categorySettings = {
+          ...categorySettings,
           [setting]: value
-        }
-      };
-      this._persist(category);
-    }
-  };
+        };
+
+        settings = {
+          ...settings,
+          [category]: categorySettings
+        };
+        persist(category, categorySettings);
+      }
+    };
+  }
 };

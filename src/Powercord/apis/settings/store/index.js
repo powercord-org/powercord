@@ -8,16 +8,18 @@ const { loadSettings } = require('./actions');
 const reducer = require('./reducer');
 
 class SettingsStore extends Flux.Store {
-  constructor (dispatcher, reducer) {
-    super(dispatcher, {});
-    this._actionHandlers = reducer.call(this);
+  constructor () {
+    super(FluxDispatcher, reducer.reducer(SettingsStore._persist));
 
-    this.settings = {};
     try {
       readdirSync(SETTINGS_FOLDER).map(file => file.split('.')[0]).forEach(loadSettings);
     } catch (_) {
       // heck
     }
+  }
+
+  get settings () {
+    return reducer.getSettings();
   }
 
   getSettings (category) {
@@ -37,14 +39,14 @@ class SettingsStore extends Flux.Store {
       : currentNode;
   }
 
-  async _persist (category) {
+  static async _persist (category, settings) {
     if (!existsSync(SETTINGS_FOLDER)) {
       await mkdir(SETTINGS_FOLDER);
     }
 
-    await writeFile(join(SETTINGS_FOLDER, `${category}.json`), JSON.stringify(this.settings[category], null, 2));
+    await writeFile(join(SETTINGS_FOLDER, `${category}.json`), JSON.stringify(settings, null, 2));
   }
 }
 
-const store = new SettingsStore(FluxDispatcher, reducer);
+const store = new SettingsStore();
 module.exports = store;
