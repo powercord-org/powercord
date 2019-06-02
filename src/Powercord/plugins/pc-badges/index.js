@@ -1,18 +1,25 @@
 const { resolve } = require('path');
+const { get } = require('powercord/http');
 const { Plugin } = require('powercord/entities');
+const { WEBSITE } = require('powercord/constants');
 const { Tooltip } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
-const { GUILD_ID, WEBSITE } = require('powercord/constants');
 const { React, getModuleByDisplayName } = require('powercord/webpack');
 const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 
 const BadgesComponent = require('./Badges.jsx');
 
 module.exports = class Badges extends Plugin {
+  constructor () {
+    super();
+    this.guildBadges = {};
+  }
+
   startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuildHeaders();
     this._patchUserComponent();
+    this._fetchBadges();
   }
 
   pluginWillUnload () {
@@ -28,8 +35,12 @@ module.exports = class Badges extends Plugin {
     const _this = this;
     const GuildHeader = await getModuleByDisplayName('GuildHeader');
     inject('pc-badges-guilds-header', GuildHeader.prototype, 'render', function (_, res) {
-      if (this.props.guild.id === GUILD_ID) {
-        res.props.children.props.children[0].props.children.props.children.unshift(_this._renderBadge());
+      if (_this.guildBadges[this.props.guild.id]) {
+        res.props.children.props.children[0].props.children.props.children.unshift(
+          _this._renderBadge(
+            _this.guildBadges[this.props.guild.id]
+          )
+        );
       }
       return res;
     });
@@ -54,13 +65,22 @@ module.exports = class Badges extends Plugin {
     instance.forceUpdate();
   }
 
-  _renderBadge () {
+  async _fetchBadges () {
+    try {
+      const baseUrl = powercord.settings.get('backendURL', WEBSITE);
+      this.guildBadges = await get(`${baseUrl}/api/badges`).then(res => res.body);
+    } catch (e) {
+      // Let it fail silently
+    }
+  }
+
+  _renderBadge ({ name, icon }) {
     return React.createElement(Tooltip, {
-      text: 'Official',
+      text: name,
       position: 'bottom'
     }, React.createElement('img', {
       className: 'powercord-guild-badge',
-      src: `${WEBSITE}/assets/logo.svg`
+      src: icon
     }));
   }
 };
