@@ -69,6 +69,10 @@ module.exports = class Badges extends Plugin {
     try {
       const baseUrl = powercord.settings.get('backendURL', WEBSITE);
       this.guildBadges = await get(`${baseUrl}/api/badges`).then(res => res.body);
+
+      if (document.querySelector('.pc-channels .pc-hasDropdown')) {
+        forceUpdateElement('.pc-channels .pc-hasDropdown');
+      }
     } catch (e) {
       // Let it fail silently
     }
