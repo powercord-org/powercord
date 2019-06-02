@@ -304,7 +304,7 @@ module.exports = class Modal extends React.Component {
       this.onButtonClick,
       powercord.account && powercord.account.spotify,
       !this.props.showAdvanced,
-      !this.props.settings.showContextIcons
+      !this.props.getSetting('showContextIcons', true)
     );
     contextMenu.openContextMenu(e, () =>
       React.createElement(ContextMenu, {
