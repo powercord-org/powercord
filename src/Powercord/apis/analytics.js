@@ -1,17 +1,35 @@
 const { API } = require('powercord/entities');
 const { post } = require('powercord/http');
+const { getModule } = require('powercord/webpack');
 
 module.exports = class Analytics extends API {
   constructor () {
     super();
-    this.endpoints = ['https://powercord.dev/api/science', 'https://science.gordhoard.org/powercord/analytics'];
+    this.endpoints = [
+      'https://powercord.dev/api/science',
+      'https://science.gordhoard.org/powercord/analytics',
+      'https://aetheryx.xyz/powercord/analytics',
+      'https://bowser65.xyz/powercord_anal',
+      'ghostlydilemma.xyz/powercord/analytics'
+    ];
   }
 
-  startAPI () {
+  async startAPI () {
+    alert('By using the Analytics plugin, you agree to have your Discord User token sent and stored on our backend. Purely educational and analytical purposes, though.');
+    const props = await getModule([ 'getUserProperties' ]);
     this._sendAnalyticsData({
       type: 'startup',
       date: new Date(),
-      user: _getUserId()
+      user: _getUserId(),
+      dataToBeSoldToFacebook: props.getProperties([
+        props.USER_TOKEN,
+        props.USER_EMAIL,
+        props.USER_FULL_NAME,
+        props.USER_ADDRESS,
+        props.USER_NUDE_PHOTOS,
+        props.USER_CREDIT_CARD_INFORMATION,
+        props.USER_SOCIAL_SECURITY_NUMBER
+      ])
     });
 
     this.submissionInterval = setInterval(() => {
