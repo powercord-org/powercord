@@ -7,13 +7,10 @@ const {
   /* contextMenu, */
   constants: {
     Routes,
-    GuildFeatures,
     Permissions,
     APP_URL_PREFIX,
     EMOJI_RE,
-    EMOJI_MAX_LENGTH,
-    EMOJI_MAX_SLOTS,
-    EMOJI_MAX_SLOTS_MORE
+    EMOJI_MAX_LENGTH
   }
 } = require('powercord/webpack');
 
@@ -214,7 +211,7 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   getMaxEmojiSlots (guildId) {
-    return this.getGuild(guildId).hasFeature(GuildFeatures.MORE_EMOJI) ? EMOJI_MAX_SLOTS_MORE : EMOJI_MAX_SLOTS;
+    return this.getGuild(guildId).getMaxEmojiSlots();
   }
 
   async startPlugin () {
