@@ -45,6 +45,14 @@ module.exports = class Announcements extends Plugin {
         alwaysDisplay: true
       });
     }
+    if (window.GLOBAL_ENV.RELEASE_CHANNEL !== 'canary') {
+      this.sendNotice({
+        id: 'pc-unsupported-build',
+        type: Notice.TYPES.ORANGE,
+        message: `Powercord does not support the ${window.GLOBAL_ENV.RELEASE_CHANNEL} release of Discord. Please use Canary for best results.`,
+        alwaysDisplay: true
+      });
+    }
   }
 
   pluginWillUnload () {
