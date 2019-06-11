@@ -1,9 +1,11 @@
 const { DragDropContext, Droppable } = window.ReactBeautifulDnd;
-const { React } = require('powercord/webpack');
+const { React, getModule } = require('powercord/webpack');
 
 const Guild = require('./Guild.jsx');
 const Folder = require('./Folder.jsx');
 const NumberBadge = require('./NumberBadge.jsx');
+
+let unreadStore = getModule([ 'getGuildUnreadCount' ], false); // Try to load it
 
 module.exports = class Guilds extends React.Component {
   constructor (props) {
@@ -13,6 +15,14 @@ module.exports = class Guilds extends React.Component {
       hidden: false,
       openedFolders: []
     };
+  }
+
+  async componentDidMount () {
+    if (!unreadStore) {
+      console.log('force updating');
+      unreadStore = await getModule([ 'getGuildUnreadCount' ]);
+      this.forceUpdate(); // memes
+    }
   }
 
   componentDidUpdate () {
@@ -58,11 +68,7 @@ module.exports = class Guilds extends React.Component {
       guild={guild}
       index={index}
 
-      unread={this.props.unreadGuilds[guild.id]}
-      mentions={this.props.mentionCounts[guild.id] || 0}
-
       hidden={hiddenGuilds.includes(guild.id)}
-      selected={this.props.selectedGuildId === guild.id}
       audio={this.props.selectedVoiceGuildId === guild.id && this.props.mode === 'voice'}
       video={this.props.selectedVoiceGuildId === guild.id && this.props.mode === 'video'}
 
@@ -89,10 +95,10 @@ module.exports = class Guilds extends React.Component {
         return null;
       }
       if (hiddenGuilds.includes(guildId)) {
-        toggledMentions += this.state.hidden ? 0 : this.props.mentionCounts[guildId];
+        toggledMentions += this.state.hidden ? 0 : (unreadStore ? unreadStore.getMentionCount(guildId) : 0);
         return this.state.hidden ? guild : null;
       }
-      toggledMentions += !this.state.hidden ? 0 : this.props.mentionCounts[guildId];
+      toggledMentions += !this.state.hidden ? 0 : (unreadStore ? unreadStore.getMentionCount(guildId) : 0);
       return this.state.hidden ? null : guild;
     }).filter(g => g);
 

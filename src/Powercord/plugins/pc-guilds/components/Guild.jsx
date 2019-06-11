@@ -184,8 +184,28 @@ const Guild = class Guild extends React.Component {
 let connectedModule = null;
 const provider = async () => {
   if (!connectedModule) {
-    const fluxShit = await getModule([ 'getLastSelectedChannelId' ]);
-    connectedModule = Flux.connectStores([ fluxShit ], (e) => ({ selectedChannelId: fluxShit.getChannelId(e.guild.id) }))(Guild);
+    const channelStore = await getModule([ 'getLastSelectedChannelId' ]);
+    const unreadStore = await getModule([ 'getGuildUnreadCount' ]);
+    const currentGuildStore = await getModule([ 'getGuildId', 'getLastSelectedGuildId' ]);
+    const currentVoiceStore = await getModule([ 'getGuildId', 'getRTCConnectionId' ]);
+    const videoStore = await getModule([ 'hasVideo' ]);
+
+    connectedModule = Flux.connectStores([
+      channelStore, unreadStore, currentGuildStore, currentVoiceStore, videoStore
+    ], (e) => {
+      const voiceId = currentVoiceStore.getGuildId();
+      const voiceCId = currentVoiceStore.getChannelId();
+      const hasVideo = videoStore.hasVideo(voiceId, voiceCId);
+
+      return {
+        selectedChannelId: channelStore.getChannelId(e.guild.id),
+        unread: unreadStore.hasUnread(e.guild.id),
+        mentions: unreadStore.getMentionCount(e.guild.id),
+        selected: currentGuildStore.getGuildId() === e.guild.id,
+        audio: voiceId === e.guild.id && !hasVideo,
+        video: voiceId === e.guild.id && hasVideo
+      };
+    })(Guild);
   }
   return connectedModule;
 };
