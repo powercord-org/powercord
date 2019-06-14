@@ -152,7 +152,7 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
       image: hasIconsHidden ? '' : 'fa-save',
       onClick: () =>
         powercord.pluginManager.get('pc-spotify').openPlaylistModal(state.currentItem.id)
-      } ]
+    } ]
     : []) ],
 
   [ {

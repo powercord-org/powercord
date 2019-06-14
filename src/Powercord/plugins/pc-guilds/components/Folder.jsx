@@ -1,5 +1,5 @@
-const { React, contextMenu, instance: { cache: moduleCache } } = require('powercord/webpack');
-const { Draggable } = window.ReactBeautifulDnd;
+const { React, /* contextMenu, */ instance: { cache: moduleCache } } = require('powercord/webpack');
+// const { Draggable } = window.ReactBeautifulDnd;
 
 module.exports = class Folder extends React.Component {
   constructor () {
@@ -34,7 +34,7 @@ module.exports = class Folder extends React.Component {
     </div>;
   }
 
-  handleContextMenu (e) {
-
+  handleContextMenu () {
+    // @todo
   }
 };

@@ -30,11 +30,15 @@ module.exports = class GuildStore {
   }
 
   getGuilds () {
-    // const guildIds = this.settings.get('guilds', null);
-    // if (!guildIds) {
-      return this.sortedGuildStore.getSortedGuilds().map(g => g.guild.id);
-    // }
-    // return this._ensureUpdated(guildIds);
+    /*
+     * const guildIds = this.settings.get('guilds', null);
+     * if (!guildIds) {
+     */
+    return this.sortedGuildStore.getSortedGuilds().map(g => g.guild.id);
+    /*
+     * }
+     * return this._ensureUpdated(guildIds);
+     */
   }
 
   getGuild (id) {

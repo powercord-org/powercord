@@ -23,15 +23,15 @@ module.exports = class Installed extends React.Component {
         linux: 'xdg-open'
       };
       spawn(cmds[process.platform], [ dir ]);
-    }
+    };
 
     this.openPluginsFolder = () => {
       this.openFolder(resolve(__dirname, '..', '..'));
-    }
+    };
 
     this.openThemesFolder = () => {
       this.openFolder(resolve(__dirname, '..', '..', '..', 'themes'));
-    }
+    };
   }
 
   render () {

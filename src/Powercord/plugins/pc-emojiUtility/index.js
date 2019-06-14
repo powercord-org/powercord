@@ -495,41 +495,41 @@ module.exports = class EmojiUtility extends Plugin {
     inject('pc-emojiUtility-nativeContext', NativeContextMenu.prototype, 'render', handleImageContext);
 
     /*
-      Discord broke this in a recent update so TODO: Figure out a new way of adding the emote context to reactions
-
-      const AnimatedComponent = (await getModule([ 'createAnimatedComponent' ])).div;
-      inject('pc-emojiUtility-reactionContext', AnimatedComponent.prototype, 'render', function (args, res) {
-        if (this.props.className && this.props.className.includes('pc-reaction')) {
-          res.props.onContextMenu = (e) => {
-            const { props: propEmoji } = this.props.children.props.children[0];
-
-            if (propEmoji.emojiId) {
-              let emoji = _this.getEmojiById(propEmoji.emojiId);
-              if (emoji) {
-                emoji.fake = false;
-              } else {
-                emoji = _this.createFakeEmoji(propEmoji.emojiId, propEmoji.emojiName, `https://${CDN_HOST}/emojis/${propEmoji.emojiId}.${propEmoji.animated ? 'gif' : 'png'}`);
-              }
-
-              const { pageX, pageY } = e;
-              contextMenu.openContextMenu(e, () =>
-                React.createElement(ContextMenu, {
-                  pageX,
-                  pageY,
-                  itemGroups: [ [ {
-                    type: 'submenu',
-                    name: 'Emote',
-                    getItems: () => getCloneableFeatures(emoji)
-                  } ] ]
-                })
-              );
-            }
-          };
-        }
-
-        return res;
-      });
-    */
+     * Discord broke this in a recent update so TODO: Figure out a new way of adding the emote context to reactions
+     *
+     * const AnimatedComponent = (await getModule([ 'createAnimatedComponent' ])).div;
+     * inject('pc-emojiUtility-reactionContext', AnimatedComponent.prototype, 'render', function (args, res) {
+     * if (this.props.className && this.props.className.includes('pc-reaction')) {
+     * res.props.onContextMenu = (e) => {
+     * const { props: propEmoji } = this.props.children.props.children[0];
+     *
+     * if (propEmoji.emojiId) {
+     * let emoji = _this.getEmojiById(propEmoji.emojiId);
+     * if (emoji) {
+     * emoji.fake = false;
+     * } else {
+     * emoji = _this.createFakeEmoji(propEmoji.emojiId, propEmoji.emojiName, `https://${CDN_HOST}/emojis/${propEmoji.emojiId}.${propEmoji.animated ? 'gif' : 'png'}`);
+     * }
+     *
+     * const { pageX, pageY } = e;
+     * contextMenu.openContextMenu(e, () =>
+     * React.createElement(ContextMenu, {
+     * pageX,
+     * pageY,
+     * itemGroups: [ [ {
+     * type: 'submenu',
+     * name: 'Emote',
+     * getItems: () => getCloneableFeatures(emoji)
+     * } ] ]
+     * })
+     * );
+     * }
+     * };
+     * }
+     *
+     * return res;
+     * });
+     */
 
     injectInFluxContainer('pc-emojiUtility-hideEmojisPickerRm', 'EmojiPicker', 'removeEmotes', function () {
       const hiddenGuilds = _this.settings.get('hiddenGuilds', []);

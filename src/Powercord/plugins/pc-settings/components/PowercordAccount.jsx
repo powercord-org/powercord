@@ -122,7 +122,7 @@ module.exports = (props) => <AsyncComponent
   _provider={async () => {
     if (!connectedModule) {
       const fluxShit = await getModule([ 'enabled', 'hidePersonalInformation' ]);
-      connectedModule = Flux.connectStores([ fluxShit ], (e) => ({ streamerMode: fluxShit.getSettings() }))(PowercordAccount);
+      connectedModule = Flux.connectStores([ fluxShit ], () => ({ streamerMode: fluxShit.getSettings() }))(PowercordAccount);
     }
     return connectedModule;
   }}
