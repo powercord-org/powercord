@@ -4,6 +4,7 @@
   "description": "A lightweight @discordapp client mod focused on simplicity and performance",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint --ext js --ext jsx src",
     "plug": "node injectors/index.js inject",
     "unplug": "node injectors/index.js uninject",
     "inject": "node injectors/index.js inject",
