@@ -146,7 +146,7 @@ const Guild = class Guild extends React.Component {
                   {this.props.guild.icon
                     ? <img
                       className={guildClasses.icon} alt='Server Icon' width='48' height='48'
-                      src={`https://cdn.discordapp.com/icons/${this.props.guild.id}/${this.props.guild.icon}.` + (this.state.hovered && this.props.guild.icon.startsWith("a_") ? "gif" : "png")
+                      src={`https://cdn.discordapp.com/icons/${this.props.guild.id}/${this.props.guild.icon}.${this.state.hovered && this.props.guild.icon.startsWith('a_') ? 'gif' : 'png'}`
                       }/>
                     : <div
                       className={guildClasses.acronym}
