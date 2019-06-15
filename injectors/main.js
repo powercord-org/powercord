@@ -17,7 +17,7 @@
  */
 
 const { mkdir, writeFile, unlink, rmdir, access } = require('fs').promises;
-const { resolve, join, sep } = require('path');
+const { join, sep } = require('path');
 
 const exists = (path) =>
   access(path)
@@ -27,8 +27,8 @@ const exists = (path) =>
 exports.inject = async ({ getAppDir }) => {
   const appDir = await getAppDir();
   if (await exists(appDir)) {
-    console.log('Looks like you already have an injector in place. Try uninjecting (`npm run uninject`) and try again.');
-    process.exit(1);
+    console.log('Looks like you already have an injector in place. Try uninjecting (`npm run unplug`) and try again.');
+    return false;
   }
 
   await mkdir(appDir);
@@ -41,12 +41,10 @@ exports.inject = async ({ getAppDir }) => {
     writeFile(
       join(appDir, 'package.json'),
       JSON.stringify({ main: 'index.js' })
-    ),
-    writeFile(
-      resolve(__dirname, '..', 'src', '__injected.txt'),
-      'hey cutie'
     )
   ]);
+
+  return true;
 };
 
 exports.uninject = async ({ getAppDir }) => {
@@ -54,7 +52,7 @@ exports.uninject = async ({ getAppDir }) => {
 
   if (!(await exists(appDir))) {
     console.log('There is nothing to uninject.');
-    process.exit(1);
+    return false;
   }
 
   await Promise.all([
@@ -62,5 +60,6 @@ exports.uninject = async ({ getAppDir }) => {
     unlink(join(appDir, 'index.js'))
   ]);
 
-  return rmdir(appDir);
+  await rmdir(appDir);
+  return true;
 };

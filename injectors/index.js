@@ -21,6 +21,9 @@ require('./env_check')();
 
 // And then do stuff
 require('../polyfills');
+
+const { writeFile } = require('fs').promises;
+const { resolve } = require('path');
 const main = require('./main.js');
 
 let platformModule;
@@ -35,13 +38,21 @@ try {
 
 (async () => {
   if (process.argv[2] === 'inject') {
-    await main.inject(platformModule);
+    if (await main.inject(platformModule)) {
+      // To show up popup message
+      await writeFile(
+        resolve(__dirname, '..', 'src', '__injected.txt'),
+        'hey cutie'
+      );
+
+      console.log('Successfully plugged Powercord!');
+    }
   } else if (process.argv[2] === 'uninject') {
-    await main.uninject(platformModule);
+    if (await main.uninject(platformModule)) {
+      console.log('Successfully unplugged Powercord!');
+    }
   } else {
     console.log(`Unsupported argument "${process.argv[2]}", exiting..`);
     process.exit(1);
   }
-})()
-  .then(() => console.log('Success!'))
-  .catch(e => console.error('fucky wucky', e));
+})().catch(e => console.error('fucky wucky', e));
