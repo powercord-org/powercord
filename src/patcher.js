@@ -84,6 +84,7 @@ for (const prop in electron) {
 require.cache[electronPath].exports.BrowserWindow = PatchedBrowserWindow;
 
 app.once('ready', () => {
+  // csp must die
   session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
     Object.keys(responseHeaders)
       .filter(k => (/^content-security-policy/i).test(k))
@@ -91,6 +92,11 @@ app.once('ready', () => {
 
     done({ responseHeaders });
   });
+
+  // source maps must die
+  electron.session.defaultSession.webRequest.onBeforeRequest((details, done) =>
+    done({ cancel: details.url.endsWith('.js.map') })
+  );
 
   for (const prop of failedExports) {
     require.cache[electronPath].exports[prop] = electron[prop];
