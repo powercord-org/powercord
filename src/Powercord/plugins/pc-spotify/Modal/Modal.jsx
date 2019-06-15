@@ -198,7 +198,7 @@ module.exports = class Modal extends React.Component {
       ? (<Tooltip text={libraryStatus.tooltip} position="top">
         <button
           style={{ color: libraryStatus.color }}
-          className={`iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-${libraryStatus.icon}`}
+          className={`button-s03oPN lookBlank-3eh9lL fas fa-${libraryStatus.icon}`}
           onClick={libraryStatus.action}
         />
       </Tooltip>)
@@ -222,16 +222,20 @@ module.exports = class Modal extends React.Component {
           />
         </Tooltip>
 
-        <div className='powercord-spotify-songInfo accountDetails-3k9g4n nameTag-m8r81H'>
-          <Title className="username">{currentItem.name}</Title>
-          <Title className="discriminator">{artists ? `by ${artists}` : ''}</Title>
+        <div className='powercord-spotify-songInfo nameTag-LxtdSI'>
+          <div className='colorStandard-2KCXvj size14-e6ZScH usernameContainer-1GWXka'>
+            <Title className="username">{currentItem.name}</Title>
+          </div>
+          <div className='colorStandard-2KCXvj size10-tblYdA discriminator-3W31ZY'>
+            <Title className="discriminator">{artists ? `by ${artists}` : ''}</Title>
+          </div>
         </div>
 
-        <div className='flex-11O1GKY directionRow-3v3tfG justifyStart-2NDFzi alignStretch-DpGPf3 noWrap-3jynv6'>
+        <div className='flex-1O1GKY directionRow-3v3tfG justifyStart-2NDFzi alignStretch-DpGPf3 noWrap-3jynv6'>
           <Tooltip text='Previous' position='top'>
             <button
               style={{ color: '#1ed860' }}
-              className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-backward'
+              className='button-s03oPN lookBlank-3eh9lL fas fa-backward'
               onClick={() => this.state.seekBar.progress + (Date.now() - this.state.seekBar.progressAt) > 5e3 ? this.onButtonClick('seek', 0) : this.onButtonClick('prev')}
             />
           </Tooltip>
@@ -239,7 +243,7 @@ module.exports = class Modal extends React.Component {
           <Tooltip text={isPlaying ? 'Pause' : 'Play'} position='top'>
             <button
               style={{ color: '#1ed860' }}
-              className={`iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-${isPlaying ? 'pause' : 'play'}`}
+              className={`button-s03oPN lookBlank-3eh9lL fas fa-${isPlaying ? 'pause' : 'play'}`}
               onClick={() => this.onButtonClick(isPlaying ? 'pause' : 'play')}
             />
           </Tooltip>
@@ -247,7 +251,7 @@ module.exports = class Modal extends React.Component {
           <Tooltip text='Next' position='top'>
             <button
               style={{ color: '#1ed860' }}
-              className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-forward'
+              className='button-s03oPN lookBlank-3eh9lL fas fa-forward'
               onClick={() => this.onButtonClick('next')}
             />
           </Tooltip>
@@ -269,7 +273,7 @@ module.exports = class Modal extends React.Component {
               <Tooltip text="Shuffle" position="top">
                 <button
                   style={{ color: shuffleColor }}
-                  className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-random'
+                  className='button-s03oPN lookBlank-3eh9lL fas fa-random'
                   onClick={() => this.onButtonClick('setShuffleState', !this.state.shuffleState)}
                 />
               </Tooltip>
@@ -277,7 +281,7 @@ module.exports = class Modal extends React.Component {
               <Tooltip text={this.repeatStruct[this.state.repeatState].tooltip} position="top">
                 <button
                   style={{ color: repeatColor }}
-                  className={`iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-${repeatIcon}`}
+                  className={`button-s03oPN lookBlank-3eh9lL fas fa-${repeatIcon}`}
                   onClick={() => this.onButtonClick('setRepeatState', this.repeatStruct[this.state.repeatState].next)}
                 />
               </Tooltip>
@@ -285,7 +289,7 @@ module.exports = class Modal extends React.Component {
               {powercord.account && powercord.account.spotify && <Tooltip text="Save to Playlist" position="top">
                 <button
                   style={{ color: '#fff' }}
-                  className='iconButtonDefault-2cKx7- iconButton-3V4WS5 button-2b6hmh small--aHOfS fas fa-plus-circle'
+                  className='button-s03oPN lookBlank-3eh9lL fas fa-plus-circle'
                   onClick={() => powercord.pluginManager.get('pc-spotify').openPlaylistModal(currentItem.uri)}
                 />
               </Tooltip>}
