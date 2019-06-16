@@ -273,7 +273,7 @@ module.exports = class Modal extends React.Component {
               <Tooltip text="Shuffle" position="top">
                 <button
                   style={{ color: shuffleColor }}
-                  className={`button-s03oPN lookBlank-3eh9lL fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'}}`}
+                  className={`button-s03oPN lookBlank-3eh9lL fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'}`}
                   onClick={() => this.onButtonClick('setShuffleState', !this.state.shuffleState)}
                 />
               </Tooltip>
