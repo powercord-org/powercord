@@ -86,8 +86,10 @@ module.exports = class Spotify extends Plugin {
   }
 
   async _injectListeningAlong () {
-    // @todo: Remove deprecated FluxContainer injection
-    await injectInFluxContainer('pc-spotify-listeningAlong', 'ListeningAlong', 'render', (_, res) => {
+    const classes = await getModule([ 'listeningAlong' ]);
+    const listeningAlong = await waitFor(`.${classes.listeningAlong.replace(/ /g, '.')}`);
+    const instance = getOwnerInstance(listeningAlong);
+    await inject('pc-spotify-listeningAlong', instance.__proto__, 'render', (_, res) => {
       this._listeningAlongComponent = res;
       if (this._forceUpdate) {
         this._forceUpdate();

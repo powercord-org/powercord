@@ -529,49 +529,50 @@ module.exports = class EmojiUtility extends Plugin {
      *
      * return res;
      * });
+     *
+     * @todo: properly inject like commands does
+     * injectInFluxContainer('pc-emojiUtility-hideEmojisPickerRm', 'EmojiPicker', 'removeEmotes', function () {
+     * const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
+     * const hiddenNames = hiddenGuilds.map(id => _this.getGuild(id).name);
+     *
+     * this.setState({
+     * metaData: this.state.metaData.map(meta => ({
+     * ...meta,
+     * items: meta.items.filter(item => !item.emoji.guildId || !hiddenGuilds.includes(item.emoji.guildId))
+     * })).filter(meta => meta.items.length > 0)
+     * });
+     *
+     * let previousOffset = 0;
+     * let offsetDiff = 0;
+     * this.categories = this.categories.map(category => {
+     * if (category.category.startsWith('custom') && hiddenNames.includes(category.title)) {
+     * offsetDiff += category.offsetTop - previousOffset;
+     * previousOffset = category.offsetTop;
+     * delete this.categoryOffsets[category.category];
+     * return null;
+     * }
+     * category.offsetTop -= offsetDiff;
+     * this.categoryOffsets[category.category] = category.offsetTop;
+     * previousOffset = category.offsetTop;
+     * return category;
+     * }).filter(category => !!category);
+     * });
+     *
+     * injectInFluxContainer('pc-emojiUtility-hideEmojisPickerMount', 'EmojiPicker', 'componentDidMount', function () {
+     * this.removeEmotes();
+     * });
+     *
+     * injectInFluxContainer('pc-emojiUtility-hideEmojisPicker', 'EmojiPicker', 'componentDidUpdate', function () {
+     * if (this.state.searchResults) {
+     * this.shouldFilter = true;
+     * } else {
+     * if (this.shouldFilter) {
+     * this.shouldFilter = false;
+     * this.removeEmotes();
+     * }
+     * }
+     * });
      */
-
-    injectInFluxContainer('pc-emojiUtility-hideEmojisPickerRm', 'EmojiPicker', 'removeEmotes', function () {
-      const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
-      const hiddenNames = hiddenGuilds.map(id => _this.getGuild(id).name);
-
-      this.setState({
-        metaData: this.state.metaData.map(meta => ({
-          ...meta,
-          items: meta.items.filter(item => !item.emoji.guildId || !hiddenGuilds.includes(item.emoji.guildId))
-        })).filter(meta => meta.items.length > 0)
-      });
-
-      let previousOffset = 0;
-      let offsetDiff = 0;
-      this.categories = this.categories.map(category => {
-        if (category.category.startsWith('custom') && hiddenNames.includes(category.title)) {
-          offsetDiff += category.offsetTop - previousOffset;
-          previousOffset = category.offsetTop;
-          delete this.categoryOffsets[category.category];
-          return null;
-        }
-        category.offsetTop -= offsetDiff;
-        this.categoryOffsets[category.category] = category.offsetTop;
-        previousOffset = category.offsetTop;
-        return category;
-      }).filter(category => !!category);
-    });
-
-    injectInFluxContainer('pc-emojiUtility-hideEmojisPickerMount', 'EmojiPicker', 'componentDidMount', function () {
-      this.removeEmotes();
-    });
-
-    injectInFluxContainer('pc-emojiUtility-hideEmojisPicker', 'EmojiPicker', 'componentDidUpdate', function () {
-      if (this.state.searchResults) {
-        this.shouldFilter = true;
-      } else {
-        if (this.shouldFilter) {
-          this.shouldFilter = false;
-          this.removeEmotes();
-        }
-      }
-    });
 
     const Autocomplete = await getModuleByDisplayName('Autocomplete');
     inject('pc-emojiUtility-hideEmojisComplete', Autocomplete.prototype, 'render', (args, res) => {

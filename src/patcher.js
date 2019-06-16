@@ -94,7 +94,7 @@ app.once('ready', () => {
   });
 
   // source maps must die
-  electron.session.defaultSession.webRequest.onBeforeRequest((details, done) =>
+  session.defaultSession.webRequest.onBeforeRequest((details, done) =>
     done({ cancel: details.url.endsWith('.js.map') })
   );
 
