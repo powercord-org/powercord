@@ -6,6 +6,7 @@ const { instance, getModuleByDisplayName } = require('powercord/webpack');
  * Based on BBD normalizer
  * Credits for normalized class fixes: https://github.com/samuelthomas2774/BetterDiscordApp/commit/2b0d3eb268c7cd708ae29df2916957210fcf72c3
  */
+
 module.exports = class ClassNameNormalizer extends Plugin {
   constructor () {
     super();
@@ -18,6 +19,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
 
   async startPlugin () {
     await sleep(2000); // bowserware:tm:
+
     this.patchModules(this._fetchAllModules());
     this.normalizeElement(document.querySelector('#app-mount'));
     this.patchDOMMethods();
@@ -34,12 +36,24 @@ module.exports = class ClassNameNormalizer extends Plugin {
     }
   }
 
+  /*
+   * @deprecated (for now)
+   * In most cases, using normalizers are a bad practice and leads to funky results. While data attributes allows
+   * more precise element targetting, normalizers are just a thing that makes developers think their theme is
+   * "future proof" while it's not. Random classes rarely change, and when they to it means CSS has been updated so
+   * even a theme relying on normalized classes have a 8/10 chance of having to actually update.
+   *
+   * Might be actually removed in futures releases of Powercord.
+   */
   patchModules (modules) {
     for (const mod of modules) {
       this.patchModule(mod);
     }
   }
 
+  /*
+   * @deprecated, @see patchModules
+   */
   patchModule (classNames) {
     for (const baseClassName in classNames) {
       // noinspection JSUnfilteredForInLoop
@@ -63,6 +77,9 @@ module.exports = class ClassNameNormalizer extends Plugin {
     }
   }
 
+  /*
+   * @deprecated, @see patchModules
+   */
   patchDOMMethods () {
     const _this = this;
     const { contains } = DOMTokenList.prototype;
@@ -76,6 +93,9 @@ module.exports = class ClassNameNormalizer extends Plugin {
     };
   }
 
+  /*
+   * @deprecated, @see patchModules
+   */
   normalizeElement (element) {
     if (!(element instanceof Element)) {
       return;
@@ -96,7 +116,9 @@ module.exports = class ClassNameNormalizer extends Plugin {
     }
   }
 
-  // Module fetcher
+  /*
+   * @deprecated, @see patchModules
+   */
   _fetchAllModules () {
     return Object.values(instance.cache)
       .filter(mdl => (
