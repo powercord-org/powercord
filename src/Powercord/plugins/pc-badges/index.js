@@ -1,71 +1,90 @@
 const { resolve } = require('path');
+const { get } = require('powercord/http');
 const { Plugin } = require('powercord/entities');
-const { forceUpdateElement } = require('powercord/util');
-const { GUILD_ID, WEBSITE } = require('powercord/constants');
+const { WEBSITE } = require('powercord/constants');
 const { Tooltip } = require('powercord/components');
-const { inject, injectRecursive, uninject } = require('powercord/injector');
+const { inject, uninject } = require('powercord/injector');
 const { React, getModuleByDisplayName } = require('powercord/webpack');
+const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 
 const BadgesComponent = require('./Badges.jsx');
 
 module.exports = class Badges extends Plugin {
+  constructor () {
+    super();
+    this.guildBadges = {};
+  }
+
   startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuildHeaders();
     this._patchUserComponent();
+    this._fetchBadges();
   }
 
   pluginWillUnload () {
     uninject('pc-badges-users');
     uninject('pc-badges-guilds-header');
 
-    forceUpdateElement('.pc-channels .pc-hasDropdown');
+    if (document.querySelector('.pc-channels .pc-hasDropdown')) {
+      forceUpdateElement('.pc-channels .pc-hasDropdown');
+    }
   }
 
   async _patchGuildHeaders () {
     const _this = this;
     const GuildHeader = await getModuleByDisplayName('GuildHeader');
     inject('pc-badges-guilds-header', GuildHeader.prototype, 'render', function (_, res) {
-      if (this.props.guild.id === GUILD_ID) {
-        res.props.children.props.children[0].props.children.props.children.unshift(_this._renderBadge());
+      if (_this.guildBadges[this.props.guild.id]) {
+        res.props.children.props.children[0].props.children.props.children.unshift(
+          _this._renderBadge(
+            _this.guildBadges[this.props.guild.id]
+          )
+        );
       }
       return res;
     });
   }
 
   async _patchUserComponent () {
-    const UserProfile = await getModuleByDisplayName('UserProfile');
-
-    injectRecursive('pc-badges-users', UserProfile, [
-      'prototype',
-      'type',
-      'type.prototype',
-      'type',
-      'type.prototype',
-      'type.prototype'
-    ], function (_, res) {
-      const { children } = res.props.children.props.children[0].props.children[0].props.children[1].props;
+    const instance = getOwnerInstance((await waitFor('.pc-modal .pc-headerInfo .pc-nameTag')).parentElement);
+    const UserProfileBody = instance._reactInternalFiber.return.type;
+    inject('pc-badges-users', UserProfileBody.prototype, 'renderBadges', function (_, res) {
       const badges = React.createElement(BadgesComponent, {
         key: 'powercord',
         id: this.props.user.id
       });
 
-      if (!children[1]) {
-        return (children[1] = React.createElement('div', { className: 'powercord-badges' }, badges));
+      if (!res) {
+        return React.createElement('div', { className: 'powercord-badges' }, badges);
       }
 
-      children[1].props.children.push(badges);
+      res.props.children.push(badges);
       return res;
     });
+    instance.forceUpdate();
   }
 
-  _renderBadge () {
+  async _fetchBadges () {
+    try {
+      const baseUrl = powercord.settings.get('backendURL', WEBSITE);
+      this.guildBadges = await get(`${baseUrl}/api/badges`).then(res => res.body);
+
+      if (document.querySelector('.pc-channels .pc-hasDropdown')) {
+        forceUpdateElement('.pc-channels .pc-hasDropdown');
+      }
+    } catch (e) {
+      // Let it fail silently
+    }
+  }
+
+  _renderBadge ({ name, icon }) {
     return React.createElement(Tooltip, {
-      text: 'Official',
+      text: name,
       position: 'bottom'
     }, React.createElement('img', {
       className: 'powercord-guild-badge',
-      src: `${WEBSITE}/assets/logo.svg`
+      src: icon
     }));
   }
 };

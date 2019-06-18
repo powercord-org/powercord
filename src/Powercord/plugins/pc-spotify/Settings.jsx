@@ -21,5 +21,13 @@ module.exports = ({ getSetting, toggleSetting, patch }) => (
     >
       No auto pause
     </SwitchItem>
+
+    <SwitchItem
+      note={'Adds icons next to first glace buttons and replaces hints found under the \'Devices\' sub-menu with corresponding icons based on the device(s) in-use.'}
+      value={getSetting('showContextIcons', true)}
+      onChange={() => toggleSetting('showContextIcons')}
+    >
+      Show context menu icons
+    </SwitchItem>
   </div>
 );

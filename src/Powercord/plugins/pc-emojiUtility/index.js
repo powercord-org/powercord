@@ -7,13 +7,10 @@ const {
   /* contextMenu, */
   constants: {
     Routes,
-    GuildFeatures,
     Permissions,
     APP_URL_PREFIX,
     EMOJI_RE,
-    EMOJI_MAX_LENGTH,
-    EMOJI_MAX_SLOTS,
-    EMOJI_MAX_SLOTS_MORE
+    EMOJI_MAX_LENGTH
   }
 } = require('powercord/webpack');
 
@@ -214,7 +211,7 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   getMaxEmojiSlots (guildId) {
-    return this.getGuild(guildId).hasFeature(GuildFeatures.MORE_EMOJI) ? EMOJI_MAX_SLOTS_MORE : EMOJI_MAX_SLOTS;
+    return this.getGuild(guildId).getMaxEmojiSlots();
   }
 
   async startPlugin () {
@@ -498,83 +495,84 @@ module.exports = class EmojiUtility extends Plugin {
     inject('pc-emojiUtility-nativeContext', NativeContextMenu.prototype, 'render', handleImageContext);
 
     /*
-      Discord broke this in a recent update so TODO: Figure out a new way of adding the emote context to reactions
-
-      const AnimatedComponent = (await getModule([ 'createAnimatedComponent' ])).div;
-      inject('pc-emojiUtility-reactionContext', AnimatedComponent.prototype, 'render', function (args, res) {
-        if (this.props.className && this.props.className.includes('pc-reaction')) {
-          res.props.onContextMenu = (e) => {
-            const { props: propEmoji } = this.props.children.props.children[0];
-
-            if (propEmoji.emojiId) {
-              let emoji = _this.getEmojiById(propEmoji.emojiId);
-              if (emoji) {
-                emoji.fake = false;
-              } else {
-                emoji = _this.createFakeEmoji(propEmoji.emojiId, propEmoji.emojiName, `https://${CDN_HOST}/emojis/${propEmoji.emojiId}.${propEmoji.animated ? 'gif' : 'png'}`);
-              }
-
-              const { pageX, pageY } = e;
-              contextMenu.openContextMenu(e, () =>
-                React.createElement(ContextMenu, {
-                  pageX,
-                  pageY,
-                  itemGroups: [ [ {
-                    type: 'submenu',
-                    name: 'Emote',
-                    getItems: () => getCloneableFeatures(emoji)
-                  } ] ]
-                })
-              );
-            }
-          };
-        }
-
-        return res;
-      });
-    */
-
-    injectInFluxContainer('pc-emojiUtility-hideEmojisPickerRm', 'EmojiPicker', 'removeEmotes', function () {
-      const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
-      const hiddenNames = hiddenGuilds.map(id => _this.getGuild(id).name);
-
-      this.setState({
-        metaData: this.state.metaData.map(meta => ({
-          ...meta,
-          items: meta.items.filter(item => !item.emoji.guildId || !hiddenGuilds.includes(item.emoji.guildId))
-        })).filter(meta => meta.items.length > 0)
-      });
-
-      let previousOffset = 0;
-      let offsetDiff = 0;
-      this.categories = this.categories.map(category => {
-        if (category.category.startsWith('custom') && hiddenNames.includes(category.title)) {
-          offsetDiff += category.offsetTop - previousOffset;
-          previousOffset = category.offsetTop;
-          delete this.categoryOffsets[category.category];
-          return null;
-        }
-        category.offsetTop -= offsetDiff;
-        this.categoryOffsets[category.category] = category.offsetTop;
-        previousOffset = category.offsetTop;
-        return category;
-      }).filter(category => !!category);
-    });
-
-    injectInFluxContainer('pc-emojiUtility-hideEmojisPickerMount', 'EmojiPicker', 'componentDidMount', function () {
-      this.removeEmotes();
-    });
-
-    injectInFluxContainer('pc-emojiUtility-hideEmojisPicker', 'EmojiPicker', 'componentDidUpdate', function () {
-      if (this.state.searchResults) {
-        this.shouldFilter = true;
-      } else {
-        if (this.shouldFilter) {
-          this.shouldFilter = false;
-          this.removeEmotes();
-        }
-      }
-    });
+     * Discord broke this in a recent update so TODO: Figure out a new way of adding the emote context to reactions
+     *
+     * const AnimatedComponent = (await getModule([ 'createAnimatedComponent' ])).div;
+     * inject('pc-emojiUtility-reactionContext', AnimatedComponent.prototype, 'render', function (args, res) {
+     * if (this.props.className && this.props.className.includes('pc-reaction')) {
+     * res.props.onContextMenu = (e) => {
+     * const { props: propEmoji } = this.props.children.props.children[0];
+     *
+     * if (propEmoji.emojiId) {
+     * let emoji = _this.getEmojiById(propEmoji.emojiId);
+     * if (emoji) {
+     * emoji.fake = false;
+     * } else {
+     * emoji = _this.createFakeEmoji(propEmoji.emojiId, propEmoji.emojiName, `https://${CDN_HOST}/emojis/${propEmoji.emojiId}.${propEmoji.animated ? 'gif' : 'png'}`);
+     * }
+     *
+     * const { pageX, pageY } = e;
+     * contextMenu.openContextMenu(e, () =>
+     * React.createElement(ContextMenu, {
+     * pageX,
+     * pageY,
+     * itemGroups: [ [ {
+     * type: 'submenu',
+     * name: 'Emote',
+     * getItems: () => getCloneableFeatures(emoji)
+     * } ] ]
+     * })
+     * );
+     * }
+     * };
+     * }
+     *
+     * return res;
+     * });
+     *
+     * @todo: properly inject like commands does
+     * injectInFluxContainer('pc-emojiUtility-hideEmojisPickerRm', 'EmojiPicker', 'removeEmotes', function () {
+     * const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
+     * const hiddenNames = hiddenGuilds.map(id => _this.getGuild(id).name);
+     *
+     * this.setState({
+     * metaData: this.state.metaData.map(meta => ({
+     * ...meta,
+     * items: meta.items.filter(item => !item.emoji.guildId || !hiddenGuilds.includes(item.emoji.guildId))
+     * })).filter(meta => meta.items.length > 0)
+     * });
+     *
+     * let previousOffset = 0;
+     * let offsetDiff = 0;
+     * this.categories = this.categories.map(category => {
+     * if (category.category.startsWith('custom') && hiddenNames.includes(category.title)) {
+     * offsetDiff += category.offsetTop - previousOffset;
+     * previousOffset = category.offsetTop;
+     * delete this.categoryOffsets[category.category];
+     * return null;
+     * }
+     * category.offsetTop -= offsetDiff;
+     * this.categoryOffsets[category.category] = category.offsetTop;
+     * previousOffset = category.offsetTop;
+     * return category;
+     * }).filter(category => !!category);
+     * });
+     *
+     * injectInFluxContainer('pc-emojiUtility-hideEmojisPickerMount', 'EmojiPicker', 'componentDidMount', function () {
+     * this.removeEmotes();
+     * });
+     *
+     * injectInFluxContainer('pc-emojiUtility-hideEmojisPicker', 'EmojiPicker', 'componentDidUpdate', function () {
+     * if (this.state.searchResults) {
+     * this.shouldFilter = true;
+     * } else {
+     * if (this.shouldFilter) {
+     * this.shouldFilter = false;
+     * this.removeEmotes();
+     * }
+     * }
+     * });
+     */
 
     const Autocomplete = await getModuleByDisplayName('Autocomplete');
     inject('pc-emojiUtility-hideEmojisComplete', Autocomplete.prototype, 'render', (args, res) => {

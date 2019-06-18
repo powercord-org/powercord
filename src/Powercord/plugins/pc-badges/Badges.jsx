@@ -36,12 +36,12 @@ module.exports = class Badges extends React.PureComponent {
 
   render () {
     return [
-      this.state.customization && this.state.customization.displayBadge && false &&
+      this.state.customization && this.state.customization.displayBadge &&
       <Tooltip text={this.state.customization.name || BadgeTooltips.DONOR} position='top'>
         <div className='powercord-badge donor' style={{
-          '--custom': `url(${this.state.customization.custom})`,
-          '--custom-white': `url(${this.state.customization.customWhite})`,
-          '--custom-name': `url(${this.state.customization.name})`
+          '--custom': `url('${this.state.customization.custom}')`,
+          '--custom-white': `url('${this.state.customization.customWhite}')`,
+          '--custom-name': `url('${this.state.customization.name}')`
         }}>
           {!this.state.customization.custom && <DonorDefault/>}
         </div>

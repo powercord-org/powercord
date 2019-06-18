@@ -3,7 +3,27 @@ const { messages, channels } = require('powercord/webpack');
 const { formatTime } = require('powercord/util');
 const SpotifyPlayer = require('../SpotifyPlayer');
 
-module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden) => [
+function getDeviceIcon (device) {
+  const deviceIcons = {
+    Computer: 'fa-desktop',
+    Tablet: 'fa-tablet-alt',
+    Smartphone: 'fa-mobile-alt',
+    Speaker: 'fa-volume-up',
+    TV: 'fa-tv',
+    AVR: 'fa-digital-tachograph',
+    STB: 'fa-hdd',
+    AudioDongle: 'fa-usb-brand',
+    GameConsole: 'fa-gamepad',
+    CastAudio: 'fa-bluetooth-b-brand',
+    CastVideo: 'fa-video',
+    Car: 'fa-car',
+    Unknown: 'fa-question-circle'
+  };
+
+  return deviceIcons[device];
+}
+
+module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIconsHidden) => [
   [ {
     type: 'submenu',
     name: 'Devices',
@@ -16,7 +36,8 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden) => [
           return {
             type: 'button',
             name: device.name,
-            hint: device.type,
+            image: hasIconsHidden ? '' : getDeviceIcon(device.type),
+            hint: hasIconsHidden ? device.type : '',
             highlight: isActiveDevice && '#1ed860',
             disabled: isActiveDevice,
             seperate: isActiveDevice,
@@ -84,6 +105,7 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden) => [
       getItems: () => [ {
         type: 'submenu',
         name: 'Repeat Modes',
+        image: hasIconsHidden ? '' : 'fa-sync',
         getItems: () => [ {
           name: 'On',
           stateName: 'context'
@@ -121,24 +143,28 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden) => [
     ? [ {
       type: 'button',
       name: 'Add to Library',
+      image: hasIconsHidden ? '' : 'fa-plus-circle',
       onClick: () =>
         SpotifyPlayer.addSong(state.currentItem.id)
     }, {
       type: 'button',
       name: 'Save to Playlist',
+      image: hasIconsHidden ? '' : 'fa-save',
       onClick: () =>
         powercord.pluginManager.get('pc-spotify').openPlaylistModal(state.currentItem.id)
-      } ]
+    } ]
     : []) ],
 
   [ {
     type: 'button',
     name: 'Open in Spotify',
+    image: hasIconsHidden ? '' : 'fa-external-link-alt',
     onClick: () =>
       shell.openExternal(state.currentItem.uri)
   }, {
     type: 'button',
     name: 'Send URL to Channel',
+    image: hasIconsHidden ? '' : 'fa-share-square',
     onClick: () =>
       messages.sendMessage(
         channels.getChannelId(),
@@ -147,6 +173,7 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden) => [
   }, {
     type: 'button',
     name: 'Copy URL',
+    image: hasIconsHidden ? '' : 'fa-copy',
     onClick: () =>
       clipboard.writeText(state.currentItem.url)
   } ]

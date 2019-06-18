@@ -20,7 +20,7 @@ module.exports = class Spotify extends Plugin {
 
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
-    this.containerClasses = await getModule([ 'container', 'accountDetails' ]);
+    this.containerClasses = await getModule([ 'container', 'usernameContainer' ]);
     this._injectModal();
     this._injectListeningAlong();
     this._patchAutoPause();
@@ -41,7 +41,7 @@ module.exports = class Spotify extends Plugin {
     );
 
     Object.values(commands).forEach(command =>
-      this.registerCommand(command.command, command.aliases || [], command.description, command.usage, command.func)
+      this.registerCommand(command.command, command.aliases || [], command.description, command.usage, command.func.bind(null, this.SpotifyPlayer))
     );
   }
 
@@ -86,8 +86,10 @@ module.exports = class Spotify extends Plugin {
   }
 
   async _injectListeningAlong () {
-    // @todo: Remove deprecated FluxContainer injection
-    await injectInFluxContainer('pc-spotify-listeningAlong', 'ListeningAlong', 'render', (_, res) => {
+    const classes = await getModule([ 'listeningAlong' ]);
+    const listeningAlong = await waitFor(`.${classes.listeningAlong.replace(/ /g, '.')}`);
+    const instance = getOwnerInstance(listeningAlong);
+    await inject('pc-spotify-listeningAlong', instance.__proto__, 'render', (_, res) => {
       this._listeningAlongComponent = res;
       if (this._forceUpdate) {
         this._forceUpdate();

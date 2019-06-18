@@ -1,6 +1,6 @@
+/* eslint-disable */
 const { React } = require('powercord/webpack');
 
-/* eslint-disable */
 (function (factory) {
   factory(module.exports);
 }(function (exports) { 'use strict';
@@ -18,14 +18,13 @@ const { React } = require('powercord/webpack');
     // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
     var global = module.exports = typeof window != 'undefined' && window.Math == Math
       ? window : typeof self != 'undefined' && self.Math == Math ? self
-        // eslint-disable-next-line no-new-func
         : Function('return this')();
-    if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
+    if (typeof __g == 'number') __g = global;
   });
 
   var _core = createCommonjsModule(function (module) {
     var core = module.exports = { version: '2.5.7' };
-    if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+    if (typeof __e == 'number') __e = core;
   });
   var _core_1 = _core.version;
 
@@ -206,7 +205,6 @@ const { React } = require('powercord/webpack');
 
   // fallback for non-array-like ES3 and non-enumerable old V8 strings
 
-  // eslint-disable-next-line no-prototype-builtins
   var _iobject = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
     return _cof(it) == 'String' ? it.split('') : Object(it);
   };
@@ -257,10 +255,8 @@ const { React } = require('powercord/webpack');
       var index = _toAbsoluteIndex(fromIndex, length);
       var value;
       // Array#includes uses SameValueZero equality algorithm
-      // eslint-disable-next-line no-self-compare
       if (IS_INCLUDES && el != el) while (length > index) {
         value = O[index++];
-        // eslint-disable-next-line no-self-compare
         if (value != value) return true;
         // Array#indexOf ignores holes, Array#includes - not
       } else for (;length > index; index++) if (IS_INCLUDES || index in O) {
@@ -355,13 +351,12 @@ const { React } = require('powercord/webpack');
   var _objectAssign = !$assign || _fails(function () {
     var A = {};
     var B = {};
-    // eslint-disable-next-line no-undef
     var S = Symbol();
     var K = 'abcdefghijklmnopqrst';
     A[S] = 7;
     K.split('').forEach(function (k) { B[k] = k; });
     return $assign({}, A)[S] != 7 || Object.keys($assign({}, B)).join('') != K;
-  }) ? function assign(target, source) { // eslint-disable-line no-unused-vars
+  }) ? function assign(target, source) {
     var T = _toObject(target);
     var aLen = arguments.length;
     var index = 1;
@@ -435,7 +430,7 @@ const { React } = require('powercord/webpack');
     var iframeDocument;
     iframe.style.display = 'none';
     _html.appendChild(iframe);
-    iframe.src = 'javascript:'; // eslint-disable-line no-script-url
+    iframe.src = 'javascript:';
     // createDict = iframe.contentWindow.Object;
     // html.removeChild(iframe);
     iframeDocument = iframe.contentWindow.document;
@@ -813,11 +808,9 @@ const { React } = require('powercord/webpack');
    * @returns {void}
    */
   function warning(message) {
-    /* eslint-disable no-console */
     if (typeof console !== 'undefined' && typeof console.error === 'function') {
       console.error(message);
     }
-    /* eslint-enable no-console */
 
 
     try {
@@ -825,7 +818,7 @@ const { React } = require('powercord/webpack');
       // "break on all exceptions" in your console,
       // it would pause the execution at this line.
       throw new Error(message);
-    } catch (e) {} // eslint-disable-line no-empty
+    } catch (e) {}
 
   }
 
@@ -1159,7 +1152,6 @@ const { React } = require('powercord/webpack');
 	(c) Sindre Sorhus
 	@license MIT
 	*/
-  /* eslint-disable no-unused-vars */
   var getOwnPropertySymbols = Object.getOwnPropertySymbols;
   var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
   var propIsEnumerable = Object.prototype.propertyIsEnumerable;
@@ -1181,7 +1173,7 @@ const { React } = require('powercord/webpack');
       // Detect buggy property enumeration order in older V8 versions.
 
       // https://bugs.chromium.org/p/v8/issues/detail?id=4118
-      var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+      var test1 = new String('abc');
       test1[5] = 'de';
       if (Object.getOwnPropertyNames(test1)[0] === '5') {
         return false;
@@ -1407,7 +1399,6 @@ const { React } = require('powercord/webpack');
      * inlined Object.is polyfill to avoid requiring consumers ship their own
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
      */
-    /*eslint-disable no-self-compare*/
     function is(x, y) {
       // SameValue algorithm
       if (x === y) {
@@ -1419,7 +1410,6 @@ const { React } = require('powercord/webpack');
         return x !== x && y !== y;
       }
     }
-    /*eslint-enable no-self-compare*/
 
     /**
      * We use an Error-like object for backward compatibility as people may call
@@ -7493,11 +7483,9 @@ const { React } = require('powercord/webpack');
    * @returns {void}
    */
   function warning$4(message) {
-    /* eslint-disable no-console */
     if (typeof console !== 'undefined' && typeof console.error === 'function') {
       console.error(message);
     }
-    /* eslint-enable no-console */
 
 
     try {
@@ -7505,9 +7493,7 @@ const { React } = require('powercord/webpack');
       // "break on all exceptions" in your console,
       // it would pause the execution at this line.
       throw new Error(message);
-      /* eslint-disable no-empty */
     } catch (e) {}
-    /* eslint-enable no-empty */
 
   }
 
@@ -8170,9 +8156,6 @@ const { React } = require('powercord/webpack');
         displayName: displayName,
         wrappedComponentName: wrappedComponentName,
         WrappedComponent: WrappedComponent // TODO Actually fix our use of componentWillReceiveProps
-
-        /* eslint-disable react/no-deprecated */
-
       });
 
       var Connect =
@@ -8324,7 +8307,6 @@ const { React } = require('powercord/webpack');
 
           return Connect;
         }(React.Component);
-      /* eslint-enable react/no-deprecated */
 
 
       Connect.WrappedComponent = WrappedComponent;

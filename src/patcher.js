@@ -1,3 +1,21 @@
+/**
+ * Powercord, a lightweight @discordapp client mod focused on simplicity and performance
+ * Copyright (C) 2018-2019  aetheryx & Bowser65
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 /* global appSettings */
 const Module = require('module');
 const { join, dirname, resolve } = require('path');
@@ -41,6 +59,8 @@ class PatchedBrowserWindow extends BrowserWindow {
 }
 
 Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
+electron.deprecate.promisify = ((dep) => (fn) => fn ? dep(fn) : (() => void 0))(electron.deprecate.promisify);
+
 require.cache[electronPath].exports = {
   /*
    * TODO: Thoroughly investigate every Electron export
@@ -74,6 +94,7 @@ app.once('ready', () => {
     done({ redirectURL: 'https://canary.discordapp.com/app' });
   });
 
+  // csp must die
   session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
     Object.keys(responseHeaders)
       .filter(k => (/^content-security-policy/i).test(k))
@@ -81,6 +102,11 @@ app.once('ready', () => {
 
     done({ responseHeaders });
   });
+
+  // source maps must die
+  // session.defaultSession.webRequest.onBeforeRequest((details, done) =>
+  //   done({ cancel: details.url.endsWith('.js.map') })
+  // );
 
   for (const prop of failedExports) {
     require.cache[electronPath].exports[prop] = electron[prop];

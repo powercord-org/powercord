@@ -1,22 +1,28 @@
 const { Plugin } = require('powercord/entities');
 const { camelCaseify, sleep } = require('powercord/util');
-const { instance, getModuleByDisplayName, getModule } = require('powercord/webpack');
+const { instance, getModuleByDisplayName } = require('powercord/webpack');
 
-// Based on BBD normalizer
+/*
+ * Based on BBD normalizer
+ * Credits for normalized class fixes: https://github.com/samuelthomas2774/BetterDiscordApp/commit/2b0d3eb268c7cd708ae29df2916957210fcf72c3
+ */
+
 module.exports = class ClassNameNormalizer extends Plugin {
   constructor () {
     super();
 
     this.randClassReg = /^(?!pc-)((?:[a-z]|[0-9]|-)+)-(?:[a-z]|[0-9]|-|_){6}$/i;
+    this.normClassReg = /^(([a-zA-Z0-9]+)-[^\s]{6}) pc-([a-zA-Z0-9]+)$/i;
     this.PROPERTY_BLACKLIST = [ 'displayName' ];
     this.ATTRIBUTE_BLACKLIST = [ 'px', 'ch', 'em', 'ms' ];
   }
 
   async startPlugin () {
     await sleep(2000); // bowserware:tm:
-    this.layerContainer = (await getModule([ 'layerContainer' ])).layerContainer; // aethware:tm:
+
     this.patchModules(this._fetchAllModules());
     this.normalizeElement(document.querySelector('#app-mount'));
+    this.patchDOMMethods();
 
     // this is temporarily here ok, just making people think i'm doing stuff. Bowserware confirmed
     const GuildHeader = await getModuleByDisplayName('GuildHeader');
@@ -30,12 +36,24 @@ module.exports = class ClassNameNormalizer extends Plugin {
     }
   }
 
+  /*
+   * @deprecated (for now)
+   * In most cases, using normalizers are a bad practice and leads to funky results. While data attributes allows
+   * more precise element targetting, normalizers are just a thing that makes developers think their theme is
+   * "future proof" while it's not. Random classes rarely change, and when they to it means CSS has been updated so
+   * even a theme relying on normalized classes have a 8/10 chance of having to actually update.
+   *
+   * Might be actually removed in futures releases of Powercord.
+   */
   patchModules (modules) {
     for (const mod of modules) {
       this.patchModule(mod);
     }
   }
 
+  /*
+   * @deprecated, @see patchModules
+   */
   patchModule (classNames) {
     for (const baseClassName in classNames) {
       // noinspection JSUnfilteredForInLoop
@@ -53,24 +71,31 @@ module.exports = class ClassNameNormalizer extends Plugin {
 
         const camelCase = camelCaseify(match);
 
-        /**
-         * for some reason, layerContainer(-yqaFcK) being normalized
-         * causes Discord's internal getParentLayerContainer call to shit itself
-         * despite it calling classList.contains instead of a strict equality check.
-         * meaning normalizing it SHOULD be fine, but clearly it's not,
-         * which is why we have the condition below
-         * @todo figure out why Discord's call doesn't like this class to be normalized
-         */
-        if (classNames[baseClassName].includes(this.layerContainer)) {
-          continue;
-        }
-
         // noinspection JSUnfilteredForInLoop
         classNames[baseClassName] += ` pc-${camelCase}`;
       }
     }
   }
 
+  /*
+   * @deprecated, @see patchModules
+   */
+  patchDOMMethods () {
+    const _this = this;
+    const { contains } = DOMTokenList.prototype;
+
+    DOMTokenList.prototype.contains = function (token) {
+      let match;
+      if (typeof token === 'string' && (match = token.match(_this.normClassReg)) && match[2] === match[3]) {
+        return contains.call(this, match[1]);
+      }
+      return contains.call(this, token);
+    };
+  }
+
+  /*
+   * @deprecated, @see patchModules
+   */
   normalizeElement (element) {
     if (!(element instanceof Element)) {
       return;
@@ -91,7 +116,9 @@ module.exports = class ClassNameNormalizer extends Plugin {
     }
   }
 
-  // Module fetcher
+  /*
+   * @deprecated, @see patchModules
+   */
   _fetchAllModules () {
     return Object.values(instance.cache)
       .filter(mdl => (

@@ -2,6 +2,7 @@ const { React, Flux, Router: { Link }, constants: { Routes }, contextMenu, getMo
 const { AsyncComponent, Icon: DiscordIcon, Tooltip } = require('powercord/components');
 const { Draggable } = window.ReactBeautifulDnd;
 
+const NumberBadge = require('./NumberBadge.jsx');
 const BlobMask = AsyncComponent.from(getModuleByDisplayName('BlobMask'));
 
 let badgesLength,
@@ -15,18 +16,7 @@ const Icon = ({ name }) => <div className={`${numberBadgeClasses.iconBadge} ${li
   <DiscordIcon className={numberBadgeClasses.icon} name={name}/>
 </div>;
 
-const NumberBadge = ({ count }) => <div
-  className={`${numberBadgeClasses.numberBadge} ${numberBadgeClasses.base}`}
-  style={{
-    backgroundColor: 'rgb(240, 71, 71)',
-    width: badgesLength.getBadgeWidthForValue(count),
-    paddingRight: 1
-  }}
->
-  {count}
-</div>;
-
-const Guild = class Guild extends React.PureComponent {
+const Guild = class Guild extends React.Component {
   constructor (props) {
     super(props);
 
@@ -111,8 +101,7 @@ const Guild = class Guild extends React.PureComponent {
     }
 
     // eslint-disable-next-line new-cap
-    const link = this.props.selectedChannelId ? Routes.CHANNEL(this.props.guild.id, this.props.selectedChannelId) : Routes.GUILD(this.props.guild.id);
-
+    const link = Routes.CHANNEL(this.props.guild.id, this.props.selectedChannelId);
     return <Draggable draggableId={this.props.guild.id} index={this.props.index}>
       {(provided) => (
         <div
@@ -157,7 +146,7 @@ const Guild = class Guild extends React.PureComponent {
                   {this.props.guild.icon
                     ? <img
                       className={guildClasses.icon} alt='Server Icon' width='48' height='48'
-                      src={`https://cdn.discordapp.com/icons/${this.props.guild.id}/${this.props.guild.icon}.png`
+                      src={`https://cdn.discordapp.com/icons/${this.props.guild.id}/${this.props.guild.icon}.${this.state.hovered && this.props.guild.icon.startsWith('a_') ? 'gif' : 'png'}`
                       }/>
                     : <div
                       className={guildClasses.acronym}
@@ -195,8 +184,28 @@ const Guild = class Guild extends React.PureComponent {
 let connectedModule = null;
 const provider = async () => {
   if (!connectedModule) {
-    const fluxShit = await getModule([ 'getLastSelectedChannelId' ]);
-    connectedModule = Flux.connectStores([ fluxShit ], (e) => ({ selectedChannelId: fluxShit.getChannelId(e.guild.id) }))(Guild);
+    const channelStore = await getModule([ 'getLastSelectedChannelId' ]);
+    const unreadStore = await getModule([ 'getGuildUnreadCount' ]);
+    const currentGuildStore = await getModule([ 'getGuildId', 'getLastSelectedGuildId' ]);
+    const currentVoiceStore = await getModule([ 'getGuildId', 'getRTCConnectionId' ]);
+    const videoStore = await getModule([ 'hasVideo' ]);
+
+    connectedModule = Flux.connectStores([
+      channelStore, unreadStore, currentGuildStore, currentVoiceStore, videoStore
+    ], (e) => {
+      const voiceId = currentVoiceStore.getGuildId();
+      const voiceCId = currentVoiceStore.getChannelId();
+      const hasVideo = videoStore.hasVideo(voiceId, voiceCId);
+
+      return {
+        selectedChannelId: channelStore.getChannelId(e.guild.id),
+        unread: unreadStore.hasUnread(e.guild.id),
+        mentions: unreadStore.getMentionCount(e.guild.id),
+        selected: currentGuildStore.getGuildId() === e.guild.id,
+        audio: voiceId === e.guild.id && !hasVideo,
+        video: voiceId === e.guild.id && hasVideo
+      };
+    })(Guild);
   }
   return connectedModule;
 };

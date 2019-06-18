@@ -116,9 +116,9 @@ module.exports = class GuildFolders extends Plugin {
     this.processingMark = true;
     const acknowledger = await getModule([ 'markGuildAsRead' ]);
     const guildStore = await getModule([ 'getSortedGuilds' ]);
+    const readStore = await getModule([ 'getGuildUnreadCount' ]);
 
-    const unreads = getOwnerInstance(document.querySelector('.powercord-guilds').parentNode.parentNode.parentNode).props.unreadGuilds;
-    const guilds = Object.values(guildStore.getSortedGuilds()).map(g => g.guild).filter(g => unreads[g.id]);
+    const guilds = Object.values(guildStore.getSortedGuilds()).map(g => g.guild).filter(g => readStore.hasUnread(g.id));
     await this._asyncForEach(guilds, async guild => {
       acknowledger.markGuildAsRead(guild.id);
       await sleep(1500);

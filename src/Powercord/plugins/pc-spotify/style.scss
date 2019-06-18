@@ -70,7 +70,11 @@
   }
 
   .username {
+    color: #fff;
+    overflow: hidden;
     position: absolute;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     top: 0;
   }
 

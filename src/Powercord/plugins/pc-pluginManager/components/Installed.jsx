@@ -16,22 +16,22 @@ module.exports = class Installed extends React.Component {
       search: ''
     };
 
-    this.openFolder = function(dir) {
+    this.openFolder = (dir) => {
       const cmds = {
-        "win32": "explorer",
-        "darwin": "open",
-        "linux": "xdg-open"
-      }
-      spawn(cmds[process.platform], [dir]);
-    }
+        win32: 'explorer',
+        darwin: 'open',
+        linux: 'xdg-open'
+      };
+      spawn(cmds[process.platform], [ dir ]);
+    };
 
-    this.openPluginsFolder = function() {
+    this.openPluginsFolder = () => {
       this.openFolder(resolve(__dirname, '..', '..'));
-    }
+    };
 
-    this.openThemesFolder = function() {
+    this.openThemesFolder = () => {
       this.openFolder(resolve(__dirname, '..', '..', '..', 'themes'));
-    }
+    };
   }
 
   render () {

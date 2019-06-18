@@ -1,3 +1,21 @@
+/**
+ * Powercord, a lightweight @discordapp client mod focused on simplicity and performance
+ * Copyright (C) 2018-2019  aetheryx & Bowser65
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 const { resolve } = require('path');
 const { readdirSync } = require('fs');
 const { lstat } = require('fs').promises;
@@ -9,7 +27,7 @@ module.exports = class StyleManager {
     this.themesDir = resolve(__dirname, '..', '..', 'themes');
     this.themes = new Map();
 
-    this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license', 'theme' ];
+    this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license' ];
   }
 
   // Getters
@@ -63,15 +81,24 @@ module.exports = class StyleManager {
     try {
       if (stat.isFile()) {
         theme = Theme.fromFile(themeID, filename);
+        console.warn('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" loaded in development mode`);
       } else {
         const manifest = require(resolve(this.themesDir, filename, 'powercord_manifest.json'));
         if (!this.manifestKeys.every(key => manifest.hasOwnProperty(key))) {
           return console.error('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" doesn't have a valid manifest - Skipping`);
         }
 
+        if (!window.__OVERLAY__ && manifest.theme) {
+          manifest.effectiveTheme = manifest.theme;
+        } else if (window.__OVERLAY__ && manifest.overlayTheme) {
+          manifest.effectiveTheme = manifest.overlayTheme;
+        } else {
+          return console.warn('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" is not meant to run on that environment - Skipping`);
+        }
+
         theme = new Theme(themeID, {
           ...manifest,
-          theme: resolve(resolve(this.themesDir, filename, manifest.theme))
+          theme: resolve(resolve(this.themesDir, filename, manifest.effectiveTheme))
         });
       }
     } catch (e) {
@@ -121,12 +148,17 @@ module.exports = class StyleManager {
 
     const files = readdirSync(this.themesDir);
     for (const filename of files) {
-      if (filename === '.exists') {
+      if (filename === '.exists' || filename === '.DS_Store') {
         continue;
       }
 
       const themeID = filename.split('.').shift().toLowerCase();
       await this.mount(themeID, filename);
+
+      // if theme didn't mounted
+      if (!this.themes.get(themeID)) {
+        continue;
+      }
 
       if (!powercord.settings.get('disabledThemes', []).includes(themeID)) {
         this.themes.get(themeID).apply();
