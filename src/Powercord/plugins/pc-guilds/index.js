@@ -29,6 +29,7 @@ module.exports = class GuildFolders extends Plugin {
 
     // Ensure new guild component is immediately displayed
     getOwnerInstance(await waitFor('.pc-layer > .pc-flex > .pc-wrapper')).forceUpdate();
+    // @todo: Don't use .pc-
   }
 
   pluginWillUnload () {
@@ -38,6 +39,7 @@ module.exports = class GuildFolders extends Plugin {
     uninject('pc-guilds-add-update');
     uninject('pc-guilds-context');
 
+    // @todo: Don't use .pc-
     forceUpdateElement('.pc-layer > .pc-flex > .pc-wrapper');
   }
 
@@ -76,6 +78,7 @@ module.exports = class GuildFolders extends Plugin {
       return res;
     });
 
+    // @todo: don't use deprecated
     injectInFluxContainer('pc-guilds-add-item', 'CreateOrJoinGuildSlide', 'render', (args, res) => {
       res.props.children.props.children.push(React.createElement(CreateFolder, {
         openModal: () => this.openCreateFolderModal()

@@ -4,7 +4,7 @@ const { Plugin } = require('powercord/entities');
 const { WEBSITE } = require('powercord/constants');
 const { Tooltip } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
-const { React, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule } = require('powercord/webpack');
 const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 
 const BadgesComponent = require('./Badges.jsx');
@@ -33,8 +33,10 @@ module.exports = class Badges extends Plugin {
 
   async _patchGuildHeaders () {
     const _this = this;
-    const GuildHeader = await getModuleByDisplayName('GuildHeader');
-    inject('pc-badges-guilds-header', GuildHeader.prototype, 'render', function (_, res) {
+    const classes = await getModule([ 'iconBackgroundTierNone', 'container' ]);
+    const guildHeader = await waitFor(`.${classes.container.replace(/ /g, '.')}`);
+    const instance = getOwnerInstance(guildHeader);
+    inject('pc-badges-guilds-header', instance.__proto__, 'render', function (_, res) {
       if (_this.guildBadges[this.props.guild.id]) {
         res.props.children.props.children[0].props.children.props.children.unshift(
           _this._renderBadge(
@@ -47,6 +49,7 @@ module.exports = class Badges extends Plugin {
   }
 
   async _patchUserComponent () {
+    // @todo: Don't use .pc-
     const instance = getOwnerInstance((await waitFor('.pc-modal .pc-headerInfo .pc-nameTag')).parentElement);
     const UserProfileBody = instance._reactInternalFiber.return.type;
     inject('pc-badges-users', UserProfileBody.prototype, 'renderBadges', function (_, res) {
@@ -70,6 +73,7 @@ module.exports = class Badges extends Plugin {
       const baseUrl = powercord.settings.get('backendURL', WEBSITE);
       this.guildBadges = await get(`${baseUrl}/api/badges`).then(res => res.body);
 
+      // @todo: Don't use .pc-
       if (document.querySelector('.pc-channels .pc-hasDropdown')) {
         forceUpdateElement('.pc-channels .pc-hasDropdown');
       }
