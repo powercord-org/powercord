@@ -2,7 +2,7 @@ const fs = require('fs').promises;
 const { Plugin } = require('powercord/entities');
 const { open: openModal } = require('powercord/modal');
 const { getOwnerInstance, waitFor } = require('powercord/util');
-const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
+const { inject, uninject } = require('powercord/injector');
 const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { resolve } = require('path');
 

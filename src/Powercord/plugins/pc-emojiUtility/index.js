@@ -18,7 +18,7 @@ const {
 
 const { /* ContextMenu, */ ContextMenu: { Submenu } } = require('powercord/components');
 const { getOwnerInstance } = require('powercord/util');
-const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
+const { inject, uninject } = require('powercord/injector');
 const { open: openModal } = require('powercord/modal');
 
 const { writeFile } = require('fs').promises;
