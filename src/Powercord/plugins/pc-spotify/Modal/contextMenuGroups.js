@@ -82,6 +82,23 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
     : []), ...(hasCustomAuth
     ? [ {
       type: 'submenu',
+      name: 'Top Songs',
+      width: '200px',
+      getItems: () => SpotifyPlayer.getTopSongs()
+        .then(({ items }) =>
+          items.map( track  => ({
+            type: 'button',
+            name: track.name,
+            hint: formatTime(track.duration_ms),
+            onClick: () => onButtonClick('play', {
+              uris: [ track.uri ]
+            })
+          }))
+        )
+    } ]
+    : []), ...(hasCustomAuth
+    ? [ {
+      type: 'submenu',
       name: 'Songs',
       width: '200px',
       getItems: () => SpotifyPlayer.getSongs()
