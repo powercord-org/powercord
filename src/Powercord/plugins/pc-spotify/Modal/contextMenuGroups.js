@@ -86,7 +86,7 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
       width: '200px',
       getItems: () => SpotifyPlayer.getTopSongs()
         .then(({ items }) =>
-          items.map( track  => ({
+          items.map(track => ({
             type: 'button',
             name: track.name,
             hint: formatTime(track.duration_ms),
