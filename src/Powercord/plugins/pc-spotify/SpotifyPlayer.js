@@ -96,6 +96,13 @@ module.exports = {
     ).then(r => r.body);
   },
 
+  getTopSongs () {
+    return this.genericRequest(
+      get(`${this.BASE_URL}/me/top/tracks`)
+        .query('limit', 50)
+    ).then(r => r.body);
+  },
+
   getSongs () {
     return this.genericRequest(
       get(`${this.BASE_URL}/me/tracks`)
