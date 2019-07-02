@@ -174,8 +174,8 @@ module.exports = class Modal extends React.Component {
     const repeatIcon = this.state.repeatState === 'context' ? 'sync' : 'undo';
     const libraryStatus = this.state.inLibrary === false
       ? {
-        tooltip: 'Add to Library',
-        icon: 'plus',
+        tooltip: 'Save to Liked Songs',
+        icon: 'far fa-heart',
         color: '#fff',
         action: () => {
           SpotifyPlayer.addSong(this.state.currentItem.id).then(() => {
@@ -184,8 +184,8 @@ module.exports = class Modal extends React.Component {
         }
       }
       : {
-        tooltip: 'In Library',
-        icon: 'check',
+        tooltip: 'Remove from Liked Songs',
+        icon: 'fas fa-heart',
         color: '#1ed860',
         action: () => {
           SpotifyPlayer.removeSong(this.state.currentItem.id).then(() => {
@@ -198,7 +198,7 @@ module.exports = class Modal extends React.Component {
       ? (<Tooltip text={libraryStatus.tooltip} position="top">
         <button
           style={{ color: libraryStatus.color }}
-          className={`button-s03oPN lookBlank-3eh9lL fas fa-${libraryStatus.icon} spotify-in-library`}
+          className={`button-s03oPN lookBlank-3eh9lL ${libraryStatus.icon} spotify-in-library`}
           onClick={libraryStatus.action}
         />
       </Tooltip>)
