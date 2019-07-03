@@ -155,14 +155,14 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
   }, ...(hasCustomAuth && hasControlsHidden
     ? [ {
       type: 'button',
-      name: 'Add to Library',
-      image: hasIconsHidden ? '' : 'fa-plus-circle',
+      name: 'Save to Liked Songs',
+      image: hasIconsHidden ? '' : 'fa-heart',
       onClick: () =>
         SpotifyPlayer.addSong(state.currentItem.id)
     }, {
       type: 'button',
       name: 'Save to Playlist',
-      image: hasIconsHidden ? '' : 'fa-save',
+      image: hasIconsHidden ? '' : 'fa-plus-circle',
       onClick: () =>
         powercord.pluginManager.get('pc-spotify').openPlaylistModal(state.currentItem.id)
     } ]
