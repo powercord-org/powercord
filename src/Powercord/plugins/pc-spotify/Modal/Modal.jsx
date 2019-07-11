@@ -168,6 +168,7 @@ module.exports = class Modal extends React.Component {
   render () {
     const { currentItem, isPlaying, displayState } = this.state;
     const artists = concat(currentItem.artists);
+    const { containerClasses } = this.props.main;
 
     const shuffleColor = this.state.shuffleState ? '#1ed860' : '#fff';
     const repeatColor = this.state.repeatState === 'off' ? '#fff' : '#1ed860';
@@ -206,7 +207,7 @@ module.exports = class Modal extends React.Component {
     return <>
       {this.props.main._listeningAlongComponent}
       <div
-        className={`container-2Thooq powercord-spotify${this.props.getSetting('showControls', true) ? '' : ' small'}`}
+        className={`${containerClasses.container} powercord-spotify${this.props.getSetting('showControls', true) ? '' : ' small'}`}
         id='powercord-spotify-modal'
         onContextMenu={this.injectContextMenu.bind(this)}
         style={displayState === 'hide' ? { display: 'none' } : {}}
@@ -224,20 +225,18 @@ module.exports = class Modal extends React.Component {
           </div>
         </Tooltip>
 
-        <div className='powercord-spotify-songInfo nameTag-LxtdSI'>
-          <div className='colorStandard-2KCXvj size14-e6ZScH usernameContainer-1GWXka'>
-            <Title className="username">{currentItem.name}</Title>
+        <div className={`powercord-spotify-songInfo ${containerClasses.nameTag}`}>
+          <div className={containerClasses.usernameContainer}>
+            <Title className={`${containerClasses.username} username`}>{currentItem.name}</Title>
           </div>
-          <div className='colorStandard-2KCXvj size10-tblYdA discriminator-3W31ZY'>
-            <Title className="discriminator">{artists ? `by ${artists}` : ''}</Title>
-          </div>
+          <Title className={`${[containerClasses.discriminator, containerClasses.size10, containerClasses.subtext].join(' ')} discriminator`}>{artists ? `by ${artists}` : ''}</Title>
         </div>
 
-        <div className='flex-1O1GKY directionRow-3v3tfG justifyStart-2NDFzi alignStretch-DpGPf3 noWrap-3jynv6'>
+        <div className='flex-1xMQg5 flex-1O1GKY pc-flex pc-flex horizontal-1ae9ci horizontal-2EEEnY flex-1O1GKY directionRow-3v3tfG justifyStart-2NDFzi alignStretch-DpGPf3 noWrap-3jynv6'>
           <Tooltip text='Previous' position='top'>
             <button
               style={{ color: '#1ed860' }}
-              className='button-s03oPN lookBlank-3eh9lL fas fa-backward spotify-previous'
+              className='button-2JbWXs pc-button button-38aScr pc-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN pc-grow fas fa-backward spotify-previous'
               onClick={() => this.state.seekBar.progress + (Date.now() - this.state.seekBar.progressAt) > 5e3 ? this.onButtonClick('seek', 0) : this.onButtonClick('prev')}
             />
           </Tooltip>
@@ -245,7 +244,7 @@ module.exports = class Modal extends React.Component {
           <Tooltip text={isPlaying ? 'Pause' : 'Play'} position='top'>
             <button
               style={{ color: '#1ed860' }}
-              className={`button-s03oPN lookBlank-3eh9lL fas fa-${isPlaying ? 'pause' : 'play'} spotify-${isPlaying ? 'pause' : 'play'}`}
+              className={`button-2JbWXs pc-button button-38aScr pc-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN pc-grow fas fa-${isPlaying ? 'pause' : 'play'} spotify-${isPlaying ? 'pause' : 'play'}`}
               onClick={() => this.onButtonClick(isPlaying ? 'pause' : 'play')}
             />
           </Tooltip>
@@ -253,7 +252,7 @@ module.exports = class Modal extends React.Component {
           <Tooltip text='Next' position='top'>
             <button
               style={{ color: '#1ed860' }}
-              className='button-s03oPN lookBlank-3eh9lL fas fa-forward spotify-next'
+              className='button-2JbWXs pc-button button-38aScr pc-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN pc-grow fas fa-forward spotify-next'
               onClick={() => this.onButtonClick('next')}
             />
           </Tooltip>
@@ -275,7 +274,7 @@ module.exports = class Modal extends React.Component {
               <Tooltip text="Shuffle" position="top">
                 <button
                   style={{ color: shuffleColor }}
-                  className={`button-s03oPN lookBlank-3eh9lL fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'}`}
+                  className={`button-2JbWXs pc-button button-38aScr pc-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN pc-grow fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'}`}
                   onClick={() => this.onButtonClick('setShuffleState', !this.state.shuffleState)}
                 />
               </Tooltip>
@@ -283,7 +282,7 @@ module.exports = class Modal extends React.Component {
               <Tooltip text={this.repeatStruct[this.state.repeatState].tooltip} position="top">
                 <button
                   style={{ color: repeatColor }}
-                  className={`button-s03oPN lookBlank-3eh9lL fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState}`}
+                  className={`button-2JbWXs pc-button button-38aScr pc-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN pc-grow fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState}`}
                   onClick={() => this.onButtonClick('setRepeatState', this.repeatStruct[this.state.repeatState].next)}
                 />
               </Tooltip>

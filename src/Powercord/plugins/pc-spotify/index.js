@@ -20,7 +20,11 @@ module.exports = class Spotify extends Plugin {
 
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
-    this.containerClasses = await getModule([ 'container', 'usernameContainer' ]);
+    this.containerClasses = {
+      ...await getModule([ 'container', 'usernameContainer' ]),
+      ...await getModule([ 'size10', 'size12' ]),
+      ...await getModule(m => Object.keys(m).join('') === 'subtext')
+    };
     this._injectModal();
     this._injectListeningAlong();
     this._patchAutoPause();
