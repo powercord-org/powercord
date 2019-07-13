@@ -199,7 +199,7 @@ module.exports = class Modal extends React.Component {
       ? (<Tooltip text={libraryStatus.tooltip} position="top">
         <button
           style={{ color: libraryStatus.color }}
-          className={`button-s03oPN lookBlank-3eh9lL ${libraryStatus.icon} spotify-in-library`}
+          className={`button-2JbWXs pc-button button-38aScr pc-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN pc-grow ${libraryStatus.icon} spotify-in-library`}
           onClick={libraryStatus.action}
         />
       </Tooltip>)
@@ -229,7 +229,7 @@ module.exports = class Modal extends React.Component {
           <div className={containerClasses.usernameContainer}>
             <Title className={`${containerClasses.username} username`}>{currentItem.name}</Title>
           </div>
-          <Title className={`${[containerClasses.discriminator, containerClasses.size10, containerClasses.subtext].join(' ')} discriminator`}>{artists ? `by ${artists}` : ''}</Title>
+          <Title className={`${[ containerClasses.discriminator, containerClasses.size10, containerClasses.subtext ].join(' ')} discriminator`}>{artists ? `by ${artists}` : ''}</Title>
         </div>
 
         <div className='flex-1xMQg5 flex-1O1GKY pc-flex pc-flex horizontal-1ae9ci horizontal-2EEEnY flex-1O1GKY directionRow-3v3tfG justifyStart-2NDFzi alignStretch-DpGPf3 noWrap-3jynv6'>
@@ -290,7 +290,7 @@ module.exports = class Modal extends React.Component {
               {powercord.account && powercord.account.spotify && <Tooltip text="Save to Playlist" position="top">
                 <button
                   style={{ color: '#fff' }}
-                  className='button-s03oPN lookBlank-3eh9lL fas fa-plus-circle spotify-save-to-playlist'
+                  className='button-2JbWXs pc-button button-38aScr pc-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN pc-grows fas fa-plus-circle spotify-save-to-playlist'
                   onClick={() => powercord.pluginManager.get('pc-spotify').openPlaylistModal(currentItem.uri)}
                 />
               </Tooltip>}
