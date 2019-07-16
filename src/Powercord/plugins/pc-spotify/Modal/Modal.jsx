@@ -45,6 +45,11 @@ module.exports = class Modal extends React.Component {
       deviceID: '',
       repeatState: 'off',
       shuffleState: '',
+      disallowedActions: {
+        toggling_shuffle: false,
+        toggling_repeat_track: false,
+        toggling_repeat_context: false
+      },
       inLibrary: '',
       seekBar: {
         seeking: false,
@@ -117,6 +122,7 @@ module.exports = class Modal extends React.Component {
         inLibrary: this.state.inLibrary,
         repeatState: playerState.repeat_state,
         shuffleState: playerState.shuffle_state,
+        disallowedActions: playerState.actions.disallows,
         isPlaying: playerState.is_playing,
         volume: playerState.device.volume_percent,
         deviceID: playerState.device.id,
@@ -204,6 +210,38 @@ module.exports = class Modal extends React.Component {
         />
       </Tooltip>)
       : '';
+    const shuffleButton = !this.state.disallowedActions.toggling_shuffle
+      ? (<Tooltip text="Shuffle" position="top">
+        <button
+          style={{ color: shuffleColor }}
+          className={`button-2JbWXs pc-button button-38aScr pc-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN pc-grow fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'}`}
+          onClick={() => this.onButtonClick('setShuffleState', !this.state.shuffleState)}
+        />
+      </Tooltip>)
+      : (<button
+        style={{
+          color: shuffleColor,
+          opacity: 0.25
+        }}
+        className={`button-2JbWXs pc-button button-38aScr pc-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN pc-grow fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'}`}
+        disabled
+      />);
+    const repeatButton = !this.state.disallowedActions.toggling_repeat_track && !this.state.disallowedActions.toggling_repeat_context
+      ? (<Tooltip text={this.repeatStruct[this.state.repeatState].tooltip} position="top">
+        <button
+          style={{ color: repeatColor }}
+          className={`button-2JbWXs pc-button button-38aScr pc-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN pc-grow fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState}`}
+          onClick={() => this.onButtonClick('setRepeatState', this.repeatStruct[this.state.repeatState].next)}
+        />
+      </Tooltip>)
+      : (<button
+        style={{
+          color: shuffleColor,
+          opacity: 0.25
+        }}
+        className={`button-2JbWXs pc-button button-38aScr pc-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN pc-grow fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState}`}
+        disabled
+      />);
     return <>
       {this.props.main._listeningAlongComponent}
       <div
@@ -271,21 +309,9 @@ module.exports = class Modal extends React.Component {
             {this.props.getSetting('showControls', true) && <div className="powercord-spotify-seek-btngrp">
               {libraryButton}
 
-              <Tooltip text="Shuffle" position="top">
-                <button
-                  style={{ color: shuffleColor }}
-                  className={`button-2JbWXs pc-button button-38aScr pc-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN pc-grow fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'}`}
-                  onClick={() => this.onButtonClick('setShuffleState', !this.state.shuffleState)}
-                />
-              </Tooltip>
+              {shuffleButton}
 
-              <Tooltip text={this.repeatStruct[this.state.repeatState].tooltip} position="top">
-                <button
-                  style={{ color: repeatColor }}
-                  className={`button-2JbWXs pc-button button-38aScr pc-button lookBlank-3eh9lL colorBrand-3pXr91 grow-q77ONN pc-grow fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState}`}
-                  onClick={() => this.onButtonClick('setRepeatState', this.repeatStruct[this.state.repeatState].next)}
-                />
-              </Tooltip>
+              {repeatButton}
 
               {powercord.account && powercord.account.spotify && <Tooltip text="Save to Playlist" position="top">
                 <button
