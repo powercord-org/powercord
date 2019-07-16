@@ -20,6 +20,7 @@ module.exports = class GuildFolders extends Plugin {
   }
 
   async startPlugin () {
+    /*
     await this.store.init();
 
     this.loadCSS(resolve(__dirname, 'style.scss'));
@@ -30,6 +31,7 @@ module.exports = class GuildFolders extends Plugin {
     // Ensure new guild component is immediately displayed
     getOwnerInstance(await waitFor('.pc-layer > .pc-flex > .pc-wrapper')).forceUpdate();
     // @todo: Don't use .pc-
+    */
   }
 
   pluginWillUnload () {
