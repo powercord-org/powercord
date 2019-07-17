@@ -274,7 +274,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCloneableGuilds = () => {
         const items = [];
-        const clonableGuilds = Object.values(this.getSortedGuilds()).map(g => g.guild).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+        const clonableGuilds = Object.values(this.getSortedGuilds()).map(g => g.guilds[0]).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
 
         for (const guild of clonableGuilds) {
           items.push({
@@ -414,7 +414,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCreateableGuilds = () => {
         const items = [];
-        const createableGuilds = Object.values(this.getSortedGuilds()).map(g => g.guild).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+        const createableGuilds = Object.values(this.getSortedGuilds()).map(g => g.guilds[0]).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
 
         for (const guild of createableGuilds) {
           items.push({

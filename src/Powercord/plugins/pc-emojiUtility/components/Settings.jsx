@@ -133,7 +133,7 @@ module.exports = class EmojiUtilitySettings extends React.Component {
           opened={this.state.categoryOpened}
           onChange={() => this.setState({ categoryOpened: !this.state.categoryOpened })}
         >
-          {getSortedGuilds().map(g => g.guild).map(g => <SwitchItem
+          {getSortedGuilds().map(g => g.guilds[0]).map(g => <SwitchItem
             value={this.props.getSetting('hiddenGuilds', []).includes(g.id)}
             onChange={() => this._handleGuildToggle(g.id)}
           >
