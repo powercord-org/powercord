@@ -23,11 +23,13 @@ module.exports = class ReactDevtools extends Plugin {
     /*
      * We should download our own version of react devtools and use it instead of pulling it from Chrome
      */
-    this.listener = this.listener.bind(this);
-    remote.getCurrentWindow().webContents.on('devtools-opened', this.listener);
-    if (remote.getCurrentWindow().webContents.isDevToolsOpened()) {
-      this.listener();
-    }
+    /*
+     * this.listener = this.listener.bind(this);
+     * remote.getCurrentWindow().webContents.on('devtools-opened', this.listener);
+     * if (remote.getCurrentWindow().webContents.isDevToolsOpened()) {
+     * this.listener();
+     * }
+     */
   }
 
   pluginWillUnload () {
