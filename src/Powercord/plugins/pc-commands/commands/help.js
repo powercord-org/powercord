@@ -47,5 +47,20 @@ module.exports = {
       send: false,
       result
     };
-  }
+  },
+  autocompleteFunc (args) {
+    if (args.length > 1) {
+      return false;
+    }
+
+    return {
+      commands: powercord.api.commands.commands
+        .filter(command =>
+          command.command
+            .toLowerCase()
+            .includes((args[0] || '').toLowerCase())
+        ),
+      header: 'powercord command list'
+    };
+  },
 };
