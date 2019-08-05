@@ -29,7 +29,7 @@ module.exports = class Commands extends API {
     return powercord.settings.get('prefix', '.');
   }
 
-  registerCommand (command, aliases, description, usage, func) {
+  registerCommand (command, aliases, description, usage, func, autocompleteFunc) {
     if (!command.match(/^[a-z0-9_-]+$/i)) {
       return this.error(`Tried to register a command with an invalid name! You can only use letters, numbers, dashes and underscores. (${command})`);
     }
@@ -55,7 +55,8 @@ module.exports = class Commands extends API {
       aliases,
       description,
       usage,
-      func
+      func,
+      autocompleteFunc
     });
   }
 

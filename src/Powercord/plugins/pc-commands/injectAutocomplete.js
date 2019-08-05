@@ -12,10 +12,11 @@ module.exports = async function injectAutocomplete () {
     await sleep(1);
   }
 
-  const inject = () =>
+
+  const inject = () => {
     this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS = {
       getText: (index, { commands }) => powercord.api.commands.prefix + commands[index].command,
-      matches: (isValid) => isValid && this.instance.props.value.startsWith(powercord.api.commands.prefix),
+      matches: (isValid) => isValid && this.instance.props.value.startsWith(powercord.api.commands.prefix) && !this.instance.props.value.includes(' '),
       queryResults: () => ({
         commands: powercord.api.commands.commands.filter(c =>
           c.command.startsWith(this.instance.props.value.slice(powercord.api.commands.prefix.length))
@@ -71,6 +72,76 @@ module.exports = async function injectAutocomplete () {
       }
     };
 
+    const currentCommandFilter = command =>
+      [ command.command, ...command.aliases ].some(commandName =>
+        this.instance.props.value.startsWith(powercord.api.commands.prefix + commandName)
+      );
+    const autocompleteFunc = () => {
+      const currentCommand = powercord.api.commands.commands
+        .find(currentCommandFilter);
+      if (!currentCommand) {
+        return false;
+      } else {
+        return currentCommand.autocompleteFunc(
+          this.instance.props.value
+            .slice(powercord.api.commands.prefix.length)
+            .split(' ')
+            .slice(1)
+        )
+      }
+    };
+
+    this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS_AUTOCOMPLETE = {
+      getText: (index, { commands }) => commands[index].command,
+      matches: () =>
+        powercord.api.commands.commands
+          .filter(command => command.autocompleteFunc)
+          .some(currentCommandFilter) &&
+          autocompleteFunc(),
+      queryResults: autocompleteFunc,
+      renderResults: (...args) => {
+        if (!Array.isArray(args[4].header)) {
+          args[4].header = [args[4].header];
+        }
+
+        const renderedResults = this.instance.props.autocompleteOptions.COMMAND.renderResults(...args);
+        if (!renderedResults) {
+          return;
+        }
+
+        const [ header, commands ] = renderedResults;
+
+        header.type = class PatchedHeaderType extends header.type {
+          renderContent (...originalArgs) {
+            const rendered = super.renderContent(...originalArgs);
+            rendered.props.children = args[4].header;
+            return rendered;
+          }
+        };
+
+        for (const command of commands) {
+          command.type = class PatchedCommandType extends command.type {
+            renderContent (...originalArgs) {
+              const rendered = super.renderContent(...originalArgs);
+
+              const { children } = rendered.props;
+              if (children[0].props.name === 'Slash') {
+                rendered.props.children.shift();
+              }
+
+              const commandName = children[0].props;
+              commandName.children = args[4].commands[commands.indexOf(command)].command;
+
+              return rendered;
+            }
+          };
+        }
+
+        return [ header, commands ];
+      }
+    };
+  };
+
   const taClass = (await getModule([ 'channelTextArea', 'channelTextAreaEnabled' ]))
     .channelTextArea.split(' ')[0];
 
@@ -80,7 +151,7 @@ module.exports = async function injectAutocomplete () {
     (this.instance = getOwnerInstance(document.querySelector(`.${taClass}`)));
   const instancePrototype = Object.getPrototypeOf(updateInstance());
 
-  pcInject('pc-commands-autocomplete', instancePrototype, 'componentDidMount', (args, originReturn) => {
+  pcInject('pc-commands-autocomplete', instancePrototype, 'render', (args, originReturn) => {
     updateInstance();
     inject();
     return originReturn;
