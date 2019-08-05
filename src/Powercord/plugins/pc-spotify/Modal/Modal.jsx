@@ -251,12 +251,14 @@ module.exports = class Modal extends React.Component {
         style={displayState === 'hide' ? { display: 'none' } : {}}
       >
         <Tooltip text={currentItem.albumName} position='top'>
-          <div className='avatarWrapper-3YA-_G pc-avatarWrapper'>
+          <div className='avatarWrapper-3B0ndJ'>
             <div
-              className='wrapper-2F3Zv8 pc-wrapper small-5Os1Bb pc-small avatar-3JE4B3 avatarSmall-3ACRaI'
+              className='wrapper-3t9DeA'
               style={{
                 backgroundImage: `url("${currentItem.img}")`,
-                backgroundSize: 'contain'
+                backgroundSize: 'contain',
+                height: '35px',
+                width: '35px'
               }}
               onClick={() => shell.openExternal(currentItem.uri)}
             />
