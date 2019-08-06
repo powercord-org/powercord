@@ -14,6 +14,7 @@ module.exports = {
     }
 
     const name = args.shift();
+    const value = args.join(' ').replace(/\\n/g, '\n');
     if (settings.get(name)) {
       return {
         send: false,
@@ -24,7 +25,7 @@ module.exports = {
       };
     }
 
-    settings.set(name, args.join(' '));
+    settings.set(name, value);
 
     return {
       send: false,
@@ -38,7 +39,7 @@ module.exports = {
           inline: false
         }, {
           name: 'Value',
-          value: args.join(' '),
+          value: value,
           inline: false
         } ]
       }
