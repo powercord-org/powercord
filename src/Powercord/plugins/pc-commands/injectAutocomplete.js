@@ -1,8 +1,10 @@
 const { inject: pcInject } = require('powercord/injector');
 const { waitFor, getOwnerInstance, sleep } = require('powercord/util');
 const { getModule } = require('powercord/webpack');
+const { webContents } = require('electron').remote.getCurrentWindow();
 
 module.exports = async function injectAutocomplete () {
+  let state;
   const disabledPlugins = powercord.settings.get('disabledPlugins', []);
   const plugins = [ ...powercord.pluginManager.plugins.keys() ]
     .filter(plugin => !disabledPlugins.includes(plugin));
@@ -16,7 +18,11 @@ module.exports = async function injectAutocomplete () {
   const inject = () => {
     this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS = {
       getText: (index, { commands }) => powercord.api.commands.prefix + commands[index].command,
-      matches: (isValid) => isValid && this.instance.props.value.startsWith(powercord.api.commands.prefix) && !this.instance.props.value.includes(' '),
+      matches: (isValid) => (
+        isValid &&
+        this.instance.props.value.startsWith(powercord.api.commands.prefix) &&
+        !this.instance.props.value.includes(' ')
+      ),
       queryResults: () => ({
         commands: powercord.api.commands.commands.filter(c =>
           c.command.startsWith(this.instance.props.value.slice(powercord.api.commands.prefix.length))
@@ -40,7 +46,8 @@ module.exports = async function injectAutocomplete () {
             ) {
               const commandPreviewChildren = rendered.props.children[1].props.children;
               if (commandPreviewChildren[0].startsWith('/')) {
-                commandPreviewChildren[0] = commandPreviewChildren[0].replace(`/${powercord.api.commands.prefix.slice(1)}`, powercord.api.commands.prefix);
+                commandPreviewChildren[0] = commandPreviewChildren[0]
+                  .replace(`/${powercord.api.commands.prefix.slice(1)}`, powercord.api.commands.prefix);
               }
             }
 
@@ -81,28 +88,52 @@ module.exports = async function injectAutocomplete () {
         .find(currentCommandFilter);
       if (!currentCommand) {
         return false;
-      } else {
-        return currentCommand.autocompleteFunc(
-          this.instance.props.value
-            .slice(powercord.api.commands.prefix.length)
-            .split(' ')
-            .slice(1)
-        )
       }
+
+      const autocompleteRows = currentCommand.autocompleteFunc(
+        this.instance.props.value
+          .slice(powercord.api.commands.prefix.length)
+          .split(' ')
+          .slice(1)
+      );
+
+      if (autocompleteRows) {
+        autocompleteRows.header = [ autocompleteRows.header ];
+      }
+
+      return autocompleteRows;
     };
 
     this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS_AUTOCOMPLETE = {
-      getText: (index, { commands }) => commands[index].command,
-      matches: () =>
-        powercord.api.commands.commands
-          .filter(command => command.autocompleteFunc)
-          .some(currentCommandFilter) &&
+      getText: (index, { commands }) => {
+        if (commands[index].wildcard) {
+          state = true;
+          setImmediate(() => {
+            webContents.sendInputEvent({
+              type: 'char',
+              keyCode: '\u000d',
+              charCode: 13
+            });
+            state = false;
+          });
+          return this.instance.props.value.split(' ').pop();
+        }
+
+        return commands[index].command;
+      },
+      matches: () => powercord.api.commands.commands
+        .filter(command => command.autocompleteFunc)
+        .some(currentCommandFilter) &&
           autocompleteFunc(),
       queryResults: autocompleteFunc,
       renderResults: (...args) => {
-        if (!Array.isArray(args[4].header)) {
-          args[4].header = [args[4].header];
+        if (state) {
+          return [ null, [] ];
         }
+
+        const customHeader = Array.isArray(args[4].header)
+          ? args[4].header
+          : [ args[4].header ];
 
         const renderedResults = this.instance.props.autocompleteOptions.COMMAND.renderResults(...args);
         if (!renderedResults) {
@@ -112,9 +143,18 @@ module.exports = async function injectAutocomplete () {
         const [ header, commands ] = renderedResults;
 
         header.type = class PatchedHeaderType extends header.type {
+          render () {
+            const rendered = super.render();
+            if (!customHeader[0]) {
+              rendered.props.children.props.children = null;
+              rendered.props.children.props.style = { padding: '4px' };
+            }
+            return rendered;
+          }
+
           renderContent (...originalArgs) {
             const rendered = super.renderContent(...originalArgs);
-            rendered.props.children = args[4].header;
+            rendered.props.children = customHeader;
             return rendered;
           }
         };
@@ -123,6 +163,7 @@ module.exports = async function injectAutocomplete () {
           command.type = class PatchedCommandType extends command.type {
             renderContent (...originalArgs) {
               const rendered = super.renderContent(...originalArgs);
+              const commandObj = args[4].commands[commands.indexOf(command)];
 
               const { children } = rendered.props;
               if (children[0].props.name === 'Slash') {
@@ -130,7 +171,7 @@ module.exports = async function injectAutocomplete () {
               }
 
               const commandName = children[0].props;
-              commandName.children = args[4].commands[commands.indexOf(command)].command;
+              commandName.children = commandObj.command;
 
               return rendered;
             }
@@ -152,8 +193,10 @@ module.exports = async function injectAutocomplete () {
   const instancePrototype = Object.getPrototypeOf(updateInstance());
 
   pcInject('pc-commands-autocomplete', instancePrototype, 'render', (args, originReturn) => {
-    updateInstance();
-    inject();
+    setImmediate(() => {
+      updateInstance();
+      inject();
+    });
     return originReturn;
   });
 
