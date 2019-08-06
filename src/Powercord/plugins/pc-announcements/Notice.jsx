@@ -2,22 +2,22 @@ const { React, getModule, getModuleByDisplayName } = require('powercord/webpack'
 const { AsyncComponent } = require('powercord/components');
 
 const Clickable = AsyncComponent.from(getModuleByDisplayName('Clickable'));
-let classesStore = null;
-
 const Notice = class Notice extends React.Component {
   constructor () {
     super();
 
-    this.state = classesStore || {
-      types: [],
+    this.classesStore = null;
+    this.state = this.classesStore || {
+      types: {},
       button: '',
       dismiss: ''
     };
   }
 
   async componentDidMount () {
-    if (!classesStore) {
-      const classes = await getModule([ 'noticeBrand' ]);
+    if (!this.classesStore) {
+      const classes = (await getModule([ 'noticeBrand' ]));
+
       this.setState({
         types: {
           BLURPLE: classes.noticeBrand,
@@ -35,7 +35,8 @@ const Notice = class Notice extends React.Component {
         button: classes.button,
         dismiss: classes.dismiss
       });
-      classesStore = this.state;
+
+      this.classesStore = this.state;
     }
   }
 
@@ -63,7 +64,8 @@ Notice.TYPES = {
   SPOTIFY: 'SPOTIFY',
   PURPLE: 'PURPLE',
   GREEN: 'GREEN',
-  SURVEY: 'SURVEY' // noticeInfo's (Notice.TYPES.BLUE) evil twin -- hovering over the CTA button greets you with some gloomy black text instead of the traditional white.
+  SURVEY: 'SURVEY' /* noticeInfo's (Notice.TYPES.BLUE) evil twin -- hovering over the CTA button greets
+    you with some gloomy black text instead of the traditional white. */
 };
 
 module.exports = Notice;

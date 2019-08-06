@@ -69,6 +69,34 @@
   }
 }
 
+.powercord-folders-opener {
+  margin-left: 15px;
+  flex: 0 0 auto;
+  display: flex;
+
+  button {
+    &:not(:last-child) {
+      margin-right: 15px;
+    }
+  }
+}
+
+.theme-light {
+  .powercord-folders-opener > button {
+    color: #040405;
+    border-color: rgba(4, 4, 5, .3);
+
+    &:active {
+      background-color: rgba(4, 4, 5, .1); 
+      border-color: #040405;
+    }
+
+    &:hover {
+      border-color: rgba(4, 4, 5, .6);
+    }
+  }
+}
+
 // Colors
 .theme-dark .powercord-plugins {
   color: #fff;
@@ -81,16 +109,5 @@
 .theme-light .powercord-plugins {
   &-wip {
     color: #fff;
-  }
-}
-
-.powercord-folders-opener {
-  margin-left: 10px;
-  line-height: 1.5;
-  text-align: right;
-  flex: 0 0 auto;
-
-  a {
-    display: block;
   }
 }

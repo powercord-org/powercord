@@ -4,7 +4,7 @@ const { unlink } = require('fs').promises;
 const { Plugin } = require('powercord/entities');
 const { React, getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
-const { getOwnerInstance, waitFor } = require('powercord/util');
+const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 const { DISCORD_INVITE, GUILD_ID } = require('powercord/constants');
 
 const Notice = require('./Notice');
@@ -29,17 +29,18 @@ module.exports = class Announcements extends Plugin {
           text: 'Join Server',
           onClick: async () => {
             this.closeNotice('pc-first-welcome');
-            const { getGuilds } = await getModule([ 'getGuilds' ]);
-            const { acceptInvite } = await getModule([ 'acceptInvite' ]);
-            const { selectGuild } = await getModule([ 'flushSelection', 'selectGuild' ]);
+
+            const { getGuilds } = (await getModule([ 'getGuilds' ]));
+            const { acceptInvite } = (await getModule([ 'acceptInvite' ]));
+            const { transitionToGuildSync } = (await getModule([ 'selectGuild' ]));
 
             if (getGuilds()[GUILD_ID]) {
-              acceptInvite(DISCORD_INVITE, {}, () => {
-                selectGuild(GUILD_ID);
+              return acceptInvite(DISCORD_INVITE, {}, () => {
+                transitionToGuildSync(GUILD_ID, false);
               });
-            } else {
-              selectGuild(GUILD_ID);
             }
+
+            return transitionToGuildSync(GUILD_ID, false);
           }
         },
         alwaysDisplay: true
@@ -62,7 +63,8 @@ module.exports = class Announcements extends Plugin {
   sendNotice (notice) {
     if (!this.notices.find(n => n.id === notice.id) && (notice.alwaysDisplay || !this.settings.get('dismissed', []).includes(notice.id))) {
       this.notices.push(notice);
-      this._forceUpdate();
+
+      forceUpdateElement('.pc-base > .pc-flex');
     }
   }
 
@@ -71,7 +73,8 @@ module.exports = class Announcements extends Plugin {
       this.settings.set('dismissed', [ ...this.settings.get('dismissed', []), noticeId ]);
     }
     this.notices = this.notices.filter(n => n.id !== noticeId);
-    this._forceUpdate();
+
+    forceUpdateElement('.pc-base > .pc-flex');
   }
 
   async _patchNotices () {
@@ -80,10 +83,10 @@ module.exports = class Announcements extends Plugin {
       res.props.children[1].props.children.unshift(this._renderNotice());
       return res;
     });
-  }
 
-  async _forceUpdate () {
-    getOwnerInstance(await waitFor('.pc-base > .pc-flex')).forceUpdate();
+    if (document.querySelector('.pc-base > .pc-flex')) {
+      Component.forceUpdate();
+    }
   }
 
   _renderNotice () {

@@ -1,6 +1,6 @@
 const { Plugin } = require('powercord/entities');
-const { camelCaseify, sleep } = require('powercord/util');
-const { instance, getModuleByDisplayName } = require('powercord/webpack');
+const { camelCaseify, forceUpdateElement, getOwnerInstance, sleep, waitFor } = require('powercord/util');
+const { instance, getModule } = require('powercord/webpack');
 
 /*
  * Based on BBD normalizer
@@ -25,11 +25,19 @@ module.exports = class ClassNameNormalizer extends Plugin {
     this.patchDOMMethods();
 
     // this is temporarily here ok, just making people think i'm doing stuff. Bowserware confirmed
-    const GuildHeader = await getModuleByDisplayName('GuildHeader');
-    require('powercord/injector').inject('pc-cnn-gh', GuildHeader.prototype, 'render', function (args, res) {
+    const guildHeaderClasses = await getModule([ 'iconBackgroundTierNone', 'container' ]);
+    const guildHeaderQuery = `.${guildHeaderClasses.container.replace(/ /g, '.')}`;
+
+    const instance = getOwnerInstance(await waitFor(guildHeaderQuery));
+
+    require('powercord/injector').inject('pc-cnn-gh', instance.__proto__, 'render', function (_, res) {
       res.props['data-guild-id'] = this.props.guild.id;
       return res;
     });
+
+    if (document.querySelector(guildHeaderQuery)) {
+      forceUpdateElement(guildHeaderQuery);
+    }
 
     if (window.__OVERLAY__) {
       document.body.classList.add('overlay');

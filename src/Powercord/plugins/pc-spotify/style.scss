@@ -70,21 +70,13 @@
   }
 
   .username {
-    color: #fff;
-    overflow: hidden;
     position: absolute;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     top: 0;
   }
 
   .discriminator {
     bottom: 0;
-    max-width: 84px;
-    overflow: hidden;
     position: absolute;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .translating {
@@ -195,6 +187,10 @@
       padding-bottom: 15px;
     }
   }
+
+  &-volumeSlider {
+    margin-top: 10px;
+  }
 }
 
 @keyframes spotifyText {
@@ -203,6 +199,6 @@
   }
 
   75%, 100% {
-    transform: translateX(calc(-100% + 84px));
+    transform: translateX(calc(-100% + 78px));
   }
 }

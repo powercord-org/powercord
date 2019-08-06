@@ -42,12 +42,15 @@ module.exports = class Explore extends React.Component {
 
   render () {
     return <div className='powercord-plugins'>
-      <div className='powercord-plugins-wip'>
+      <div className='ghostPill-2-KUPM powercord-plugins-wip'>
         This part of Powercord is a WIP. Expect unavailable features and crashes here
       </div>
       <div className='powercord-plugins-header'>
         <h3>Explore plugins</h3>
         <Button onClick={() => this.props.goToInstalled()}>Installed Plugins</Button>
+        <div class='powercord-folders-opener'>
+          <Button color={Button.Colors.WHITE} look={Button.Looks.OUTLINED} onClick={() => this.props.openFolder(powercord.pluginManager.pluginDir)}>Open Plugins Folder</Button>
+        </div>
       </div>
       <Divider/>
       <div className='powercord-plugins-topbar'>
