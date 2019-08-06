@@ -62,5 +62,5 @@ module.exports = {
         ),
       header: 'powercord command list'
     };
-  },
+  }
 };

@@ -118,11 +118,11 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
       getItems: () => [ {
         type: 'submenu',
         name: 'Repeat Modes',
-      image: hasIconsHidden
-        ? ''
-        : state.repeatState === 'context'
-          ? 'fa-sync'
-          : 'fa-undo',
+        image: hasIconsHidden
+          ? ''
+          : state.repeatState === 'context'
+            ? 'fa-sync'
+            : 'fa-undo',
         getItems: () => [ {
           name: 'On',
           stateName: 'context'
