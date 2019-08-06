@@ -98,7 +98,8 @@ module.exports = async function injectAutocomplete () {
       );
 
       if (autocompleteRows) {
-        autocompleteRows.header = [ autocompleteRows.header ];
+        autocompleteRows.commands.__header = [ autocompleteRows.header ];
+        delete autocompleteRows.header;
       }
 
       return autocompleteRows;
@@ -131,9 +132,9 @@ module.exports = async function injectAutocomplete () {
           return [ null, [] ];
         }
 
-        const customHeader = Array.isArray(args[4].header)
-          ? args[4].header
-          : [ args[4].header ];
+        const customHeader = Array.isArray(args[4].commands.__header)
+          ? args[4].commands.__header
+          : [ args[4].commands.__header ];
 
         const renderedResults = this.instance.props.autocompleteOptions.COMMAND.renderResults(...args);
         if (!renderedResults) {
