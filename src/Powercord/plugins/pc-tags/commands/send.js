@@ -2,20 +2,25 @@ module.exports = {
   command: 'send',
   description: 'Send a tag',
   func: (args, settings) => {
-    const result = settings.get(args[0]);
+    const tagName = args.shift();
+    const result = settings.get(tagName);
     if (!result) {
       return {
         send: false,
         result: {
           type: 'rich',
-          title: `Tag "${args[0]}" does not exist`
+          title: `Tag "${tagName}" does not exist`
         }
       };
     }
 
     return {
       send: true,
-      result
+      result: result.replace(/\$\$(@|\d+)/g, (match, idx) => (
+        match === '$$@'
+          ? args.join(' ')
+          : args[idx - 1]
+      ))
     };
   },
   autocomplete: (args, settings) => {
