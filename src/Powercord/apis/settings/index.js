@@ -75,6 +75,8 @@ module.exports = class Settings extends API {
     return {
       connectStore: (component) => this._connectStores(category)(component),
       get: (setting, defaultValue) => powercord.api.settings.store.getSetting(category, setting, defaultValue),
+      getKeys: () => powercord.api.settings.store.getSettingsKeys(category),
+      delete: (setting) => powercord.api.settings.actions.deleteSetting(category, setting),
       set: (setting, newValue) => {
         if (newValue === void 0) {
           return powercord.api.settings.actions.toggleSetting(category, setting);

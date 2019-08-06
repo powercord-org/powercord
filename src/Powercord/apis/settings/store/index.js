@@ -57,6 +57,10 @@ class SettingsStore extends Flux.Store {
       : currentNode;
   }
 
+  getSettingsKeys (category) {
+    return Object.keys(this.getSettings(category));
+  }
+
   static async _persist (category, settings) {
     if (!existsSync(SETTINGS_FOLDER)) {
       await mkdir(SETTINGS_FOLDER);

@@ -19,7 +19,7 @@
 const { join } = require('path');
 const { SETTINGS_FOLDER, FluxActions: { Settings: ActionTypes } } = require('powercord/constants');
 
-let settings =  {};
+let settings = {};
 
 module.exports = {
   getSettings: () => settings,
@@ -67,6 +67,17 @@ module.exports = {
           ...categorySettings,
           [setting]: value
         };
+
+        settings = {
+          ...settings,
+          [category]: categorySettings
+        };
+        persist(category, categorySettings);
+      },
+
+      [ActionTypes.DELETE_SETTING]: ({ category, setting }) => {
+        const categorySettings = settings[category] || {};
+        delete categorySettings[setting];
 
         settings = {
           ...settings,
