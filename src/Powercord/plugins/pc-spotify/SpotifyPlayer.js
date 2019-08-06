@@ -59,19 +59,21 @@ module.exports = {
 
     return request
       .catch(async (err) => {
-        if (err.statusCode === 401) {
-          this.accessToken = await this.getAccessToken();
+        if (err) {
+          if (err.statusCode === 401) {
+            this.accessToken = await this.getAccessToken();
 
-          delete request._res;
-          return this.genericRequest(request);
-        }
+            delete request._res;
+            return this.genericRequest(request);
+          }
 
-        if (err.body.error && err.body.error.reason === 'PREMIUM_REQUIRED') {
-          powercord.pluginManager.get('pc-spotify').openPremiumDialog();
-          return false;
+          if (err.body && err.body.error && err.body.error.reason === 'PREMIUM_REQUIRED') {
+            powercord.pluginManager.get('pc-spotify').openPremiumDialog();
+            return false;
+          }
+          console.error(err.body, request.opts);
+          throw err;
         }
-        console.error(err.body, request.opts);
-        throw err;
       });
   },
 

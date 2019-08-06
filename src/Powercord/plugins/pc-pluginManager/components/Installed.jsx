@@ -4,8 +4,6 @@ const { TextInput } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { asyncArray: { map } } = require('powercord/util');
 const { Confirm } = require('powercord/components/modal');
-const { spawn } = require('child_process');
-const { resolve } = require('path');
 const Plugin = require('./Plugin');
 
 module.exports = class Installed extends React.Component {
@@ -15,38 +13,20 @@ module.exports = class Installed extends React.Component {
     this.state = {
       search: ''
     };
-
-    this.openFolder = (dir) => {
-      const cmds = {
-        win32: 'explorer',
-        darwin: 'open',
-        linux: 'xdg-open'
-      };
-      spawn(cmds[process.platform], [ dir ]);
-    };
-
-    this.openPluginsFolder = () => {
-      this.openFolder(resolve(__dirname, '..', '..'));
-    };
-
-    this.openThemesFolder = () => {
-      this.openFolder(resolve(__dirname, '..', '..', '..', 'themes'));
-    };
   }
 
   render () {
     const plugins = this._getPlugins();
 
     return <div className='powercord-plugins'>
-      <div className="ghostPill-2-KUPM powercord-plugins-wip">
+      <div className='ghostPill-2-KUPM powercord-plugins-wip'>
         This part of Powercord is a WIP. Expect unavailable features and crashes here
       </div>
       <div className='powercord-plugins-header'>
         <h3>Installed plugins</h3>
         <Button onClick={() => this.props.goToExplore()}>Explore Plugins</Button>
-        <div class="powercord-folders-opener">
-          <a onClick={() => this.openPluginsFolder()}>Open Plugins Folder</a>
-          <a onClick={() => this.openThemesFolder()}>Open Themes Folder</a>
+        <div class='powercord-folders-opener'>
+          <Button color={Button.Colors.WHITE} look={Button.Looks.OUTLINED} onClick={() => this.props.openFolder(powercord.pluginManager.pluginDir)}>Open Plugins Folder</Button>
         </div>
       </div>
       <Divider/>
