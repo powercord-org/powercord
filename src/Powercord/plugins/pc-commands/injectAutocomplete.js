@@ -112,12 +112,16 @@ module.exports = async function injectAutocomplete () {
           setImmediate(() => {
             webContents.sendInputEvent({
               type: 'char',
-              keyCode: '\u000d',
-              charCode: 13
+              keyCode: '\u000d'
             });
             state = false;
           });
           return this.instance.props.value.split(' ').pop();
+        } else if (commands[index].instruction) {
+          setImmediate(() => {
+            webContents.sendInputEvent({ type: 'keyDown', keyCode: 'Backspace' })
+          });
+          return '';
         }
 
         return commands[index].command;

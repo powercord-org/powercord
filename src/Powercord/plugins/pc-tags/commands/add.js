@@ -48,14 +48,18 @@ module.exports = {
   autocomplete: (args) => {
     if (args[1] === void 0) {
       return {
-        commands: [ { command: 'Enter a tag name...' } ]
+        commands: [ {
+          command: 'Enter a tag name...',
+          instruction: true
+        } ]
       };
     }
 
     return {
       commands: [ {
         command: `Enter the content of "${args[0]}"...`,
-        wildcard: true
+        wildcard: true,
+        instruction: true
       } ]
     };
   }
