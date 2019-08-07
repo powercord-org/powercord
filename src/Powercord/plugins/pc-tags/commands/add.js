@@ -39,7 +39,7 @@ module.exports = {
           inline: false
         }, {
           name: 'Value',
-          value: value,
+          value,
           inline: false
         } ]
       }

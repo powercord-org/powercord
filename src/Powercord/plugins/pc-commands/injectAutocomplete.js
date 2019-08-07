@@ -119,7 +119,10 @@ module.exports = async function injectAutocomplete () {
           return this.instance.props.value.split(' ').pop();
         } else if (commands[index].instruction) {
           setImmediate(() => {
-            webContents.sendInputEvent({ type: 'keyDown', keyCode: 'Backspace' })
+            webContents.sendInputEvent({
+              type: 'keyDown',
+              keyCode: 'Backspace'
+            });
           });
           return '';
         }
