@@ -152,10 +152,7 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
     type: 'slider',
     name: 'Volume',
     color: '#1ed860',
-    className: 'powercord-spotify-volumeSlider',
     defaultValue: state.volume,
-    equidistant: true,
-    markers: [ 0, 20, 40, 60, 80, 100 ],
     onValueChange: (val) =>
       SpotifyPlayer.setVolume(Math.round(val))
         .then(() => true)
