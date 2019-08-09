@@ -28,7 +28,7 @@ module.exports = {
     } else {
       const command = powercord.api.commands.commands.find(c => [ c.command, ...c.aliases ].includes(commandName));
       if (!command) {
-        result = `Command \`${commandName}\` not found.`;
+        result = `Command ${powercord.api.commands.prefix}\`${commandName}\` not found.`;
       } else {
         result = {
           type: 'rich',
