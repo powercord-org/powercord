@@ -1,7 +1,7 @@
 module.exports = {
   command: 'resume',
   description: 'Resume Spotify playback',
-  usage: '/resume',
+  usage: '{c}',
 
   func (SpotifyPlayer) {
     return SpotifyPlayer.play();
