@@ -1,8 +1,8 @@
 module.exports = {
   command: 'delete',
   description: 'Delete a tag',
-  func: (args, settings) => {
-    if (!settings.get(args[0])) {
+  func: (args, main) => {
+    if (!main.settings.get(args[0])) {
       return {
         send: false,
         result: {
@@ -12,7 +12,8 @@ module.exports = {
       };
     }
 
-    settings.delete(args[0]);
+    main.settings.delete(args[0]);
+    main.unregisterTag(args[0]);
 
     return {
       send: false,

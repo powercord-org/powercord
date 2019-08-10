@@ -1,7 +1,7 @@
 module.exports = {
   command: 'list',
   description: 'Get a list of all tags you have',
-  func: (_, settings) => {
+  func: (_, { settings }) => {
     const keys = settings.getKeys();
 
     return {
