@@ -1,3 +1,5 @@
+const getPrefix = () => powercord.api.commands.prefix;
+
 module.exports = {
   command: 'update',
   description: 'Update a tag',
@@ -8,7 +10,7 @@ module.exports = {
         result: {
           type: 'rich',
           title: 'Missing required arguments',
-          footer: { text: 'Refer to /help tag' }
+          footer: { text: `Refer to ${getPrefix()}help tag` }
         }
       };
     }

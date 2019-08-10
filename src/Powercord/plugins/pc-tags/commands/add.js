@@ -1,3 +1,5 @@
+const getPrefix = () => powercord.api.commands.prefix;
+
 module.exports = {
   command: 'add',
   description: 'Create a tag',
@@ -8,7 +10,7 @@ module.exports = {
         result: {
           type: 'rich',
           title: 'Missing required arguments',
-          footer: { text: 'Refer to /help tag' }
+          footer: { text: `Refer to ${getPrefix()}help tag` }
         }
       };
     }
@@ -20,7 +22,7 @@ module.exports = {
         send: false,
         result: {
           type: 'rich',
-          title: `Tag "${name}" already exists (use /tag update)`
+          title: `Tag "${name}" already exists (use ${getPrefix()}tag update)`
         }
       };
     }

@@ -3,7 +3,7 @@ const { messages, channels } = require('powercord/webpack');
 module.exports = {
   command: 'share',
   description: 'Send currently playing song to channel.',
-  usage: '/share',
+  usage: '{c}',
 
   async func (SpotifyPlayer) {
     if (SpotifyPlayer.player.item.external_urls) {
