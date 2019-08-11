@@ -19,5 +19,24 @@ module.exports = {
             send: false,
             result
         }
+    },
+    autocompleteFunc (args) {
+        const plugins = powercord.pluginManager.getPlugins()
+            .sort((a, b) => a < b ? -1 : 1 || 0)
+            .map(plugin => powercord.pluginManager.plugins.get(plugin));
+        if (args.length > 1) {
+            return false;
+        }
+        return {
+            commands: plugins
+                .filter(plugin => plugin.pluginID !== 'pc-commands' &&
+                    plugin.pluginID.includes(args[0].toLowerCase()))
+                .map(plugin => ({
+                    command: plugin.pluginID,
+                    description: plugin.manifest.description
+                }))
+                .slice(0, 10),
+            header: 'powercord plugin list'
+        };
     }
 }
