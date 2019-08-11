@@ -9,7 +9,7 @@ module.exports = {
         result = {
             type: 'rich',
             title: `List of Plugins (${plugins.length})`,
-            description: `\`${powercord.pluginManager.getPlugins().join('\`\n\`')}\``,
+            description: `\`${plugins.join('\`\n\`')}\``,
           };
         return { 
             send: false,
