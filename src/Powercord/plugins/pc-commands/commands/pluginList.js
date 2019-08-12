@@ -1,19 +1,21 @@
+
 module.exports = {
-    command: 'pluginlist',
-    description: 'List all the plugins that are installed',
-    usage: '{c}',
-    aliases: ['plugins'],
-    func: (args) => {
-        let result;
-        let plugins = powercord.pluginManager.getPlugins()
-        result = {
-            type: 'rich',
-            title: `List of Plugins (${plugins.length})`,
-            description: `\`${plugins.join('\`\n\`')}\``,
-          };
-        return { 
-            send: false,
-            result
-        }
-    }
-}
+  command: 'plugins',
+  aliases: [ 'plist' ],
+  description: 'Prints out a list of currently installed plugins.',
+  usage: '{c}',
+
+  func () {
+    const plugins = powercord.pluginManager.getPlugins();
+    const result = {
+      type: 'rich',
+      title: `List of Installed Plugins (${plugins.length})`,
+      description: `\`${plugins.join('\n')}\``
+    };
+
+    return {
+      send: false,
+      result
+    };
+  }
+};
