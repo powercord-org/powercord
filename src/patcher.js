@@ -60,6 +60,7 @@ Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
 
 delete require.cache[electronPath].exports;
 require.cache[electronPath].exports = {
+  deprecate: electron.deprecate,
   BrowserWindow: PatchedBrowserWindow
 };
 
