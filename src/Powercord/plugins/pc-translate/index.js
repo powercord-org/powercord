@@ -1,14 +1,23 @@
 const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
-const { getModuleByDisplayName, React } = require('powercord/webpack');
+const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { sleep, createElement, forceUpdateElement, getOwnerInstance } = require('powercord/util');
 const { ContextMenu: { Submenu } } = require('powercord/components');
+
 const translate = require('google-translate-api');
 const { resolve } = require('path');
 
 module.exports = class Translate extends Plugin {
   async startPlugin () {
     this.translations = {};
+    this.messageClasses = {
+      ...await getModule([ 'messageCompact', 'messageCozy' ]),
+      ...await getModule([ 'markup' ])
+    };
+
+    Object.keys(this.messageClasses)
+      .forEach(key => this.messageClasses[key] = `.${this.messageClasses[key].replace(/ /g, '.')}`);
+
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._injectTranslator();
   }
@@ -30,7 +39,8 @@ module.exports = class Translate extends Plugin {
       const embed = embeds.length > 0 ? embeds[0] : null;
 
       if (embed && _this.translations[embed.id]) {
-        embed.description = embed.original;
+        embed.title = embed.original.title;
+        embed.description = embed.original.description;
       } else if (_this.translations[message.id]) {
         message.contentParsed = message.original;
       }
@@ -44,10 +54,13 @@ module.exports = class Translate extends Plugin {
 
       if (embed) {
         if (_this.translations[embed.id] && !embed.original) {
-          embed.original = embed.description;
-          embed.description = _this.translations[embed.id];
+          // eslint-disable-next-line object-property-newline
+          embed.original = { title: embed.title, description: embed.description };
+          embed.title = _this.translations[embed.id].title;
+          embed.description = _this.translations[embed.id].description;
         } else if (!_this.translations[embed.id] && embed.original) {
-          embed.description = embed.original;
+          embed.title = embed.original.title;
+          embed.description = embed.original.description;
           embed.original = null;
         }
       }
@@ -82,30 +95,39 @@ module.exports = class Translate extends Plugin {
     }, true);
 
     const MessageContextMenu = await getModuleByDisplayName('MessageContextMenu');
-    inject('pc-translate-context', MessageContextMenu.prototype, 'render', function (args, res) {
+    inject('pc-translate-context', MessageContextMenu.prototype, 'render', function (_, res) {
+      const { containerCozyBounded, timestampCozy, markup } = _this.messageClasses;
       const setText = async (opts) => {
-        const cozy = !!this.props.target.closest('.pc-containerCozyBounded');
-        const message = cozy ? this.props.target.closest('.pc-containerCozyBounded') : this.props.target.parentElement.parentElement;
+        const cozy = !!this.props.target.closest(containerCozyBounded);
+        const message = cozy ? this.props.target.closest(containerCozyBounded) : this.props.target.parentElement.parentElement;
 
         message.style.transition = '0.2s';
         message.style.opacity = '0';
 
         let fromLang = '';
 
-        const timestamp = cozy ? message.querySelector('.pc-timestampCozy') : message;
+        const timestamp = cozy ? message.querySelector(timestampCozy) : message;
         await Promise.all([
           sleep(200),
           Promise.all(
-            [ ...message.querySelectorAll('.pc-markup') ]
+            [ ...message.querySelectorAll(markup) ]
               .map(async (markup) => {
                 const markupInstance = getOwnerInstance(markup);
                 const { embed, message } = markupInstance.props;
 
                 if (embed || (message && message.embeds.length > 0)) {
                   const embed = markupInstance.props.embed || message.embeds[0];
+
+                  _this.translations[embed.id] = [];
+
+                  if (embed.title) {
+                    const { text } = await translate(embed.title, opts);
+                    _this.translations[embed.id].title = text;
+                  }
+
                   const { text, from } = await translate(embed.description, opts);
 
-                  _this.translations[embed.id] = text;
+                  _this.translations[embed.id].description = text;
                   fromLang = translate.languages[from.language.iso];
                 }
 
@@ -146,7 +168,7 @@ module.exports = class Translate extends Plugin {
                   _this.translations[message.id] = content;
                 }
 
-                forceUpdateElement('.pc-markup', true);
+                forceUpdateElement(_this.messageClasses.markup, true);
               })
           )
         ]);
@@ -159,7 +181,7 @@ module.exports = class Translate extends Plugin {
               message.style.opacity = '0';
               await sleep(200);
 
-              message.querySelectorAll('.pc-markup')
+              message.querySelectorAll(markup)
                 .forEach(markup => {
                   const markupInstance = getOwnerInstance(markup);
                   const { embed, message } = markupInstance.props;
@@ -173,7 +195,7 @@ module.exports = class Translate extends Plugin {
                     _this.translations[message.id] = null;
                   }
 
-                  forceUpdateElement('.pc-markup', true);
+                  forceUpdateElement(_this.messageClasses.markup, true);
                 });
 
               timestamp.removeChild(cozy ? this : this.parentElement);
