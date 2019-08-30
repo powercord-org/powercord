@@ -1,8 +1,8 @@
 module.exports = {
   command: 'view',
   description: 'View a tag',
-  func: (args, settings) => {
-    if (!settings.get(args[0])) {
+  func: (args, main) => {
+    if (!main.settings.get(args[0])) {
       return {
         send: false,
         result: {
@@ -17,7 +17,7 @@ module.exports = {
       result: {
         type: 'rich',
         title: args[0],
-        description: settings.get(args[0])
+        description: main.settings.get(args[0])
       }
     };
   },
