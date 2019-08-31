@@ -1,6 +1,6 @@
 const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { ReactDOM, React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { sleep, createElement, forceUpdateElement, getOwnerInstance } = require('powercord/util');
 const { ContextMenu: { Submenu } } = require('powercord/components');
 
@@ -9,6 +9,7 @@ const { resolve } = require('path');
 
 module.exports = class Translate extends Plugin {
   async startPlugin () {
+    this.state = {};
     this.translations = {};
     this.messageClasses = {
       ...await getModule([ 'messageCompact', 'messageCozy' ]),
@@ -23,13 +24,17 @@ module.exports = class Translate extends Plugin {
   }
 
   pluginWillUnload () {
+    this.removeResetButton();
+
+    uninject('pc-translate-nativeContext');
     uninject('pc-translate-context');
     uninject('pc-translate-content');
     uninject('pc-translate-contentRemove');
+    uninject('pc-translate-resetButtonRemove');
   }
 
   async _injectTranslator () {
-    const languages = Object.keys(translate.languages)
+    this.state.languages = Object.keys(translate.languages)
       .filter(k => typeof translate.languages[k] === 'string');
 
     const _this = this;
@@ -93,6 +98,68 @@ module.exports = class Translate extends Plugin {
 
       return args;
     }, true);
+
+    const ChannelTextArea = await getModuleByDisplayName('ChannelTextArea');
+    inject('pc-translate-resetButtonRemove', ChannelTextArea.prototype, 'handleSubmit', (args) => {
+      this.removeResetButton();
+
+      return args;
+    });
+
+    const NativeContextMenu = await getModuleByDisplayName('NativeContextMenu');
+    inject('pc-translate-nativeContext', NativeContextMenu.prototype, 'render', function (_, res) {
+      if (this.props.type !== 'CHANNEL_TEXT_AREA') {
+        return res;
+      }
+
+      const { _textArea: target } = getOwnerInstance(this.props.target);
+      _this.state.original = _this.state.original || target.value;
+
+      const setText = async (opts) => {
+        const { messagesWrapper } = (await getModule([ 'messagesWrapper' ]));
+        const buttonClasses = (await getModule([ 'channelTextArea', 'inner' ]));
+
+        const textArea = getOwnerInstance(document.querySelector(`.${messagesWrapper.replace(/ /g, '.')} + form`));
+        const selectedText = (await getModule([ 'getSelectionText' ])).getSelectionText();
+
+        let value = selectedText.length > 0 ? selectedText : target.value;
+
+        const { text } = await translate(value, opts);
+
+        if (selectedText.length === 0) {
+          value = text;
+        } else {
+          value = `${target.value.slice(0, target.selectionStart)}${text}` +
+            `${target.value.slice(target.selectionEnd)}`;
+        }
+
+        textArea.setState({ textValue: value });
+
+        if (document.getElementById('powercord-translate-resetButton')) {
+          return;
+        }
+
+        const textAreaButtons = document.getElementsByClassName(buttonClasses.buttons)[0];
+        const buttonContainer = createElement('div', { id: 'powercord-translate-resetButton',
+          className: buttonClasses.buttonContainer });
+
+        textAreaButtons.insertBefore(buttonContainer, textAreaButtons.firstChild);
+
+        const ResetButton = require('./components/ResetButton.jsx');
+        ReactDOM.render(React.createElement(ResetButton, {
+          className: buttonClasses.button,
+          onClick: () => {
+            textArea.setState({ textValue: _this.state.original });
+
+            _this.removeResetButton();
+          }
+        }), buttonContainer);
+      };
+
+      _this.addTranslateSubMenu(res, setText);
+
+      return res;
+    });
 
     const MessageContextMenu = await getModuleByDisplayName('MessageContextMenu');
     inject('pc-translate-context', MessageContextMenu.prototype, 'render', function (_, res) {
@@ -216,32 +283,45 @@ module.exports = class Translate extends Plugin {
         message.style.opacity = '1';
       };
 
-      res.props.children.push(
-        React.createElement(Submenu, {
-          name: 'Translate',
-          hint: 'to',
-          seperate: true,
-          onClick: () => setText({ to: 'en' }),
-          getItems: () => languages
-            .map(to => ({
-              type: 'submenu',
-              hint: 'from',
-              name: translate.languages[to],
-              onClick: () => setText({ to }),
-              getItems: () => languages
-                .map(from => ({
-                  type: 'button',
-                  name: translate.languages[from],
-                  onClick: () => setText({
-                    to,
-                    from
-                  })
-                }))
-            }))
-        })
-      );
+      _this.addTranslateSubMenu(res, setText);
 
       return res;
     });
+  }
+
+  removeResetButton () {
+    delete this.state.original;
+
+    const resetButton = document.getElementById('powercord-translate-resetButton');
+    if (resetButton) {
+      resetButton.remove();
+    }
+  }
+
+  addTranslateSubMenu (res, setText) {
+    res.props.children.push(
+      React.createElement(Submenu, {
+        name: 'Translate',
+        hint: 'to',
+        seperate: true,
+        onClick: () => setText({ to: 'en' }),
+        getItems: () => this.state.languages
+          .map(to => ({
+            type: 'submenu',
+            hint: 'from',
+            name: translate.languages[to],
+            onClick: () => setText({ to }),
+            getItems: () => this.state.languages
+              .map(from => ({
+                type: 'button',
+                name: translate.languages[from],
+                onClick: () => setText({
+                  to,
+                  from
+                })
+              }))
+          }))
+      })
+    );
   }
 };
