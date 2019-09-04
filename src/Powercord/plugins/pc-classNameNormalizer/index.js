@@ -20,9 +20,9 @@ module.exports = class ClassNameNormalizer extends Plugin {
   async startPlugin () {
     await sleep(2000); // bowserware:tm:
 
-    this.patchModules(this._fetchAllModules());
-    this.normalizeElement(document.querySelector('#app-mount'));
-    this.patchDOMMethods();
+    // this.patchModules(this._fetchAllModules());
+    // this.normalizeElement(document.querySelector('#app-mount'));
+    // this.patchDOMMethods();
 
     // this is temporarily here ok, just making people think i'm doing stuff. Bowserware confirmed
     const guildHeaderClasses = await getModule([ 'iconBackgroundTierNone', 'container' ]);

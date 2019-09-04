@@ -242,6 +242,7 @@ module.exports = class Modal extends React.Component {
         className={`${`${[ containerClasses.button, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState}`}
         disabled
       />);
+    console.log(containerClasses);
     return <>
       {this.props.main._listeningAlongComponent}
       <div
@@ -254,7 +255,7 @@ module.exports = class Modal extends React.Component {
         <Tooltip text={currentItem.albumName} position='top'>
           <div className={containerClasses.avatarWrapper}>
             <div
-              className={containerClasses.wrapper}
+              className={[ containerClasses.avatar, containerClasses.wrapper ].join(' ')}
               style={{
                 backgroundImage: `url(${currentItem.img})`,
                 backgroundSize: 'contain',
@@ -268,10 +269,10 @@ module.exports = class Modal extends React.Component {
         </Tooltip>
 
         <div className={`powercord-spotify-songInfo ${containerClasses.nameTag}`}>
-          <div className={containerClasses.usernameContainer}>
-            <Title className={`${containerClasses.username} username`}>{currentItem.name}</Title>
+          <div className={[ containerClasses.colorStandard, containerClasses.size14, containerClasses.usernameContainer ].join(' ')}>
+            <Title className={[ containerClasses.size14, containerClasses.title ].join(' ')}>{currentItem.name}</Title>
           </div>
-          <Title className={`${[ containerClasses.size10, containerClasses.subtext, containerClasses.discriminator ].join(' ')} discriminator`}>{artists ? `by ${artists}` : ''}</Title>
+          <Title className={[ containerClasses.size10, containerClasses.subtext ].join(' ')}>{artists ? `by ${artists}` : ''}</Title>
         </div>
 
         <div className={[ containerClasses.flex, containerClasses.horizontal, containerClasses.directionRow, containerClasses.justifyRow, containerClasses.alignStretch, containerClasses.noWrap ].join(' ')}>
