@@ -34,25 +34,24 @@ module.exports = class LMGTFY extends Plugin {
           };
         }
         const options = args.slice(-2);
-        
         // Loop through both the arrays to check the options specified
         sites.forEach(e => {
           if (options[0].toLowerCase() === e) {
             s = siteJson[e];
-        }
-      })
+          }
+        });
 
         // lmgtfy only supports image for google searches
-        if(s === 'g'){
+        if (s === 'g') {
           types.forEach(e => {
-            if(options[1].toLowerCase() === e){
+            if(options[1].toLowerCase() === e) {
               t = typeJson[e];
-          }
-      })
-      }
+            }
+          })
+        }
         return {
-        send: true,
-        result: `<https://lmgtfy.com/?q=${encodeURI(args.slice(0,args.length - 2).join('+'))}&s=${s}&t=${t}>`
+          send: true, 
+          result: `<https://lmgtfy.com/?q=${encodeURI(args.slice(0,args.length - 2).join('+'))}&s=${s}&t=${t}>`
         };
       }
     );
