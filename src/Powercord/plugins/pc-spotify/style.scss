@@ -28,7 +28,7 @@
   transition-delay: .25s;
 
   &-songInfo {
-    height: 28px;
+    height: 30px;
     position: relative;
   }
 
@@ -67,16 +67,6 @@
   &-playlist:hover {
     cursor: pointer;
     background: #2f3136;
-  }
-
-  .username {
-    position: absolute;
-    top: 0;
-  }
-
-  .discriminator {
-    bottom: 0;
-    position: absolute;
   }
 
   .translating {
@@ -167,7 +157,8 @@
   }
 
   &:hover {
-    padding-bottom: 25px;
+    padding-bottom: 30px;
+
     transition-delay: 0s;
 
     .powercord-spotify-seek-bar {

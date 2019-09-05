@@ -24,7 +24,7 @@ module.exports = class Spotify extends Plugin {
       ...await getModule([ 'colorStandard' ]),
       ...await getModule([ 'container', 'usernameContainer' ]),
       ...await getModule([ 'button', 'lookFilled' ]),
-      ...await getModule([ 'button', 'buttonIcon', 'disabled' ]),
+      ...await getModule([ 'button', 'enabled', 'disabled' ]),
       ...await getModule([ 'size10', 'size12' ]),
       ...await getModule([ '_flex' ]),
       ...await getModule([ 'avatarWrapper', 'avatar' ]),
