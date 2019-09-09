@@ -71,7 +71,7 @@
     .btn-group {
       display: flex;
 
-      .pc-button + .pc-button {
+      button + button {
         margin-left: 10px;
       }
     }

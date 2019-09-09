@@ -50,13 +50,13 @@
     margin-right: 25px;
   }
 
-  .pc-spinner {
+  span[class^='spinner-'] {
     margin-right: 10px;
   }
 }
 
 .powercord-passphrase {
-  &-modal .pc-divider {
+  &-modal div[class^='divider-'] {
     display: none;
   }
 

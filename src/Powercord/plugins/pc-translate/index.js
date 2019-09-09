@@ -12,7 +12,7 @@ module.exports = class Translate extends Plugin {
     this.state = {};
     this.translations = {};
     this.messageClasses = {
-      ...await getModule([ 'messageCompact', 'messageCozy' ]),
+      ...await getModule([ 'container', 'messageCompact' ]),
       ...await getModule([ 'markup' ])
     };
 
@@ -147,7 +147,6 @@ module.exports = class Translate extends Plugin {
 
         const ResetButton = require('./components/ResetButton.jsx');
         ReactDOM.render(React.createElement(ResetButton, {
-          className: buttonClasses.button,
           onClick: () => {
             textArea.setState({ textValue: _this.state.original });
 

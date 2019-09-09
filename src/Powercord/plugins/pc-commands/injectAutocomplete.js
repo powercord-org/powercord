@@ -8,12 +8,9 @@ module.exports = async function injectAutocomplete () {
   const disabledPlugins = powercord.settings.get('disabledPlugins', []);
   const plugins = [ ...powercord.pluginManager.plugins.keys() ]
     .filter(plugin => !disabledPlugins.includes(plugin));
-  while (!plugins.every(plugin =>
-    (powercord.pluginManager.get(plugin) || { ready: true }).ready // ugly fix lol
-  )) {
+  while (!plugins.every(plugin => powercord.pluginManager.get(plugin))) { // ugly fix lol
     await sleep(1);
   }
-
 
   const inject = () => {
     this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS = {

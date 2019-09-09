@@ -205,7 +205,7 @@ module.exports = class Modal extends React.Component {
       ? (<Tooltip text={libraryStatus.tooltip} position="top">
         <button
           style={{ color: libraryStatus.color }}
-          className={`${`${[ containerClasses.button, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} ${libraryStatus.icon} spotify-in-library`}
+          className={`${`${[ containerClasses.button, containerClasses.enabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} ${libraryStatus.icon} spotify-in-library`}
           onClick={libraryStatus.action}
         />
       </Tooltip>)
@@ -214,7 +214,7 @@ module.exports = class Modal extends React.Component {
       ? (<Tooltip text="Shuffle" position="top">
         <button
           style={{ color: shuffleColor }}
-          className={`${`${[ containerClasses.button, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'}`}
+          className={`${`${[ containerClasses.button, containerClasses.enabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'}`}
           onClick={() => this.onButtonClick('setShuffleState', !this.state.shuffleState)}
         />
       </Tooltip>)
@@ -223,14 +223,14 @@ module.exports = class Modal extends React.Component {
           color: shuffleColor,
           opacity: 0.25
         }}
-        className={`${`${[ containerClasses.button, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'}`}
+        className={`${`${[ containerClasses.button, containerClasses.disabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'}`}
         disabled
       />);
     const repeatButton = !this.state.disallowedActions.toggling_repeat_track && !this.state.disallowedActions.toggling_repeat_context
       ? (<Tooltip text={this.repeatStruct[this.state.repeatState].tooltip} position="top">
         <button
           style={{ color: repeatColor }}
-          className={`${`${[ containerClasses.button, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState}`}
+          className={`${`${[ containerClasses.button, containerClasses.enabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState}`}
           onClick={() => this.onButtonClick('setRepeatState', this.repeatStruct[this.state.repeatState].next)}
         />
       </Tooltip>)
@@ -239,10 +239,10 @@ module.exports = class Modal extends React.Component {
           color: shuffleColor,
           opacity: 0.25
         }}
-        className={`${`${[ containerClasses.button, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState}`}
+        className={`${`${[ containerClasses.button, containerClasses.disabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState}`}
         disabled
       />);
-    console.log(containerClasses);
+
     return <>
       {this.props.main._listeningAlongComponent}
       <div
@@ -259,7 +259,7 @@ module.exports = class Modal extends React.Component {
               style={{
                 backgroundImage: `url(${currentItem.img})`,
                 backgroundSize: 'contain',
-                cursor: 'pointer',
+                borderRadius: '50%',
                 height: '32px',
                 width: '32px'
               }}
@@ -270,16 +270,16 @@ module.exports = class Modal extends React.Component {
 
         <div className={`powercord-spotify-songInfo ${containerClasses.nameTag}`}>
           <div className={[ containerClasses.colorStandard, containerClasses.size14, containerClasses.usernameContainer ].join(' ')}>
-            <Title className={[ containerClasses.size14, containerClasses.title ].join(' ')}>{currentItem.name}</Title>
+            <Title className='username'>{currentItem.name}</Title>
           </div>
-          <Title className={[ containerClasses.size10, containerClasses.subtext ].join(' ')}>{artists ? `by ${artists}` : ''}</Title>
+          <Title className={`${[ containerClasses.size10, containerClasses.subtext ].join(' ')} discriminator`}>{artists ? `by ${artists}` : ''}</Title>
         </div>
 
         <div className={[ containerClasses.flex, containerClasses.horizontal, containerClasses.directionRow, containerClasses.justifyRow, containerClasses.alignStretch, containerClasses.noWrap ].join(' ')}>
           <Tooltip text='Previous' position='top'>
             <button
               style={{ color: '#1ed860' }}
-              className={`${`${[ containerClasses.button, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-backward spotify-previous`}
+              className={`${`${[ containerClasses.button, containerClasses.enabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-backward spotify-previous`}
               onClick={() => this.state.seekBar.progress + (Date.now() - this.state.seekBar.progressAt) > 5e3 ? this.onButtonClick('seek', 0) : this.onButtonClick('prev')}
             />
           </Tooltip>
@@ -287,7 +287,7 @@ module.exports = class Modal extends React.Component {
           <Tooltip text={isPlaying ? 'Pause' : 'Play'} position='top'>
             <button
               style={{ color: '#1ed860' }}
-              className={`${`${[ containerClasses.button, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-${isPlaying ? 'pause' : 'play'} spotify-${isPlaying ? 'pause' : 'play'}`}
+              className={`${`${[ containerClasses.button, containerClasses.enabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-${isPlaying ? 'pause' : 'play'} spotify-${isPlaying ? 'pause' : 'play'}`}
               onClick={() => this.onButtonClick(isPlaying ? 'pause' : 'play')}
             />
           </Tooltip>
@@ -295,7 +295,7 @@ module.exports = class Modal extends React.Component {
           <Tooltip text='Next' position='top'>
             <button
               style={{ color: '#1ed860' }}
-              className={`${`${[ containerClasses.button, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-forward spotify-next`}
+              className={`${`${[ containerClasses.button, containerClasses.enabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-forward spotify-next`}
               onClick={() => this.onButtonClick('next')}
             />
           </Tooltip>
@@ -321,7 +321,7 @@ module.exports = class Modal extends React.Component {
               {powercord.account && powercord.account.spotify && <Tooltip text="Save to Playlist" position="top">
                 <button
                   style={{ color: '#fff' }}
-                  className={`${`${[ containerClasses.button, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-plus-circle spotify-save-to-playlist`}
+                  className={`${`${[ containerClasses.button, containerClasses.enabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-plus-circle spotify-save-to-playlist`}
                   onClick={() => powercord.pluginManager.get('pc-spotify').openPlaylistModal(currentItem.uri)}
                 />
               </Tooltip>}

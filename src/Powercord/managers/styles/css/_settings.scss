@@ -46,7 +46,7 @@
   }
 }
 
-div[class*="switchItem-"] label button {
+div[class*='switchItem-'] label button {
   display: inline;
   margin-left: 10px;
   min-height: 25px;
@@ -65,6 +65,10 @@ div[class*="switchItem-"] label button {
       transition: transform .3s;
       margin-right: 15px;
 
+      + div > div[class*='modeDefault-'] {
+        cursor: pointer;
+      }
+
       &.opened {
         transform: rotate(90deg);
       }
@@ -72,14 +76,6 @@ div[class*="switchItem-"] label button {
 
     > div {
       flex: 1;
-    }
-
-    .pc-title {
-      height: 24px;
-    }
-
-    .pc-modeDefault {
-      cursor: pointer;
     }
   }
 

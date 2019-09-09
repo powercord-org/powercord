@@ -40,14 +40,14 @@
       + button {
         margin-left: 15px;
       }
+
+      > :last-child {
+        display: none;
+      }
     }
 
-    .pc-input {
+    input {
       height: 32px;
-    }
-
-    .pc-divider {
-      display: none;
     }
   }
 

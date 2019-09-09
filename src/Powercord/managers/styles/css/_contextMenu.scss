@@ -16,43 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.itemGroup-1tL0uz.seperated {
-  border-top-width: 1px !important;
-  border-top-style: solid !important;
-}
-
-.item-1Yvehc {
-  display: flex !important;
-  justify-content: space-between !important;
-
-  span {
-    white-space: nowrap;
-    overflow: hidden;
-    margin-right: 2px;
-    text-overflow: ellipsis;
-  }
-
-  &.itemSlider-FZeYw0 {
-    flex-direction: column;
-  }
-
-  &.disabled {
-    background: unset !important;
-    color: unset !important;
-  }
-}
-
-.itemSubMenu-1vN_Yn {
-  .scroller {
-    overflow-y: scroll;
-    max-height: 300px;
-
-    &::-webkit-scrollbar {
-      display: none;
+ div[class^='contextMenu-'] {
+  div[class*='item-'] {
+    span {
+      white-space: nowrap;
+      overflow: hidden;
+      margin-right: 2px;
+      text-overflow: ellipsis;
     }
   }
 
-  > .hint-22uc-R {
-    margin-right: 10px;
+  div[class*='itemSubMenu-'] {
+    .scroller {
+      overflow-y: scroll;
+      max-height: 300px;
+  
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
   }
 }

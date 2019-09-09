@@ -13,7 +13,7 @@ module.exports = class Title extends React.Component {
   render () {
     const titleElement = document.querySelector(`.${this.props.className.replace(/ /g, '.')}`);
     this.canvas.font = titleElement ? getComputedStyle(titleElement).font : null;
-    const titleWidth = Math.ceil(this.canvas.measureText(this.props.children).width);
+    const titleWidth = Math.ceil(this.canvas.measureText(this.props.children).width) + 8;
     const animationDuration = (titleWidth - 78) * 90;
     let { className } = this.props;
     if (this.state.hovered) {

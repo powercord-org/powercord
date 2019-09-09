@@ -17,6 +17,16 @@ module.exports = class Announcements extends Plugin {
   }
 
   async startPlugin () {
+    this.noticeClasses = {
+      ...await getModule([ 'base', 'container' ]),
+      ...await getModule([ '_flex' ])
+    };
+
+    Object.keys(this.noticeClasses).forEach(
+      key => this.noticeClasses[key] = `.${this.noticeClasses[key].replace(/ /g, '.')}`
+    );
+
+    this.noticeQuery = `${this.noticeClasses.base} > ${this.noticeClasses.flex}`;
     this._patchNotices();
     const injectedFile = resolve(__dirname, '..', '..', '..', '__injected.txt');
     if (existsSync(injectedFile)) {
@@ -64,7 +74,7 @@ module.exports = class Announcements extends Plugin {
     if (!this.notices.find(n => n.id === notice.id) && (notice.alwaysDisplay || !this.settings.get('dismissed', []).includes(notice.id))) {
       this.notices.push(notice);
 
-      forceUpdateElement('.pc-base > .pc-flex');
+      forceUpdateElement(this.noticeQuery);
     }
   }
 
@@ -74,17 +84,17 @@ module.exports = class Announcements extends Plugin {
     }
     this.notices = this.notices.filter(n => n.id !== noticeId);
 
-    forceUpdateElement('.pc-base > .pc-flex');
+    forceUpdateElement(this.noticeQuery);
   }
 
   async _patchNotices () {
-    const Component = getOwnerInstance(await waitFor('.pc-base > .pc-flex'));
+    const Component = getOwnerInstance(await waitFor(this.noticeQuery));
     inject('pc-custom-notices', Component.__proto__, 'render', (_, res) => {
       res.props.children[1].props.children.unshift(this._renderNotice());
       return res;
     });
 
-    if (document.querySelector('.pc-base > .pc-flex')) {
+    if (document.querySelector(this.noticeQuery)) {
       Component.forceUpdate();
     }
   }

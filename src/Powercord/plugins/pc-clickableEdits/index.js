@@ -31,8 +31,8 @@ class ClickableEdits extends Plugin {
   async patchMessageContent () {
     const _this = this;
 
-    const messageClasses = (await getModule([ 'messageCompact', 'messageCozy' ]));
-    const messageQuery = `.${messageClasses.message.replace(/ /g, '.')}`;
+    const messageClasses = (await getModule([ 'container', 'messageCompact' ]));
+    const messageQuery = `.${messageClasses.content.replace(/ /g, '.')}`;
 
     const instance = getOwnerInstance(await waitFor(messageQuery));
     const currentUser = (await getModule([ 'getCurrentUser' ])).getCurrentUser();
@@ -40,7 +40,7 @@ class ClickableEdits extends Plugin {
     function renderMessage (_, res) {
       const { message, channel } = this.props;
 
-      if (message.author.id === currentUser.id) {
+      if (message && message.author.id === currentUser.id) {
         res.props.onMouseUp = _this.handleMessageEdit(channel.id, message.id, message.content);
       }
 

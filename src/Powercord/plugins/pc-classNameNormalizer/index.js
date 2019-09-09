@@ -1,6 +1,6 @@
 const { Plugin } = require('powercord/entities');
-const { camelCaseify, forceUpdateElement, getOwnerInstance, sleep, waitFor } = require('powercord/util');
-const { instance, getModule } = require('powercord/webpack');
+const { camelCaseify, forceUpdateElement, sleep } = require('powercord/util');
+const { instance, getModule, getModuleByDisplayName } = require('powercord/webpack');
 
 /*
  * Based on BBD normalizer
@@ -20,21 +20,18 @@ module.exports = class ClassNameNormalizer extends Plugin {
   async startPlugin () {
     await sleep(2000); // bowserware:tm:
 
-    // this.patchModules(this._fetchAllModules());
-    // this.normalizeElement(document.querySelector('#app-mount'));
-    // this.patchDOMMethods();
+    this.patchModules(this._fetchAllModules());
+    this.normalizeElement(document.querySelector('#app-mount'));
+    this.patchDOMMethods();
 
     // this is temporarily here ok, just making people think i'm doing stuff. Bowserware confirmed
-    const guildHeaderClasses = await getModule([ 'iconBackgroundTierNone', 'container' ]);
-    const guildHeaderQuery = `.${guildHeaderClasses.container.replace(/ /g, '.')}`;
-
-    const instance = getOwnerInstance(await waitFor(guildHeaderQuery));
-
-    require('powercord/injector').inject('pc-cnn-gh', instance.__proto__, 'render', function (_, res) {
+    const GuildHeader = await getModuleByDisplayName('GuildHeader');
+    require('powercord/injector').inject('pc-cnn-gh', GuildHeader.prototype, 'renderHeader', function (_, res) {
       res.props['data-guild-id'] = this.props.guild.id;
       return res;
     });
 
+    const guildHeaderQuery = `.${(await getModule([ 'iconBackgroundTierNone', 'container' ])).header.replace(/ /g, '.')}`;
     if (document.querySelector(guildHeaderQuery)) {
       forceUpdateElement(guildHeaderQuery);
     }

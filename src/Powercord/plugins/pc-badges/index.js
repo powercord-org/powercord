@@ -4,7 +4,7 @@ const { Plugin } = require('powercord/entities');
 const { WEBSITE } = require('powercord/constants');
 const { Tooltip } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
-const { React, getModule } = require('powercord/webpack');
+const { React, getModule, getModuleByDisplayName, getAllModules } = require('powercord/webpack');
 const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 
 const BadgesComponent = require('./Badges.jsx');
@@ -15,7 +15,17 @@ module.exports = class Badges extends Plugin {
     this.guildBadges = {};
   }
 
-  startPlugin () {
+  async startPlugin () {
+    this.badgeClasses = {
+      container: (await getModule([ 'iconBackgroundTierNone', 'container' ])).container,
+      ...await getAllModules([ 'modal', 'inner' ])[1],
+      ...await getModule([ 'headerInfo' ])
+    };
+
+    Object.keys(this.badgeClasses).forEach(
+      key => this.badgeClasses[key] = `.${this.badgeClasses[key].replace(/ /g, '.')}`
+    );
+
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchGuildHeaders();
     this._patchUserComponent();
@@ -26,19 +36,17 @@ module.exports = class Badges extends Plugin {
     uninject('pc-badges-users');
     uninject('pc-badges-guilds-header');
 
-    if (document.querySelector('.pc-channels .pc-hasDropdown')) {
-      forceUpdateElement('.pc-channels .pc-hasDropdown');
+    if (document.querySelector(this.badgeClasses.container)) {
+      forceUpdateElement(this.badgeClasses.container);
     }
   }
 
   async _patchGuildHeaders () {
     const _this = this;
-    const classes = await getModule([ 'iconBackgroundTierNone', 'container' ]);
-    const guildHeader = await waitFor(`.${classes.container.replace(/ /g, '.')}`);
-    const instance = getOwnerInstance(guildHeader);
-    inject('pc-badges-guilds-header', instance.__proto__, 'render', function (_, res) {
+    const GuildHeader = await getModuleByDisplayName('GuildHeader');
+    inject('pc-badges-guilds-header', GuildHeader.prototype, 'renderHeader', function (_, res) {
       if (_this.guildBadges[this.props.guild.id]) {
-        res.props.children.props.children[0].props.children.props.children.unshift(
+        res.props.children.unshift(
           _this._renderBadge(
             _this.guildBadges[this.props.guild.id]
           )
@@ -49,8 +57,11 @@ module.exports = class Badges extends Plugin {
   }
 
   async _patchUserComponent () {
-    // @todo: Don't use .pc-
-    const instance = getOwnerInstance((await waitFor('.pc-modal .pc-headerInfo .pc-nameTag')).parentElement);
+    const { badgeClasses } = this;
+    const instance = getOwnerInstance((await waitFor([
+      badgeClasses.modal, badgeClasses.headerInfo, badgeClasses.nameTag
+    ].join(' '))).parentElement);
+
     const UserProfileBody = instance._reactInternalFiber.return.type;
     inject('pc-badges-users', UserProfileBody.prototype, 'renderBadges', function (_, res) {
       const badges = React.createElement(BadgesComponent, {
@@ -73,9 +84,8 @@ module.exports = class Badges extends Plugin {
       const baseUrl = powercord.settings.get('backendURL', WEBSITE);
       this.guildBadges = await get(`${baseUrl}/api/badges`).then(res => res.body);
 
-      // @todo: Don't use .pc-
-      if (document.querySelector('.pc-channels .pc-hasDropdown')) {
-        forceUpdateElement('.pc-channels .pc-hasDropdown');
+      if (document.querySelector(this.badgeClasses.container)) {
+        forceUpdateElement(this.badgeClasses.container);
       }
     } catch (e) {
       // Let it fail silently

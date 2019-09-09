@@ -1,4 +1,4 @@
-.pc-app .pc-listeningAlong {
+div[class^='app-'] div[class*='listeningAlong-'] {
   margin: 0;
   padding-bottom: 0;
   padding-top: 0;
@@ -8,7 +8,7 @@
   }
 }
 
-.pc-listeningAlong + .powercord-spotify {
+div[class*='listeningAlong'] + .powercord-spotify {
   height: 37px;
   padding-bottom: 8px;
 
@@ -28,7 +28,7 @@
   transition-delay: .25s;
 
   &-songInfo {
-    height: 30px;
+    height: 28px;
     position: relative;
   }
 
@@ -67,6 +67,16 @@
   &-playlist:hover {
     cursor: pointer;
     background: #2f3136;
+  }
+
+  .username {
+    position: absolute;
+    top: -1px;
+  }
+
+  .discriminator {
+    bottom: 0;
+    position: absolute;
   }
 
   .translating {
@@ -109,6 +119,7 @@
     &-duration {
       min-width: 35px;
       max-width: 35px;
+      color: var(--text-normal);
     }
 
     &-btngrp {
@@ -158,7 +169,6 @@
 
   &:hover {
     padding-bottom: 30px;
-
     transition-delay: 0s;
 
     .powercord-spotify-seek-bar {

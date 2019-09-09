@@ -26,8 +26,8 @@ module.exports = class Codeblocks extends Plugin {
   async injectMessage () {
     const _this = this;
 
-    const messageClasses = await getModule([ 'messageCompact', 'messageCozy' ]);
-    const messageQuery = `.${messageClasses.message.replace(/ /g, '.')}`;
+    const messageClasses = await getModule([ 'container', 'messageCompact' ]);
+    const messageQuery = `.${messageClasses.content.replace(/ /g, '.')}`;
 
     const instance = getOwnerInstance(await waitFor(messageQuery));
     inject('pc-message-codeblock', instance.__proto__, 'render', function (_, res) {

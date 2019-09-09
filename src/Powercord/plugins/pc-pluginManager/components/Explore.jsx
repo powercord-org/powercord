@@ -1,5 +1,5 @@
 const { get } = require('powercord/http');
-const { React } = require('powercord/webpack');
+const { React, getModule } = require('powercord/webpack');
 const { WEBSITE } = require('powercord/constants');
 const { TextInput } = require('powercord/components/settings');
 const { Button, Divider, Spinner } = require('powercord/components');
@@ -31,13 +31,15 @@ module.exports = class Explore extends React.Component {
   }
 
   async componentDidMount () {
+    this.state.scrollerClass = `.${(await getModule([ 'scroller' ])).scroller.replace(/ /g, '.')}`;
+
     await this._fetchPlugins();
     this._listener = this._handleScroll.bind(this);
-    document.querySelector('.powercord-plugins').closest('.pc-scroller').addEventListener('scroll', this._listener);
+    document.querySelector('.powercord-plugins').closest(this.state.scrollerClass).addEventListener('scroll', this._listener);
   }
 
   componentWillUnmount () {
-    document.querySelector('.powercord-plugins').closest('.pc-scroller').removeEventListener('scroll', this._listener);
+    document.querySelector('.powercord-plugins').closest(this.state.scrollerClass).removeEventListener('scroll', this._listener);
   }
 
   render () {
