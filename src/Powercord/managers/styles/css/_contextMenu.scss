@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- div[class^='contextMenu-'] {
+div[class^='contextMenu-'] {
   div[class*='item-'] {
     span {
       white-space: nowrap;

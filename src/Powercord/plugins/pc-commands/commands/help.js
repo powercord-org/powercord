@@ -49,7 +49,7 @@ module.exports = {
     };
   },
   autocompleteFunc (args) {
-    if (args.length > 1) {
+    if (!args[0] || args.length > 1) {
       return false;
     }
 

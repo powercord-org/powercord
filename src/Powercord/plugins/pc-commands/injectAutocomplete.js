@@ -22,7 +22,7 @@ module.exports = async function injectAutocomplete () {
       ),
       queryResults: () => ({
         commands: powercord.api.commands.commands.filter(c =>
-          c.command.startsWith(this.instance.props.value.slice(powercord.api.commands.prefix.length))
+          c.command.startsWith(this.instance.props.value.slice(powercord.api.commands.prefix.length).toLowerCase())
         )
       }),
       renderResults: (...args) => {
@@ -78,7 +78,8 @@ module.exports = async function injectAutocomplete () {
 
     const currentCommandFilter = command =>
       [ command.command, ...command.aliases ].some(commandName =>
-        this.instance.props.value.startsWith(powercord.api.commands.prefix + commandName)
+        this.instance.props.value.startsWith(powercord.api.commands.prefix) &&
+        (this.instance.props.value.slice(powercord.api.commands.prefix.length).toLowerCase()).startsWith(commandName)
       );
     const autocompleteFunc = () => {
       const currentCommand = powercord.api.commands.commands

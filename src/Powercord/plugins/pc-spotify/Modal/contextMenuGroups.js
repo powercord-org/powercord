@@ -152,7 +152,7 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
     type: 'slider',
     name: 'Volume',
     color: '#1ed860',
-    defaultValue: state.volume,
+    initialValue: state.volume,
     onValueChange: (val) =>
       SpotifyPlayer.setVolume(Math.round(val))
         .then(() => true)
