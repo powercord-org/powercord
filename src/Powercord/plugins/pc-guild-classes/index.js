@@ -1,32 +1,7 @@
 const { Plugin } = require('powercord/entities');
+const { getModule } = require('powercord/webpack');
 const { getOwnerInstance, waitFor } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
-
-class ClassList {
-  constructor (className) {
-    this.tokens = new Set(className.split(' '));
-  }
-
-  add (c) {
-    this.tokens.add(c);
-  }
-
-  remove (c) {
-    this.tokens.delete(c);
-  }
-
-  conditional (cond, c) {
-    if (cond) {
-      this.add(c);
-    } else {
-      this.remove(c);
-    }
-  }
-
-  name () {
-    return [ ...this.tokens.values() ].join(' ');
-  }
-}
 
 module.exports = class GuildClasses extends Plugin {
   startPlugin () {
@@ -34,21 +9,25 @@ module.exports = class GuildClasses extends Plugin {
   }
 
   pluginWillUnload () {
-    uninject('cadence-guild-classes');
+    uninject('pc-guild-classes');
   }
 
   async _patchGuild () {
-    const guildInner = await waitFor('.blobContainer-239gwq');
+    const blobModule = await getModule([ 'blobContainer' ]);
+    const { blobContainer } = blobModule;
+    const guildInner = await waitFor(`.${blobContainer}`);
     const guildElement = guildInner.parentElement;
     const Guild = getOwnerInstance(guildElement);
-    inject('cadence-guild-classes', Guild.constructor.prototype, 'render', (_, res) => {
+    inject('pc-guild-classes', Guild.constructor.prototype, 'render', (_, res) => {
       if (res._owner) {
         const { hovered } = res._owner.memoizedState;
         const { selected } = res._owner.pendingProps;
-        const classList = new ClassList(res.props.className);
-        classList.conditional(hovered, 'pgc-hovered');
-        classList.conditional(selected, 'pgc-selected');
-        res.props.className = classList.name();
+        if (hovered) {
+          res.props.className += ' hovered';
+        }
+        if (selected) {
+          res.props.className += ' selected';
+        }
       }
       return res;
     });

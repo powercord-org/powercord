@@ -1,7 +1,7 @@
 {
 	"name": "Guild classes",
 	"version": "1.0.0",
-	"description": "Add pgc-hovered and pgc-selected classes to guilds to help theme developers",
+	"description": "Add hovered and selected classes to guilds to help theme developers",
 	"author": "Cadence#3263",
 	"license": "MIT"
 }
