@@ -17,16 +17,9 @@ module.exports = class Announcements extends Plugin {
   }
 
   async startPlugin () {
-    this.noticeClasses = {
-      ...await getModule([ 'base', 'container' ]),
-      ...await getModule([ '_flex' ])
-    };
+    const classes = await getModule([ 'base', 'container' ]);
+    this.noticeQuery = this.noticeClasses.base.replace(/ /g, '.');
 
-    Object.keys(this.noticeClasses).forEach(
-      key => this.noticeClasses[key] = `.${this.noticeClasses[key].replace(/ /g, '.')}`
-    );
-
-    this.noticeQuery = `${this.noticeClasses.base} > ${this.noticeClasses.flex}`;
     this._patchNotices();
     const injectedFile = resolve(__dirname, '..', '..', '..', '__injected.txt');
     if (existsSync(injectedFile)) {
