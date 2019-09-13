@@ -9,7 +9,7 @@ module.exports = async function monkeypatchMessages () {
     }
 
     const [ cmd, ...args ] = message.content.slice(powercord.api.commands.prefix.length).split(' ');
-    const command = powercord.api.commands.commands.find(c => [ c.command, ...c.aliases ].includes(cmd));
+    const command = powercord.api.commands.commands.find(c => [ c.command, ...c.aliases ].includes(cmd.toLowerCase()));
     if (!command) {
       return sendMessage(id, message, ...params);
     }
