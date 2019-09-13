@@ -18,7 +18,7 @@ module.exports = class Announcements extends Plugin {
 
   async startPlugin () {
     const classes = await getModule([ 'base', 'container' ]);
-    this.noticeQuery = this.noticeClasses.base.replace(/ /g, '.');
+    this.noticeQuery = `.${classes.base.replace(/ /g, '.')}`;
 
     this._patchNotices();
     const injectedFile = resolve(__dirname, '..', '..', '..', '__injected.txt');
