@@ -4,6 +4,7 @@ const { ReactDOM, React, getModule, getModuleByDisplayName } = require('powercor
 const { sleep, createElement, forceUpdateElement, getOwnerInstance } = require('powercord/util');
 const { ContextMenu: { Submenu } } = require('powercord/components');
 
+const Settings = require('./components/Settings');
 const translate = require('google-translate-api');
 const { resolve } = require('path');
 
@@ -20,6 +21,11 @@ module.exports = class Translate extends Plugin {
       .forEach(key => this.messageClasses[key] = `.${this.messageClasses[key].replace(/ /g, '.')}`);
 
     this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.registerSettings('pc-translate', 'Translate', props => React.createElement(Settings, {
+      ...props,
+      main: this
+    }));
+
     this._injectTranslator();
   }
 
@@ -298,29 +304,58 @@ module.exports = class Translate extends Plugin {
   }
 
   addTranslateSubMenu (res, setText) {
+    const get = (settingKey, defaultValue) => this.settings.get(settingKey, defaultValue);
+    const usageHistory = get('usageHistory', {});
+    const frequentlyUsed = Object.keys(usageHistory).sort((a, b) => usageHistory[a] - usageHistory[b]);
+    const languages = this.state.languages
+      .filter(lang => !get('hiddenLanguages', []).includes(lang))
+      .sort((a, b) => get('sortByUsage', false)
+        ? frequentlyUsed.indexOf(b) - frequentlyUsed.indexOf(a)
+        : null);
+
+    if (languages.indexOf('auto') > 0) {
+      languages.splice(languages.indexOf('auto'), 1);
+      languages.unshift('auto');
+    }
+
     res.props.children.push(
       React.createElement(Submenu, {
         name: 'Translate',
         hint: 'to',
         seperate: true,
         onClick: () => setText({ to: 'en' }),
-        getItems: () => this.state.languages
+        getItems: () => languages
           .map(to => ({
             type: 'submenu',
             hint: 'from',
             name: translate.languages[to],
-            onClick: () => setText({ to }),
-            getItems: () => this.state.languages
+            onClick: () => {
+              this.setUsageHistory(to);
+              setText({ to });
+            },
+            getItems: () => languages
               .map(from => ({
                 type: 'button',
                 name: translate.languages[from],
-                onClick: () => setText({
-                  to,
-                  from
-                })
+                onClick: () => {
+                  this.setUsageHistory(from);
+                  setText({
+                    to,
+                    from
+                  });
+                }
               }))
           }))
       })
     );
+  }
+
+  setUsageHistory (lang) {
+    const usageHistory = this.settings.get('usageHistory', {});
+    usageHistory[lang] = !usageHistory.hasOwnProperty(lang) ? 1 : usageHistory[lang] += 1;
+
+    if (lang !== 'auto') {
+      this.settings.set('usageHistory', usageHistory);
+    }
   }
 };
