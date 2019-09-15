@@ -45,7 +45,7 @@ module.exports = class Explore extends React.Component {
   render () {
     return <div className='powercord-plugins'>
       <div className='ghostPill-2-KUPM powercord-plugins-wip'>
-        This part of Powercord is a WIP. Expect unavailable features and crashes here
+        This part of Powercord is a WIP. Don't expect anything in here to work.
       </div>
       <div className='powercord-plugins-header'>
         <h3>Explore plugins</h3>
