@@ -37,32 +37,44 @@ module.exports = class LMGTFY extends Plugin {
         for (const key of Object.keys(Constants)) {
           if (key === 'SEARCH_ENGINES') {
             for (const searchEngine of Object.keys(Constants[key])) {
-              const match = options[Constants.SEARCH_ENGINES[options[0]] === searchEngine ? 0 : 1].toLowerCase() === searchEngine;
-              if (match) {
-                params.searchEngine = Constants.SEARCH_ENGINES[searchEngine];
-                args.splice(args.indexOf(searchEngine), 1);
+              for (let i = 0; i < options.length; i++) {
+                const match = options[i].toLowerCase() === searchEngine;
+                if (match) {
+                  params.searchEngine = Constants.SEARCH_ENGINES[searchEngine];
+                  args.splice(args.indexOf(searchEngine), 1);
+                  options.splice(i, 1);
+                  break;
+                }
               }
             }
           } else if (key === 'SEARCH_TYPES') {
             for (const searchType of Object.keys(Constants[key])) {
-              const match = options[Constants.SEARCH_TYPES[options[0]] === searchType ? 0 : 1].toLowerCase() === searchType;
-              if (match) {
-                if (params.searchEngine === 'g') {
-                  params.searchType = Constants.SEARCH_TYPES[searchType];
-                  args.length = Constants.SEARCH_ENGINES[options[0]] ? args.indexOf(searchType) - 1 : args.indexOf(searchType);
+              for (let i = 0; i < options.length; i++) {
+                const match = options[i].toLowerCase() === searchType;
+                if (match) {
+                  if (params.searchEngine === 'g') {
+                    params.searchType = Constants.SEARCH_TYPES[searchType];
+                    args.splice(args.indexOf(searchType), 1);
+                  }
                 }
               }
             }
           }
         }
 
-        const { searchEngine: s, searchType: t } = params;
-        const searchParams = `${s !== 'g' && !t ? `&s=${s}` : t ? `&s=${s}&t=${t}` : ''}`;
-        const queryString = `?q=${encodeURI(`${args.join('+')}${searchParams}`)}`;
+        const { searchEngine, searchType } = params;
+        const queryString = new URLSearchParams();
+        queryString.append('q', args.join(' '));
+        if (searchType) {
+          queryString.append('s', searchEngine);
+          queryString.append('t', searchType);
+        } else if (searchEngine !== 'g') {
+          queryString.append('s', searchEngine);
+        }
 
         return {
           send: true,
-          result: `<https://lmgtfy.com/${queryString}>`
+          result: `<https://lmgtfy.com/?${queryString}>`
         };
       }
     );
