@@ -1,4 +1,3 @@
-
 module.exports = {
   command: 'plugins',
   aliases: [ 'plist' ],
