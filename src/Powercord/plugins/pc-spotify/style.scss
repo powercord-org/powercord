@@ -38,11 +38,11 @@ div[class*='listeningAlong'] + .powercord-spotify {
     padding: 4px;
     align-items: center;
     width: 45%;
-    border: 1px solid #2f3136;
+    border: 1px solid var(--text-normal);
     border-radius: 4px;
     margin-top: 5px;
     margin-bottom: 5px;
-    color: white;
+    color: var(--text-normal);
 
     .image {
       margin-right: 10px;
@@ -50,7 +50,7 @@ div[class*='listeningAlong'] + .powercord-spotify {
     }
 
     &-modal-header {
-      color: white;
+      color: var(--text-normal);
       font-weight: bold;
       text-transform: uppercase;
     }
@@ -60,13 +60,14 @@ div[class*='listeningAlong'] + .powercord-spotify {
       justify-content: space-evenly;
       flex-wrap: wrap;
       padding-bottom: 5px;
-      color: white;
+      color: var(--text-normal);
     }
   }
 
   &-playlist:hover {
     cursor: pointer;
-    background: #2f3136;
+    background: var(--text-normal);
+    color: var(--background-primary);
   }
 
   .username {
@@ -187,6 +188,13 @@ div[class*='listeningAlong'] + .powercord-spotify {
     &:hover {
       padding-bottom: 15px;
     }
+  }
+}
+
+.powercord-spotify-seek-btngrp button{
+  color: var(--text-normal);
+  &.active{
+    color: #1ed860!important;
   }
 }
 

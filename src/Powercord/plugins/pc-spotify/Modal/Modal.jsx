@@ -176,14 +176,11 @@ module.exports = class Modal extends React.Component {
     const artists = concat(currentItem.artists);
     const { containerClasses } = this.props.main;
 
-    const shuffleColor = this.state.shuffleState ? '#1ed860' : '#fff';
-    const repeatColor = this.state.repeatState === 'off' ? '#fff' : '#1ed860';
     const repeatIcon = this.state.repeatState === 'context' ? 'sync' : 'undo';
     const libraryStatus = this.state.inLibrary === false
       ? {
         tooltip: 'Save to Liked Songs',
         icon: 'far fa-heart',
-        color: '#fff',
         action: () => {
           SpotifyPlayer.addSong(this.state.currentItem.id).then(() => {
             this.setState({ inLibrary: !this.state.inLibrary });
@@ -192,8 +189,7 @@ module.exports = class Modal extends React.Component {
       }
       : {
         tooltip: 'Remove from Liked Songs',
-        icon: 'fas fa-heart',
-        color: '#1ed860',
+        icon: 'fas fa-heart active',
         action: () => {
           SpotifyPlayer.removeSong(this.state.currentItem.id).then(() => {
             this.setState({ inLibrary: !this.state.inLibrary });
@@ -204,7 +200,6 @@ module.exports = class Modal extends React.Component {
     const libraryButton = this.state.inLibrary !== ''
       ? (<Tooltip text={libraryStatus.tooltip} position="top">
         <button
-          style={{ color: libraryStatus.color }}
           className={`${`${[ containerClasses.button, containerClasses.enabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} ${libraryStatus.icon} spotify-in-library`}
           onClick={libraryStatus.action}
         />
@@ -213,33 +208,29 @@ module.exports = class Modal extends React.Component {
     const shuffleButton = !this.state.disallowedActions.toggling_shuffle
       ? (<Tooltip text="Shuffle" position="top">
         <button
-          style={{ color: shuffleColor }}
-          className={`${`${[ containerClasses.button, containerClasses.enabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'}`}
+          className={`${`${[ containerClasses.button, containerClasses.enabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'} ${this.state.shuffleState ? 'active' : ''}`}
           onClick={() => this.onButtonClick('setShuffleState', !this.state.shuffleState)}
         />
       </Tooltip>)
       : (<button
         style={{
-          color: shuffleColor,
           opacity: 0.25
         }}
-        className={`${`${[ containerClasses.button, containerClasses.disabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'}`}
+        className={`${`${[ containerClasses.button, containerClasses.disabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-random spotify-shuffle-${this.state.shuffleState ? 'on' : 'off'} ${this.state.shuffleState ? 'active' : ''}`}
         disabled
       />);
     const repeatButton = !this.state.disallowedActions.toggling_repeat_track && !this.state.disallowedActions.toggling_repeat_context
       ? (<Tooltip text={this.repeatStruct[this.state.repeatState].tooltip} position="top">
         <button
-          style={{ color: repeatColor }}
-          className={`${`${[ containerClasses.button, containerClasses.enabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState}`}
+          className={`${`${[ containerClasses.button, containerClasses.enabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState} ${this.state.repeatState !== 'off' ? 'active' : ''}`}
           onClick={() => this.onButtonClick('setRepeatState', this.repeatStruct[this.state.repeatState].next)}
         />
       </Tooltip>)
       : (<button
         style={{
-          color: shuffleColor,
           opacity: 0.25
         }}
-        className={`${`${[ containerClasses.button, containerClasses.disabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState}`}
+        className={`${`${[ containerClasses.button, containerClasses.disabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-${repeatIcon} spotify-repeat-${this.state.repeatState} ${this.state.repeatState !== 'off' ? 'active' : ''}`}
         disabled
       />);
 
@@ -320,7 +311,6 @@ module.exports = class Modal extends React.Component {
 
               {powercord.account && powercord.account.spotify && <Tooltip text="Save to Playlist" position="top">
                 <button
-                  style={{ color: '#fff' }}
                   className={`${`${[ containerClasses.button, containerClasses.enabled, containerClasses.lookBlank, containerClasses.colorBrand, containerClasses.grow ].join(' ')}`} fas fa-plus-circle spotify-save-to-playlist`}
                   onClick={() => powercord.pluginManager.get('pc-spotify').openPlaylistModal(currentItem.uri)}
                 />
