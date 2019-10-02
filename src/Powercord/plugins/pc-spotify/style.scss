@@ -193,8 +193,8 @@ div[class*='listeningAlong'] + .powercord-spotify {
 
 .powercord-spotify-seek-btngrp button{
   color: var(--text-normal);
-  &.active{
-    color: #1ed860!important;
+  &.active, &.active:hover{
+    color: #1ed860;
   }
 }
 
