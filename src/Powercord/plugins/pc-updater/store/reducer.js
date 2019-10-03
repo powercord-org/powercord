@@ -1,5 +1,5 @@
 // const { FluxActions: { Updater: ActionTypes } } = require('powercord/constants');
 
-module.exports = () => {
+module.exports = function () {
   return {};
 };

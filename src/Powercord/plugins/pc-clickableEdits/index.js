@@ -91,4 +91,4 @@ module.exports = class ClickableEdits extends Plugin {
       }
     };
   }
-}
+};
