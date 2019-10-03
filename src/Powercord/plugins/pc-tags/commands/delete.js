@@ -30,7 +30,7 @@ module.exports = {
     }
 
     return {
-      header: 'tags available to delete',
+      header: 'Tags available to delete',
       commands: settings
         .getKeys()
         .filter(tag => tag.toLowerCase().includes(args[0].toLowerCase()))

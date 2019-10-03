@@ -5,7 +5,7 @@ const { inject, uninject } = require('powercord/injector');
 
 const Settings = require('./Settings');
 
-class ClickableEdits extends Plugin {
+module.exports = class ClickableEdits extends Plugin {
   constructor (props) {
     super(props);
 
@@ -92,5 +92,3 @@ class ClickableEdits extends Plugin {
     };
   }
 }
-
-module.exports = ClickableEdits;

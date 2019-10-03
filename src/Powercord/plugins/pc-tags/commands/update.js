@@ -51,7 +51,7 @@ module.exports = {
   autocomplete: (args, settings) => {
     if (args[1] === void 0) {
       return {
-        header: 'tags available to update',
+        header: 'Tags available to update',
         commands: settings
           .getKeys()
           .filter(tag => tag.toLowerCase().includes(args[0].toLowerCase()))
