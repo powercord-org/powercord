@@ -118,7 +118,7 @@ module.exports = class GeneralSettings extends React.Component {
         </Category>
 
         <ButtonItem
-          note={'Removes everything stored in Discord\'s cache folder. This will make temporarily make Discord slower, as all resources will have to be fetched again.'}
+          note={'Removes everything stored in Discord\'s cache folder. This will temporarily make Discord slower, as all resources will have to be fetched again.'}
           button={this.state.cleaning ? 'Clearing cache...' : 'Clear cache'}
           disabled={this.state.cleaning}
           onClick={() => this.clearCache()}
