@@ -2,7 +2,7 @@ const { messages, channels } = require('powercord/webpack');
 
 module.exports = {
   command: 'share',
-  description: 'Send currently playing song to channel.',
+  description: 'Send currently playing song to channel',
   usage: '{c}',
 
   async func (SpotifyPlayer) {

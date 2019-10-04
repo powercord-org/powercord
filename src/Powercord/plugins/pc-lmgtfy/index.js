@@ -23,8 +23,8 @@ module.exports = class LMGTFY extends Plugin {
     this.registerCommand(
       'lmgtfy',
       [],
-      'Let me google that for you...',
-      '{c} [ ...search terms ] < search engine > < search type >',
+      'Let me Google that for you...',
+      '{c} [...search terms] <search engine> <search type>',
       (args) => {
         if (args.length < 1) {
           return;

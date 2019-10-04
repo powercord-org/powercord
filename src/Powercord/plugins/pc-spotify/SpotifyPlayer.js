@@ -32,7 +32,7 @@ module.exports = {
           type: announcements.Notice.TYPES.ORANGE,
           message: revokedMessages[resp.revoked],
           button: {
-            text: 'Link back Spotify',
+            text: 'Relink Spotify',
             onClick: () => openExternal(`${baseUrl}/oauth/spotify`)
           },
           alwaysDisplay: true

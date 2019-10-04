@@ -12,8 +12,8 @@ module.exports = class Hastebin extends Plugin {
     this.registerCommand(
       'hastebin',
       [],
-      'Lets you paste content to Hastebin.',
-      '{c} [ --send ] < --clipboard | FILE_URL >',
+      'Lets you paste content to Hastebin',
+      '{c} [--send] <--clipboard | FILE_URL>',
       async (args) => {
         const send = args.includes('--send')
           ? !!args.splice(args.indexOf('--send'), 1)

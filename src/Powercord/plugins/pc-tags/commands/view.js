@@ -27,7 +27,7 @@ module.exports = {
     }
 
     return {
-      header: 'tags available to view',
+      header: 'Tags available to view',
       commands: settings
         .getKeys()
         .filter(tag => tag.toLowerCase().includes(args[0].toLowerCase()))
