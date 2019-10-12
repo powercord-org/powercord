@@ -23,7 +23,7 @@ module.exports = class Codeblocks extends Plugin {
     }
   }
 
-  async injectMessage() {
+  async injectMessage () {
     const _this = this;
 
     const messageClasses = await getModule(['container']);
