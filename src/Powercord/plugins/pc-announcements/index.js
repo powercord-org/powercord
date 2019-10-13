@@ -37,7 +37,7 @@ module.exports = class Announcements extends Plugin {
             const { acceptInvite } = (await getModule([ 'acceptInvite' ]));
             const { transitionToGuildSync } = (await getModule([ 'selectGuild' ]));
 
-            if (getGuilds()[GUILD_ID]) {
+            if (!getGuilds()[GUILD_ID]) {
               return acceptInvite(DISCORD_INVITE, {}, () => {
                 transitionToGuildSync(GUILD_ID, false);
               });
