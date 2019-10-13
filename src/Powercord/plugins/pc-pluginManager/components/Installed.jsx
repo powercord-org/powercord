@@ -26,7 +26,7 @@ module.exports = class Installed extends React.Component {
         <h3>Installed plugins</h3>
         <Button onClick={() => this.props.goToExplore()}>Explore Plugins</Button>
         <div class='powercord-folders-opener'>
-          <Button color={Button.Colors.WHITE} look={Button.Looks.OUTLINED} onClick={() => this.props.openFolder(powercord.pluginManager.pluginDir)}>Open Plugins Folder</Button>
+          <Button color={Button.Colors.PRIMARY} look={Button.Looks.OUTLINED} onClick={() => this.props.openFolder(powercord.pluginManager.pluginDir)}>Open Plugins Folder</Button>
         </div>
       </div>
       <Divider/>

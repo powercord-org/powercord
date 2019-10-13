@@ -98,12 +98,5 @@ div[class*='switchItem-'] label button {
   text-transform: uppercase;
   letter-spacing: .5px;
   height: 16px;
-}
-
-.theme-dark .powercord-title {
-  color: #b9bbbe;
-}
-
-.theme-light .powercord-title {
-  color: #72767d;
+  color: var(--channels-default);
 }

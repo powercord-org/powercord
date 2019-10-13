@@ -24,14 +24,8 @@
   }
 }
 
-.theme-light {
-  .powercord-codeblock-lang {
-    color: #777777a8 !important;
-  }
-}
-
 .powercord-codeblock-lang {
-  color: #ffffff;
+  color: var(--text-normal);
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 
   line-height: 20px;
