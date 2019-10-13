@@ -2,6 +2,9 @@
 @import "./plugin";
 
 .powercord-plugins {
+
+  color: var(--text-normal);
+
   &-wip {
     top: -1.4px;
     left: 0;
@@ -52,6 +55,9 @@
   }
 
   &-modal {
+
+    color: var(--text-normal);
+
     span + span {
       margin-top: 20px;
       display: block;
@@ -78,36 +84,5 @@
     &:not(:last-child) {
       margin-right: 15px;
     }
-  }
-}
-
-.theme-light {
-  .powercord-folders-opener > button {
-    color: #040405;
-    border-color: rgba(4, 4, 5, .3);
-
-    &:active {
-      background-color: rgba(4, 4, 5, .1); 
-      border-color: #040405;
-    }
-
-    &:hover {
-      border-color: rgba(4, 4, 5, .6);
-    }
-  }
-}
-
-// Colors
-.theme-dark .powercord-plugins {
-  color: #fff;
-
-  &-modal {
-    color: #fff;
-  }
-}
-
-.theme-light .powercord-plugins {
-  &-wip {
-    color: #fff;
   }
 }

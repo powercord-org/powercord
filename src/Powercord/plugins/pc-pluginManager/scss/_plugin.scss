@@ -2,6 +2,8 @@
   padding: 20px;
   border-radius: 5px;
   margin-bottom: 20px;
+  background: var(--deprecated-card-bg);
+  border: 1px var(--background-tertiary) solid;
 
   &-header {
     display: flex;
@@ -77,6 +79,10 @@
     }
   }
 
+  &-permissions, &-footer {
+    border-top: 1px rgba(0,0,0,0.2) solid;
+  }
+
   // https://github.com/facebook/react/issues/4251
   input[disabled] {
     pointer-events: none;
@@ -84,23 +90,7 @@
 }
 
 // Colors
-.theme-dark .powercord-plugin {
-  background: rgba(32, 34, 37, .6);
-  border: 1px #202225 solid;
-
-  &-permissions, &-footer {
-    border-top: 1px rgba(114, 118, 125, .3) solid;
-  }
-}
-
 .theme-light .powercord-plugin {
-  background: #f8f9f9;
-  border: 1px #dcddde solid;
-
-  &-permissions, &-footer {
-    border-top: 1px rgba(185, 187, 190, .3) solid;
-  }
-
   svg {
     filter: brightness(0);
   }

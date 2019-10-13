@@ -16,6 +16,10 @@
 
 #powercord-translate-settings {
   .languageCheckbox {
-    color: #dcddde;
+    color: var(--text-normal);
+
+    & > div{
+      background: transparent;
+    }
   }
 }
