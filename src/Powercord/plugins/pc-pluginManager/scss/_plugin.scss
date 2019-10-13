@@ -80,7 +80,7 @@
   }
 
   &-permissions, &-footer {
-    border-top: 1px rgba(0,0,0,0.2) solid;
+    border-top: 1px var(--background-modifier-accent) solid;
   }
 
   // https://github.com/facebook/react/issues/4251
