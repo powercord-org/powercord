@@ -23,7 +23,8 @@ module.exports = () =>
   require.extensions['.jsx'] = (_module, filename) =>
     _module._compile(
       sucrase.transform(readFileSync(filename, 'utf8'), {
-        transforms: [ 'jsx' ]
+        transforms: [ 'jsx' ],
+        filePath: filename
       }).code,
       filename
     );
