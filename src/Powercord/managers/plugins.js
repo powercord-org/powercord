@@ -66,9 +66,21 @@ module.exports = class PluginManager {
     return !powercord.settings.get('disabledPlugins', []).includes(plugin);
   }
 
+
+  // Dependency query
+  getDependenciesLocal (pluginID) {
+    const plugin = this.get(pluginID);
+
+    if (plugin) {
+      return plugin.manifest.dependencies || [];
+    }
+
+    return [];
+  }
+
   // Resolvers
   resolveDependents (plugin, dept = []) {
-    const dependents = this.getPlugins().filter(p => this.getDependenciesSync(p).includes(plugin));
+    const dependents = this.getPlugins().filter(p => this.getDependenciesLocal(p).includes(plugin));
     dependents.forEach(dpt => {
       if (!dept.includes(dpt)) {
         dept.push(dpt);
@@ -76,6 +88,19 @@ module.exports = class PluginManager {
       }
     });
     return dept.filter((d, p) => dept.indexOf(d) === p);
+  }
+
+  resolveDependencies (plugin, dept = []) {
+    const dependencies = this.getDependenciesLocal(plugin);
+
+    return dependencies
+      .map(dep => {
+        if (!dept.includes(dep)) {
+          dept.push(dep)
+          dept.push(...this.resolveDependencies(dep, dept))
+        }
+      })
+      .filter((d, p) => deps.indexOf(d) === p);
   }
 
   // Mount/load/enable/install shit
