@@ -16,16 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const buble = require('buble');
+const sucrase = require('sucrase');
 const { readFileSync } = require('fs');
 
 module.exports = () =>
   require.extensions['.jsx'] = (_module, filename) =>
     _module._compile(
-      buble.transform(readFileSync(filename, 'utf8'), {
-        jsx: 'React.createElement',
-        objectAssign: 'Object.assign',
-        target: { chrome: 52 }
+      sucrase.transform(readFileSync(filename, 'utf8'), {
+        transforms: ['jsx']
       }).code,
       filename
     );
