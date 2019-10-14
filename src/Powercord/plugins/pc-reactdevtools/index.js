@@ -66,7 +66,7 @@ module.exports = class ReactDevtools extends Plugin {
       .webContents.removeListener('devtools-opened', this.listener);
   }
 
-  async listener () {
+  listener () {
     remote.BrowserWindow.removeDevToolsExtension('React Developer Tools');
 
     if (this.isInstalledLocally) {
