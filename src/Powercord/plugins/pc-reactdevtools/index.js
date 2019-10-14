@@ -1,6 +1,6 @@
 const { join } = require('path');
 const { remote } = require('electron');
-const { createWriteStream, existsSync } = require('fs');
+const { createWriteStream, existsSync, readFileSync } = require('fs');
 const { Plugin } = require('powercord/entities');
 const { get } = require('powercord/http');
 const unzip = require('unzip-crx');
@@ -19,27 +19,33 @@ module.exports = class ReactDevtools extends Plugin {
     return existsSync(this.path);
   }
 
-  download () {
+  checkForUpdate () {
+    const local = readFileSync(this.path);
     const crxLink = 'https://clients2.google.com/service/update2/crx?response=redirect&os=win&arch=x86-64&os_arch=x86-64&nacl_arch=x86-64&prod=chromecrx&prodchannel=unknown&prodversion=77.0.3865.90&acceptformat=crx2&x=id=fmkadmapgofadopljbjfkapdkoienihi%26uc';
     return get(crxLink).then(res => {
-      this.log(res);
-      return get(res.headers.location).then(resp => {
-        this.log(resp);
-        const crxFile = createWriteStream(this.path);
-        crxFile.write(resp.body, err => {
-          if (err) {
-            this.error(err);
-          }
-          return crxFile.close();
-        });
-        unzip(this.path, this.folderPath).then(() => {
-          this.listener();
-          this.log(
-            'If you are unable to find the tabs for React Dev Tools in the Developer Tools Tab Bar, reload your client(ctrl + r).'
-          );
-        });
-      }, err => this.error(err));
+      if (res.body !== local) {
+        this.download();
+      }
     }, err => this.error(err));
+  }
+
+  download () {
+    const crxLink = 'https://clients2.google.com/service/update2/crx?response=redirect&os=win&arch=x86-64&os_arch=x86-64&nacl_arch=x86-64&prod=chromecrx&prodchannel=unknown&prodversion=77.0.3865.90&acceptformat=crx2&x=id=fmkadmapgofadopljbjfkapdkoienihi%26uc';
+    return get(crxLink).then(res => get(res.headers.location).then(resp => {
+      const crxFile = createWriteStream(this.path);
+      crxFile.write(resp.body, err => {
+        if (err) {
+          this.error(err);
+        }
+        return crxFile.close();
+      });
+      unzip(this.path, this.folderPath).then(() => {
+        this.listener();
+        this.log(
+          'If you are unable to find the tabs for React Dev Tools in the Developer Tools Tab Bar, reload your client(ctrl + r).'
+        );
+      });
+    }, err => this.error(err)), err => this.error(err));
   }
 
   startPlugin () {
@@ -47,6 +53,7 @@ module.exports = class ReactDevtools extends Plugin {
     if (!this.isInstalledLocally) {
       this.download();
     }
+    this.checkForUpdate();
     remote.getCurrentWindow().webContents.on('devtools-opened', this.listener);
     if (remote.getCurrentWindow().webContents.isDevToolsOpened()) {
       this.listener();
