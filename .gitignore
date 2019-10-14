@@ -15,3 +15,6 @@ src/Powercord/themes/*
 settings/*.json
 
 config.json
+
+src/Powercord/plugins/pc-reactdevtools/rdt.crx
+src/Powercord/plugins/pc-reactdevtools/react-dev-tools/*
