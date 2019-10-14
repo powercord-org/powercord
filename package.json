@@ -26,7 +26,8 @@
     "less": "^3.9.0",
     "node-watch": "^0.6.1",
     "sass": "^1.18.0",
-    "stylus": "^0.54.5"
+    "stylus": "^0.54.5",
+    "sucrase": "^3.10.1"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
