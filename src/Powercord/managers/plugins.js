@@ -100,7 +100,7 @@ module.exports = class PluginManager {
           dept.push(...this.resolveDependencies(dep, dept))
         }
       })
-      .filter((d, p) => deps.indexOf(d) === p);
+      .filter((d, p) => dept.indexOf(d) === p);
   }
 
   // Mount/load/enable/install shit
