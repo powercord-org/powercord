@@ -93,14 +93,14 @@ module.exports = class PluginManager {
   resolveDependencies (plugin, dept = []) {
     const dependencies = this.getDependenciesLocal(plugin);
 
-    return dependencies
-      .map(dep => {
-        if (!dept.includes(dep)) {
-          dept.push(dep)
-          dept.push(...this.resolveDependencies(dep, dept))
-        }
-      })
-      .filter((d, p) => dept.indexOf(d) === p);
+    dependencies.forEach(dpt => {
+      if (!dept.includes(dpt)) {
+        dept.push(dpt);
+        dept.push(...this.resolveDependencies(dpt, dept));
+      }
+    });
+
+    return dept.filter((d, p) => dept.indexOf(d) === p);
   }
 
   // Mount/load/enable/install shit
