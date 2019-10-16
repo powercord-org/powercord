@@ -20,6 +20,7 @@ module.exports = class ReactDevtools extends Plugin {
   }
 
   startPlugin () {
+    return;
     this.listener = this.listener.bind(this);
     if (!this.isInstalledLocally) {
       this.download();
