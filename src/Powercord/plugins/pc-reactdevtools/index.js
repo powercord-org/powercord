@@ -3,9 +3,9 @@ const { remote } = require('electron');
 const { createWriteStream, existsSync, readFileSync } = require('fs');
 const { Plugin } = require('powercord/entities');
 const { get } = require('powercord/http');
+
 const unzip = require('unzip-crx');
 
-// stolen from https://github.com/Inve1951/BetterDiscordStuff/blob/master/plugins/enableReactDevtools.plugin.js
 module.exports = class ReactDevtools extends Plugin {
   get path () {
     return join(__dirname, 'rdt.crx');
@@ -17,6 +17,39 @@ module.exports = class ReactDevtools extends Plugin {
 
   get isInstalledLocally () {
     return existsSync(this.path);
+  }
+
+  startPlugin () {
+    this.listener = this.listener.bind(this);
+    if (!this.isInstalledLocally) {
+      this.download();
+    }
+
+    this.checkForUpdate();
+
+    remote.getCurrentWindow().webContents.on('devtools-opened', this.listener);
+    if (remote.getCurrentWindow().webContents.isDevToolsOpened()) {
+      this.listener();
+    }
+  }
+
+  pluginWillUnload () {
+    remote
+      .getCurrentWindow()
+      .webContents.removeListener('devtools-opened', this.listener);
+  }
+
+  listener () {
+    remote.BrowserWindow.removeDevToolsExtension('React Developer Tools');
+
+    if (this.isInstalledLocally) {
+      if (remote.BrowserWindow.addDevToolsExtension(this.folderPath)) {
+        this.log('Successfully installed React DevTools.');
+        this.log('If React DevTools is missing or empty, close Developer Tools and re-open it.');
+      } else {
+        this.error('Couldn\'t find React DevTools in Chrome extensions!');
+      }
+    }
   }
 
   checkForUpdate () {
@@ -39,45 +72,11 @@ module.exports = class ReactDevtools extends Plugin {
         }
         return crxFile.close();
       });
+
       unzip(this.path, this.folderPath).then(() => {
         this.listener();
-        this.log(
-          'If you are unable to find the tabs for React Dev Tools in the Developer Tools Tab Bar, reload your client(ctrl + r).'
-        );
+        this.log('If you are still unable to find tabs for React DevTools in Developer Tools, reload your client (Ctrl + R).');
       });
     }, err => this.error(err)), err => this.error(err));
-  }
-
-  startPlugin () {
-    this.listener = this.listener.bind(this);
-    if (!this.isInstalledLocally) {
-      this.download();
-    }
-    this.checkForUpdate();
-    remote.getCurrentWindow().webContents.on('devtools-opened', this.listener);
-    if (remote.getCurrentWindow().webContents.isDevToolsOpened()) {
-      this.listener();
-    }
-  }
-
-  pluginWillUnload () {
-    remote
-      .getCurrentWindow()
-      .webContents.removeListener('devtools-opened', this.listener);
-  }
-
-  listener () {
-    remote.BrowserWindow.removeDevToolsExtension('React Developer Tools');
-
-    if (this.isInstalledLocally) {
-      if (remote.BrowserWindow.addDevToolsExtension(this.folderPath)) {
-        this.log('Successfully installed react devtools.');
-        this.log(
-          'If React Dev Tools is empty, close Developer Tools and re-open it.'
-        );
-      } else {
-        this.error('Couldn\'t find react devtools in chrome extensions!');
-      }
-    }
   }
 };

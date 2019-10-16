@@ -8,6 +8,8 @@ pnpm-lock.yaml
 src/Powercord/plugins/*
 !src/Powercord/plugins/pc-*
 
+src/Powercord/plugins/pc-reactdevtools/rdt.crx
+src/Powercord/plugins/pc-reactdevtools/react-dev-tools/*
 src/Powercord/plugins/pc-styleManager/themes/*
 src/Powercord/themes/*
 !src/Powercord/themes/.exists
@@ -15,6 +17,4 @@ src/Powercord/themes/*
 settings/*.json
 
 config.json
-
-src/Powercord/plugins/pc-reactdevtools/rdt.crx
-src/Powercord/plugins/pc-reactdevtools/react-dev-tools/*
+*injected.txt

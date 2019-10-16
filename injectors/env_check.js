@@ -30,15 +30,23 @@ module.exports = () => {
   // Verify if we're on node 10.x
   const fs = require('fs');
   if (!fs.promises) {
-    console.error('You\'re on an outdated Node.js version. Powercord requires you to run at least Node 10. You can download it there: https://nodejs.org');
+    console.error('You\'re on an outdated Node.js version. Powercord requires you to run at least Node 10. You can download it here: https://nodejs.org');
     process.exit(1);
   }
 
   // Verify if deps have been installed. If not, install them automatically
+  const { dependencies } = require('../package.json');
+
   try {
-    require('buble');
+    for (const dependency in dependencies) {
+      require(dependency);
+    }
   } catch (_) {
-    console.log('Dependencies are not installed. Let\'s fix that...');
+    const stackTrace = JSON.stringify(_.stack);
+    const firstMissingDept = stackTrace.split('\\n')[0].match(/'(.*?[^\\])'/)[1];
+    const dependenciesArray = Object.keys(dependencies);
+
+    console.log(`(${dependenciesArray.length - dependenciesArray.indexOf(firstMissingDept)}/${dependenciesArray.length}) Dependencies are not installed. Let's fix that...`);
     execSync('npm install --only=prod', {
       cwd: resolve(__dirname, '..'),
       stdio: [ null, null, null ]
