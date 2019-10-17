@@ -32,6 +32,7 @@ module.exports = class Translate extends Plugin {
   pluginWillUnload () {
     this.removeResetButton();
 
+    uninject('pc-translate-icon');
     uninject('pc-translate-nativeContext');
     uninject('pc-translate-context');
     uninject('pc-translate-content');
@@ -44,6 +45,22 @@ module.exports = class Translate extends Plugin {
       .filter(k => typeof translate.languages[k] === 'string');
 
     const _this = this;
+
+    const HeaderIcon = require('./components/HeaderIcon.jsx');
+    const HeaderBarContainer = await getModuleByDisplayName('HeaderBarContainer');
+    inject('pc-translate-icon', HeaderBarContainer.prototype, 'renderLoggedIn', function (_, res) {
+      if (this.props.toolbar && !this.props.toolbar.props) {
+        this.props.toolbar.unshift(
+          React.createElement(HeaderIcon, {
+            onClick: () => null,
+            main: _this
+          })
+        );
+      }
+
+      return res;
+    });
+
     const MessageContent = await getModuleByDisplayName('MessageContent');
     inject('pc-translate-contentRemove', MessageContent.prototype, 'componentWillUnmount', function () {
       const { message, message: { embeds } } = this.props;
@@ -53,7 +70,7 @@ module.exports = class Translate extends Plugin {
         embed.title = embed.original.title;
         embed.description = embed.original.description;
       } else if (_this.translations[message.id]) {
-        message.contentParsed = message.original;
+        this.props.content = message.original;
       }
 
       _this.translations[(embed ? embed : message).id] = null;
@@ -77,28 +94,28 @@ module.exports = class Translate extends Plugin {
       }
 
       if (_this.translations[message.id] && !message.original) {
-        message.original = [ ...message.contentParsed ];
+        message.original = [ ...this.props.content ];
 
-        if (message.contentParsed.length > 1) {
-          const newContentParsed = message.contentParsed.map((content, index) => {
+        if (this.props.content.length > 1) {
+          const newContentParsed = this.props.content.map((content, index) => {
             const translations = _this.translations[message.id];
 
             if (typeof content === 'string') {
               if (translations.find(translation => content === translation.original)) {
                 const { translation } = translations.find(translation => content === translation.original);
-                message.contentParsed[index] = translation;
+                this.props.content[index] = translation;
               }
             }
 
-            return message.contentParsed[index];
+            return this.props.content[index];
           });
 
-          message.contentParsed = newContentParsed;
+          this.props.content = newContentParsed;
         } else {
-          message.contentParsed = [ _this.translations[message.id] ];
+          this.props.content = [ _this.translations[message.id] ];
         }
       } else if (!_this.translations[message.id] && message.original) {
-        message.contentParsed = message.original;
+        this.props.content = message.original;
         message.original = null;
       }
 
@@ -185,7 +202,7 @@ module.exports = class Translate extends Plugin {
             [ ...message.querySelectorAll(markup) ]
               .map(async (markup) => {
                 const markupInstance = getOwnerInstance(markup);
-                const { embed, message } = markupInstance.props;
+                const { embed, message, content: contentParsed } = markupInstance.props;
 
                 if (embed || (message && message.embeds.length > 0)) {
                   const embed = markupInstance.props.embed || message.embeds[0];
@@ -206,9 +223,9 @@ module.exports = class Translate extends Plugin {
                 let content;
 
                 if (message) {
-                  if (message.contentParsed.length > 1) {
+                  if (contentParsed.length > 1) {
                     const contentArray = [];
-                    const contentStrings = message.contentParsed.filter(content => typeof content === 'string');
+                    const contentStrings = contentParsed.filter(content => typeof content === 'string');
 
                     contentStrings.map(async (content) => {
                       const { text, from } = await translate(content, opts);
@@ -229,7 +246,7 @@ module.exports = class Translate extends Plugin {
                     content = contentArray;
                   } else {
                     const { text, from } = await translate(
-                      message.contentParsed.filter(content => typeof content === 'string').join(''),
+                      contentParsed.filter(content => typeof content === 'string').join(''),
                       opts
                     );
 
@@ -309,14 +326,15 @@ module.exports = class Translate extends Plugin {
     const frequentlyUsed = Object.keys(usageHistory).sort((a, b) => usageHistory[a] - usageHistory[b]);
     const languages = this.state.languages
       .filter(lang => !get('hiddenLanguages', []).includes(lang))
-      .sort((a, b) => get('sortByUsage', false)
-        ? frequentlyUsed.indexOf(b) - frequentlyUsed.indexOf(a)
-        : null);
+      .sort((a, b) => {
+        if (b === 'auto') {
+          return 1;
+        }
 
-    if (languages.indexOf('auto') > 0) {
-      languages.splice(languages.indexOf('auto'), 1);
-      languages.unshift('auto');
-    }
+        return get('sortByUsage', false)
+          ? frequentlyUsed.indexOf(b) - frequentlyUsed.indexOf(a)
+          : null;
+      });
 
     res.props.children.push(
       React.createElement(Submenu, {
