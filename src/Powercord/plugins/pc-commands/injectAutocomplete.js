@@ -194,7 +194,6 @@ module.exports = async function injectAutocomplete () {
 
   const element = await waitFor(`.${taClass}`);
   this.instance = getOwnerInstance(element);
-  const instancePrototype = Object.getPrototypeOf(this.instance);
 
   pcInject('pc-commands-autocomplete', this.instance.__proto__, 'render', (args, originReturn) => {
     setImmediate(() => {
