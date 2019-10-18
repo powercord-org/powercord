@@ -2,7 +2,6 @@
 @import "./plugin";
 
 .powercord-plugins {
-
   color: var(--text-normal);
 
   &-wip {
@@ -55,7 +54,6 @@
   }
 
   &-modal {
-
     color: var(--text-normal);
 
     span + span {

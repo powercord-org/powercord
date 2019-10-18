@@ -32,7 +32,6 @@ module.exports = class Translate extends Plugin {
   pluginWillUnload () {
     this.removeResetButton();
 
-    uninject('pc-translate-icon');
     uninject('pc-translate-nativeContext');
     uninject('pc-translate-context');
     uninject('pc-translate-content');
@@ -45,22 +44,6 @@ module.exports = class Translate extends Plugin {
       .filter(k => typeof translate.languages[k] === 'string');
 
     const _this = this;
-
-    const HeaderIcon = require('./components/HeaderIcon.jsx');
-    const HeaderBarContainer = await getModuleByDisplayName('HeaderBarContainer');
-    inject('pc-translate-icon', HeaderBarContainer.prototype, 'renderLoggedIn', function (_, res) {
-      if (this.props.toolbar && !this.props.toolbar.props) {
-        this.props.toolbar.unshift(
-          React.createElement(HeaderIcon, {
-            onClick: () => null,
-            main: _this
-          })
-        );
-      }
-
-      return res;
-    });
-
     const MessageContent = await getModuleByDisplayName('MessageContent');
     inject('pc-translate-contentRemove', MessageContent.prototype, 'componentWillUnmount', function () {
       const { message, message: { embeds } } = this.props;
