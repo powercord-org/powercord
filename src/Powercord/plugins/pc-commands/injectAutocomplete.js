@@ -192,16 +192,17 @@ module.exports = async function injectAutocomplete () {
   const taClass = (await getModule([ 'channelTextArea', 'channelTextAreaEnabled' ]))
     .channelTextArea.split(' ')[0];
 
-  await waitFor(`.${taClass}`);
+  const element = await waitFor(`.${taClass}`);
+  this.instance = getOwnerInstance(element);
+  const instancePrototype = Object.getPrototypeOf(this.instance);
 
-  const updateInstance = () =>
-    (this.instance = getOwnerInstance(document.querySelector(`.${taClass}`)));
-  const instancePrototype = Object.getPrototypeOf(updateInstance());
-
-  pcInject('pc-commands-autocomplete', instancePrototype, 'render', (args, originReturn) => {
+  pcInject('pc-commands-autocomplete', this.instance.__proto__, 'render', (args, originReturn) => {
     setImmediate(() => {
-      updateInstance();
-      inject();
+      const element = document.querySelector(`.${taClass}`);
+      if (element) {
+        this.instance = getOwnerInstance(element);
+        inject();
+      }
     });
     return originReturn;
   });
