@@ -1,10 +1,10 @@
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule, getAllModules, getModuleByDisplayName } = require('powercord/webpack');
 const { SwitchItem } = require('powercord/components/settings');
 const { AsyncComponent } = require('powercord/components');
 
 const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
 const FormText = AsyncComponent.from(getModuleByDisplayName('FormText'));
-const Checkbox = AsyncComponent.from(getModuleByDisplayName('Checkbox'));
+const Checkbox = AsyncComponent.from(getAllModules(m => m.displayName && m.displayName === 'Checkbox')[1]);
 const Clickable = AsyncComponent.from(getModuleByDisplayName('Clickable'));
 
 const translate = require('google-translate-api');
@@ -67,6 +67,8 @@ module.exports = class Settings extends React.Component {
                     <Checkbox
                       className='languageCheckbox'
                       size={16}
+                      shape='round-2jCFai'
+                      type='ghost'
                       value={hiddenLanguages.includes(lang)}
                       onChange={() => this.props.main.settings.set('hiddenLanguages',
                         !hiddenLanguages.includes(lang)
@@ -99,9 +101,9 @@ module.exports = class Settings extends React.Component {
     };
 
     if (hiddenLanguages.length >= this.languages.length) {
-      return <Clickable {...props}>Show all languages</Clickable>;
+      return <Clickable {...props}> Show all languages</Clickable>;
     }
 
-    return <Clickable {...props}>Hide all languages</Clickable>;
+    return <Clickable {...props}> Hide all languages</Clickable>;
   }
 };

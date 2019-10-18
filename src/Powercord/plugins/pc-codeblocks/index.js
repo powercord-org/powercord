@@ -31,13 +31,13 @@ module.exports = class Codeblocks extends Plugin {
 
     const instance = getOwnerInstance(await waitFor(messageQuery));
     inject('pc-message-codeblock', instance.__proto__, 'render', function (_, res) {
-      const { message } = this.props;
+      const { content: contentParsed, lastParsedMessage } = this.state;
 
       let hasCodeblock;
 
       try {
-        if (message.contentParsed.find(el => el.type === 'pre') ||
-          message.embeds[0].description.find(el => el.type === 'pre')
+        if (contentParsed.find(el => el.props && el.props.renderFallback) ||
+          lastParsedMessage.embeds[0].rawDescription.includes('\n```')
         ) {
           hasCodeblock = true;
         }

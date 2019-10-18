@@ -17,7 +17,8 @@
 
     &.linking {
       justify-content: initial;
-      span > span > span{
+
+      span > span > span {
         background-color: var(--header-secondary);
       } 
     }

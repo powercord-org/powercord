@@ -28,10 +28,9 @@
   color: var(--text-normal);
   position: absolute;
   max-width: 320px;
-
-  box-shadow:5px 6px 17px rgba(0,0,0,.2);
-
+  box-shadow: 5px 6px 17px rgba(0, 0, 0, .2);
   animation: slidein 0.5s forwards;
+
   .header {
     font-size: 18px;
     margin-bottom: 5px;
