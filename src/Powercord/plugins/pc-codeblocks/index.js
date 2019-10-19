@@ -1,5 +1,5 @@
 const { Plugin } = require('powercord/entities');
-const { waitFor, getOwnerInstance, createElement } = require('powercord/util');
+const { waitFor, getOwnerInstance, createElement, forceUpdateElement } = require('powercord/util');
 const { getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 const { clipboard } = require('electron');
@@ -32,12 +32,14 @@ module.exports = class Codeblocks extends Plugin {
     const instance = getOwnerInstance(await waitFor(messageQuery));
     inject('pc-message-codeblock', instance.__proto__, 'render', function (_, res) {
       const { content: contentParsed, lastParsedMessage } = this.state;
+      const codeblockRegExp = new RegExp(/^(?:```([a-z]\S+)?)[^```]*```/, 'gm');
 
       let hasCodeblock;
 
       try {
         if (contentParsed.find(el => el.props && el.props.renderFallback) ||
-          lastParsedMessage.embeds[0].rawDescription.includes('\n```')
+          (lastParsedMessage.embeds[0].rawDescription.match(codeblockRegExp) ||
+          lastParsedMessage.embeds[0].fields.some(field => field.rawValue.match(codeblockRegExp)))
         ) {
           hasCodeblock = true;
         }
@@ -66,7 +68,7 @@ module.exports = class Codeblocks extends Plugin {
       return res;
     });
 
-    instance.forceUpdate();
+    forceUpdateElement(messageQuery, true);
   }
 
   inject (codeblock) {
