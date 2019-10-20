@@ -1,6 +1,6 @@
 const { React } = require('powercord/webpack');
 const { Button } = require('powercord/components');
-const { SwitchItem, TextInput } = require('powercord/components');
+const { SwitchItem, TextInput } = require('powercord/components/settings');
 
 const Icons = require('./Icons');
 const Update = require('./Update');
