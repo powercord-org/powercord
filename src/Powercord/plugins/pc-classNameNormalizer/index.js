@@ -53,11 +53,11 @@ module.exports = class ClassNameNormalizer extends Plugin {
     const guildElement = (await waitFor(`.${guildClasses.blobContainer.replace(/ /g, '.')}`)).parentElement;
     const instance = getOwnerInstance(guildElement);
     inject('pc-cnn-gc', instance.__proto__, 'render', function (_, res) {
-      const { hovered } = res._owner.memoizedState;
+      // const { hovered } = res._owner.memoizedState;
       const { audio, badge: mentions, selected, unread, video } = this.props;
 
       /* eslint-disable-next-line object-property-newline */
-      const conditionals = { unread, hovered, selected, audio, video, mentioned: mentions > 0 };
+      const conditionals = { unread, /* hovered, */ selected, audio, video, mentioned: mentions > 0 };
 
       Object.keys(conditionals).forEach(key => {
         if (conditionals[key]) {
@@ -78,11 +78,11 @@ module.exports = class ClassNameNormalizer extends Plugin {
     const folderClasses = await getModule([ 'wrapper', 'folder' ]);
     const instance = getOwnerInstance(await waitFor(`.${folderClasses.wrapper.replace(/ /g, '.')}`));
     inject('pc-cnn-fc', instance.__proto__, 'render', function (_, res) {
-      const { hovered } = res._owner.memoizedState;
+      // const { hovered } = res._owner.memoizedState;
       const { audio, badge: mentions, selected, expanded, unread, video } = this.props;
 
       /* eslint-disable-next-line object-property-newline */
-      const conditionals = { unread, hovered, selected, expanded, audio, video, mentioned: mentions > 0 };
+      const conditionals = { unread, /* hovered, */ selected, expanded, audio, video, mentioned: mentions > 0 };
 
       Object.keys(conditionals).forEach(key => {
         if (conditionals[key]) {

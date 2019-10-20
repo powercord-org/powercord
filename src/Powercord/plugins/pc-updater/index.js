@@ -8,7 +8,7 @@ const { promisify } = require('util');
 const cp = require('child_process');
 const exec = promisify(cp.exec);
 
-const Settings = require('./components/Settings.jsx');
+const SettingsLegacy = require('./components/SettingsLegacy.jsx');
 
 module.exports = class Updater extends Plugin {
   constructor () {
@@ -21,17 +21,21 @@ module.exports = class Updater extends Plugin {
   }
 
   async startPlugin () {
-    this.loadCSS(resolve(__dirname, 'style.scss'));
-    this.registerSettings('pc-updater', 'Updater', Settings);
+    if (this.settings.get('__experimental_20-10-19', false)) {
+      console.log('cool');
+    } else {
+      this.loadCSS(resolve(__dirname, 'styleLegacy.scss'));
+      this.registerSettings('pc-updater', 'Updater', SettingsLegacy);
 
-    let minutes = Number(this.settings.get('interval', 15));
-    if (minutes < 1) {
-      this.settings.set('interval', 1);
-      minutes = 1;
+      let minutes = Number(this.settings.get('interval', 15));
+      if (minutes < 1) {
+        this.settings.set('interval', 1);
+        minutes = 1;
+      }
+
+      this._interval = setInterval(this.checkForUpdateLegacy.bind(this), minutes * 60 * 1000);
+      this.checkForUpdateLegacy();
     }
-
-    this._interval = setInterval(this.checkForUpdate.bind(this), minutes * 60 * 1000);
-    this.checkForUpdate();
   }
 
   pluginWillUnload () {
@@ -58,7 +62,21 @@ module.exports = class Updater extends Plugin {
     };
   }
 
-  async checkForUpdate (callback, force = false) {
+  // Experimental
+  toggleExperimental () {
+    const current = this.settings.get('__experimental_20-10-19', false);
+    if (!current) {
+      this.warn('WARNING: This will enable the experimental new updater, that might not be fully functional yet.');
+      this.warn('WARNING: Use it at your own risk! Powercord Staff won\'t help you with issues occurring with the beta.');
+    } else {
+      this.log('Experimental updater disabled.')
+    }
+    this.settings.set('__experimental_20-10-19', !current);
+    powercord.pluginManager.remount('pc-updater');
+  }
+
+  // LEGACY
+  async checkForUpdateLegacy (callback, force = false) {
     if (!this.settings.get('checkForUpdates', true) && !force) {
       return;
     }
@@ -69,7 +87,7 @@ module.exports = class Updater extends Plugin {
     const gitStatus = await exec('git status -uno', this.cwd).then(({ stdout }) => stdout.toString());
 
     if (gitStatus.includes('git pull')) {
-      this.askUpdate();
+      this.askUpdateLegacy();
     }
 
     this.checking = false;
@@ -78,7 +96,7 @@ module.exports = class Updater extends Plugin {
     }
   }
 
-  askUpdate () {
+  askUpdateLegacy () {
     if (document.getElementById('powercord-updater')) {
       return;
     }
@@ -98,12 +116,12 @@ module.exports = class Updater extends Plugin {
         buttons: [ {
           text: 'Update',
           onClick: (setState) =>
-            this.update(setState)
+            this.updateLegacy(setState)
               .then(() => container.remove())
         }, {
           text: 'Update and reboot',
           onClick: (setState) =>
-            this.update(setState)
+            this.updateLegacy(setState)
               .then(success =>
                 success
                   ? location.reload()
@@ -128,7 +146,7 @@ module.exports = class Updater extends Plugin {
     );
   }
 
-  update (setState) {
+  updateLegacy (setState) {
     return setState({ fade: 'out' })
       .then(() => setState({
         buttons: [],
