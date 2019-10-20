@@ -41,6 +41,9 @@ module.exports = class Updater extends Plugin {
   }
 
   pluginWillUnload () {
+    if (this.settings.get('__experimental_20-10-19', false)) {
+      this.settings.set('paused', false);
+    }
     clearInterval(this._interval);
   }
 
@@ -68,10 +71,11 @@ module.exports = class Updater extends Plugin {
   toggleExperimental () {
     const current = this.settings.get('__experimental_20-10-19', false);
     if (!current) {
-      this.warn('WARNING: This will enable the experimental new updater, that might not be fully functional yet.');
+      this.warn('WARNING: This will enable the experimental new updater, that is NOT functional yet.');
+      this.warn('WARNING: Do NOT use this experimental version as you would use the normal version.');
       this.warn('WARNING: Use it at your own risk! Powercord Staff won\'t help you with issues occurring with the beta.');
     } else {
-      this.log('Experimental updater disabled.')
+      this.log('Experimental updater disabled.');
     }
     this.settings.set('__experimental_20-10-19', !current);
     powercord.pluginManager.remount('pc-updater');
