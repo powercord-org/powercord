@@ -8,6 +8,7 @@ const { promisify } = require('util');
 const cp = require('child_process');
 const exec = promisify(cp.exec);
 
+const Settings = require('./components/Settings.jsx');
 const SettingsLegacy = require('./components/SettingsLegacy.jsx');
 
 module.exports = class Updater extends Plugin {
@@ -22,7 +23,8 @@ module.exports = class Updater extends Plugin {
 
   async startPlugin () {
     if (this.settings.get('__experimental_20-10-19', false)) {
-      console.log('cool');
+      this.loadCSS(resolve(__dirname, 'style.scss'));
+      this.registerSettings('pc-updater', 'Updater', Settings);
     } else {
       this.loadCSS(resolve(__dirname, 'styleLegacy.scss'));
       this.registerSettings('pc-updater', 'Updater', SettingsLegacy);

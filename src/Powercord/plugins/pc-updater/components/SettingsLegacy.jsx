@@ -2,7 +2,7 @@ const { React } = require('powercord/webpack');
 const { Button } = require('powercord/components');
 const { TextInput, SwitchItem } = require('powercord/components/settings');
 
-module.exports = class UpdaterSettings extends React.Component {
+module.exports = class UpdaterSettingsLegacy extends React.Component {
   constructor () {
     super();
     this.plugin = powercord.pluginManager.get('pc-updater');
