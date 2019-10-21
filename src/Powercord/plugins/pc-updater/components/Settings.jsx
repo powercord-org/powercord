@@ -1,4 +1,5 @@
-const { React } = require('powercord/webpack');
+/* eslint-disable */
+const { React, getModule } = require('powercord/webpack');
 const { Button } = require('powercord/components');
 const { SwitchItem, TextInput } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
@@ -14,17 +15,23 @@ module.exports = class UpdaterSettings extends React.Component {
   }
 
   render () {
+    const moment = getModule([ 'momentProperties' ], false);
+    const checking = this.props.getSetting('checking', false);
+    const checkingProgress = this.props.getSetting('checking_progress', [ 0, 0 ]);
     const disabled = this.props.getSetting('disabled', false);
     const paused = this.props.getSetting('paused', false);
+    const last = moment(this.props.getSetting('last_check', false)).calendar();
 
     return <div className='powercord-updater'>
       <div className='top-section'>
         <div className='icon'>
           {disabled
-            ? <Icons.UpdatesAvailable color='#f04747'/>
+            ? <Icons.Update color='#f04747'/>
             : paused
               ? <Icons.Paused/>
-              : <Icons.UpToDate/>}
+              : checking
+                ? <Icons.Update color='#7289da' animated/>
+                : <Icons.UpToDate/>}
         </div>
         <div className='status'>
           <h3>
@@ -32,23 +39,53 @@ module.exports = class UpdaterSettings extends React.Component {
               ? 'Updates are disabled.'
               : paused
                 ? 'Updates are paused.'
-                : 'Powercord is up to date.'}
+                : checking
+                  ? 'Checking for updates...'
+                  : 'Powercord is up to date.'}
           </h3>
-          {!disabled && !paused && <div>Last checked: Today at 18:58</div>}
+          {!disabled && (!checking || checkingProgress[1] > 0) && <div>
+            {paused
+              ? 'They will resume on next reload.'
+              : checking
+                ? `Checking ${checkingProgress[0]}/${checkingProgress[1]}`
+                : `Last checked: ${last}`}
+          </div>}
+        </div>
+        <div className="about">
+          <div>
+            <span>Upstream:</span>
+            <span>{powercord.gitInfos.upstream.replace('powercord-org/powercord', 'Official')}</span>
+          </div>
+          <div>
+            <span>Branch:</span>
+            <span>{powercord.gitInfos.branch}</span>
+          </div>
+          <div>
+            <span>Revision:</span>
+            <span>{powercord.gitInfos.revision.substring(0, 7)}</span>
+          </div>
         </div>
       </div>
       <div className='buttons'>
-        {disabled
+        {disabled || paused
           ? <Button
             size={Button.Sizes.SMALL}
             color={Button.Colors.GREEN}
-            onClick={() => this.props.updateSetting('disabled', false)}
+            onClick={() => {
+              this.props.updateSetting('paused', false);
+              this.props.updateSetting('disabled', false);
+            }}
           >
-            Enable Updates
+            {disabled ? 'Enable' : 'Resume'} Updates
           </Button>
-          : !paused && <>
+          : !checking && <>
           <Button size={Button.Sizes.SMALL} color={Button.Colors.GREEN}>Update Now</Button>
-          <Button size={Button.Sizes.SMALL}>Check for Updates</Button>
+          <Button
+            size={Button.Sizes.SMALL}
+            onClick={() => this.plugin.checkForUpdates()}
+          >
+            Check for Updates
+          </Button>
           <Button
             size={Button.Sizes.SMALL}
             color={Button.Colors.YELLOW}
@@ -65,29 +102,23 @@ module.exports = class UpdaterSettings extends React.Component {
           </Button>
         </>}
       </div>
-      {!disabled && !paused && <div className='updates'>
+      {!disabled && !paused && !checking && <div className='updates'>
         <Update
           {...fakeData[0]}
           onSkip={() => this.askSkipUpdate(fakeData[0].name, () => console.log('cool'))}
           onDisable={() => this.askDisableUpdates(fakeData[0].name, () => console.log('cool'))}
         />
-        <Update
-          {...fakeData[1]}
-          onSkip={() => this.askSkipUpdate(fakeData[1].name, () => console.log('cool'))}
-          onDisable={() => this.askDisableUpdates(fakeData[1].name, () => console.log('cool'))}
-        />
-        <Update
-          {...fakeData[2]}
-          onSkip={() => this.askSkipUpdate(fakeData[2].name, () => console.log('cool'))}
-          onDisable={() => this.askDisableUpdates(fakeData[2].name, () => console.log('cool'))}
-        />
+        <Update {...fakeData[1]}/>
+        <Update {...fakeData[2]} onReload={() => this.askReload()}/>
+        <Update {...fakeData[3]}/>
+        <Update {...fakeData[4]}/>
       </div>}
 
       {!disabled && <>
         <SwitchItem
           value={this.props.getSetting('background', false)}
           onChange={() => this.props.toggleSetting('background')}
-          note={'Powercord can download and install updates in background without annoying you too much. Updates that require a client reload won\'t automatically reload the client.'}
+          note={'Powercord can download and install updates in background without annoying you too much. Note that updates will require user action if a reload is required, or if there is a conflict.'}
         >
           Update automatically in background
         </SwitchItem>
@@ -114,6 +145,16 @@ module.exports = class UpdaterSettings extends React.Component {
     );
   }
 
+  askReload () {
+    this._ask(
+      'Reload Discord',
+      `Are you sure you want to reload Discord now to apply updates?`,
+      'Reload',
+      window.reload,
+      false
+    );
+  }
+
   askPauseUpdates () {
     this._ask(
       'Pause updates',
@@ -132,9 +173,9 @@ module.exports = class UpdaterSettings extends React.Component {
     );
   }
 
-  _ask (title, content, confirm, callback) {
+  _ask (title, content, confirm, callback, red = true) {
     openModal(() => <Confirm
-      red
+      red={red}
       header={title}
       confirmText={confirm}
       cancelText='Cancel'
@@ -154,6 +195,32 @@ const fakeData = [
     commits: [
       {
         id: 'a415ab5cc17c8c093c015ccdb7e552aee7911aa4',
+        message: 'test',
+        author: 'Bowser65'
+      }
+    ]
+  },
+  {
+    name: 'Powercord',
+    icon: 'Powercord',
+    repo: 'powercord-org/powercord',
+    updating: true,
+    commits: [
+      {
+        id: '015ccdb7e55293c015ccdb7e552aee7911aa4',
+        message: 'test',
+        author: 'Bowser65'
+      }
+    ]
+  },
+  {
+    name: 'Powercord',
+    icon: 'Powercord',
+    repo: 'powercord-org/powercord',
+    awaiting: true,
+    commits: [
+      {
+        id: '11aa5ab5cc17c8c093c015ccdb7e552aee7911aa4',
         message: 'test',
         author: 'Bowser65'
       }

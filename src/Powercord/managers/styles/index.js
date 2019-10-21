@@ -99,7 +99,7 @@ module.exports = class StyleManager {
         theme = new Theme(themeID, {
           ...manifest,
           theme: resolve(resolve(this.themesDir, filename, manifest.effectiveTheme))
-        });
+        }, true);
       }
     } catch (e) {
       return console.error('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" doesn't have a valid manifest or is not a valid file - Skipping`);
@@ -152,7 +152,7 @@ module.exports = class StyleManager {
         continue;
       }
 
-      const themeID = filename.split('.').shift().toLowerCase();
+      const themeID = filename.split('.').shift();
       await this.mount(themeID, filename);
 
       // if theme didn't mounted

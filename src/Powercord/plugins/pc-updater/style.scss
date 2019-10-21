@@ -8,6 +8,17 @@
     .icon {
       width: 64px;
       margin-right: 15px;
+      flex-shrink: 0;
+    }
+
+    .animated path + path {
+      transform-origin: 50% 50%;
+      animation: rotate 1.2s infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     .status {
@@ -21,6 +32,26 @@
 
       div {
         opacity: .7;
+      }
+    }
+
+    .about {
+      display: flex;
+      margin-left: auto;
+      flex-direction: column;
+      justify-content: space-evenly;
+      font-family: SourceCodePro,Consolas,Liberation Mono,Menlo,Courier,monospace;
+      font-size: 14px;
+      opacity: .7;
+
+      div {
+        display: flex;
+        justify-content: space-between;
+
+        span {
+          margin-left: 10px;
+          width: 80px;
+        }
       }
     }
   }
@@ -88,7 +119,7 @@
 
   .buttons, .update {
     padding-bottom: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     border-bottom: 1px var(--background-modifier-accent) solid;
   }
 }

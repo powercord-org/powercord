@@ -28,7 +28,7 @@ const less = require('less');
 const regex = /\.((s?c|le)ss|styl)$/;
 
 module.exports = class Theme {
-  constructor (themeID, manifest) {
+  constructor (themeID, manifest, isTheme) {
     // @todo: Validate more than actual theme. Not needed for now as plugins key is useless
     if (!regex.test(manifest.theme)) {
       throw new Error('Invalid theme file!');
@@ -36,6 +36,7 @@ module.exports = class Theme {
 
     this.themeID = themeID;
     this.manifest = manifest;
+    this.isTheme = isTheme;
     this.trackedFiles = [];
   }
 
@@ -190,6 +191,6 @@ module.exports = class Theme {
       license: 'Unknown',
       theme: file,
       overlayTheme: file
-    });
+    }, false);
   }
 };

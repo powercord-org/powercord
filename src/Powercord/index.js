@@ -33,6 +33,11 @@ module.exports = class Powercord extends EventEmitter {
     super();
 
     this.api = {};
+    this.gitInfos = {
+      upstream: '???',
+      branch: '???',
+      revision: '???'
+    };
     this.initialized = false;
     this.styleManager = new StyleManager();
     this.pluginManager = new PluginManager();
@@ -68,6 +73,9 @@ module.exports = class Powercord extends EventEmitter {
     const SentryModule = await require('powercord/webpack').getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ]);
     const buildId = SentryModule._globalOptions.release;
     const gitInfos = await this.pluginManager.get('pc-updater').getGitInfos();
+    this.gitInfos = {
+      ...gitInfos
+    };
     this.buildInfo = `Release Channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Discord's Build Number: ${buildId} - Powercord's git revision: ${gitInfos.revision}@${gitInfos.branch}`;
 
     // Token manipulation stuff
