@@ -20,7 +20,7 @@ const { resolve } = require('path');
 const { readdirSync } = require('fs');
 const { lstat } = require('fs').promises;
 
-const Theme = require('./theme');
+const { Theme } = require('powercord/entities');
 
 module.exports = class StyleManager {
   constructor () {

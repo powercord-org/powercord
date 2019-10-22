@@ -6,7 +6,7 @@ const { Tooltip, Icons: { badges: { DonorDefault } } } = require('powercord/comp
 const Badge = require('./Badge.jsx');
 
 const badgesStore = {};
-const badges = [ 'developer', 'contributor', 'early', 'hunter', 'tester' ];
+const badges = [ 'developer', 'contributor', 'early', 'hunter' ];
 
 module.exports = class Badges extends React.PureComponent {
   constructor (props) {
@@ -17,7 +17,6 @@ module.exports = class Badges extends React.PureComponent {
       contributor: false,
       early: false,
       hunter: false,
-      tester: false,
       customization: null
     };
   }

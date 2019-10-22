@@ -25,7 +25,7 @@ module.exports = class Installed extends React.Component {
       <div className='powercord-plugins-header'>
         <h3>Installed plugins</h3>
         <Button onClick={() => this.props.goToExplore()}>Explore Plugins</Button>
-        <div class='powercord-folders-opener'>
+        <div className='powercord-folders-opener'>
           <Button color={Button.Colors.PRIMARY} look={Button.Looks.OUTLINED} onClick={() => this.props.openFolder(powercord.pluginManager.pluginDir)}>Open Plugins Folder</Button>
         </div>
       </div>
@@ -41,16 +41,17 @@ module.exports = class Installed extends React.Component {
       </div>
       <div className='powercord-plugins-container'>
         {plugins.map(plugin => <Plugin
-          id={plugin.pluginID}
+          key={plugin.entityID}
+          id={plugin.entityID}
           installed={true}
-          enabled={powercord.pluginManager.isEnabled(plugin.pluginID)}
-          hidden={powercord.settings.get('hiddenPlugins', []).includes(plugin.pluginID)}
+          enabled={powercord.pluginManager.isEnabled(plugin.entityID)}
+          hidden={powercord.settings.get('hiddenPlugins', []).includes(plugin.entityID)}
           manifest={plugin.manifest}
 
-          onEnable={() => this.enable(plugin.pluginID)}
-          onDisable={() => this.disable(plugin.pluginID)}
+          onEnable={() => this.enable(plugin.entityID)}
+          onDisable={() => this.disable(plugin.entityID)}
 
-          onUninstall={() => this.uninstall(plugin.pluginID)}
+          onUninstall={() => this.uninstall(plugin.entityID)}
         />)}
       </div>
     </div>;

@@ -17,20 +17,21 @@
  */
 
 const { shell: { openExternal } } = require('electron');
-const EventEmitter = require('events');
 const { get } = require('powercord/http');
 const { sleep } = require('powercord/util');
 const Webpack = require('powercord/webpack');
 const { WEBSITE } = require('powercord/constants');
+const { Updatable } = require('powercord/entities');
+const { join } = require('path');
 
 const PluginManager = require('./managers/plugins');
 const StyleManager = require('./managers/styles');
 const APIManager = require('./managers/apis');
 const modules = require('./modules');
 
-module.exports = class Powercord extends EventEmitter {
+module.exports = class Powercord extends Updatable {
   constructor () {
-    super();
+    super(join(__dirname, '..', '..'), '');
 
     this.api = {};
     this.gitInfos = {

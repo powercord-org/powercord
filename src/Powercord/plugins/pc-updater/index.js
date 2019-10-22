@@ -1,7 +1,6 @@
 const { Plugin } = require('powercord/entities');
 const { resolve, join } = require('path');
 const { sleep, createElement } = require('powercord/util');
-const { asyncArray: { filter: filterAsync } } = require('powercord/util');
 const { ReactDOM, React } = require('powercord/webpack');
 const { Toast } = require('powercord/components');
 
@@ -17,13 +16,7 @@ module.exports = class Updater extends Plugin {
     super();
 
     this.checking = false;
-    this.cwd = {
-      cwd: join(__dirname, ...Array(3).fill('..'))
-    };
-
-    this._powercordGit = join(__dirname, ...Array(4).fill('..'));
-    this._pluginsFolder = join(__dirname, '..');
-    this._themesFolder = join(__dirname, '..', '..', 'themes');
+    this.cwd = { cwd: join(__dirname, ...Array(4).fill('..')) };
   }
 
   async startPlugin () {
@@ -61,50 +54,46 @@ module.exports = class Updater extends Plugin {
   async checkForUpdates () {
     this.settings.set('checking', true);
     this.settings.set('checking_progress', [ 0, 0 ]);
-    const plugins = [ ...powercord.pluginManager.plugins.keys() ].filter(p => !p.startsWith('pc-'));
-    const themes = [ ...powercord.styleManager.themes.values() ].filter(t => t.isTheme).map(t => t.themeID);
     const disabled = this.settings.get('disabled_components', []);
-    const paths = [];
+    const plugins = [ ...powercord.pluginManager.plugins.values() ]
+      .filter(p => !p.isInternal)
+      .filter(p => !disabled.includes(`plugin_${p.entityID}`));
+    const themes = [ ...powercord.styleManager.themes.values() ]
+      .filter(t => t.isTheme)
+      .filter(t => !disabled.includes(`theme_${t.entityID}`));
 
+    const entities = plugins.concat(themes).filter(p => p.isUpdatable());
     if (!disabled.includes('powercord')) {
-      paths.push(this._powercordGit);
+      entities.push(powercord);
     }
 
-    paths.push(
-      ...plugins.filter(p => !disabled.includes(`plugin_${p}`)).map(p => join(this._pluginsFolder, p)),
-      ...themes.filter(t => !disabled.includes(`plugin_${t}`)).map(t => join(this._themesFolder, t))
-    );
-
-    const groupedPaths = [];
-    for (let i = 0; i < paths.length; i += 2) {
-      groupedPaths.push([ paths[i], paths[i + 1] ]);
+    // Not the prettiest way to limit concurrency but it works
+    const groupedEntities = [];
+    for (let i = 0; i < entities.length; i += 2) {
+      groupedEntities.push([ entities[i], entities[i + 1] ]);
     }
 
     let done = 0;
-    this.settings.set('checking_progress', [ 0, paths.length ]);
-    for (const group of groupedPaths) {
-      await Promise.all(group.filter(p => p).map(async path => {
+    this.settings.set('checking_progress', [ 0, entities.length ]);
+    for (const group of groupedEntities) {
+      await Promise.all(group.filter(p => p).map(async entity => {
         // noinspection JSUnfilteredForInLoop
-        const shouldUpdate = await this._checkForUpdate(path);
+        const shouldUpdate = await entity.checkForUpdates();
         if (shouldUpdate) {
           // noinspection JSUnfilteredForInLoop
-          const commits = await this._getCommits(path);
+          const commits = await entity.getUpdateCommits();
           console.log(commits);
         }
         done++;
-        this.settings.set('checking_progress', [ done, paths.length ]);
+        this.settings.set('checking_progress', [ done, entities.length ]);
       }));
     }
     this.settings.set('checking', false);
     this.settings.set('last_check', Date.now());
   }
 
-  update (path, force = false) {
-
-  }
-
-  async getGitInfos (path) {
-    const branch = await exec('git branch', path ? { cwd: path } : this.cwd)
+  async getGitInfos () {
+    const branch = await exec('git branch', this.cwd)
       .then(({ stdout }) =>
         stdout
           .toString()
@@ -125,35 +114,6 @@ module.exports = class Updater extends Plugin {
       branch,
       revision
     };
-  }
-
-  async _checkForUpdate (path) {
-    const cwd = { cwd: path };
-
-    await exec('git fetch', cwd);
-    const gitStatus = await exec('git status -uno', cwd).then(({ stdout }) => stdout.toString());
-    return gitStatus.includes('git pull');
-  }
-
-  async _getCommits (path) {
-    const branch = await exec('git branch', { cwd: path })
-      .then(({ stdout }) =>
-        stdout.toString().split('\n').find(l => l.startsWith('*')).slice(2).trim()
-      );
-
-    const commits = [];
-    const gitLog = await exec(`git log --format="%H %an %s" ..origin/${branch}`, { cwd: path }).then(({ stdout }) => stdout.toString());
-    const lines = gitLog.split('\n');
-    lines.pop();
-    lines.forEach(line => {
-      const data = line.split(' ');
-      commits.push({
-        id: data.shift(),
-        author: data.shift(),
-        message: data.join(' ')
-      });
-    });
-    return commits;
   }
 
   // Experimental

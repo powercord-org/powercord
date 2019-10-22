@@ -37,9 +37,9 @@ module.exports = {
 
     return {
       commands: plugins
-        .filter(plugin => plugin.pluginID.includes(args[0].toLowerCase()))
+        .filter(plugin => plugin.entityID.includes(args[0].toLowerCase()))
         .map(plugin => ({
-          command: plugin.pluginID,
+          command: plugin.entityID,
           description: plugin.manifest.description
         }))
         .slice(0, 10),

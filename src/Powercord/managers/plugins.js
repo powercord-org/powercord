@@ -99,7 +99,7 @@ module.exports = class PluginManager {
       const PluginClass = require(resolve(this.pluginDir, pluginID));
 
       Object.defineProperties(PluginClass.prototype, {
-        pluginID: {
+        entityID: {
           get: () => pluginID,
           set: () => {
             throw new Error('Plugins cannot update their ID at runtime!');
@@ -220,7 +220,7 @@ module.exports = class PluginManager {
     const isOverlay = (/overlay/).test(location.pathname);
     readdirSync(this.pluginDir).sort(this._sortPlugins).forEach(filename => this.mount(filename));
     for (const plugin of [ ...this.plugins.values() ]) {
-      if (powercord.settings.get('disabledPlugins', []).includes(plugin.pluginID)) {
+      if (powercord.settings.get('disabledPlugins', []).includes(plugin.entityID)) {
         continue;
       }
       if (
@@ -228,7 +228,7 @@ module.exports = class PluginManager {
         (plugin.manifest.appMode === 'app' && !isOverlay) ||
         plugin.manifest.appMode === 'both'
       ) {
-        this.load(plugin.pluginID);
+        this.load(plugin.entityID);
       } else {
         this.plugins.delete(plugin);
       }
@@ -240,7 +240,7 @@ module.exports = class PluginManager {
   }
 
   _sortPlugins (pluginA, pluginB) {
-    const priority = [ 'pc-classNameNormalizer', 'pc-commands', 'pc-settings', 'pc-pluginManager', 'pc-updater' ].reverse();
+    const priority = [ 'pc-commands', 'pc-settings', 'pc-pluginManager', 'pc-updater' ].reverse();
     const priorityA = priority.indexOf(pluginA);
     const priorityB = priority.indexOf(pluginB);
     return (priorityA === priorityB ? 0 : (priorityA < priorityB ? 1 : -1));
