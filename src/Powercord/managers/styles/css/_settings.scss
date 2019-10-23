@@ -37,7 +37,7 @@
   }
 
   svg {
-    border-right: 1px rgba(114, 118, 125, 0.3) solid;
+    border-right: 1px var(--background-modifier-accent) solid;
     padding-right: 8px;
 
     path {
@@ -85,7 +85,11 @@ div[class*='switchItem-'] label button {
 
   &.powercord-category &-inner {
     margin-left: 12px;
-    border-left: 1px rgba(114, 118, 125, .3) solid;
+    border-left: 1px var(--background-modifier-accent) solid;
     padding-left: 33px;
   }
+}
+
+.theme-light .powercord-pc-icon {
+  filter: brightness(0.6);
 }
