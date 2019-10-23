@@ -17,6 +17,7 @@ module.exports = class Announcements extends Plugin {
   }
 
   async startPlugin () {
+    this.loadCSS(resolve(__dirname, 'style.css'));
     const classes = await getModule([ 'base', 'container' ]);
     this.noticeQuery = `.${classes.base.replace(/ /g, '.')}`;
 
@@ -65,6 +66,21 @@ module.exports = class Announcements extends Plugin {
 
   sendNotice (notice) {
     if (!this.notices.find(n => n.id === notice.id) && (notice.alwaysDisplay || !this.settings.get('dismissed', []).includes(notice.id))) {
+      // Figure out from where the notice is from using the power of stack traces
+      const error = new Error();
+      const lines = error.stack.split('at ');
+      lines.shift();
+      const files = lines.map(l => l.includes('(') ? l.match(/\(([^)]+)\)/)[1] : l);
+      let source = 'Internal';
+      const file = files.filter(f => f.startsWith(powercord.pluginManager.pluginDir) || f.startsWith('<anonymous>')).pop();
+      if (file.startsWith('<anonymous>')) {
+        source = 'DevTools';
+      } else {
+        const plugin = file.replace(powercord.pluginManager.pluginDir, '').split(/[\\/]/)[1];
+        source = plugin.startsWith('pc-') ? 'Internal' : powercord.pluginManager.get(plugin).manifest.name;
+      }
+
+      notice._source = source;
       this.notices.push(notice);
 
       forceUpdateElement(this.noticeQuery);
