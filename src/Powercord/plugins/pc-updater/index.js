@@ -22,6 +22,7 @@ module.exports = class Updater extends Plugin {
   async startPlugin () {
     if (this.settings.get('__experimental_20-10-19', false)) {
       this.settings.set('paused', false);
+      this.settings.set('awaiting_reload', false);
       this.loadCSS(resolve(__dirname, 'style.scss'));
       this.registerSettings('pc-updater', 'Updater', Settings);
 
@@ -31,7 +32,10 @@ module.exports = class Updater extends Plugin {
         minutes = 1;
       }
 
-      // this._interval = setInterval(this.checkForUpdates.bind(this), minutes * 60 * 1000);
+      /*
+       * this._interval = setInterval(this.checkForUpdates.bind(this), minutes * 60 * 1000);
+       * this.checkForUpdates();
+       */
     } else {
       this.loadCSS(resolve(__dirname, 'styleLegacy.scss'));
       this.registerSettings('pc-updater', 'Updater', SettingsLegacy);
@@ -52,6 +56,10 @@ module.exports = class Updater extends Plugin {
   }
 
   async checkForUpdates () {
+    if (this.settings.set('checking', false) || this.settings.set('updating', false)) {
+      return;
+    }
+
     this.settings.set('checking', true);
     this.settings.set('checking_progress', [ 0, 0 ]);
     const disabled = this.settings.get('disabled_components', []);
@@ -74,6 +82,7 @@ module.exports = class Updater extends Plugin {
     }
 
     let done = 0;
+    const updates = [];
     this.settings.set('checking_progress', [ 0, entities.length ]);
     for (const group of groupedEntities) {
       await Promise.all(group.filter(p => p).map(async entity => {
@@ -82,14 +91,30 @@ module.exports = class Updater extends Plugin {
         if (shouldUpdate) {
           // noinspection JSUnfilteredForInLoop
           const commits = await entity.getUpdateCommits();
-          console.log(commits);
+          // should be skipped?
+          updates.push({
+            name: entity.constructor.name,
+            icon: entity.__proto__.__proto__.constructor.name.replace('Updatable', 'Powercord'),
+            repo: await entity.getGitRepo(),
+            path: entity.entityPath,
+            commits
+          });
         }
         done++;
         this.settings.set('checking_progress', [ done, entities.length ]);
       }));
     }
-    this.settings.set('checking', false);
+    this.settings.set('updates', updates);
     this.settings.set('last_check', Date.now());
+
+    this.settings.set('checking', false);
+    if (updates.length > 0 && this.settings.get('automatic', false)) {
+      this.settings.set('updating', true);
+    }
+  }
+
+  async doUpdate () {
+    this.settings.set('updating', true);
   }
 
   async getGitInfos () {

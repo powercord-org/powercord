@@ -1,6 +1,6 @@
 /* eslint-disable */
 const { React, getModule } = require('powercord/webpack');
-const { Button } = require('powercord/components');
+const { Button, FormNotice } = require('powercord/components');
 const { SwitchItem, TextInput } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
@@ -16,22 +16,48 @@ module.exports = class UpdaterSettings extends React.Component {
 
   render () {
     const moment = getModule([ 'momentProperties' ], false);
+    const awaitingReload = this.props.getSetting('awaiting_reload', false);
+    const updating = this.props.getSetting('updating', false);
     const checking = this.props.getSetting('checking', false);
-    const checkingProgress = this.props.getSetting('checking_progress', [ 0, 0 ]);
     const disabled = this.props.getSetting('disabled', false);
     const paused = this.props.getSetting('paused', false);
+
+    const updates = this.props.getSetting('updates', []);
+    const checkingProgress = this.props.getSetting('checking_progress', [ 0, 0 ]);
     const last = moment(this.props.getSetting('last_check', false)).calendar();
 
-    return <div className='powercord-updater'>
+    return <div className='powercord-updater powercord-text'>
+      {awaitingReload && <FormNotice
+        imageData={{
+          width: 60,
+          height: 60,
+          src: '/assets/0694f38cb0b10cc3b5b89366a0893768.svg'
+        }}
+        type={FormNotice.Types.WARNING}
+        title='Reload Required'
+        body={<>
+          <p>Some updates require a client reload to complete.</p>
+          <Button
+            size={Button.Sizes.SMALL}
+            color={Button.Colors.YELLOW}
+            look={Button.Looks.INVERTED}
+            onClick={() => window.reload()}
+          >
+            Reload Discord
+          </Button>
+        </>}
+      />}
       <div className='top-section'>
         <div className='icon'>
           {disabled
             ? <Icons.Update color='#f04747'/>
             : paused
               ? <Icons.Paused/>
-              : checking
+              : (checking || updating)
                 ? <Icons.Update color='#7289da' animated/>
-                : <Icons.UpToDate/>}
+                : updates.length > 0
+                  ? <Icons.Update/>
+                  : <Icons.UpToDate/>}
         </div>
         <div className='status'>
           <h3>
@@ -41,9 +67,13 @@ module.exports = class UpdaterSettings extends React.Component {
                 ? 'Updates are paused.'
                 : checking
                   ? 'Checking for updates...'
-                  : 'Powercord is up to date.'}
+                  : updating
+                    ? 'Updating Powercord...'
+                    : updates.length > 0
+                      ? 'Updates are available.'
+                      : 'Powercord is up to date.'}
           </h3>
-          {!disabled && (!checking || checkingProgress[1] > 0) && <div>
+          {!disabled && !updating && (!checking || checkingProgress[1] > 0) && <div>
             {paused
               ? 'They will resume on next reload.'
               : checking
@@ -78,8 +108,14 @@ module.exports = class UpdaterSettings extends React.Component {
           >
             {disabled ? 'Enable' : 'Resume'} Updates
           </Button>
-          : !checking && <>
-          <Button size={Button.Sizes.SMALL} color={Button.Colors.GREEN}>Update Now</Button>
+          : !checking && !updating && <>
+          {updates.length > 0 && <Button
+            size={Button.Sizes.SMALL}
+            color={Button.Colors.GREEN}
+            onClick={() => this.plugin.doUpdate()}
+          >
+            Update Now
+          </Button>}
           <Button
             size={Button.Sizes.SMALL}
             onClick={() => this.plugin.checkForUpdates()}
@@ -103,15 +139,11 @@ module.exports = class UpdaterSettings extends React.Component {
         </>}
       </div>
       {!disabled && !paused && !checking && <div className='updates'>
-        <Update
-          {...fakeData[0]}
-          onSkip={() => this.askSkipUpdate(fakeData[0].name, () => console.log('cool'))}
-          onDisable={() => this.askDisableUpdates(fakeData[0].name, () => console.log('cool'))}
-        />
-        <Update {...fakeData[1]}/>
-        <Update {...fakeData[2]} onReload={() => this.askReload()}/>
-        <Update {...fakeData[3]}/>
-        <Update {...fakeData[4]}/>
+        {updates.map(update => <Update
+          key={update.repo}
+          updating={updating}
+          {...update}
+        />)}
       </div>}
 
       {!disabled && <>
@@ -145,16 +177,6 @@ module.exports = class UpdaterSettings extends React.Component {
     );
   }
 
-  askReload () {
-    this._ask(
-      'Reload Discord',
-      `Are you sure you want to reload Discord now to apply updates?`,
-      'Reload',
-      window.reload,
-      false
-    );
-  }
-
   askPauseUpdates () {
     this._ask(
       'Pause updates',
@@ -182,82 +204,7 @@ module.exports = class UpdaterSettings extends React.Component {
       onConfirm={callback}
       onCancel={closeModal}
     >
-      <div className='updater-modal'>{content}</div>
+      <div className='powercord-text'>{content}</div>
     </Confirm>);
   }
 };
-
-const fakeData = [
-  {
-    name: 'Powercord',
-    icon: 'Powercord',
-    repo: 'powercord-org/powercord',
-    commits: [
-      {
-        id: 'a415ab5cc17c8c093c015ccdb7e552aee7911aa4',
-        message: 'test',
-        author: 'Bowser65'
-      }
-    ]
-  },
-  {
-    name: 'Powercord',
-    icon: 'Powercord',
-    repo: 'powercord-org/powercord',
-    updating: true,
-    commits: [
-      {
-        id: '015ccdb7e55293c015ccdb7e552aee7911aa4',
-        message: 'test',
-        author: 'Bowser65'
-      }
-    ]
-  },
-  {
-    name: 'Powercord',
-    icon: 'Powercord',
-    repo: 'powercord-org/powercord',
-    awaiting: true,
-    commits: [
-      {
-        id: '11aa5ab5cc17c8c093c015ccdb7e552aee7911aa4',
-        message: 'test',
-        author: 'Bowser65'
-      }
-    ]
-  },
-  {
-    name: 'Quick Actions',
-    icon: 'Plugin',
-    repo: 'griefmodz/quickActions',
-    commits: [
-      {
-        id: '49764acfa3e8d3116bca19e1483bef39f02e04ea',
-        message: 'test',
-        author: 'GriefMoDz'
-      },
-      {
-        id: 'f46fab9f9f91073a4262a6bce61dc3d05ad0a078',
-        message: 'another test commit',
-        author: 'GriefMoDz'
-      }
-    ]
-  },
-  {
-    name: 'Customa',
-    icon: 'Theme',
-    repo: 'Customa/Customa-Discord',
-    commits: [
-      {
-        id: 'c62a1190b91bc6d55417edafa8856c0bd9c93108',
-        message: 'test',
-        author: 'ghostlydilemma'
-      },
-      {
-        id: '8366175c2e58728e8a393ed217a6434aa83feed4',
-        message: 'cute',
-        author: 'ghostlydilemma'
-      }
-    ]
-  }
-];

@@ -1,13 +1,9 @@
 .powercord-account {
   padding: 20px;
-  border-radius: 5px;
-  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: var(--deprecated-card-bg);
-  border: 1px var(--background-tertiary) solid;
-  color: var(--text-normal);
+  margin-bottom: 20px;
 
   > div {
     flex: 1;
@@ -20,7 +16,7 @@
 
       span > span > span {
         background-color: var(--header-secondary);
-      } 
+      }
     }
   }
 
@@ -63,12 +59,8 @@
 }
 
 .powercord-passphrase {
-  &-modal {
-    color: var(--text-normal);
-
-    div[class^='divider-'] {
-      display: none;
-    }
+  &-modal div[class^='divider-'] {
+    display: none;
   }
 
   &-desc {

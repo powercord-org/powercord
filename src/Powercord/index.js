@@ -190,7 +190,37 @@ module.exports = class Powercord extends Updatable {
     this.isLinking = false;
   }
 
+  async update (force = false) {
+    await super.update(force);
+    this.pluginManager.get('pc-updater').settings.set('awaiting_reload', true);
+  }
+
+  // idk i was bored and people need to know the truth
   isEmmaCute () {
     return true;
+  }
+
+  isEmmaNotCute () {
+    return false;
+  }
+
+  get emma () {
+    // no u ain't going to make it negative uwu
+    const cuteIncrement = Math.max(0, this.settings.get('_cute_inc', 0));
+    this.settings.set('_cute_inc', cuteIncrement + 0.1);
+    return {
+      cute: true,
+      percent: 100.0 + cuteIncrement,
+      uwu: '🌺'
+    };
+  }
+
+  set emma (_) {
+    throw new Error('TooCuteException: awooooo');
+  }
+
+  // i was still bored
+  get daddy () {
+    return 'aeth uwu';
   }
 };

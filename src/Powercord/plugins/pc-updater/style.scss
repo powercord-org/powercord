@@ -1,6 +1,4 @@
 .powercord-updater {
-  color: var(--text-normal);
-
   .top-section {
     margin-top: 35px;
     display: flex;
@@ -17,8 +15,12 @@
     }
 
     @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     .status {
@@ -40,7 +42,7 @@
       margin-left: auto;
       flex-direction: column;
       justify-content: space-evenly;
-      font-family: SourceCodePro,Consolas,Liberation Mono,Menlo,Courier,monospace;
+      font-family: SourceCodePro, Consolas, Liberation Mono, Menlo, Courier, monospace;
       font-size: 14px;
       opacity: .7;
 
@@ -122,8 +124,4 @@
     margin-bottom: 20px;
     border-bottom: 1px var(--background-modifier-accent) solid;
   }
-}
-
-.updater-modal {
-  color: var(--text-normal);
 }
