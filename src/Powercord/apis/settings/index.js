@@ -26,6 +26,7 @@ const { API } = require('powercord/entities');
 const store = require('./store');
 const actions = require('./store/actions');
 
+const ErrorBoundary = require('./ErrorBoundary');
 const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
 const FormSection = AsyncComponent.from(getModuleByDisplayName('FormSection'));
 
@@ -106,7 +107,7 @@ module.exports = class Settings extends API {
     }
 
     const h2 = React.createElement(FormTitle, { tag: 'h2' }, title);
-    return React.createElement(FormSection, {}, h2, panelContents);
+    return React.createElement(ErrorBoundary, null, React.createElement(FormSection, {}, h2, panelContents));
   }
 
   // @todo: Discord settings sync

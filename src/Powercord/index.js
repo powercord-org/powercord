@@ -24,6 +24,10 @@ const { WEBSITE } = require('powercord/constants');
 const { Updatable } = require('powercord/entities');
 const { join } = require('path');
 
+const { promisify } = require('util');
+const cp = require('child_process');
+const exec = promisify(cp.exec);
+
 const PluginManager = require('./managers/plugins');
 const StyleManager = require('./managers/styles');
 const APIManager = require('./managers/apis');
@@ -191,8 +195,13 @@ module.exports = class Powercord extends Updatable {
   }
 
   async update (force = false) {
-    await super.update(force);
-    this.pluginManager.get('pc-updater').settings.set('awaiting_reload', true);
+    const success = await super.update(force);
+    if (success) {
+      // Run npm i
+      await exec('npm install --only=prod', { cwd: this.entityPath });
+      this.pluginManager.get('pc-updater').settings.set('awaiting_reload', true);
+    }
+    return success;
   }
 
   // idk i was bored and people need to know the truth

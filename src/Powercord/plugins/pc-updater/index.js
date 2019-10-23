@@ -22,6 +22,7 @@ module.exports = class Updater extends Plugin {
   async startPlugin () {
     if (this.settings.get('__experimental_20-10-19', false)) {
       this.settings.set('paused', false);
+      this.settings.set('updating', false);
       this.settings.set('awaiting_reload', false);
       this.loadCSS(resolve(__dirname, 'style.scss'));
       this.registerSettings('pc-updater', 'Updater', Settings);
@@ -62,15 +63,12 @@ module.exports = class Updater extends Plugin {
 
     this.settings.set('checking', true);
     this.settings.set('checking_progress', [ 0, 0 ]);
-    const disabled = this.settings.get('disabled_components', []);
-    const plugins = [ ...powercord.pluginManager.plugins.values() ]
-      .filter(p => !p.isInternal)
-      .filter(p => !disabled.includes(`plugin_${p.entityID}`));
-    const themes = [ ...powercord.styleManager.themes.values() ]
-      .filter(t => t.isTheme)
-      .filter(t => !disabled.includes(`theme_${t.entityID}`));
+    const disabled = this.settings.get('entities_disabled', []).map(e => e.id);
+    const skipped = this.settings.get('entities_skipped', []);
+    const plugins = [ ...powercord.pluginManager.plugins.values() ].filter(p => !p.isInternal);
+    const themes = [ ...powercord.styleManager.themes.values() ].filter(t => t.isTheme);
 
-    const entities = plugins.concat(themes).filter(p => p.isUpdatable());
+    const entities = plugins.concat(themes).filter(e => !disabled.includes(e.updateIdentifier) && e.isUpdatable());
     if (!disabled.includes('powercord')) {
       entities.push(powercord);
     }
@@ -86,13 +84,14 @@ module.exports = class Updater extends Plugin {
     this.settings.set('checking_progress', [ 0, entities.length ]);
     for (const group of groupedEntities) {
       await Promise.all(group.filter(p => p).map(async entity => {
-        // noinspection JSUnfilteredForInLoop
         const shouldUpdate = await entity.checkForUpdates();
         if (shouldUpdate) {
-          // noinspection JSUnfilteredForInLoop
           const commits = await entity.getUpdateCommits();
-          // should be skipped?
+          if (skipped[entity.updateIdentifier] === commits[0].id) {
+            return;
+          }
           updates.push({
+            id: entity.updateIdentifier,
             name: entity.constructor.name,
             icon: entity.__proto__.__proto__.constructor.name.replace('Updatable', 'Powercord'),
             repo: await entity.getGitRepo(),

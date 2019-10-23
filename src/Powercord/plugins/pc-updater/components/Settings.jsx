@@ -1,7 +1,7 @@
 /* eslint-disable */
 const { React, getModule } = require('powercord/webpack');
-const { Button, FormNotice } = require('powercord/components');
-const { SwitchItem, TextInput } = require('powercord/components/settings');
+const { Button, FormNotice, FormTitle, Tooltip } = require('powercord/components');
+const { SwitchItem, TextInput, Category } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
 
@@ -12,9 +12,11 @@ module.exports = class UpdaterSettings extends React.Component {
   constructor () {
     super();
     this.plugin = powercord.pluginManager.get('pc-updater');
+    this.state = { opened: false };
   }
 
   render () {
+    const isUnsupported = window.GLOBAL_ENV.RELEASE_CHANNEL !== 'canary';
     const moment = getModule([ 'momentProperties' ], false);
     const awaitingReload = this.props.getSetting('awaiting_reload', false);
     const updating = this.props.getSetting('updating', false);
@@ -23,30 +25,14 @@ module.exports = class UpdaterSettings extends React.Component {
     const paused = this.props.getSetting('paused', false);
 
     const updates = this.props.getSetting('updates', []);
+    const disabledEntities = this.props.getSetting('entities_disabled', []);
     const checkingProgress = this.props.getSetting('checking_progress', [ 0, 0 ]);
     const last = moment(this.props.getSetting('last_check', false)).calendar();
 
     return <div className='powercord-updater powercord-text'>
-      {awaitingReload && <FormNotice
-        imageData={{
-          width: 60,
-          height: 60,
-          src: '/assets/0694f38cb0b10cc3b5b89366a0893768.svg'
-        }}
-        type={FormNotice.Types.WARNING}
-        title='Reload Required'
-        body={<>
-          <p>Some updates require a client reload to complete.</p>
-          <Button
-            size={Button.Sizes.SMALL}
-            color={Button.Colors.YELLOW}
-            look={Button.Looks.INVERTED}
-            onClick={() => window.reload()}
-          >
-            Reload Discord
-          </Button>
-        </>}
-      />}
+      {awaitingReload
+        ? this.renderReload()
+        : isUnsupported && this.renderUnsupported()}
       <div className='top-section'>
         <div className='icon'>
           {disabled
@@ -138,14 +124,38 @@ module.exports = class UpdaterSettings extends React.Component {
           </Button>
         </>}
       </div>
-      {!disabled && !paused && !checking && <div className='updates'>
+      {!disabled && !paused && !checking && updates.length > 0 && <div className='updates'>
         {updates.map(update => <Update
-          key={update.repo}
-          updating={updating}
           {...update}
+          key={update.id}
+          updating={updating}
+          onSkip={() => this.askSkipUpdate(update.name, () => this.skipUpdate(update.id, update.commits[0].id))}
+          onDisable={() => this.askDisableUpdates(update.name, () => this.disableUpdates(update))}
         />)}
       </div>}
 
+      {disabledEntities.length > 0 && <Category
+        name='Disabled updates'
+        opened={this.state.opened}
+        onChange={() => this.setState({ opened: !this.state.opened })}
+      >
+        {disabledEntities.map(entity => <div key={entity.id} className='update'>
+          <div className='title'>
+            <div className='icon'>
+              <Tooltip text={entity.icon} position='left'>
+                {React.createElement(Icons[entity.icon])}
+              </Tooltip>
+            </div>
+            <div className='name'>{entity.name}</div>
+            <div className='actions'>
+              <Button color={Button.Colors.GREEN} onClick={() => this.enableUpdates(entity.id)}>
+                Enable Updates
+              </Button>
+            </div>
+          </div>
+        </div>)}
+      </Category>}
+      <FormTitle className='powercord-updater-ft'>Options</FormTitle>
       {!disabled && <>
         <SwitchItem
           value={this.props.getSetting('background', false)}
@@ -154,7 +164,6 @@ module.exports = class UpdaterSettings extends React.Component {
         >
           Update automatically in background
         </SwitchItem>
-
         <TextInput
           note='How frequently Powercord will check for updates (in minutes).'
           onChange={val => this.props.updateSetting('interval', (Number(val) && Number(val) >= 1) ? Number(val) : 1, 15)}
@@ -165,6 +174,70 @@ module.exports = class UpdaterSettings extends React.Component {
         </TextInput>
       </>}
     </div>;
+  }
+
+  // --- PARTS
+  renderReload () {
+    const body = <>
+      <p>Some updates require a client reload to complete.</p>
+      <Button
+        size={Button.Sizes.SMALL}
+        color={Button.Colors.YELLOW}
+        look={Button.Looks.INVERTED}
+        onClick={() => window.reload()}
+      >
+        Reload Discord
+      </Button>
+    </>;
+    return this._renderFormNotice('Reload Required', body);
+  }
+
+  renderUnsupported () {
+    const body = <p>You're using an unsupported build of Discord ({window.GLOBAL_ENV.RELEASE_CHANNEL}). Plugins and
+      themes might not fully work on this build, and you may experience crashes.</p>;
+    return this._renderFormNotice('Unsupported Discord version', body);
+  }
+
+  _renderFormNotice (title, body) {
+    return <FormNotice
+      imageData={{
+        width: 60,
+        height: 60,
+        src: '/assets/0694f38cb0b10cc3b5b89366a0893768.svg'
+      }}
+      type={FormNotice.Types.WARNING}
+      title={title}
+      body={body}
+    />;
+  }
+
+  // --- UTILS
+  skipUpdate (id, commit) {
+    this.props.updateSetting('entities_skipped', {
+      ...this.props.getSetting('entities_skipped', {}),
+      [id]: commit
+    });
+    this._removeUpdate(id);
+  }
+
+  disableUpdates (entity) {
+    this.props.updateSetting('entities_disabled', [
+      ...this.props.getSetting('entities_disabled', []),
+      {
+        id: entity.id,
+        name: entity.name,
+        icon: entity.icon
+      }
+    ]);
+    this._removeUpdate(entity.id);
+  }
+
+  enableUpdates (id) {
+    this.props.updateSetting('entities_disabled', this.props.getSetting('entities_disabled', []).filter(d => d.id !== id));
+  }
+
+  _removeUpdate (id) {
+    this.props.updateSetting('updates', this.props.getSetting('updates', []).filter(u => u.id !== id));
   }
 
   // --- PROMPTS

@@ -10,7 +10,7 @@ module.exports = class Update extends React.Component {
   }
 
   render () {
-    const { name, icon, repo, commits, updating, onUpdate, onSkip, onDisable } = this.props;
+    const { name, icon, repo, commits, updating, onSkip, onDisable } = this.props;
     return <div className='update'>
       <div className='title'>
         <div className='icon'>
@@ -25,9 +25,6 @@ module.exports = class Update extends React.Component {
               Updating...
             </Button>
             : <>
-              <Button color={Button.Colors.GREEN} onClick={onUpdate}>
-                Update Now
-              </Button>
               <Button look={Button.Looks.OUTLINED} color={Button.Colors.RED} onClick={onSkip}>
                 Skip this update
               </Button>

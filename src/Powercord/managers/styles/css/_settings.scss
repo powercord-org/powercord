@@ -93,3 +93,25 @@ div[class*='switchItem-'] label button {
 .theme-light .powercord-pc-icon {
   filter: brightness(0.6);
 }
+
+.powercord-settings-error {
+  h2 {
+    color: var(--header-primary);
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  div {
+    margin-bottom: 10px;
+  }
+
+  code {
+    white-space: pre-wrap;
+    margin-bottom: 25px;
+    display: block;
+    padding: 0 20px;
+  }
+}
