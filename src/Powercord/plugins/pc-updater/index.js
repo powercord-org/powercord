@@ -49,7 +49,12 @@ module.exports = class Updater extends Plugin {
   }
 
   async checkForUpdates () {
-    if (this.settings.set('checking', false) || this.settings.set('updating', false)) {
+    if (
+      this.settings.set('disabled', false) ||
+      this.settings.set('paused', false) ||
+      this.settings.set('checking', false) ||
+      this.settings.set('updating', false)
+    ) {
       return;
     }
 
