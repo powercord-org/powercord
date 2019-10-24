@@ -100,6 +100,21 @@ module.exports = class Updater extends Plugin {
     this.settings.set('checking', false);
     if (updates.length > 0 && this.settings.get('automatic', false)) {
       this.doUpdate();
+    } else {
+      this.notify('Updates are available', {
+        text: 'Update now',
+        onClick: (close) => {
+          this.doUpdate();
+          close();
+        }
+      }, {
+        text: 'Open Updater',
+        onClick: async (close) => {
+          const settingsModule = await getModule([ 'open', 'saveAccountChanges' ]);
+          settingsModule.open('pc-updater');
+          close();
+        }
+      });
     }
   }
 
