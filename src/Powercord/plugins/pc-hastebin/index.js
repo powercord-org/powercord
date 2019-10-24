@@ -8,7 +8,7 @@ module.exports = class Hastebin extends Plugin {
   startPlugin () {
     this.registerSettings('pc-hastebin', 'Hastebin', Settings);
 
-    const domain = this.settings.get('domain', 'https://hastebin.com');
+    const domain = this.settings.get('domain', 'https://hasteb.in');
     this.registerCommand(
       'hastebin',
       [],
@@ -32,10 +32,7 @@ module.exports = class Hastebin extends Plugin {
 
         try {
           const { body } = await post(`${domain}/documents`)
-            .send(data)
-            .catch(() => {
-
-            });
+            .send(data);
           return {
             send,
             result: `${domain}/${body.key}`

@@ -5,7 +5,7 @@ module.exports = ({ getSetting, updateSetting, toggleSetting }) => (
   <div>
     <TextInput
       note='The domain used for the Hastebin server.'
-      defaultValue={getSetting('domain', 'https://hastebin.com')}
+      defaultValue={getSetting('domain', 'https://hasteb.in')}
       required={true}
       onChange={val => updateSetting('domain', val.endsWith('/') ? val.slice(0, -1) : val)}
     >
