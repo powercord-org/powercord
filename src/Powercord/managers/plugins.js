@@ -97,7 +97,6 @@ module.exports = class PluginManager {
 
     try {
       const PluginClass = require(resolve(this.pluginDir, pluginID));
-
       Object.defineProperties(PluginClass.prototype, {
         entityID: {
           get: () => pluginID,

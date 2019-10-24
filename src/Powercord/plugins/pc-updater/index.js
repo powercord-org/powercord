@@ -1,17 +1,18 @@
-const { Plugin } = require('powercord/entities');
-const { resolve, join } = require('path');
-const { sleep, createElement } = require('powercord/util');
-const { ReactDOM, React, getModule } = require('powercord/webpack');
-const { Toast } = require('powercord/components');
+const { ReactDOM, React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
+const { Toast } = require('powercord/components');
+const { createElement } = require('powercord/util');
+const { Plugin } = require('powercord/entities');
 
+const { resolve, join } = require('path');
 const { promisify } = require('util');
 const cp = require('child_process');
 const exec = promisify(cp.exec);
 
 const Settings = require('./components/Settings.jsx');
-const SettingsLegacy = require('./components/SettingsLegacy.jsx');
+
+const changelog = require('../../../../changelogs.json');
 
 module.exports = class Updater extends Plugin {
   constructor () {
@@ -22,35 +23,24 @@ module.exports = class Updater extends Plugin {
   }
 
   async startPlugin () {
-    if (this.settings.get('__experimental_20-10-19-smh', false)) {
-      this.settings.set('paused', false);
-      this.settings.set('updating', false);
-      this.settings.set('awaiting_reload', false);
-      this.loadCSS(resolve(__dirname, 'style.scss'));
-      this.registerSettings('pc-updater', 'Updater', Settings);
+    this.settings.set('paused', false);
+    this.settings.set('updating', false);
+    this.settings.set('awaiting_reload', false);
+    this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.registerSettings('pc-updater', 'Updater', Settings);
 
-      let minutes = Number(this.settings.get('interval', 15));
-      if (minutes < 1) {
-        this.settings.set('interval', 1);
-        minutes = 1;
-      }
+    let minutes = Number(this.settings.get('interval', 15));
+    if (minutes < 1) {
+      this.settings.set('interval', 1);
+      minutes = 1;
+    }
 
-      /*
-       * this._interval = setInterval(this.checkForUpdates.bind(this), minutes * 60 * 1000);
-       * this.checkForUpdates();
-       */
-    } else {
-      this.loadCSS(resolve(__dirname, 'styleLegacy.scss'));
-      this.registerSettings('pc-updater', 'Updater', SettingsLegacy);
+    this._interval = setInterval(this.checkForUpdates.bind(this), minutes * 60 * 1000);
+    this.checkForUpdates();
 
-      let minutes = Number(this.settings.get('interval', 15));
-      if (minutes < 1) {
-        this.settings.set('interval', 1);
-        minutes = 1;
-      }
-
-      this._interval = setInterval(this.checkForUpdateLegacy.bind(this), minutes * 60 * 1000);
-      this.checkForUpdateLegacy();
+    const lastChangelog = this.settings.get('last_changelog', '');
+    if (changelog.id !== lastChangelog) {
+      this.openChangeLogs();
     }
   }
 
@@ -252,123 +242,89 @@ module.exports = class Updater extends Plugin {
     };
   }
 
-  // Experimental
-  __toggleExperimental () {
-    const current = this.settings.get('__experimental_20-10-19-smh', false);
-    if (!current) {
-      this.warn('WARNING: This will enable the experimental new updater, that is NOT functional yet.');
-      this.warn('WARNING: Do NOT use this experimental version as you would use the normal version.');
-      this.warn('WARNING: Use it at your own risk! Powercord Staff won\'t help you with issues occurring with the beta.');
-    } else {
-      this.log('Experimental updater disabled.');
-    }
-    this.settings.set('__experimental_20-10-19-smh', !current);
-    powercord.pluginManager.remount('pc-updater');
+  // Change Log
+  async openChangeLogs () {
+    const ChangeLog = await this._getChangeLogsComponent();
+    openModal(() => React.createElement(ChangeLog));
   }
 
-  // LEGACY
-  async checkForUpdateLegacy (callback, force = false) {
-    if (!this.settings.get('checkForUpdates', true) && !force) {
-      return;
+  async _getChangeLogsComponent () {
+    if (!this._ChangeLog) {
+      const _this = this;
+      const changeLogModule = await getModule([ 'changeLog' ]);
+      const DiscordChangeLog = await getModuleByDisplayName('ChangeLog');
+
+      class ChangeLog extends DiscordChangeLog {
+        render () {
+          const originalGetter = Object.getOwnPropertyDescriptor(changeLogModule.__proto__, 'changeLog').get;
+          Object.defineProperty(changeLogModule, 'changeLog', {
+            get: () => _this.formatChangeLog(changelog),
+            configurable: true
+          });
+          const res = super.render();
+          setImmediate(() => {
+            Object.defineProperty(changeLogModule, 'changeLog', {
+              get: originalGetter,
+              configurable: true
+            });
+          });
+          return res;
+        }
+
+        renderHeader () {
+          const header = super.renderHeader();
+          header.props.children[0].props.children = 'Powercord - What\'s New';
+          return header;
+        }
+
+        renderVideo () {
+          return null;
+        }
+
+        renderFooter () {
+          const footer = super.renderFooter();
+          footer.props.children = 'OwO whats this';
+          return footer;
+        }
+
+        componentWillUnmount () {
+          super.componentWillUnmount();
+          _this.settings.set('last_changelog', changelog.id);
+        }
+      }
+
+      this._ChangeLog = ChangeLog;
     }
-
-    this.checking = true;
-
-    await exec('git fetch', this.cwd);
-    const gitStatus = await exec('git status -uno', this.cwd).then(({ stdout }) => stdout.toString());
-
-    if (gitStatus.includes('git pull')) {
-      this.askUpdateLegacy();
-    }
-
-    this.checking = false;
-    if (callback) {
-      return callback();
-    }
+    return this._ChangeLog;
   }
 
-  askUpdateLegacy () {
-    if (document.getElementById('powercord-updater')) {
-      return;
-    }
-
-    const container = createElement('div', { id: 'powercord-updater' });
-    document.body.appendChild(container);
-
-    ReactDOM.render(
-      React.createElement(Toast, {
-        __legacy: true,
-        style: {
-          bottom: '25px',
-          right: '25px',
-          height: '95px',
-          width: '320px'
-        },
-        header: 'Powercord has an update.',
-        buttons: [ {
-          text: 'Update',
-          onClick: (setState) =>
-            this.updateLegacy(setState)
-              .then(() => container.remove())
-        }, {
-          text: 'Update and reboot',
-          onClick: (setState) =>
-            this.updateLegacy(setState)
-              .then(success =>
-                success
-                  ? location.reload()
-                  : container.remove()
-              )
-        }, {
-          text: 'Don\'t update',
-          onClick: (setState) =>
-            setState({ leaving: true })
-              .then(() => sleep(500))
-              .then(() => container.remove())
-        }, {
-          text: 'Never ask me again',
-          onClick: (setState) =>
-            setState({ leaving: true })
-              .then(() => sleep(500))
-              .then(() => container.remove())
-              .then(() => this.settings.set('checkForUpdates', false))
-        } ]
-      }),
-      container
-    );
-  }
-
-  updateLegacy (setState) {
-    return setState({ fade: 'out' })
-      .then(() => setState({
-        buttons: [],
-        content: 'Updating...'
-      }))
-      .then(() => setState({ fade: 'in' }))
-      .then(() => exec('git pull', this.cwd))
-      .then(() => exec('npm install --only=prod', this.cwd))
-      .then(() =>
-        setState({ fade: 'out' })
-          .then(() => setState({ content: 'Done!' }))
-          .then(() => setState({ fade: 'in' }))
-          .then(() => sleep(1000))
-          .then(() => setState({ leaving: true }))
-          .then(() => true)
-      )
-      .catch(e => new Promise(res => {
-        console.error(e);
-
-        setState({ fade: 'out' })
-          .then(() => setState({
-            content: 'Something went wrong, please update manually.',
-            buttons: [ {
-              text: 'Okay :(',
-              onClick: () =>
-                setState({ leaving: true })
-                  .then(() => res(this.ask = false))
-            } ]
-          }))
-          .then(() => setState({ fade: 'in' }));
-      }));
+  formatChangeLog (json) {
+    let body = '';
+    const colorToClass = {
+      GREEN: 'added',
+      ORANGE: 'progress',
+      RED: 'fixed',
+      BLURPLE: 'improved'
+    };
+    json.contents.forEach(item => {
+      if (item.type === 'HEADER') {
+        body += `${item.text.toUpperCase()} {${colorToClass[item.color]}${item.noMargin ? ' marginTop' : ''}}\n======================\n\n`;
+      } else {
+        if (item.text) {
+          body += item.text;
+          body += '\n\n';
+        }
+        if (item.list) {
+          body += ` * ${item.list.join('\n\n * ')}`;
+          body += '\n\n';
+        }
+      }
+    });
+    return {
+      date: json.date,
+      locale: 'en-us',
+      revision: 1,
+      body
+    };
   }
 };

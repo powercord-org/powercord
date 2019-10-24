@@ -1,1 +1,62 @@
-[]
+{
+  "id": "updater-24-10-19",
+  "date": "2019-10-24",
+  "contents": [
+    {
+      "type": "HEADER",
+      "color": "GREEN",
+      "text": "Updater 2.0 is here!",
+      "noMargin": true
+    },
+    {
+      "type": "CONTENTS",
+      "text": "We FINALLY made a proper updater within Powercord, able to update more than just Powercord. It also does come with some new features, including the one you're looking at right now, **change logs**.",
+      "list": [
+        "**Plugin and themes** will now be handled by the updater.",
+        "**Update conflicts** can now be solved within the UI, instead of telling you to do it manually.",
+        "**Updater interface got a redesign**, you should definitely check it out after reading this changelog.",
+        "**You can now decide to completely skip an update**, and disable specific ones. There is also a button that lets you pause updates until next reload."
+      ]
+    },
+    {
+      "type": "HEADER",
+      "color": "RED",
+      "text": "RIP Beta Tester"
+    },
+    {
+      "type": "CONTENTS",
+      "text": "As some people already did notice, **we removed the beta tester badge and role** in our server. However if you feel too sad, you can [donate to Powercord](https://patreon.com/aetheryx) to customize your badges color ($1) or **get a customizable badge** ($5) for extra profile swag. There's always a solution to your problems."
+    },
+    {
+      "type": "HEADER",
+      "color": "GREEN",
+      "text": "Some small features that got added"
+    },
+    {
+      "type": "CONTENTS",
+      "list": [
+        "**Added some error-handling** to the settings panels, it'll no longer make the whole settings page go blank if something goes wrong.",
+        "We rewrote some UIs to use Discord's internal components, so Powercord's settings panels should be **even more theme friendly**.",
+        "Some advanced features that require a restart now prompt you to restart Discord.",
+        "Announcements at the top of the window now shows from which plugin it's from, to prevent potential abuse.",
+        "Fixed a few broken components and added new pre-exported components for UI makers.",
+        "Fixed a bug where emma wasn't cute."
+      ]
+    },
+    {
+      "type": "HEADER",
+      "color": "ORANGE",
+      "text": "Future updates and features"
+    },
+    {
+      "type": "CONTENTS",
+      "text": "There are a LOT of features we want to implement in Powercord, and here are a few of them that'll hopefully implement soon:",
+      "list": [
+        "Functional plugin manager. You heard me right, this will happen!!1!",
+        "Style manager, with customization features without needing any JS because a theme that requires JS is gross.",
+        "A better user interface to manage [donor](https://patreon.com/aetheryx) features such as badges color and custom badge without having to ping a developer.",
+        "And of course, best features of all time: [your features](https://github.com/powercord-org/powercord/issues)."
+      ]
+    }
+  ]
+}

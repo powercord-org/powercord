@@ -1,7 +1,6 @@
-/* eslint-disable */
 const { React, getModule } = require('powercord/webpack');
 const { Button, FormNotice, FormTitle, Tooltip } = require('powercord/components');
-const { SwitchItem, TextInput, Category } = require('powercord/components/settings');
+const { SwitchItem, TextInput, Category, ButtonItem } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
 
@@ -169,13 +168,21 @@ module.exports = class UpdaterSettings extends React.Component {
           Update automatically in background
         </SwitchItem>
         <TextInput
-          note='How frequently Powercord will check for updates (in minutes).'
-          onChange={val => this.props.updateSetting('interval', (Number(val) && Number(val) >= 1) ? Number(val) : 1, 15)}
+          note='How frequently Powercord will check for updates (in minutes). Minimum 10 minutes.'
+          onChange={val => this.props.updateSetting('interval', (Number(val) && Number(val) >= 10) ? Number(val) : 10, 15)}
           defaultValue={this.props.getSetting('interval', 15)}
           required={true}
         >
           Update Check Interval
         </TextInput>
+        <ButtonItem
+          note={'Missed the changelog, or want to se it again?'}
+          button='Open Change Logs'
+          disabled={this.state.cleaning}
+          onClick={() => this.plugin.openChangeLogs()}
+        >
+          Open Change Logs
+        </ButtonItem>
       </>}
     </div>;
   }
