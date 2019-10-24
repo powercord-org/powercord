@@ -1,8 +1,10 @@
 const { Plugin } = require('powercord/entities');
 const { resolve, join } = require('path');
 const { sleep, createElement } = require('powercord/util');
-const { ReactDOM, React } = require('powercord/webpack');
+const { ReactDOM, React, getModule } = require('powercord/webpack');
 const { Toast } = require('powercord/components');
+const { open: openModal, close: closeModal } = require('powercord/modal');
+const { Confirm } = require('powercord/components/modal');
 
 const { promisify } = require('util');
 const cp = require('child_process');
@@ -20,7 +22,7 @@ module.exports = class Updater extends Plugin {
   }
 
   async startPlugin () {
-    if (this.settings.get('__experimental_20-10-19', false)) {
+    if (this.settings.get('__experimental_20-10-19-smh', false)) {
       this.settings.set('paused', false);
       this.settings.set('updating', false);
       this.settings.set('awaiting_reload', false);
@@ -107,11 +109,12 @@ module.exports = class Updater extends Plugin {
 
     this.settings.set('checking', false);
     if (updates.length > 0 && this.settings.get('automatic', false)) {
-      this.settings.set('updating', true);
+      this.doUpdate();
     }
   }
 
-  async doUpdate () {
+  async doUpdate (force = false) {
+    this.settings.set('failed', false);
     this.settings.set('updating', true);
     const updates = this.settings.get('updates', []);
     const failed = [];
@@ -123,7 +126,7 @@ module.exports = class Updater extends Plugin {
         entity = powercord.styleManager.get(update.id.replace('themes_', ''));
       }
 
-      const success = await entity.update();
+      const success = await entity.update(force);
       updates.shift();
       this.settings.get('updates', updates);
       if (!success) {
@@ -133,17 +136,67 @@ module.exports = class Updater extends Plugin {
 
     this.settings.set('updating', false);
     if (failed.length > 0) {
-      console.log(failed);
+      this.settings.set('failed', true);
+      this.settings.set('updates', failed);
+      if (!document.querySelector('.powercord-updater')) {
+        this.notify('Some updates failed to install', {
+          text: 'Force Update',
+          onClick: (close) => this.askForce(close)
+        }, {
+          text: 'Ignore',
+          onClick: (close) => close()
+        }, {
+          text: 'Open Updater',
+          onClick: async (close) => {
+            const settingsModule = await getModule([ 'open', 'saveAccountChanges' ]);
+            settingsModule.open('pc-updater');
+            close();
+          }
+        });
+      }
     }
   }
 
   // MODALS
-  notify () {
+  notify (text, button1, button2, button3, button4) {
+    if (document.getElementById('powercord-updater')) {
+      return;
+    }
 
+    const container = createElement('div', { id: 'powercord-updater' });
+    document.body.appendChild(container);
+    ReactDOM.render(
+      React.createElement(Toast, {
+        style: {
+          bottom: '25px',
+          right: '25px',
+          width: '320px'
+        },
+        header: text,
+        buttons: [ button1, button2, button3, button4 ]
+      }),
+      container
+    );
   }
 
-  askForce () {
-
+  askForce (callback) {
+    openModal(() =>
+      React.createElement(Confirm, {
+        red: true,
+        header: 'Force update?',
+        confirmText: 'Force update',
+        cancelText: 'Cancel',
+        onConfirm: () => {
+          if (callback) {
+            // eslint-disable-next-line callback-return
+            callback();
+          }
+          this.doUpdate(true);
+        },
+        onCancel: closeModal
+      }, React.createElement('div', { className: 'powercord-text' },
+        'Are you sure you want to force update? Any local edit will be overwritten!'))
+    );
   }
 
   // UTILS
@@ -200,8 +253,8 @@ module.exports = class Updater extends Plugin {
   }
 
   // Experimental
-  toggleExperimental () {
-    const current = this.settings.get('__experimental_20-10-19', false);
+  __toggleExperimental () {
+    const current = this.settings.get('__experimental_20-10-19-smh', false);
     if (!current) {
       this.warn('WARNING: This will enable the experimental new updater, that is NOT functional yet.');
       this.warn('WARNING: Do NOT use this experimental version as you would use the normal version.');
@@ -209,7 +262,7 @@ module.exports = class Updater extends Plugin {
     } else {
       this.log('Experimental updater disabled.');
     }
-    this.settings.set('__experimental_20-10-19', !current);
+    this.settings.set('__experimental_20-10-19-smh', !current);
     powercord.pluginManager.remount('pc-updater');
   }
 
@@ -244,6 +297,7 @@ module.exports = class Updater extends Plugin {
 
     ReactDOM.render(
       React.createElement(Toast, {
+        __legacy: true,
         style: {
           bottom: '25px',
           right: '25px',

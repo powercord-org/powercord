@@ -198,7 +198,15 @@ module.exports = class Powercord extends Updatable {
     const success = await super.update(force);
     if (success) {
       await exec('npm install --only=prod', { cwd: this.entityPath });
-      this.pluginManager.get('pc-updater').settings.set('awaiting_reload', true);
+      const updater = this.pluginManager.get('pc-updater');
+      updater.notify('Reload required to complete Powercord update', {
+        text: 'Reload',
+        onClick: () => location.reload()
+      }, {
+        text: 'Postpone',
+        onClick: (close) => close()
+      });
+      updater.settings.set('awaiting_reload', true);
     }
     return success;
   }

@@ -23,42 +23,46 @@ module.exports = class UpdaterSettings extends React.Component {
     const checking = this.props.getSetting('checking', false);
     const disabled = this.props.getSetting('disabled', false);
     const paused = this.props.getSetting('paused', false);
+    const failed = this.props.getSetting('failed', false);
 
     const updates = this.props.getSetting('updates', []);
     const disabledEntities = this.props.getSetting('entities_disabled', []);
     const checkingProgress = this.props.getSetting('checking_progress', [ 0, 0 ]);
     const last = moment(this.props.getSetting('last_check', false)).calendar();
 
+    let icon,
+      title;
+    if (disabled) {
+      icon = <Icons.Update color='#f04747'/>;
+      title = 'Updates are disabled.';
+    } else if (paused) {
+      icon = <Icons.Paused/>;
+      title = 'Updates are paused.';
+    } else if (checking) {
+      icon = <Icons.Update color='#7289da' animated/>;
+      title = 'Checking for updates...';
+    } else if (updating) {
+      icon = <Icons.Update color='#7289da' animated/>;
+      title = 'Updating Powercord...';
+    } else if (failed) {
+      icon = <Icons.Error/>;
+      title = 'Some updates failed';
+    } else if (updates.length > 0) {
+      icon = <Icons.Update/>;
+      title = 'Updates are available.';
+    } else {
+      icon = <Icons.UpToDate/>;
+      title = 'Powercord is up to date.';
+    }
+
     return <div className='powercord-updater powercord-text'>
       {awaitingReload
         ? this.renderReload()
         : isUnsupported && this.renderUnsupported()}
       <div className='top-section'>
-        <div className='icon'>
-          {disabled
-            ? <Icons.Update color='#f04747'/>
-            : paused
-              ? <Icons.Paused/>
-              : (checking || updating)
-                ? <Icons.Update color='#7289da' animated/>
-                : updates.length > 0
-                  ? <Icons.Update/>
-                  : <Icons.UpToDate/>}
-        </div>
+        <div className='icon'>{icon}</div>
         <div className='status'>
-          <h3>
-            {disabled
-              ? 'Updates are disabled.'
-              : paused
-                ? 'Updates are paused.'
-                : checking
-                  ? 'Checking for updates...'
-                  : updating
-                    ? 'Updating Powercord...'
-                    : updates.length > 0
-                      ? 'Updates are available.'
-                      : 'Powercord is up to date.'}
-          </h3>
+          <h3>{title}</h3>
           {!disabled && !updating && (!checking || checkingProgress[1] > 0) && <div>
             {paused
               ? 'They will resume on next reload.'
@@ -97,10 +101,10 @@ module.exports = class UpdaterSettings extends React.Component {
           : !checking && !updating && <>
           {updates.length > 0 && <Button
             size={Button.Sizes.SMALL}
-            color={Button.Colors.GREEN}
-            onClick={() => this.plugin.doUpdate()}
+            color={failed ? Button.Colors.RED : Button.Colors.GREEN}
+            onClick={() => failed ? this.plugin.askForce() : this.plugin.doUpdate()}
           >
-            Update Now
+            {failed ? 'Force Update' : 'Update Now'}
           </Button>}
           <Button
             size={Button.Sizes.SMALL}
@@ -184,7 +188,7 @@ module.exports = class UpdaterSettings extends React.Component {
         size={Button.Sizes.SMALL}
         color={Button.Colors.YELLOW}
         look={Button.Looks.INVERTED}
-        onClick={() => window.reload()}
+        onClick={() => location.reload()}
       >
         Reload Discord
       </Button>
