@@ -22,6 +22,8 @@ const { writeFile, mkdir } = require('fs').promises;
 
 const { Flux, FluxDispatcher } = require('powercord/webpack');
 const { SETTINGS_FOLDER } = require('powercord/constants');
+const { sleep } = require('powercord/util');
+
 const { loadSettings } = require('./actions');
 const reducer = require('./reducer');
 
@@ -62,11 +64,17 @@ class SettingsStore extends Flux.Store {
   }
 
   static async _persist (category, settings) {
+    // Let's not write concurrently
+    while (this._write_locked) {
+      await sleep(10);
+    }
+    this._write_locked = true;
     if (!existsSync(SETTINGS_FOLDER)) {
       await mkdir(SETTINGS_FOLDER);
     }
 
     await writeFile(join(SETTINGS_FOLDER, `${category}.json`), JSON.stringify(settings, null, 2));
+    this._write_locked = false;
   }
 }
 

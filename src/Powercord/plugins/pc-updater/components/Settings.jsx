@@ -176,7 +176,7 @@ module.exports = class UpdaterSettings extends React.Component {
           Update Check Interval
         </TextInput>
         <ButtonItem
-          note={'Missed the changelog, or want to se it again?'}
+          note={'Missed the changelog, or want to see it again?'}
           button='Open Change Logs'
           disabled={this.state.cleaning}
           onClick={() => this.plugin.openChangeLogs()}
