@@ -95,7 +95,6 @@ module.exports = class Updater extends Plugin {
             name: entity.constructor.name,
             icon: entity.__proto__.__proto__.constructor.name.replace('Updatable', 'Powercord'),
             repo: await entity.getGitRepo(),
-            path: entity.entityPath,
             commits
           });
         }
@@ -114,6 +113,66 @@ module.exports = class Updater extends Plugin {
 
   async doUpdate () {
     this.settings.set('updating', true);
+    const updates = this.settings.get('updates', []);
+    const failed = [];
+    for (const update of [ ...updates ]) {
+      let entity = powercord;
+      if (update.id.startsWith('plugin')) {
+        entity = powercord.pluginManager.get(update.id.replace('plugins_', ''));
+      } else if (update.id.startsWith('theme')) {
+        entity = powercord.styleManager.get(update.id.replace('themes_', ''));
+      }
+
+      const success = await entity.update();
+      updates.shift();
+      this.settings.get('updates', updates);
+      if (!success) {
+        failed.push(update);
+      }
+    }
+
+    this.settings.set('updating', false);
+    if (failed.length > 0) {
+      console.log(failed);
+    }
+  }
+
+  // MODALS
+  notify () {
+
+  }
+
+  askForce () {
+
+  }
+
+  // UTILS
+  skipUpdate (id, commit) {
+    this.settings.set('entities_skipped', {
+      ...this.settings.get('entities_skipped', {}),
+      [id]: commit
+    });
+    this._removeUpdate(id);
+  }
+
+  disableUpdates (entity) {
+    this.settings.set('entities_disabled', [
+      ...this.settings.get('entities_disabled', []),
+      {
+        id: entity.id,
+        name: entity.name,
+        icon: entity.icon
+      }
+    ]);
+    this._removeUpdate(entity.id);
+  }
+
+  enableUpdates (id) {
+    this.settings.set('entities_disabled', this.settings.get('entities_disabled', []).filter(d => d.id !== id));
+  }
+
+  _removeUpdate (id) {
+    this.settings.set('updates', this.settings.get('updates', []).filter(u => u.id !== id));
   }
 
   async getGitInfos () {

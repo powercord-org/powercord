@@ -73,12 +73,12 @@ module.exports = class UpdaterSettings extends React.Component {
             <span>{powercord.gitInfos.upstream.replace('powercord-org/powercord', 'Official')}</span>
           </div>
           <div>
-            <span>Branch:</span>
-            <span>{powercord.gitInfos.branch}</span>
-          </div>
-          <div>
             <span>Revision:</span>
             <span>{powercord.gitInfos.revision.substring(0, 7)}</span>
+          </div>
+          <div>
+            <span>Branch:</span>
+            <span>{powercord.gitInfos.branch}</span>
           </div>
         </div>
       </div>
@@ -129,8 +129,8 @@ module.exports = class UpdaterSettings extends React.Component {
           {...update}
           key={update.id}
           updating={updating}
-          onSkip={() => this.askSkipUpdate(update.name, () => this.skipUpdate(update.id, update.commits[0].id))}
-          onDisable={() => this.askDisableUpdates(update.name, () => this.disableUpdates(update))}
+          onSkip={() => this.askSkipUpdate(update.name, () => this.plugin.skipUpdate(update.id, update.commits[0].id))}
+          onDisable={() => this.askDisableUpdates(update.name, () => this.plugin.disableUpdates(update))}
         />)}
       </div>}
 
@@ -148,7 +148,7 @@ module.exports = class UpdaterSettings extends React.Component {
             </div>
             <div className='name'>{entity.name}</div>
             <div className='actions'>
-              <Button color={Button.Colors.GREEN} onClick={() => this.enableUpdates(entity.id)}>
+              <Button color={Button.Colors.GREEN} onClick={() => this.plugin.enableUpdates(entity.id)}>
                 Enable Updates
               </Button>
             </div>
@@ -209,35 +209,6 @@ module.exports = class UpdaterSettings extends React.Component {
       title={title}
       body={body}
     />;
-  }
-
-  // --- UTILS
-  skipUpdate (id, commit) {
-    this.props.updateSetting('entities_skipped', {
-      ...this.props.getSetting('entities_skipped', {}),
-      [id]: commit
-    });
-    this._removeUpdate(id);
-  }
-
-  disableUpdates (entity) {
-    this.props.updateSetting('entities_disabled', [
-      ...this.props.getSetting('entities_disabled', []),
-      {
-        id: entity.id,
-        name: entity.name,
-        icon: entity.icon
-      }
-    ]);
-    this._removeUpdate(entity.id);
-  }
-
-  enableUpdates (id) {
-    this.props.updateSetting('entities_disabled', this.props.getSetting('entities_disabled', []).filter(d => d.id !== id));
-  }
-
-  _removeUpdate (id) {
-    this.props.updateSetting('updates', this.props.getSetting('updates', []).filter(u => u.id !== id));
   }
 
   // --- PROMPTS
