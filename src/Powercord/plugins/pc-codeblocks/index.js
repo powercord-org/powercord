@@ -1,6 +1,5 @@
 const { Plugin } = require('powercord/entities');
-const { waitFor, getOwnerInstance, createElement, forceUpdateElement } = require('powercord/util');
-const { getModule } = require('powercord/webpack');
+const { React, getModuleByDisplayName } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 const { clipboard } = require('electron');
 const { resolve } = require('path');
@@ -8,119 +7,128 @@ const { resolve } = require('path');
 module.exports = class Codeblocks extends Plugin {
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
-    this.injectMessage();
-
-    for (const codeblock of document.querySelectorAll('.hljs')) {
-      this.inject(codeblock);
-    }
+    this.patchEmbed();
+    this.patchMessageContent();
   }
 
   pluginWillUnload () {
+    uninject('pc-embed-codeblock');
     uninject('pc-message-codeblock');
-
-    for (const codeblock of document.querySelectorAll('.powercord-codeblock-copy-btn')) {
-      codeblock.parentNode.innerHTML = codeblock.parentNode._originalInnerHTML;
-    }
   }
 
-  async injectMessage () {
+  async patchEmbed () {
     const _this = this;
+    const Embed = await getModuleByDisplayName('Embed');
 
-    const messageClasses = await getModule([ 'container', 'messageCompact' ]);
-    const messageQuery = `.${messageClasses.container.replace(/ /g, '.')} > div`;
+    inject('pc-embed-codeblock', Embed.prototype, 'renderAll', function (_, res) {
+      const { embed } = this.props;
+      const codeblockRegExp = new RegExp(/(?:```([a-z]\S+)?)[^```]*```/);
 
-    const instance = getOwnerInstance(await waitFor(messageQuery));
-    inject('pc-message-codeblock', instance.__proto__, 'render', function (_, res) {
-      const { content: contentParsed, lastParsedMessage } = this.state;
-      const codeblockRegExp = new RegExp(/^(?:```([a-z]\S+)?)[^```]*```/, 'gm');
-
-      let hasCodeblock;
-
-      try {
-        if (contentParsed.find(el => el.props && el.props.renderFallback) ||
-          (lastParsedMessage.embeds[0].rawDescription.match(codeblockRegExp) ||
-          lastParsedMessage.embeds[0].fields.some(field => field.rawValue.match(codeblockRegExp)))
-        ) {
-          hasCodeblock = true;
+      if (codeblockRegExp.test(embed.rawDescription)) {
+        for (const child of res.description.props.children) {
+          _this.injectCodeblock(child);
         }
-      } catch (_) {
-        hasCodeblock = false;
+      } else if (embed.fields && embed.fields.some(field => codeblockRegExp.test(field.rawValue))) {
+        for (const child of res.fields.props.children[0].props.children[1].props.children) {
+          _this.injectCodeblock(child);
+        }
       }
-
-      setImmediate(() => {
-        if (
-          hasCodeblock &&
-          this.ref instanceof Element
-        ) {
-          /**
-           * @todo figure out how to actually inject modifications directly with react internals
-           * codeblocks seem to have their content initially passed with dangerouslySetInnerHTML
-           * and then re-rendered as a child
-           * even then, native injection attempts I made were heavily inconsistent
-           * https://haste.aetheryx.xyz/bawazexole.js
-           */
-          for (const codeblock of this.ref.querySelectorAll('.hljs')) {
-            _this.inject(codeblock);
-          }
-        }
-      });
 
       return res;
     });
-
-    forceUpdateElement(messageQuery, true);
   }
 
-  inject (codeblock) {
-    if (
-      codeblock.querySelector('.powercord-codeblock-copy-btn') ||
-      codeblock.closest('.search-result-message')
-    ) {
-      return;
-    }
+  async patchMessageContent () {
+    const _this = this;
+    const MessageContent = await getModuleByDisplayName('MessageContent');
 
-    codeblock._originalInnerHTML = codeblock.innerHTML;
-    codeblock.innerHTML = `<div>${codeblock.innerHTML}</div>`;
+    inject('pc-message-codeblock', MessageContent.prototype, 'render', function (_, res) {
+      const { children } = res.props;
+      const { message } = this.props;
 
-    const lang = codeblock.className.split(' ').find(c => !c.includes('-') && c !== 'hljs');
-    if (lang) {
-      codeblock.appendChild(
-        createElement('div', {
-          className: 'powercord-codeblock-lang',
-          innerHTML: lang
-        })
-      );
-    }
+      const codeblockRegExp = new RegExp(/(?:```([a-z]\S+)?)[^```]*```/);
 
-    codeblock.appendChild(createElement('div', { className: 'powercord-lines' }));
-    codeblock.appendChild(
-      createElement('button', {
-        className: 'powercord-codeblock-copy-btn',
-        innerHTML: 'copy',
-        onclick: ({ target }) => {
-          if (target.classList.contains('copied')) {
-            return;
+      res.props.children = function (e) {
+        const res = children(e);
+
+        if (codeblockRegExp.test(message.content)) {
+          const children = res.props.children[1].props.children[1];
+
+          for (const child of children) {
+            _this.injectCodeblock(child);
           }
-
-          target.innerText = 'copied!';
-          target.classList.add('copied');
-          setTimeout(() => {
-            target.innerText = 'copy';
-            target.classList.remove('copied');
-          }, 1000);
-
-          const range = document.createRange();
-          range.selectNode(codeblock.children[0]);
-
-          const selection = window.getSelection();
-          selection.removeAllRanges();
-          selection.addRange(range);
-
-          clipboard.writeText(selection.toString());
-
-          selection.removeAllRanges();
         }
-      })
-    );
+
+        return res;
+      };
+
+      return res;
+    });
+  }
+
+  injectCodeblock (codeblock) {
+    const _this = this;
+
+    if (codeblock.props && codeblock.props.renderFallback) {
+      const { render } = codeblock.props;
+
+      codeblock.props.render = function (t) {
+        const res = render(t);
+        const { children } = res.props;
+
+        const lang = children.props.className.split(' ').find(c => !c.includes('-') && c !== 'hljs');
+
+        if (children.props.dangerouslySetInnerHTML) {
+          children.props.children = _this.renderCodeblock(lang, children.props.dangerouslySetInnerHTML.__html);
+
+          delete children.props.dangerouslySetInnerHTML;
+        } else if (typeof children.props.children === 'string') {
+          children.props.children = _this.renderCodeblock(lang, children.props.children);
+        }
+
+        return res;
+      };
+    }
+  }
+
+  renderCodeblock (lang, innerHTML) {
+    const children = [];
+
+    children.push(React.createElement('div', {
+      dangerouslySetInnerHTML: { __html: innerHTML }
+    }), React.createElement('div', {
+      className: 'powercord-codeblock-lang'
+    }, lang), React.createElement('div', {
+      className: 'powercord-lines'
+    }), React.createElement('button', {
+      className: 'powercord-codeblock-copy-btn',
+      onClick: (e) => {
+        const { target } = e;
+
+        if (target.classList.contains('copied')) {
+          return;
+        }
+
+        target.innerText = 'copied!';
+        target.classList.add('copied');
+        setTimeout(() => {
+          target.innerText = 'copy';
+          target.classList.remove('copied');
+        }, 1000);
+
+        const range = document.createRange();
+        range.selectNode(target.parentElement.children[0]);
+
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        clipboard.writeText(selection.toString());
+
+        selection.removeAllRanges();
+      }
+    }, 'copy'));
+
+    return children;
   }
 };

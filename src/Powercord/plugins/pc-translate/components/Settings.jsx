@@ -55,7 +55,7 @@ module.exports = class Settings extends React.Component {
 
         <FormTitle>Hidden Languages</FormTitle>
         <FormText className={[ classes.description, classes.marginBottom20 ].join(' ')}>
-          Here you can decide which of the languages are to be hidden from the "Translate" sub-menu.
+          Here you can decide which of the languages are to be hidden from the "Translate" sub-menu.&nbsp;
           {this.getShowHideButton()}.
         </FormText>
         <Flex id='powercord-translate-settings'>
@@ -101,9 +101,9 @@ module.exports = class Settings extends React.Component {
     };
 
     if (hiddenLanguages.length >= this.languages.length) {
-      return <Clickable {...props}> Show all languages</Clickable>;
+      return <Clickable {...props}>Show all languages</Clickable>;
     }
 
-    return <Clickable {...props}> Hide all languages</Clickable>;
+    return <Clickable {...props}>Hide all languages</Clickable>;
   }
 };

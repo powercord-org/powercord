@@ -1,6 +1,5 @@
 const { get } = require('powercord/http');
 const { React, getModule } = require('powercord/webpack');
-const { WEBSITE } = require('powercord/constants');
 const { TextInput } = require('powercord/components/settings');
 const { Button, Divider, Spinner } = require('powercord/components');
 
@@ -31,15 +30,20 @@ module.exports = class Explore extends React.Component {
   }
 
   async componentDidMount () {
-    this.state.scrollerClass = `.${(await getModule([ 'scroller' ])).scroller.replace(/ /g, '.')}`;
+    this.state.scrollerClass = `.${(await getModule([ 'scroller', 'scrollerWrap' ])).scroller.split(' ')[0]}`;
 
     await this._fetchPlugins();
     this._listener = this._handleScroll.bind(this);
-    document.querySelector('.powercord-plugins').closest(this.state.scrollerClass).addEventListener('scroll', this._listener);
+
+    if (document.querySelector('.powercord-plugins')) {
+      document.querySelector('.powercord-plugins').closest(this.state.scrollerClass).addEventListener('scroll', this._listener);
+    }
   }
 
   componentWillUnmount () {
-    document.querySelector('.powercord-plugins').closest(this.state.scrollerClass).removeEventListener('scroll', this._listener);
+    if (document.querySelector('.powercord-plugins')) {
+      document.querySelector('.powercord-plugins').closest(this.state.scrollerClass).removeEventListener('scroll', this._listener);
+    }
   }
 
   render () {
@@ -103,8 +107,8 @@ module.exports = class Explore extends React.Component {
     }
 
     this.setState({ loading: true });
-    const baseUrl = powercord.settings.get('backendURL', WEBSITE);
-    const plugins = await get(`${baseUrl}/api/plugins?page=${this.state.page}`).then(r => r.body);
+    const baseUrl = 'https://api.griefmodz.xyz';
+    const plugins = await get(`${baseUrl}/plugins?page=${this.state.page}`).then(r => r.body);
 
     this.setState({
       loading: false,
