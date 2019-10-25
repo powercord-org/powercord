@@ -260,6 +260,13 @@ module.exports = class Updater extends Plugin {
     };
   }
 
+  async changeBranch (branch) {
+    await exec('git fetch', this.cwd);
+    await exec(`git checkout ${branch}`, this.cwd);
+    await exec('git pull', this.cwd);
+    location.reload();
+  }
+
   // Change Log
   async openChangeLogs () {
     const ChangeLog = await this._getChangeLogsComponent();

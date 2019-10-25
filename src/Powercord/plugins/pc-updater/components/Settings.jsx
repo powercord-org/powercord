@@ -176,7 +176,7 @@ module.exports = class UpdaterSettings extends React.Component {
           Update Check Interval
         </TextInput>
         <TextInput
-          note='How much concurrency Powercord will use to run background update checks. Minimum 1. If unsure, leave 2.'
+          note='How many concurrent tasks Powercord will run in background to check for updates. Minimum 1. If unsure, leave 2.'
           onChange={val => this.props.updateSetting('concurrency', (Number(val) && Number(val) >= 1) ? Math.ceil(Number(val)) : 1, 2)}
           defaultValue={this.props.getSetting('concurrency', 2)}
           required={true}
@@ -186,10 +186,19 @@ module.exports = class UpdaterSettings extends React.Component {
         <ButtonItem
           note={'Missed the changelog, or want to see it again?'}
           button='Open Change Logs'
-          disabled={this.state.cleaning}
           onClick={() => this.plugin.openChangeLogs()}
         >
           Open Change Logs
+        </ButtonItem>
+        <ButtonItem
+          note='You can choose between the stable branch, or the development branch. Stable branch will only get major updates, security and critical updates. If unsure, stay on stable.'
+          button={powercord.gitInfos.branch === 'v2' ? 'Switch to development branch' : 'Switch to stable'}
+          onClick={() => this.askChangeChannel(
+            powercord.gitInfos.branch === 'v2' ? 'development' : 'stable',
+            () => this.plugin.changeBranch(powercord.gitInfos.branch === 'v2' ? 'v2/dev' : 'v2')
+          )}
+        >
+          Change Release Channel
         </ButtonItem>
       </>}
     </div>;
@@ -254,6 +263,15 @@ module.exports = class UpdaterSettings extends React.Component {
       entity ? `Disable ${entity} updates` : 'Disable updates',
       `Are you sure you want to disable updates${entity ? ` for ${entity}` : ''}? You will have to perform updates manually.`,
       'Disable updates',
+      callback
+    );
+  }
+
+  askChangeChannel (channel, callback) {
+    this._ask(
+      `Change release channel to ${channel}`,
+      'Are you sure you want to change your release channel? Powercord will reload your Discord client.',
+      'Switch',
       callback
     );
   }
