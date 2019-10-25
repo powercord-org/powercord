@@ -195,7 +195,7 @@ module.exports = class UpdaterSettings extends React.Component {
           button={powercord.gitInfos.branch === 'v2' ? 'Switch to development branch' : 'Switch to stable'}
           onClick={() => this.askChangeChannel(
             powercord.gitInfos.branch === 'v2' ? 'development' : 'stable',
-            () => this.plugin.changeBranch(powercord.gitInfos.branch === 'v2' ? 'v2/dev' : 'v2')
+            () => this.plugin.changeBranch(powercord.gitInfos.branch === 'v2' ? 'v2-dev' : 'v2')
           )}
         >
           Change Release Channel
