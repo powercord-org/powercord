@@ -70,6 +70,40 @@
     }
   }
 
+  #blue {
+
+    background-color: #7289DA;
+    color: #ffffff;
+
+    &:hover {
+
+      background-color: #677BC4;
+    }
+  }
+
+  #red {
+
+    background-color: rgba(0,0,0,0);
+    border: 1px solid rgba(240,71,71,.3);
+    color: #F04747;
+
+    &:hover {
+
+      border-color: rgba(240,71,71,.6);
+    }
+  }
+
+  #yellow {
+
+    background-color: #FAA61A;
+    color: #ffffff;
+
+    &:hover {
+
+      background-color: #E19157;
+    }
+  }
+
   &.leaving {
     animation: slideout 0.7s forwards;
   }
