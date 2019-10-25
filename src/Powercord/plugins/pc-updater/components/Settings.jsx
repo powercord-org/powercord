@@ -169,7 +169,7 @@ module.exports = class UpdaterSettings extends React.Component {
         </SwitchItem>
         <TextInput
           note='How frequently Powercord will check for updates (in minutes). Minimum 10 minutes.'
-          onChange={val => this.props.updateSetting('interval', (Number(val) && Number(val) >= 10) ? Number(val) : 10, 15)}
+          onChange={val => this.props.updateSetting('interval', (Number(val) && Number(val) >= 10) ? Math.ceil(Number(val)) : 10, 15)}
           defaultValue={this.props.getSetting('interval', 15)}
           required={true}
         >
@@ -177,7 +177,7 @@ module.exports = class UpdaterSettings extends React.Component {
         </TextInput>
         <TextInput
           note='How much concurrency Powercord will use to run background update checks. Minimum 1. If unsure, leave 2.'
-          onChange={val => this.props.updateSetting('concurrency', (Number(val) && Number(val) >= 1) ? Number(val) : 1, 2)}
+          onChange={val => this.props.updateSetting('concurrency', (Number(val) && Number(val) >= 1) ? Math.ceil(Number(val)) : 1, 2)}
           defaultValue={this.props.getSetting('concurrency', 2)}
           required={true}
         >
