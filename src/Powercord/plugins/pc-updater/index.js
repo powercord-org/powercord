@@ -74,7 +74,7 @@ module.exports = class Updater extends Plugin {
     const limit = Infinity;
     const groupedEntities = [];
     for (let i = 0; i < entities.length; i += limit) {
-      groupedEntities.push(entities.slice(i, i+limit));
+      groupedEntities.push(entities.slice(i, i + limit));
     }
 
     let done = 0;
