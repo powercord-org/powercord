@@ -48,7 +48,7 @@ module.exports = class Updater extends Plugin {
     clearInterval(this._interval);
   }
 
-  async checkForUpdates () {
+  async checkForUpdates (concurrency = 2) {
     if (
       this.settings.set('disabled', false) ||
       this.settings.set('paused', false) ||
@@ -72,8 +72,8 @@ module.exports = class Updater extends Plugin {
 
     // Not the prettiest way to limit concurrency but it works
     const groupedEntities = [];
-    for (let i = 0; i < entities.length; i += 2) {
-      groupedEntities.push([ entities[i], entities[i + 1] ]);
+    for (let i = 0; i < entities.length; i += concurrency) {
+      groupedEntities.push(entities.slice(i, i + concurrency));
     }
 
     let done = 0;
