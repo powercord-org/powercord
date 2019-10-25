@@ -107,7 +107,7 @@ module.exports = class UpdaterSettings extends React.Component {
           </Button>}
           <Button
             size={Button.Sizes.SMALL}
-            onClick={() => this.plugin.checkForUpdates()}
+            onClick={() => this.plugin.checkForUpdates(Infinity)}
           >
             Check for Updates
           </Button>
