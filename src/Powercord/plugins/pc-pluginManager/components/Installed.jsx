@@ -1,5 +1,5 @@
 const { React } = require('powercord/webpack');
-const { Button, Divider } = require('powercord/components');
+const { Button, Divider, FormNotice } = require('powercord/components');
 const { TextInput } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { asyncArray: { map } } = require('powercord/util');
@@ -19,9 +19,17 @@ module.exports = class Installed extends React.Component {
     const plugins = this._getPlugins();
 
     return <div className='powercord-plugins'>
-      <div className='ghostPill-2-KUPM powercord-plugins-wip'>
-        This part of Powercord is a WIP. Don't expect anything in here to work.
-      </div>
+      <FormNotice
+        imageData={{
+          width: 60,
+          height: 60,
+          src: '/assets/0694f38cb0b10cc3b5b89366a0893768.svg'
+        }}
+        type={FormNotice.Types.DANGER}
+        title='Experimental feature'
+        body={'This part of Powercord is experimental. Powercord Staff won\'t accept any bug reports nor provide support for it. Use it at your own risk!'}
+        className='powercord-plugins-wip'
+      />
       <div className='powercord-plugins-header'>
         <h3>Installed plugins</h3>
         <Button onClick={() => this.props.goToExplore()}>Explore Plugins</Button>

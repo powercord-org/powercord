@@ -36,7 +36,7 @@ module.exports = class Updater extends Plugin {
     }
 
     this._interval = setInterval(this.checkForUpdates.bind(this), minutes * 60 * 1000);
-    this.checkForUpdates();
+    // this.checkForUpdates();
 
     const lastChangelog = this.settings.get('last_changelog', '');
     if (changelog.id !== lastChangelog) {
@@ -48,7 +48,7 @@ module.exports = class Updater extends Plugin {
     clearInterval(this._interval);
   }
 
-  async checkForUpdates (concurrency = 2) {
+  async checkForUpdates (allConcurrent = false) {
     if (
       this.settings.set('disabled', false) ||
       this.settings.set('paused', false) ||
@@ -66,24 +66,20 @@ module.exports = class Updater extends Plugin {
     const themes = [ ...powercord.styleManager.themes.values() ].filter(t => t.isTheme);
 
     const entities = plugins.concat(themes).filter(e => !disabled.includes(e.updateIdentifier) && e.isUpdatable());
-    if (!disabled.includes('powercord')) {
+    if (!disabled.includes(powercord.updateIdentifier)) {
       entities.push(powercord);
-    }
-
-    // Not the prettiest way to limit concurrency but it works
-    const groupedEntities = [];
-    for (let i = 0; i < entities.length; i += concurrency) {
-      groupedEntities.push(entities.slice(i, i + concurrency));
     }
 
     let done = 0;
     const updates = [];
-    this.settings.set('checking_progress', [ 0, entities.length ]);
-    for (const group of groupedEntities) {
-      await Promise.all(group.filter(p => p).map(async entity => {
-        const shouldUpdate = await entity.checkForUpdates();
+    const entitiesLength = entities.length;
+    const parallel = allConcurrent ? entitiesLength : this.settings.get('concurrency', 2);
+    await Promise.all(Array(parallel).fill(null).map(async () => {
+      let entity;
+      while ((entity = entities.shift())) {
+        const shouldUpdate = await entity._checkForUpdates();
         if (shouldUpdate) {
-          const commits = await entity.getUpdateCommits();
+          const commits = await entity._getUpdateCommits();
           if (skipped[entity.updateIdentifier] === commits[0].id) {
             return;
           }
@@ -96,17 +92,17 @@ module.exports = class Updater extends Plugin {
           });
         }
         done++;
-        this.settings.set('checking_progress', [ done, entities.length ]);
-      }));
-    }
+        this.settings.set('checking_progress', [ done, entitiesLength ]);
+      }
+    }));
+
     this.settings.set('updates', updates);
     this.settings.set('last_check', Date.now());
-
     this.settings.set('checking', false);
     if (updates.length > 0) {
       if (this.settings.get('automatic', false)) {
         this.doUpdate();
-      } else {
+      } else if (!document.querySelector('.powercord-updater')) {
         this.notify('Updates are available', {
           text: 'Update now',
           onClick: (close) => {
@@ -138,7 +134,7 @@ module.exports = class Updater extends Plugin {
         entity = powercord.styleManager.get(update.id.replace('themes_', ''));
       }
 
-      const success = await entity.update(force);
+      const success = await entity._update(force);
       updates.shift();
       this.settings.get('updates', updates);
       if (!success) {

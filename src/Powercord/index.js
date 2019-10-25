@@ -35,7 +35,7 @@ const modules = require('./modules');
 
 module.exports = class Powercord extends Updatable {
   constructor () {
-    super(join(__dirname, '..', '..'), '');
+    super(join(__dirname, '..', '..'), '', 'powercord');
 
     this.api = {};
     this.gitInfos = {
@@ -191,8 +191,8 @@ module.exports = class Powercord extends Updatable {
     this.isLinking = false;
   }
 
-  async update (force = false) {
-    const success = await super.update(force);
+  async _update (force = false) {
+    const success = await super._update(force);
     if (success) {
       await exec('npm install --only=prod', { cwd: this.entityPath });
       const updater = this.pluginManager.get('pc-updater');

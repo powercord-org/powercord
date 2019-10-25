@@ -22,19 +22,7 @@
   color: var(--text-normal);
 
   &-wip {
-    top: -1.4px;
-    left: 0;
-    right: 0;
-    font-size: 18px;
-    padding: 10px;
-    text-align: center;
-    position: sticky;
     margin-bottom: 20px;
-    width: 100%;
-    border-radius: 5px;
-    background-color: #f44336;
-    color: white;
-    z-index: 999;
   }
 
   &-header {

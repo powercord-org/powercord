@@ -107,7 +107,7 @@ module.exports = class UpdaterSettings extends React.Component {
           </Button>}
           <Button
             size={Button.Sizes.SMALL}
-            onClick={() => this.plugin.checkForUpdates(Infinity)}
+            onClick={() => this.plugin.checkForUpdates(true)}
           >
             Check for Updates
           </Button>
@@ -174,6 +174,14 @@ module.exports = class UpdaterSettings extends React.Component {
           required={true}
         >
           Update Check Interval
+        </TextInput>
+        <TextInput
+          note='How much concurrency Powercord will use to run background update checks. Minimum 1. If unsure, leave 2.'
+          onChange={val => this.props.updateSetting('concurrency', (Number(val) && Number(val) >= 1) ? Number(val) : 1, 2)}
+          defaultValue={this.props.getSetting('concurrency', 2)}
+          required={true}
+        >
+          Update Concurrency Limit
         </TextInput>
         <ButtonItem
           note={'Missed the changelog, or want to see it again?'}
