@@ -161,8 +161,8 @@ module.exports = class UpdaterSettings extends React.Component {
       <FormTitle className='powercord-updater-ft'>Options</FormTitle>
       {!disabled && <>
         <SwitchItem
-          value={this.props.getSetting('background', false)}
-          onChange={() => this.props.toggleSetting('background')}
+          value={this.props.getSetting('automatic', false)}
+          onChange={() => this.props.toggleSetting('automatic')}
           note={'Powercord can download and install updates in background without annoying you too much. Note that updates will require user action if a reload is required, or if there is a conflict.'}
         >
           Update automatically in background
