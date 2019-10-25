@@ -1,5 +1,6 @@
 const { get } = require('powercord/http');
 const { React, getModule } = require('powercord/webpack');
+const { WEBSITE } = require('powercord/constants');
 const { TextInput } = require('powercord/components/settings');
 const { Button, Divider, Spinner } = require('powercord/components');
 
@@ -107,8 +108,8 @@ module.exports = class Explore extends React.Component {
     }
 
     this.setState({ loading: true });
-    const baseUrl = 'https://api.griefmodz.xyz';
-    const plugins = await get(`${baseUrl}/plugins?page=${this.state.page}`).then(r => r.body);
+    const baseUrl = powercord.settings.get('backendURL', WEBSITE);
+    const plugins = await get(`${baseUrl}/api/plugins?page=${this.state.page}`).then(r => r.body);
 
     this.setState({
       loading: false,
