@@ -63,18 +63,34 @@ class SettingsStore extends Flux.Store {
     return Object.keys(this.getSettings(category));
   }
 
+  static pending = [];
+  static emptying = false;
+
   static async _persist (category, settings) {
     // Let's not write concurrently
-    while (this._write_locked) {
-      await sleep(10);
+    SettingsStore.pending.push({ category, settings });
+    SettingsStore._triggerQueue();
+  }
+
+  static _triggerQueue () {
+    if (!SettingsStore.emptying) {
+      SettingsStore.emptying = true;
+      SettingsStore._nextQueueItem();
     }
-    this._write_locked = true;
+  }
+
+  static async _nextQueueItem () {
+    const { category, settings } = SettingsStore.pending.shift();
     if (!existsSync(SETTINGS_FOLDER)) {
       await mkdir(SETTINGS_FOLDER);
     }
-
     await writeFile(join(SETTINGS_FOLDER, `${category}.json`), JSON.stringify(settings, null, 2));
-    this._write_locked = false;
+
+    if (SettingsStore.pending.length !== 0) {
+      SettingsStore._nextQueueItem()
+    } else {
+      SettingsStore.emptying = false;
+    }
   }
 }
 

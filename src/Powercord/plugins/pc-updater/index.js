@@ -71,9 +71,10 @@ module.exports = class Updater extends Plugin {
     }
 
     // Not the prettiest way to limit concurrency but it works
+    const limit = Infinity;
     const groupedEntities = [];
-    for (let i = 0; i < entities.length; i += 2) {
-      groupedEntities.push([ entities[i], entities[i + 1] ]);
+    for (let i = 0; i < entities.length; i += limit) {
+      groupedEntities.push(entities.slice(i, i+limit));
     }
 
     let done = 0;
