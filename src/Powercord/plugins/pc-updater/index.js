@@ -109,6 +109,7 @@ module.exports = class Updater extends Plugin {
       } else {
         this.notify('Updates are available', {
           text: 'Update now',
+          type: 'blue',
           onClick: (close) => {
             this.doUpdate();
             close();
