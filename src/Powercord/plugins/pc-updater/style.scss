@@ -38,12 +38,14 @@
     }
 
     .about {
+      // overflow: hidden;
+      // overflow-wrap: break-word;
       display: flex;
-      margin-left: auto;
+      margin-left: 10%;
       flex-direction: column;
       justify-content: space-evenly;
       font-family: SourceCodePro, Consolas, Liberation Mono, Menlo, Courier, monospace;
-      font-size: 14px;
+      font-size: 12px;
       opacity: .7;
 
       div {
@@ -56,6 +58,11 @@
         }
       }
     }
+  }
+
+  .span-header {
+
+    text-align: right;
   }
 
   .buttons {

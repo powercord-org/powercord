@@ -28,6 +28,7 @@ module.exports = class UpdaterSettings extends React.Component {
     const disabledEntities = this.props.getSetting('entities_disabled', []);
     const checkingProgress = this.props.getSetting('checking_progress', [ 0, 0 ]);
     const last = moment(this.props.getSetting('last_check', false)).calendar();
+    const dir = __dirname.substring(0, __dirname.length - 44);
 
     let icon,
       title;
@@ -72,16 +73,20 @@ module.exports = class UpdaterSettings extends React.Component {
         </div>
         <div className="about">
           <div>
-            <span>Upstream:</span>
+            <span className="span-header">Upstream:</span>
             <span>{powercord.gitInfos.upstream.replace('powercord-org/powercord', 'Official')}</span>
           </div>
           <div>
-            <span>Revision:</span>
+            <span className="span-header">Revision:</span>
             <span>{powercord.gitInfos.revision.substring(0, 7)}</span>
           </div>
           <div>
-            <span>Branch:</span>
+            <span className="span-header">Branch:</span>
             <span>{powercord.gitInfos.branch}</span>
+          </div>
+          <div>
+            <span className="span-header">Path:</span>
+            <span>{dir}</span>
           </div>
         </div>
       </div>
