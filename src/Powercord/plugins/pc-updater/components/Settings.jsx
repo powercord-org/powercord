@@ -28,6 +28,9 @@ module.exports = class UpdaterSettings extends React.Component {
     const disabledEntities = this.props.getSetting('entities_disabled', []);
     const checkingProgress = this.props.getSetting('checking_progress', [ 0, 0 ]);
     const last = moment(this.props.getSetting('last_check', false)).calendar();
+    const version = window.__dirname.slice(__dirname.length - 40, __dirname.length - 33);
+    const operatingSystem = navigator.appVersion.substring(navigator.appVersion.indexOf('('), navigator.appVersion.indexOf(')') + 1);
+    const buildId = powercord.buildInfo.substring(powercord.buildInfo.indexOf('Number: ') + 8, powercord.buildInfo.indexOf('Number: ') + 13);
 
     let icon,
       title;
@@ -192,6 +195,30 @@ module.exports = class UpdaterSettings extends React.Component {
           Open Change Logs
         </ButtonItem>
       </>}
+      <table>
+        <tbody className="debug-stats">
+          <tr>
+            <th className="td-label">Powercord</th>
+            <td className="td-info">({powercord.gitInfos.upstream.replace('powercord-org/powercord', 'Official')})</td>
+          </tr>
+          <tr>
+            <td className="td-label">Discord</td>
+            <td className="td-info">{window.GLOBAL_ENV.RELEASE_CHANNEL}-{version} Build ID: {buildId}</td>
+          </tr>
+          <tr>
+            <td className="td-label">React</td>
+            <td className="td-info">{React.version}</td>
+          </tr>
+          <tr>
+            <td className="td-label">OS</td>
+            <td className="td-info">{navigator.platform} | {operatingSystem}</td>
+          </tr>
+          <tr>
+            <td className="td-label">NodeJS / V8</td>
+            <td className="td-info">Node: {process.versions.node} V8: {process.versions.v8}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>;
   }
 
