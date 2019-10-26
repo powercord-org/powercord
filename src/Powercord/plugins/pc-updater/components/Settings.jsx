@@ -195,47 +195,46 @@ module.exports = class UpdaterSettings extends React.Component {
           Open Change Logs
         </ButtonItem>
       </>}
-      <Category
-          name='Advanced Debug Information'
-          opened={this.props.getSetting('advancedDebug', false)}
-          onChange={() => this.props.toggleSetting('advancedDebug')}
+      <Category name='Advanced Debug Information' opened={this.props.getSetting('advancedDebug', false)} onChange={()=>
+        this.props.toggleSetting('advancedDebug')}
         >
-      <table>
-        <tbody className="debug-stats">
-          <tr>
-            <th className="td-label">Powercord</th>
-            <td className="td-info">({powercord.gitInfos.upstream.replace('powercord-org/powercord', 'Official')})</td>
-          </tr>
-          <tr>
-            <th className="td-label">Full Revision</th>
-            <td className="td-info">{powercord.gitInfos.revision}</td>
-          </tr>
-          <tr>
-            <td className="td-label">Discord</td>
-            <td className="td-info">{window.GLOBAL_ENV.RELEASE_CHANNEL}-{version} Build ID: {buildId}</td>
-          </tr>
-          <tr>
-            <td className="td-label">React</td>
-            <td className="td-info">{React.version}</td>
-          </tr>
-          <tr>
-            <td className="td-label">OS</td>
-            <td className="td-info">{navigator.platform} | {operatingSystem}</td>
-          </tr>
-          <tr>
-            <td className="td-label">Node.JS</td>
-            <td className="td-info">{process.versions.node}</td>
-          </tr>
-          <tr>
-            <td className="td-label">Electron</td>
-            <td className="td-info">{process.versions.electron}</td>
-          </tr>
-          <tr>
-            <td className="td-label">Chromium</td>
-            <td className="td-info">{process.versions.chrome}</td>
-          </tr>
-        </tbody>
-      </table>
+        <table>
+          <tbody className="debug-stats">
+            <tr>
+              <th className="td-label">Powercord</th>
+              <td className="td-info">({powercord.gitInfos.upstream.replace('powercord-org/powercord', 'Official')})
+              </td>
+            </tr>
+            <tr>
+              <th className="td-label">Full Revision</th>
+              <td className="td-info">{powercord.gitInfos.revision}</td>
+            </tr>
+            <tr>
+              <td className="td-label">Discord</td>
+              <td className="td-info">{window.GLOBAL_ENV.RELEASE_CHANNEL}-{version} Build ID: {buildId}</td>
+            </tr>
+            <tr>
+              <td className="td-label">React</td>
+              <td className="td-info">{React.version}</td>
+            </tr>
+            <tr>
+              <td className="td-label">OS</td>
+              <td className="td-info">{navigator.platform} | {operatingSystem}</td>
+            </tr>
+            <tr>
+              <td className="td-label">Node.JS</td>
+              <td className="td-info">{process.versions.node}</td>
+            </tr>
+            <tr>
+              <td className="td-label">Electron</td>
+              <td className="td-info">{process.versions.electron}</td>
+            </tr>
+            <tr>
+              <td className="td-label">Chromium</td>
+              <td className="td-info">{process.versions.chrome}</td>
+            </tr>
+          </tbody>
+        </table>
       </Category>
     </div>;
   }
