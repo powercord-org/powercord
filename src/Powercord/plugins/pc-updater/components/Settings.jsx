@@ -195,9 +195,9 @@ module.exports = class UpdaterSettings extends React.Component {
           Open Change Logs
         </ButtonItem>
       </>}
-      <Category name='Advanced Debug Information' opened={this.props.getSetting('advancedDebug', false)} onChange={()=>
+      <Category name='Advanced Debug Information' opened={this.props.getSetting('advancedDebug', false)} onChange={() =>
         this.props.toggleSetting('advancedDebug')}
-        >
+      >
         <table>
           <tbody className="debug-stats">
             <tr>
