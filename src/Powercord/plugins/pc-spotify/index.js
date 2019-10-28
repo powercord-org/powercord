@@ -2,7 +2,7 @@ const fs = require('fs').promises;
 const { Plugin } = require('powercord/entities');
 const { open: openModal } = require('powercord/modal');
 const { getOwnerInstance, waitFor } = require('powercord/util');
-const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
+const { inject, uninject } = require('powercord/injector');
 const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { resolve } = require('path');
 
@@ -20,7 +20,16 @@ module.exports = class Spotify extends Plugin {
 
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
-    this.containerClasses = await getModule([ 'container', 'usernameContainer' ]);
+    this.containerClasses = {
+      ...await getModule([ 'colorStandard' ]),
+      ...await getModule([ 'button', 'lookFilled' ]),
+      ...await getModule([ 'container', 'usernameContainer' ]),
+      ...await getModule([ 'button', 'disabled', 'enabled' ]),
+      ...await getModule([ 'size10', 'size12' ]),
+      ...await getModule([ '_flex' ]),
+      ...await getModule(m => Object.keys(m).join('') === 'subtext')
+    };
+
     this._injectModal();
     this._injectListeningAlong();
     this._patchAutoPause();

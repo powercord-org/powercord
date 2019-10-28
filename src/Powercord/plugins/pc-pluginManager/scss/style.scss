@@ -1,21 +1,28 @@
 @import "./reload";
 @import "./plugin";
 
-.powercord-plugins {
-  &-wip {
-    top: -1.4px;
-    left: 0;
-    right: 0;
+.powercord-plugin-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  img {
+    margin-top: 45px;
+    margin-bottom: 35px;
+  }
+
+  p {
     font-size: 18px;
-    padding: 10px;
-    text-align: center;
-    position: sticky;
+    margin-bottom: 0;
+    opacity: .7;
+  }
+}
+
+.powercord-plugins {
+  color: var(--text-normal);
+
+  &-wip {
     margin-bottom: 20px;
-    width: 100%;
-    border-radius: 5px;
-    background-color: #f44336;
-    color: white;
-    z-index: 999;
   }
 
   &-header {
@@ -40,18 +47,20 @@
       + button {
         margin-left: 15px;
       }
+
+      > :last-child {
+        display: none;
+      }
     }
 
-    .pc-input {
+    input {
       height: 32px;
-    }
-
-    .pc-divider {
-      display: none;
     }
   }
 
   &-modal {
+    color: var(--text-normal);
+
     span + span {
       margin-top: 20px;
       display: block;
@@ -69,28 +78,14 @@
   }
 }
 
-// Colors
-.theme-dark .powercord-plugins {
-  color: #fff;
-
-  &-modal {
-    color: #fff;
-  }
-}
-
-.theme-light .powercord-plugins {
-  &-wip {
-    color: #fff;
-  }
-}
-
 .powercord-folders-opener {
-  margin-left: 10px;
-  line-height: 1.5;
-  text-align: right;
+  margin-left: 15px;
   flex: 0 0 auto;
+  display: flex;
 
-  a {
-    display: block;
+  button {
+    &:not(:last-child) {
+      margin-right: 15px;
+    }
   }
 }

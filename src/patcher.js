@@ -59,32 +59,34 @@ class PatchedBrowserWindow extends BrowserWindow {
 }
 
 Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
-electron.deprecate.promisify = ((dep) => (fn) => fn ? dep(fn) : (() => void 0))(electron.deprecate.promisify);
 
+delete require.cache[electronPath].exports;
 require.cache[electronPath].exports = {
-  /*
-   * TODO: Thoroughly investigate every Electron export
-   * and see which ones are dependent on each other
-   * to prevent having to "whitelist" modules on
-   * a cat-and-mouse basis
-   */
-  deprecate: electron.deprecate
+  deprecate: electron.deprecate,
+  BrowserWindow: PatchedBrowserWindow
 };
 
 const failedExports = [];
 for (const prop in electron) {
+  if (prop === 'BrowserWindow') {
+    continue;
+  }
+
   try {
     // noinspection JSUnfilteredForInLoop
-    require.cache[electronPath].exports[prop] = electron[prop];
+    Object.defineProperty(require.cache[electronPath].exports, prop, {
+      get () {
+        return electron[prop];
+      }
+    });
   } catch (_) {
     // noinspection JSUnfilteredForInLoop
     failedExports.push(prop);
   }
 }
 
-require.cache[electronPath].exports.BrowserWindow = PatchedBrowserWindow;
-
 app.once('ready', () => {
+  require.cache[electronPath].exports.BrowserWindow = PatchedBrowserWindow;
   session.defaultSession.webRequest.onBeforeRequest({
     urls: [ 'https://canary.discordapp.com/_powercord/*' ]
   }, (details, done) => {

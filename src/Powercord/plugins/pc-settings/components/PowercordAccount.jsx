@@ -2,7 +2,7 @@ const http = require('http');
 const { shell: { openExternal } } = require('electron');
 
 const { React, Flux, getModule } = require('powercord/webpack');
-const { AsyncComponent, Spinner } = require('powercord/components');
+const { AsyncComponent, Spinner, Card, FormTitle } = require('powercord/components');
 const { WEBSITE } = require('powercord/constants');
 
 const LinkedAccounts = require('./LinkedAccounts.jsx');
@@ -38,10 +38,10 @@ const PowercordAccount = class PowercordAccount extends React.Component {
       </div>;
     }
 
-    return <div className='powercord-account'>
-      <div className='powercord-title'>Powercord Account</div>
+    return <Card className='powercord-account powercord-text'>
+      <FormTitle>Powercord Account</FormTitle>
       <Component/>
-    </div>;
+    </Card>;
   }
 
   componentWillUnmount () {

@@ -1,6 +1,7 @@
 const { Plugin } = require('powercord/entities');
-const { camelCaseify, sleep } = require('powercord/util');
-const { instance, getModuleByDisplayName } = require('powercord/webpack');
+const { camelCaseify, forceUpdateElement, getOwnerInstance, sleep, waitFor } = require('powercord/util');
+const { instance, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { inject } = require('powercord/injector');
 
 /*
  * Based on BBD normalizer
@@ -24,16 +25,77 @@ module.exports = class ClassNameNormalizer extends Plugin {
     this.normalizeElement(document.querySelector('#app-mount'));
     this.patchDOMMethods();
 
-    // this is temporarily here ok, just making people think i'm doing stuff. Bowserware confirmed
-    const GuildHeader = await getModuleByDisplayName('GuildHeader');
-    require('powercord/injector').inject('pc-cnn-gh', GuildHeader.prototype, 'render', function (args, res) {
-      res.props['data-guild-id'] = this.props.guild.id;
-      return res;
-    });
+    this.patchGuildHeader();
+    this.renderGuildClasses();
+    this.renderFolderClasses();
 
     if (window.__OVERLAY__) {
       document.body.classList.add('overlay');
     }
+  }
+
+  async patchGuildHeader () {
+    const GuildHeader = await getModuleByDisplayName('GuildHeader');
+    inject('pc-cnn-gh', GuildHeader.prototype, 'renderHeader', function (_, res) {
+      res.props['data-guild-id'] = this.props.guild.id;
+      return res;
+    });
+
+    const guildHeaderQuery = `.${(await getModule([ 'iconBackgroundTierNone', 'container' ])).header.replace(/ /g, '.')}`;
+    if (document.querySelector(guildHeaderQuery)) {
+      forceUpdateElement(guildHeaderQuery);
+    }
+  }
+
+  /* Credit goes to Cadence#3263 for partially coming up with and writing this implementation */
+  async renderGuildClasses () {
+    const guildClasses = await getModule([ 'blobContainer' ]);
+    const guildElement = (await waitFor(`.${guildClasses.blobContainer.replace(/ /g, '.')}`)).parentElement;
+    const instance = getOwnerInstance(guildElement);
+    inject('pc-cnn-gc', instance.__proto__, 'render', function (_, res) {
+      // const { hovered } = res._owner.memoizedState;
+      const { audio, badge: mentions, selected, unread, video } = this.props;
+
+      /* eslint-disable-next-line object-property-newline */
+      const conditionals = { unread, /* hovered, */ selected, audio, video, mentioned: mentions > 0 };
+
+      Object.keys(conditionals).forEach(key => {
+        if (conditionals[key]) {
+          res.props.className += ` ${key}`;
+        }
+      });
+
+      res.props['data-guild-name'] = this.props.guild.name;
+      res.props['data-guild-id'] = this.props.guildId;
+
+      return res;
+    });
+
+    forceUpdateElement(`.${guildElement.className.replace(/ /g, '.')}`, true);
+  }
+
+  async renderFolderClasses () {
+    const folderClasses = await getModule([ 'wrapper', 'folder' ]);
+    const instance = getOwnerInstance(await waitFor(`.${folderClasses.wrapper.replace(/ /g, '.')}`));
+    inject('pc-cnn-fc', instance.__proto__, 'render', function (_, res) {
+      // const { hovered } = res._owner.memoizedState;
+      const { audio, badge: mentions, selected, expanded, unread, video } = this.props;
+
+      /* eslint-disable-next-line object-property-newline */
+      const conditionals = { unread, /* hovered, */ selected, expanded, audio, video, mentioned: mentions > 0 };
+
+      Object.keys(conditionals).forEach(key => {
+        if (conditionals[key]) {
+          res.props.className += ` ${key}`;
+        }
+      });
+
+      res.props['data-folder-name'] = this.props.folderName;
+
+      return res;
+    });
+
+    forceUpdateElement(`.${folderClasses.wrapper.replace(/ /g, '.')}`, true);
   }
 
   /*

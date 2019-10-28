@@ -13,10 +13,13 @@ module.exports = class TitleBarGames extends Plugin {
     }
 
     this.loadCSS(resolve(__dirname, 'style.scss'));
+
     this.icon = await getModuleByDisplayName('Icon');
     this.iconClass = await getModule([ 'linkButtonIcon' ]);
+    this.titleBarClass = await getModule([ 'titleBar' ]);
     this.applications = await getModule([ 'LAUNCHABLE_APPLICATIONS' ]);
     this.navigator = await getModule([ 'transitionTo' ]);
+
     this.patchTitlebar();
   }
 
@@ -58,7 +61,7 @@ module.exports = class TitleBarGames extends Plugin {
   async patchTitlebar () {
     const _this = this;
 
-    const titleBar = await waitFor('.pc-titleBar');
+    const titleBar = await waitFor(`.${this.titleBarClass.titleBar.replace(/ /g, '.')}`);
     const instance = getOwnerInstance(titleBar);
 
     const DirectTitleBarComponent = instance._reactInternalFiber.child.child.type;

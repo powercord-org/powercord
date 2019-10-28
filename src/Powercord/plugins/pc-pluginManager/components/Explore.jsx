@@ -1,8 +1,8 @@
 const { get } = require('powercord/http');
-const { React } = require('powercord/webpack');
+const { React, getModule } = require('powercord/webpack');
 const { WEBSITE } = require('powercord/constants');
 const { TextInput } = require('powercord/components/settings');
-const { Button, Divider, Spinner } = require('powercord/components');
+const { Button, Divider, Spinner, FormNotice } = require('powercord/components');
 
 const Plugin = require('./Plugin');
 /*
@@ -31,23 +31,41 @@ module.exports = class Explore extends React.Component {
   }
 
   async componentDidMount () {
+    this.state.scrollerClass = `.${(await getModule([ 'scroller', 'scrollerWrap' ])).scroller.split(' ')[0]}`;
+
     await this._fetchPlugins();
     this._listener = this._handleScroll.bind(this);
-    document.querySelector('.powercord-plugins').closest('.pc-scroller').addEventListener('scroll', this._listener);
+
+    if (document.querySelector('.powercord-plugins')) {
+      document.querySelector('.powercord-plugins').closest(this.state.scrollerClass).addEventListener('scroll', this._listener);
+    }
   }
 
   componentWillUnmount () {
-    document.querySelector('.powercord-plugins').closest('.pc-scroller').removeEventListener('scroll', this._listener);
+    if (document.querySelector('.powercord-plugins')) {
+      document.querySelector('.powercord-plugins').closest(this.state.scrollerClass).removeEventListener('scroll', this._listener);
+    }
   }
 
   render () {
     return <div className='powercord-plugins'>
-      <div className='powercord-plugins-wip'>
-        This part of Powercord is a WIP. Expect unavailable features and crashes here
-      </div>
+      <FormNotice
+        imageData={{
+          width: 60,
+          height: 60,
+          src: '/assets/0694f38cb0b10cc3b5b89366a0893768.svg'
+        }}
+        type={FormNotice.Types.DANGER}
+        title='Experimental feature'
+        body={'This part of Powercord is experimental. Powercord Staff won\'t accept any bug reports nor provide support for it. Use it at your own risk!'}
+        className='powercord-plugins-wip'
+      />
       <div className='powercord-plugins-header'>
         <h3>Explore plugins</h3>
         <Button onClick={() => this.props.goToInstalled()}>Installed Plugins</Button>
+        <div class='powercord-folders-opener'>
+          <Button color={Button.Colors.PRIMARY} look={Button.Looks.OUTLINED} onClick={() => this.props.openFolder(powercord.pluginManager.pluginDir)}>Open Plugins Folder</Button>
+        </div>
       </div>
       <Divider/>
       <div className='powercord-plugins-topbar'>

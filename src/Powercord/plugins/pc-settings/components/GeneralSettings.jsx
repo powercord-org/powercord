@@ -3,6 +3,7 @@ const { React } = require('powercord/webpack');
 const { WEBSITE } = require('powercord/constants');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { TextInput, SwitchItem, ButtonItem, Category } = require('powercord/components/settings');
+const { Confirm } = require('powercord/components/modal');
 
 const PassphraseModal = require('./PassphraseModal.jsx');
 const Account = require('./PowercordAccount');
@@ -118,7 +119,7 @@ module.exports = class GeneralSettings extends React.Component {
         </Category>
 
         <ButtonItem
-          note={'Removes everything stored in Discord\'s cache folder. This will make Discord slower, as all resources will have to be fetched again.'}
+          note={'Removes everything stored in Discord\'s cache folder. This will temporarily make Discord slower, as all resources will have to be fetched again.'}
           button={this.state.cleaning ? 'Clearing cache...' : 'Clear cache'}
           disabled={this.state.cleaning}
           onClick={() => this.clearCache()}
@@ -138,12 +139,7 @@ module.exports = class GeneralSettings extends React.Component {
           this.props.toggleSetting('settingsSync');
         }
       }}
-      onCancel={() => {
-        closeModal();
-        if (updateSync) {
-          this.props.toggleSetting('settingsSync');
-        }
-      }}
+      onCancel={closeModal}
     />);
   }
 
@@ -153,6 +149,17 @@ module.exports = class GeneralSettings extends React.Component {
   }
 
   askRestart () {
-    // @todo: Make the app able to restart automatically
+    openModal(() => <Confirm
+      red
+      header='Restart Discord'
+      confirmText='Restart'
+      cancelText='Postpone'
+      onConfirm={() => window.reloadElectronApp()}
+      onCancel={closeModal}
+    >
+      <div className='powercord-text'>
+        This setting requires you to restart Discord to take effect. Do you want to restart Discord now?
+      </div>
+    </Confirm>);
   }
 };

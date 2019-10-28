@@ -2,13 +2,13 @@ const { existsSync, lstatSync } = require('fs');
 const { React, getModule } = require('powercord/webpack');
 const { SwitchItem, TextInput, Category } = require('powercord/components/settings');
 
-let getGuild, getSortedGuilds;
+let getGuild, getFlattenedGuilds;
 
 module.exports = class EmojiUtilitySettings extends React.Component {
   constructor (props) {
     super(props);
 
-    if (getGuild && getSortedGuilds) {
+    if (getGuild && getFlattenedGuilds) {
       this._setState(false);
     }
   }
@@ -30,16 +30,16 @@ module.exports = class EmojiUtilitySettings extends React.Component {
   }
 
   async componentDidMount () {
-    if (!(getGuild && getSortedGuilds)) {
+    if (!(getGuild && getFlattenedGuilds)) {
       ({ getGuild } = await getModule([ 'getGuild' ]));
-      ({ getSortedGuilds } = await getModule([ 'getSortedGuilds' ]));
+      ({ getFlattenedGuilds } = await getModule([ 'getFlattenedGuilds' ]));
 
       this._setState();
     }
   }
 
   render () {
-    if (!(getGuild && getSortedGuilds)) {
+    if (!(getGuild && getFlattenedGuilds)) {
       return null;
     }
 
@@ -133,7 +133,7 @@ module.exports = class EmojiUtilitySettings extends React.Component {
           opened={this.state.categoryOpened}
           onChange={() => this.setState({ categoryOpened: !this.state.categoryOpened })}
         >
-          {getSortedGuilds().map(g => g.guild).map(g => <SwitchItem
+          {getFlattenedGuilds().map(g => <SwitchItem
             value={this.props.getSetting('hiddenGuilds', []).includes(g.id)}
             onChange={() => this._handleGuildToggle(g.id)}
           >

@@ -22,11 +22,12 @@
   },
   "homepage": "https://github.com/powercord-org/powercord#readme",
   "dependencies": {
-    "buble": "0.19.6",
     "less": "^3.9.0",
     "node-watch": "^0.6.1",
     "sass": "^1.18.0",
-    "stylus": "^0.54.5"
+    "stylus": "^0.54.5",
+    "sucrase": "^3.10.1",
+    "unzip-crx": "^0.2.0"
   },
   "devDependencies": {
     "eslint": "^5.16.0",

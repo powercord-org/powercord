@@ -5,19 +5,19 @@ const SpotifyPlayer = require('../SpotifyPlayer');
 
 function getDeviceIcon (device) {
   const deviceIcons = {
-    Computer: 'fa-desktop',
-    Tablet: 'fa-tablet-alt',
-    Smartphone: 'fa-mobile-alt',
-    Speaker: 'fa-volume-up',
-    TV: 'fa-tv',
-    AVR: 'fa-digital-tachograph',
-    STB: 'fa-hdd',
-    AudioDongle: 'fa-usb-brand',
-    GameConsole: 'fa-gamepad',
-    CastAudio: 'fa-bluetooth-b-brand',
-    CastVideo: 'fa-video',
-    Car: 'fa-car',
-    Unknown: 'fa-question-circle'
+    Computer: 'desktop-duotone',
+    Tablet: 'tablet-alt-duotone',
+    Smartphone: 'mobile-alt-duotone',
+    Speaker: 'speaker-duotone',
+    TV: 'tv-alt-duotone',
+    AVR: 'digital-tachograph-duotone',
+    STB: 'hdd-duotone',
+    AudioDongle: 'usb-drive-duotone',
+    GameConsole: 'gamepad-alt-duotone',
+    CastAudio: 'bluetooth-b-brands',
+    CastVideo: 'chromecast-brands',
+    Car: 'car-side-duotone',
+    Unknown: 'question-circle-duotone'
   };
 
   return deviceIcons[device];
@@ -36,7 +36,7 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
           return {
             type: 'button',
             name: device.name,
-            image: hasIconsHidden ? '' : getDeviceIcon(device.type),
+            icon: hasIconsHidden ? '' : getDeviceIcon(device.type),
             hint: hasIconsHidden ? device.type : '',
             highlight: isActiveDevice && '#1ed860',
             disabled: isActiveDevice,
@@ -78,9 +78,22 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
             })
           }))
         )
-    } ]
-    : []), ...(hasCustomAuth
-    ? [ {
+    }, {
+      type: 'submenu',
+      name: 'Top Songs',
+      width: '200px',
+      getItems: () => SpotifyPlayer.getTopSongs()
+        .then(({ items }) =>
+          items.map(track => ({
+            type: 'button',
+            name: track.name,
+            hint: formatTime(track.duration_ms),
+            onClick: () => onButtonClick('play', {
+              uris: [ track.uri ]
+            })
+          }))
+        )
+    }, {
       type: 'submenu',
       name: 'Songs',
       width: '200px',
@@ -105,7 +118,6 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
       getItems: () => [ {
         type: 'submenu',
         name: 'Repeat Modes',
-        image: hasIconsHidden ? '' : 'fa-sync',
         getItems: () => [ {
           name: 'On',
           stateName: 'context'
@@ -135,21 +147,21 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
     type: 'slider',
     name: 'Volume',
     color: '#1ed860',
-    defaultValue: state.volume,
+    initialValue: state.volume,
     onValueChange: (val) =>
       SpotifyPlayer.setVolume(Math.round(val))
         .then(() => true)
   }, ...(hasCustomAuth && hasControlsHidden
     ? [ {
       type: 'button',
-      name: 'Add to Library',
-      image: hasIconsHidden ? '' : 'fa-plus-circle',
+      name: 'Save to Liked Songs',
+      icon: hasIconsHidden ? '' : 'heart-circle-duotone',
       onClick: () =>
         SpotifyPlayer.addSong(state.currentItem.id)
     }, {
       type: 'button',
       name: 'Save to Playlist',
-      image: hasIconsHidden ? '' : 'fa-save',
+      icon: hasIconsHidden ? '' : 'plus-circle-duotone',
       onClick: () =>
         powercord.pluginManager.get('pc-spotify').openPlaylistModal(state.currentItem.id)
     } ]
@@ -158,13 +170,13 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
   [ {
     type: 'button',
     name: 'Open in Spotify',
-    image: hasIconsHidden ? '' : 'fa-external-link-alt',
+    icon: hasIconsHidden ? '' : 'external-link-alt-duotone',
     onClick: () =>
       shell.openExternal(state.currentItem.uri)
   }, {
     type: 'button',
     name: 'Send URL to Channel',
-    image: hasIconsHidden ? '' : 'fa-share-square',
+    icon: hasIconsHidden ? '' : 'share-square-duotone',
     onClick: () =>
       messages.sendMessage(
         channels.getChannelId(),
@@ -173,7 +185,7 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
   }, {
     type: 'button',
     name: 'Copy URL',
-    image: hasIconsHidden ? '' : 'fa-copy',
+    icon: hasIconsHidden ? '' : 'copy-duotone',
     onClick: () =>
       clipboard.writeText(state.currentItem.url)
   } ]

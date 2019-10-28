@@ -1,0 +1,91 @@
+/**
+ * Powercord, a lightweight @discordapp client mod focused on simplicity and performance
+ * Copyright (C) 2018-2019  aetheryx & Bowser65
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// do fucking not name this file _toast.scss
+
+.powercord-toast {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--background-tertiary);
+  color: var(--text-normal);
+  z-index: 999;
+  padding: 15px 10px;
+  border-radius: 3px;
+  position: absolute;
+  max-width: 320px;
+  box-shadow: 5px 6px 17px rgba(0, 0, 0, .2);
+  animation: slidein 0.5s forwards;
+
+  .header {
+    font-size: 18px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .body {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+  }
+
+  .buttons {
+    flex-wrap: wrap;
+    display: flex;
+    max-width: 320px;
+    width: 100%;
+
+    .button {
+      box-sizing: border-box;
+      min-width: calc(50% - 10px);
+      background-color: var(--background-modifier-accent);
+      text-align: center;
+      padding: 1.5%;
+      border-radius: 5px;
+      margin: 1.5% 5px;
+      cursor: pointer;
+      flex: 1;
+
+      &:hover {
+        background-color: var(--background-modifier-hover);
+      }
+    }
+  }
+
+  &.leaving {
+    animation: slideout 0.5s forwards;
+  }
+}
+
+@keyframes slidein {
+  from {
+    margin-bottom: -200px;
+  }
+  to {
+  }
+}
+
+@keyframes slideout {
+  from {
+  }
+  to {
+    margin-bottom: -200px
+  }
+}

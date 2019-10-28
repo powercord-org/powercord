@@ -1,4 +1,4 @@
-.pc-app .pc-listeningAlong {
+div[class^='app-'] div[class*='listeningAlong-'] {
   margin: 0;
   padding-bottom: 0;
   padding-top: 0;
@@ -8,7 +8,7 @@
   }
 }
 
-.pc-listeningAlong + .powercord-spotify {
+div[class*='listeningAlong'] + .powercord-spotify {
   height: 37px;
   padding-bottom: 8px;
 
@@ -38,11 +38,11 @@
     padding: 4px;
     align-items: center;
     width: 45%;
-    border: 1px solid #2f3136;
+    border: 1px solid var(--text-normal);
     border-radius: 4px;
     margin-top: 5px;
     margin-bottom: 5px;
-    color: white;
+    color: var(--text-normal);
 
     .image {
       margin-right: 10px;
@@ -50,7 +50,7 @@
     }
 
     &-modal-header {
-      color: white;
+      color: var(--text-normal);
       font-weight: bold;
       text-transform: uppercase;
     }
@@ -60,31 +60,24 @@
       justify-content: space-evenly;
       flex-wrap: wrap;
       padding-bottom: 5px;
-      color: white;
+      color: var(--text-normal);
     }
   }
 
   &-playlist:hover {
     cursor: pointer;
-    background: #2f3136;
+    background: var(--text-normal);
+    color: var(--background-primary);
   }
 
   .username {
-    color: #fff;
-    overflow: hidden;
     position: absolute;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    top: 0;
+    top: -1px;
   }
 
   .discriminator {
     bottom: 0;
-    max-width: 84px;
-    overflow: hidden;
     position: absolute;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .translating {
@@ -127,6 +120,7 @@
     &-duration {
       min-width: 35px;
       max-width: 35px;
+      color: var(--text-normal);
     }
 
     &-btngrp {
@@ -154,7 +148,7 @@
       }
 
       &-cursor {
-        background-color: #fff;
+        background-color: #ffffff;
         border-radius: 50%;
         bottom: 2px;
         width: 10px;
@@ -175,7 +169,7 @@
   }
 
   &:hover {
-    padding-bottom: 25px;
+    padding-bottom: 30px;
     transition-delay: 0s;
 
     .powercord-spotify-seek-bar {
@@ -197,12 +191,19 @@
   }
 }
 
+.powercord-spotify-seek-btngrp button{
+  color: var(--text-normal);
+  &.active, &.active:hover{
+    color: #1ed860;
+  }
+}
+
 @keyframes spotifyText {
   0%, 5% {
     transform: translateX(0);
   }
 
   75%, 100% {
-    transform: translateX(calc(-100% + 84px));
+    transform: translateX(calc(-100% + 78px));
   }
 }

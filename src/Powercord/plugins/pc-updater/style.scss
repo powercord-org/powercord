@@ -1,83 +1,132 @@
-@keyframes slidein {
-  from { margin-bottom: -200px; }
-  to {}
-}
-
-@keyframes slideout {
-  from {}
-  to { margin-bottom: -200px }
-}
-
-@keyframes fadein {
-  from { opacity: 0; }
-  to {}
-}
-
-@keyframes fadeout {
-  from {}
-  to { opacity: 0; }
-}
-
-.powercord-toast {
-  display: flex;
-  flex-direction: column;
-  background-color: #23272A;
-  z-index: 999;
-  padding: 5px;
-  border-radius: 5px;
-  color: #FFFFFF;
-  position: absolute;
-  max-width: 320px;
-
-  box-shadow: 8px 5px 2px rgba(35, 39, 42, 0.6);
-
-  animation: slidein 0.5s forwards;
-  .header {
-    font-size: 18px;
-    margin-bottom: 5px;
-    text-align: center;
-  }
-
-  .body {
-    flex: 1;
+.powercord-updater {
+  .top-section {
+    margin-top: 35px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    flex-direction: column;
-  }
 
-  .buttons {
-    flex-wrap: wrap;
-    display: flex;
-    max-width: 320px;
-    width: 100%;
+    .icon {
+      width: 64px;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
 
-    .button {
-      width: 44%;
-      background-color: #2C2F33;
-      text-align: center;
-      padding: 1.5%;
-      border-radius: 5px;
-      margin: 1.5%;
-      cursor: pointer;
+    .animated path + path {
+      transform-origin: 50% 50%;
+      animation: rotate 1.2s infinite;
+    }
 
-      &:only-child {
-        width: 100%;
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .status {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+
+      h3 {
+        font-size: 28px;
+      }
+
+      div {
+        opacity: .7;
+      }
+    }
+
+    .about {
+      display: flex;
+      margin-left: auto;
+      flex-direction: column;
+      justify-content: space-evenly;
+      font-family: SourceCodePro, Consolas, Liberation Mono, Menlo, Courier, monospace;
+      font-size: 14px;
+      opacity: .7;
+
+      div {
+        display: flex;
+        justify-content: space-between;
+
+        span {
+          margin-left: 10px;
+          width: 80px;
+        }
       }
     }
   }
 
-  &.leaving {
-    animation: slideout 0.5s forwards;
+  .buttons {
+    display: flex;
+    margin-top: 25px;
+
+    button + button {
+      margin-left: 15px;
+    }
   }
 
-  .fadein {
-    animation: fadein 0.2s forwards;
+  .updates {
+    margin-top: 25px;
   }
 
-  .fadeout {
-    animation: fadeout 0.2s forwards;
+  .update {
+    margin: 15px 0;
+
+    .title {
+      display: flex;
+      align-items: center;
+
+      .icon {
+        width: 28px;
+        height: 28px;
+        margin-right: 10px;
+      }
+
+      .name {
+        font-size: 22px;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+
+        button {
+          height: 26px;
+          min-height: 26px;
+          padding: 2px 6px;
+
+          &:not(:last-child) {
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+
+    .summary {
+      padding: 10px 55px;
+
+      div {
+        margin-bottom: 10px;
+      }
+
+      a {
+        background-color: var(--background-secondary);
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .buttons, .update {
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    border-bottom: 1px var(--background-modifier-accent) solid;
+  }
+
+  &-ft {
+    margin-top: 40px;
+    margin-bottom: 8px;
   }
 }
-

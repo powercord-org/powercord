@@ -19,3 +19,8 @@
 @import 'contextMenu';
 @import 'keybindRecorder';
 @import 'settings';
+@import 'updater';
+
+.powercord-text {
+  color: var(--text-normal);
+}

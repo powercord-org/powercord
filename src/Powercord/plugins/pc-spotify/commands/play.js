@@ -3,7 +3,7 @@ const urlRegex = /\/track\/([A-z0-9]*)/;
 module.exports = {
   command: 'play',
   description: 'Play a Spotify URL',
-  usage: '/play <URL>',
+  usage: '{c} <URL>',
 
   async func (SpotifyPlayer, [ url ]) {
     if (!url) {

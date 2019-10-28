@@ -1,23 +1,23 @@
 const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
-const { AsyncComponent } = require('powercord/components');
+const { AsyncComponent, Icons, Tooltip } = require('powercord/components');
 
 const Clickable = AsyncComponent.from(getModuleByDisplayName('Clickable'));
-let classesStore = null;
-
 const Notice = class Notice extends React.Component {
   constructor () {
     super();
 
-    this.state = classesStore || {
-      types: [],
+    this.classesStore = null;
+    this.state = this.classesStore || {
+      types: {},
       button: '',
       dismiss: ''
     };
   }
 
   async componentDidMount () {
-    if (!classesStore) {
-      const classes = await getModule([ 'noticeBrand' ]);
+    if (!this.classesStore) {
+      const classes = (await getModule([ 'noticeBrand' ]));
+
       this.setState({
         types: {
           BLURPLE: classes.noticeBrand,
@@ -35,7 +35,8 @@ const Notice = class Notice extends React.Component {
         button: classes.button,
         dismiss: classes.dismiss
       });
-      classesStore = this.state;
+
+      this.classesStore = this.state;
     }
   }
 
@@ -44,6 +45,15 @@ const Notice = class Notice extends React.Component {
     const { types, button, dismiss } = this.state;
 
     return <div className={`powercord-notice ${(types[notice.type] || types.BLURPLE)}`}>
+      {notice._source !== 'Internal' && (
+        notice._source === 'DevTools'
+          ? <Tooltip text='Sent from DevTools' position='bottom'>
+            <img src='https://discordapp.com/assets/ccf4c733929efd9762ab02cd65175377.svg' alt='eyes' className='powercord-notice-src'/>
+          </Tooltip>
+          : <Tooltip text={`Sent by ${notice._source}`} position='bottom'>
+            <Icons.Info className='powercord-notice-src'/>
+          </Tooltip>
+      )}
       {notice.message}
       <Clickable className={dismiss} onClick={() => onClose()}/>
       {notice.button &&
@@ -63,7 +73,8 @@ Notice.TYPES = {
   SPOTIFY: 'SPOTIFY',
   PURPLE: 'PURPLE',
   GREEN: 'GREEN',
-  SURVEY: 'SURVEY' // noticeInfo's (Notice.TYPES.BLUE) evil twin -- hovering over the CTA button greets you with some gloomy black text instead of the traditional white.
+  SURVEY: 'SURVEY' /* noticeInfo's (Notice.TYPES.BLUE) evil twin -- hovering over the CTA button greets
+    you with some gloomy black text instead of the traditional white. */
 };
 
 module.exports = Notice;

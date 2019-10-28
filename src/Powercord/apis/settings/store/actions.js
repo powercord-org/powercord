@@ -50,5 +50,13 @@ module.exports = {
       setting,
       value
     });
+  },
+
+  deleteSetting (category, setting) {
+    FluxDispatcher.dispatch({
+      type: ActionTypes.DELETE_SETTING,
+      category,
+      setting
+    });
   }
 };

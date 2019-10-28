@@ -37,7 +37,7 @@
   }
 
   svg {
-    border-right: 1px rgba(114, 118, 125, 0.3) solid;
+    border-right: 1px var(--background-modifier-accent) solid;
     padding-right: 8px;
 
     path {
@@ -46,7 +46,7 @@
   }
 }
 
-div[class*="switchItem-"] label button {
+div[class*='switchItem-'] label button {
   display: inline;
   margin-left: 10px;
   min-height: 25px;
@@ -65,6 +65,10 @@ div[class*="switchItem-"] label button {
       transition: transform .3s;
       margin-right: 15px;
 
+      + div > div[class*='modeDefault-'] {
+        cursor: pointer;
+      }
+
       &.opened {
         transform: rotate(90deg);
       }
@@ -72,14 +76,6 @@ div[class*="switchItem-"] label button {
 
     > div {
       flex: 1;
-    }
-
-    .pc-title {
-      height: 24px;
-    }
-
-    .pc-modeDefault {
-      cursor: pointer;
     }
   }
 
@@ -89,25 +85,33 @@ div[class*="switchItem-"] label button {
 
   &.powercord-category &-inner {
     margin-left: 12px;
-    border-left: 1px rgba(114, 118, 125, .3) solid;
+    border-left: 1px var(--background-modifier-accent) solid;
     padding-left: 33px;
   }
 }
 
-.powercord-title {
-  line-height: 16px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: .5px;
-  height: 16px;
+.theme-light .powercord-pc-icon {
+  filter: brightness(0.6);
 }
 
-.theme-dark .powercord-title {
-  color: #b9bbbe;
-}
+.powercord-settings-error {
+  h2 {
+    color: var(--header-primary);
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
 
-.theme-light .powercord-title {
-  color: #72767d;
+  div {
+    margin-bottom: 10px;
+  }
+
+  code {
+    white-space: pre-wrap;
+    margin-bottom: 25px;
+    display: block;
+    padding: 0 20px;
+  }
 }

@@ -32,7 +32,7 @@ module.exports = {
           type: announcements.Notice.TYPES.ORANGE,
           message: revokedMessages[resp.revoked],
           button: {
-            text: 'Link back Spotify',
+            text: 'Relink Spotify',
             onClick: () => openExternal(`${baseUrl}/oauth/spotify`)
           },
           alwaysDisplay: true
@@ -59,19 +59,21 @@ module.exports = {
 
     return request
       .catch(async (err) => {
-        if (err.statusCode === 401) {
-          this.accessToken = await this.getAccessToken();
+        if (err) {
+          if (err.statusCode === 401) {
+            this.accessToken = await this.getAccessToken();
 
-          delete request._res;
-          return this.genericRequest(request);
-        }
+            delete request._res;
+            return this.genericRequest(request);
+          }
 
-        if (err.body.error && err.body.error.reason === 'PREMIUM_REQUIRED') {
-          powercord.pluginManager.get('pc-spotify').openPremiumDialog();
-          return false;
+          if (err.body && err.body.error && err.body.error.reason === 'PREMIUM_REQUIRED') {
+            powercord.pluginManager.get('pc-spotify').openPremiumDialog();
+            return false;
+          }
+          console.error(err.body, request.opts);
+          throw err;
         }
-        console.error(err.body, request.opts);
-        throw err;
       });
   },
 
@@ -92,6 +94,13 @@ module.exports = {
   getAlbums () {
     return this.genericRequest(
       get(`${this.BASE_URL}/me/albums`)
+        .query('limit', 50)
+    ).then(r => r.body);
+  },
+
+  getTopSongs () {
+    return this.genericRequest(
+      get(`${this.BASE_URL}/me/top/tracks`)
         .query('limit', 50)
     ).then(r => r.body);
   },

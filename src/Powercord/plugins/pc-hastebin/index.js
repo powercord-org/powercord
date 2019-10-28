@@ -8,12 +8,12 @@ module.exports = class Hastebin extends Plugin {
   startPlugin () {
     this.registerSettings('pc-hastebin', 'Hastebin', Settings);
 
-    const domain = this.settings.get('domain', 'https://haste.aetheryx.xyz');
+    const domain = this.settings.get('domain', 'https://hasteb.in');
     this.registerCommand(
       'hastebin',
       [],
-      'Lets you paste content to Hastebin.',
-      '{c} [ --send ] < --clipboard | FILE_URL >',
+      'Lets you paste content to Hastebin',
+      '{c} [--send] <--clipboard | FILE_URL>',
       async (args) => {
         const send = args.includes('--send')
           ? !!args.splice(args.indexOf('--send'), 1)
@@ -30,13 +30,19 @@ module.exports = class Hastebin extends Plugin {
           };
         }
 
-        const { body } = await post(`${domain}/documents`)
-          .send(data);
-
-        return {
-          send,
-          result: `${domain}/${body.key}`
-        };
+        try {
+          const { body } = await post(`${domain}/documents`)
+            .send(data);
+          return {
+            send,
+            result: `${domain}/${body.key}`
+          };
+        } catch (e) {
+          return {
+            send: false,
+            result: `Upload to the specifified domain ${domain} failed. Please check that the server is setup properly.`
+          };
+        }
       }
     );
   }

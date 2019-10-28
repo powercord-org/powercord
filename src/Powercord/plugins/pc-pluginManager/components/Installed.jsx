@@ -1,11 +1,9 @@
 const { React } = require('powercord/webpack');
-const { Button, Divider } = require('powercord/components');
+const { Button, Divider, FormNotice } = require('powercord/components');
 const { TextInput } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { asyncArray: { map } } = require('powercord/util');
 const { Confirm } = require('powercord/components/modal');
-const { spawn } = require('child_process');
-const { resolve } = require('path');
 const Plugin = require('./Plugin');
 
 module.exports = class Installed extends React.Component {
@@ -15,38 +13,28 @@ module.exports = class Installed extends React.Component {
     this.state = {
       search: ''
     };
-
-    this.openFolder = (dir) => {
-      const cmds = {
-        win32: 'explorer',
-        darwin: 'open',
-        linux: 'xdg-open'
-      };
-      spawn(cmds[process.platform], [ dir ]);
-    };
-
-    this.openPluginsFolder = () => {
-      this.openFolder(resolve(__dirname, '..', '..'));
-    };
-
-    this.openThemesFolder = () => {
-      this.openFolder(resolve(__dirname, '..', '..', '..', 'themes'));
-    };
   }
 
   render () {
     const plugins = this._getPlugins();
 
     return <div className='powercord-plugins'>
-      <div className="ghostPill-2-KUPM powercord-plugins-wip">
-        This part of Powercord is a WIP. Expect unavailable features and crashes here
-      </div>
+      <FormNotice
+        imageData={{
+          width: 60,
+          height: 60,
+          src: '/assets/0694f38cb0b10cc3b5b89366a0893768.svg'
+        }}
+        type={FormNotice.Types.DANGER}
+        title='Experimental feature'
+        body={'This part of Powercord is experimental. Powercord Staff won\'t accept any bug reports nor provide support for it. Use it at your own risk!'}
+        className='powercord-plugins-wip'
+      />
       <div className='powercord-plugins-header'>
         <h3>Installed plugins</h3>
         <Button onClick={() => this.props.goToExplore()}>Explore Plugins</Button>
-        <div class="powercord-folders-opener">
-          <a onClick={() => this.openPluginsFolder()}>Open Plugins Folder</a>
-          <a onClick={() => this.openThemesFolder()}>Open Themes Folder</a>
+        <div className='powercord-folders-opener'>
+          <Button color={Button.Colors.PRIMARY} look={Button.Looks.OUTLINED} onClick={() => this.props.openFolder(powercord.pluginManager.pluginDir)}>Open Plugins Folder</Button>
         </div>
       </div>
       <Divider/>
@@ -61,16 +49,17 @@ module.exports = class Installed extends React.Component {
       </div>
       <div className='powercord-plugins-container'>
         {plugins.map(plugin => <Plugin
-          id={plugin.pluginID}
+          key={plugin.entityID}
+          id={plugin.entityID}
           installed={true}
-          enabled={powercord.pluginManager.isEnabled(plugin.pluginID)}
-          hidden={powercord.settings.get('hiddenPlugins', []).includes(plugin.pluginID)}
+          enabled={powercord.pluginManager.isEnabled(plugin.entityID)}
+          hidden={powercord.settings.get('hiddenPlugins', []).includes(plugin.entityID)}
           manifest={plugin.manifest}
 
-          onEnable={() => this.enable(plugin.pluginID)}
-          onDisable={() => this.disable(plugin.pluginID)}
+          onEnable={() => this.enable(plugin.entityID)}
+          onDisable={() => this.disable(plugin.entityID)}
 
-          onUninstall={() => this.uninstall(plugin.pluginID)}
+          onUninstall={() => this.uninstall(plugin.entityID)}
         />)}
       </div>
     </div>;

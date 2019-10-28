@@ -17,22 +17,32 @@
  */
 
 const { shell: { openExternal } } = require('electron');
-const EventEmitter = require('events');
 const { get } = require('powercord/http');
 const { sleep } = require('powercord/util');
 const Webpack = require('powercord/webpack');
 const { WEBSITE } = require('powercord/constants');
+const { Updatable } = require('powercord/entities');
+const { join } = require('path');
+
+const { promisify } = require('util');
+const cp = require('child_process');
+const exec = promisify(cp.exec);
 
 const PluginManager = require('./managers/plugins');
 const StyleManager = require('./managers/styles');
 const APIManager = require('./managers/apis');
 const modules = require('./modules');
 
-module.exports = class Powercord extends EventEmitter {
+module.exports = class Powercord extends Updatable {
   constructor () {
-    super();
+    super(join(__dirname, '..', '..'), '', 'powercord');
 
     this.api = {};
+    this.gitInfos = {
+      upstream: '???',
+      branch: '???',
+      revision: '???'
+    };
     this.initialized = false;
     this.styleManager = new StyleManager();
     this.pluginManager = new PluginManager();
@@ -67,8 +77,8 @@ module.exports = class Powercord extends EventEmitter {
 
     const SentryModule = await require('powercord/webpack').getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ]);
     const buildId = SentryModule._globalOptions.release;
-    const gitInfos = await this.pluginManager.get('pc-updater').getGitInfos();
-    this.buildInfo = `Release Channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Discord's Build Number: ${buildId} - Powercord's git revision: ${gitInfos.revision}@${gitInfos.branch}`;
+    this.gitInfos = await this.pluginManager.get('pc-updater').getGitInfos();
+    this.buildInfo = `Release Channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Discord's Build Number: ${buildId} - Powercord's git revision: ${this.gitInfos.revision}@${this.gitInfos.branch}`;
 
     // Token manipulation stuff
     if (this.settings.get('hideToken', true)) {
@@ -183,7 +193,49 @@ module.exports = class Powercord extends EventEmitter {
     this.isLinking = false;
   }
 
+  async _update (force = false) {
+    const success = await super._update(force);
+    if (success) {
+      await exec('npm install --only=prod', { cwd: this.entityPath });
+      const updater = this.pluginManager.get('pc-updater');
+      updater.notify('Reload required to complete Powercord update', {
+        text: 'Reload',
+        onClick: () => location.reload()
+      }, {
+        text: 'Postpone',
+        onClick: (close) => close()
+      });
+      updater.settings.set('awaiting_reload', true);
+    }
+    return success;
+  }
+
+  // idk i was bored and people need to know the truth
   isEmmaCute () {
     return true;
+  }
+
+  isEmmaNotCute () {
+    return false;
+  }
+
+  get emma () {
+    // no u ain't going to make it negative uwu
+    const cuteIncrement = Math.max(0, this.settings.get('_cute_inc', 0));
+    this.settings.set('_cute_inc', cuteIncrement + 0.1);
+    return {
+      cute: true,
+      percent: 100.0 + cuteIncrement,
+      uwu: '🌺'
+    };
+  }
+
+  set emma (_) {
+    throw new Error('TooCuteException: awooooo');
+  }
+
+  // i was still bored
+  get daddy () {
+    return 'aeth uwu';
   }
 };

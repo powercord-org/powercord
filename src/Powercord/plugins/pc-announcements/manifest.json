@@ -1,10 +1,7 @@
 {
   "name": "Announcements",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Broadcast announcements from Powercord API or plugins",
   "author": "Powercord Team",
-  "license": "MIT",
-  "dependencies": [
-    "pc-classNameNormalizer"
-  ]
+  "license": "MIT"
 }

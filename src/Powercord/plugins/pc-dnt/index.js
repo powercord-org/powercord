@@ -17,6 +17,10 @@ module.exports = class DoNotTrack extends Plugin {
     MethodWrapper.__oldWrapMethod = MethodWrapper.wrapMethod;
     MethodWrapper.wrapMethod = () => void 0;
 
+    const Reporter = await getModule([ 'report' ]);
+    Reporter.__oldReport = Reporter.report;
+    Reporter.report.uninstall();
+
     const Sentry = await getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ]);
     Sentry.__old_breadcrumbEventHandler = Sentry._breadcrumbEventHandler;
     Sentry.__oldCaptrureBreadcrumb = Sentry.captrureBreadcrumb;
@@ -41,6 +45,9 @@ module.exports = class DoNotTrack extends Plugin {
 
     const MethodWrapper = getModule([ 'wrapMethod' ], false);
     MethodWrapper.wrapMethod = MethodWrapper.__oldWrapMethod;
+
+    const Reporter = getModule([ 'report' ], false);
+    Reporter.report = Reporter.__oldReport;
 
     const Sentry = getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ], false);
     Sentry.install();

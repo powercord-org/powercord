@@ -4,7 +4,7 @@ const { unlink } = require('fs').promises;
 const { Plugin } = require('powercord/entities');
 const { React, getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
-const { getOwnerInstance, waitFor } = require('powercord/util');
+const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 const { DISCORD_INVITE, GUILD_ID } = require('powercord/constants');
 
 const Notice = require('./Notice');
@@ -17,6 +17,10 @@ module.exports = class Announcements extends Plugin {
   }
 
   async startPlugin () {
+    this.loadCSS(resolve(__dirname, 'style.css'));
+    const classes = await getModule([ 'base', 'container' ]);
+    this.noticeQuery = `.${classes.base.replace(/ /g, '.')}`;
+
     this._patchNotices();
     const injectedFile = resolve(__dirname, '..', '..', '..', '__injected.txt');
     if (existsSync(injectedFile)) {
@@ -29,17 +33,18 @@ module.exports = class Announcements extends Plugin {
           text: 'Join Server',
           onClick: async () => {
             this.closeNotice('pc-first-welcome');
-            const { getGuilds } = await getModule([ 'getGuilds' ]);
-            const { acceptInvite } = await getModule([ 'acceptInvite' ]);
-            const { selectGuild } = await getModule([ 'flushSelection', 'selectGuild' ]);
 
-            if (getGuilds()[GUILD_ID]) {
-              acceptInvite(DISCORD_INVITE, {}, () => {
-                selectGuild(GUILD_ID);
+            const { getGuilds } = (await getModule([ 'getGuilds' ]));
+            const { acceptInvite } = (await getModule([ 'acceptInvite' ]));
+            const { transitionToGuildSync } = (await getModule([ 'selectGuild' ]));
+
+            if (!getGuilds()[GUILD_ID]) {
+              return acceptInvite(DISCORD_INVITE, {}, () => {
+                transitionToGuildSync(GUILD_ID, false);
               });
-            } else {
-              selectGuild(GUILD_ID);
             }
+
+            return transitionToGuildSync(GUILD_ID, false);
           }
         },
         alwaysDisplay: true
@@ -61,8 +66,24 @@ module.exports = class Announcements extends Plugin {
 
   sendNotice (notice) {
     if (!this.notices.find(n => n.id === notice.id) && (notice.alwaysDisplay || !this.settings.get('dismissed', []).includes(notice.id))) {
+      // Figure out from where the notice is from using the power of stack traces
+      const error = new Error();
+      const lines = error.stack.split('at ');
+      lines.shift();
+      const files = lines.map(l => l.includes('(') ? l.match(/\(([^)]+)\)/)[1] : l);
+      let source = 'Internal';
+      const file = files.filter(f => f.startsWith(powercord.pluginManager.pluginDir) || f.startsWith('<anonymous>')).pop();
+      if (file.startsWith('<anonymous>')) {
+        source = 'DevTools';
+      } else {
+        const plugin = file.replace(powercord.pluginManager.pluginDir, '').split(/[\\/]/)[1];
+        source = plugin.startsWith('pc-') ? 'Internal' : powercord.pluginManager.get(plugin).manifest.name;
+      }
+
+      notice._source = source;
       this.notices.push(notice);
-      this._forceUpdate();
+
+      forceUpdateElement(this.noticeQuery);
     }
   }
 
@@ -71,19 +92,20 @@ module.exports = class Announcements extends Plugin {
       this.settings.set('dismissed', [ ...this.settings.get('dismissed', []), noticeId ]);
     }
     this.notices = this.notices.filter(n => n.id !== noticeId);
-    this._forceUpdate();
+
+    forceUpdateElement(this.noticeQuery);
   }
 
   async _patchNotices () {
-    const Component = getOwnerInstance(await waitFor('.pc-base > .pc-flex'));
+    const Component = getOwnerInstance(await waitFor(this.noticeQuery));
     inject('pc-custom-notices', Component.__proto__, 'render', (_, res) => {
       res.props.children[1].props.children.unshift(this._renderNotice());
       return res;
     });
-  }
 
-  async _forceUpdate () {
-    getOwnerInstance(await waitFor('.pc-base > .pc-flex')).forceUpdate();
+    if (document.querySelector(this.noticeQuery)) {
+      Component.forceUpdate();
+    }
   }
 
   _renderNotice () {

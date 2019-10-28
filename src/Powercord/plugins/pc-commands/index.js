@@ -9,7 +9,7 @@ const injectAutocomplete = require('./injectAutocomplete.js');
 module.exports = class Commands extends Plugin {
   startPlugin () {
     Object.values(commands).forEach(command =>
-      this.registerCommand(command.command, command.aliases || [], command.description, command.usage, command.func)
+      this.registerCommand(command.command, command.aliases || [], command.description, command.usage, command.func, command.autocompleteFunc)
     );
 
     monkeypatchMessages.call(this);

@@ -18,7 +18,7 @@ const {
 
 const { /* ContextMenu, */ ContextMenu: { Submenu } } = require('powercord/components');
 const { getOwnerInstance } = require('powercord/util');
-const { inject, injectInFluxContainer, uninject } = require('powercord/injector');
+const { inject, uninject } = require('powercord/injector');
 const { open: openModal } = require('powercord/modal');
 
 const { writeFile } = require('fs').promises;
@@ -52,7 +52,7 @@ module.exports = class EmojiUtility extends Plugin {
 
     await this.import('getGuild');
     await this.import('getGuilds');
-    await this.import('getSortedGuilds');
+    await this.import('getFlattenedGuilds');
     await this.import('uploadEmoji');
     await this.import('getChannel');
     await this.import('getGuildPermissions');
@@ -62,6 +62,7 @@ module.exports = class EmojiUtility extends Plugin {
     await this.import('receiveMessage');
     await this.import('getSelectedChannelState');
     await this.import('getChannelId');
+    await this.import('queryEmojiResults');
   }
 
   getEmojiRegex () {
@@ -210,6 +211,10 @@ module.exports = class EmojiUtility extends Plugin {
     return Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis).find(e => e.id === id);
   }
 
+  getHiddenGuilds () {
+    return this.settings.get('hiddenGuilds', []);
+  }
+
   getMaxEmojiSlots (guildId) {
     return this.getGuild(guildId).getMaxEmojiSlots();
   }
@@ -274,7 +279,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCloneableGuilds = () => {
         const items = [];
-        const clonableGuilds = Object.values(this.getSortedGuilds()).map(g => g.guild).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+        const clonableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
 
         for (const guild of clonableGuilds) {
           items.push({
@@ -414,7 +419,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCreateableGuilds = () => {
         const items = [];
-        const createableGuilds = Object.values(this.getSortedGuilds()).map(g => g.guild).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+        const createableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
 
         for (const guild of createableGuilds) {
           items.push({
@@ -574,22 +579,18 @@ module.exports = class EmojiUtility extends Plugin {
      * });
      */
 
-    const Autocomplete = await getModuleByDisplayName('Autocomplete');
-    inject('pc-emojiUtility-hideEmojisComplete', Autocomplete.prototype, 'render', (args, res) => {
-      if (res) {
-        const hiddenGuilds = _this.settings.get('hiddenGuilds', []);
+    const ChannelTextArea = await getModuleByDisplayName('ChannelTextArea');
+    inject('pc-emojiUtility-hideEmojisComplete', ChannelTextArea.prototype, 'componentDidUpdate', (args) => {
+      const { autocompleteOptions, channel } = args.find(key => key && key.autocompleteOptions);
 
-        if (res.props.children.props.children[0].key.includes('Emoji')) {
-          res.props.children.props.children[1] = res.props.children.props.children[1].filter(emoji =>
-            !emoji.props.emoji.guildId || !hiddenGuilds.includes(emoji.props.emoji.guildId)
-          );
-        }
-
-        if (res.props.children.props.children[1].length === 0) {
-          return null;
-        }
+      if (autocompleteOptions) {
+        autocompleteOptions.EMOJIS.queryResults = (value) => ({
+          emojis: this.queryEmojiResults(value, channel).emojis.filter(emoji =>
+            !emoji.guildId || !this.getHiddenGuilds().includes(emoji.guildId))
+        });
       }
-      return res;
+
+      return args;
     });
 
     this.registerSettings('pc-emojiUtility', 'Emote Utility', Settings);
@@ -823,6 +824,5 @@ module.exports = class EmojiUtility extends Plugin {
     uninject('pc-emojiUtility-hideEmojisPickerRm');
     uninject('pc-emojiUtility-hideEmojisPickerMount');
     uninject('pc-emojiUtility-hideEmojisComplete');
-    uninject('pc-emojiUtility-hideEmojisCompleteEvent');
   }
 };
