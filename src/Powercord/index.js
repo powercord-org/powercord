@@ -49,7 +49,6 @@ module.exports = class Powercord extends Updatable {
     this.apiManager = new APIManager();
     this.account = null;
     this.isLinking = false;
-    this.initial_location = new URL(window.location.href);
     this.patchWebSocket();
 
     if (document.readyState === 'loading') {

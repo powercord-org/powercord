@@ -8,13 +8,7 @@ module.exports = class Router extends Plugin {
     await this._injectRouter();
     this._listener = this._rerender.bind(this);
     powercord.api.router.addChangeListener(this._listener);
-    const route = powercord.initial_location.searchParams.get('_powercord_route');
-    if (route) {
-      setImmediate(async () => {
-        const router = await getModule([ 'replaceWith' ]);
-        router.replaceWith(route);
-      });
-    }
+    powercord.api.router.restorePrevious();
   }
 
   pluginWillUnload () {

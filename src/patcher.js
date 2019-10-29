@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/* global appSettings */
 const Module = require('module');
 const { join, dirname, resolve } = require('path');
 const electron = require('electron');
@@ -23,6 +24,7 @@ const { BrowserWindow, app, session } = electron;
 
 const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
+
 
 let settings;
 try {
@@ -110,7 +112,10 @@ app.once('ready', () => {
       // source maps must die
       done({ cancel: true });
     } else if (details.url.startsWith('https://canary.discordapp.com/_powercord')) {
-      done({ redirectURL: `https://canary.discordapp.com/app?_powercord_route=${encodeURIComponent(details.url.replace('https://canary.discordapp.com', ''))}` });
+      appSettings.set('_POWERCORD_ROUTE', details.url.replace('https://canary.discordapp.com', ''));
+      appSettings.save();
+      // It should get restored to _powercord url later
+      done({ redirectURL: 'https://canary.discordapp.com/app' });
     } else {
       done({});
     }
