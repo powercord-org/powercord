@@ -8,7 +8,7 @@ module.exports = class Router extends Plugin {
     await this._injectRouter();
     this._listener = this._rerender.bind(this);
     powercord.api.router.addChangeListener(this._listener);
-    powercord.api.router.restorePrevious();
+    setImmediate(() => powercord.api.router.restorePrevious());
   }
 
   pluginWillUnload () {

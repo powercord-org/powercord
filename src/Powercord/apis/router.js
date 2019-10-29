@@ -8,14 +8,11 @@ module.exports = class Router extends API {
     this.changeListeners = [];
   }
 
-  restorePrevious () {
+  async restorePrevious () {
     const oldRoute = DiscordNative.globals.appSettings.get('_POWERCORD_ROUTE');
     if (oldRoute && this.routes.find(c => c.path === oldRoute.split('/_powercord')[1])) {
-      setImmediate(async () => {
-        console.log('yay');
-        const router = await getModule([ 'replaceWith' ]);
-        router.replaceWith(oldRoute);
-      });
+      const router = await getModule([ 'replaceWith' ]);
+      router.replaceWith(oldRoute);
     }
     DiscordNative.globals.appSettings.set('_POWERCORD_ROUTE', void 0);
     DiscordNative.globals.appSettings.save();
