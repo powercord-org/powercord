@@ -86,6 +86,8 @@ module.exports = class Powercord extends Updatable {
       tokenModule.hideToken = () => void 0;
       tokenModule.showToken(); // just to be sure
     }
+
+    this.emit('loaded');
   }
 
   // Powercord startup

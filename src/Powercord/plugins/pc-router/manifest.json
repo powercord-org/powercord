@@ -1,0 +1,7 @@
+{
+  "name": "Router",
+  "version": "0.0.1",
+  "description": "Powercord's internal custom router",
+  "author": "Powercord Team",
+  "license": "MIT"
+}

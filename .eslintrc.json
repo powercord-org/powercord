@@ -2,6 +2,7 @@
   "globals": {
     "powercord": true,
     "webpackJsonp": true,
+    "DiscordNative": false,
     "GLOBAL_ENV": true
   },
   "parserOptions": {
