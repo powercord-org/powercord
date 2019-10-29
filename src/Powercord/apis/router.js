@@ -4,6 +4,7 @@ module.exports = class Router extends API {
   constructor () {
     super();
     this.routes = [];
+    this.changeListeners = [];
   }
 
   startAPI () {
@@ -22,13 +23,27 @@ module.exports = class Router extends API {
       return this.error(`Path ${path} is already registered by another plugin!`);
     }
 
-    return this.routes.push({
+    this.routes.push({
       path,
       render
     });
+    this._change();
   }
 
   unregisterRoute (path) {
     this.routes = this.routes.filter(c => c.path !== path);
+    this._change();
+  }
+
+  addChangeListener (listener) {
+    this.changeListeners.push(listener);
+  }
+
+  removeChangeListener (listener) {
+    this.changeListeners = this.changeListeners.filter(l => l !== listener);
+  }
+
+  _change () {
+    this.changeListeners.forEach(fn => fn());
   }
 };

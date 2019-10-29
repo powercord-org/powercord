@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/* global appSettings */
 const Module = require('module');
 const { join, dirname, resolve } = require('path');
 const electron = require('electron');
@@ -24,7 +23,6 @@ const { BrowserWindow, app, session } = electron;
 
 const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
-
 
 let settings;
 try {
@@ -76,6 +74,7 @@ for (const prop in electron) {
     // noinspection JSUnfilteredForInLoop
     Object.defineProperty(require.cache[electronPath].exports, prop, {
       get () {
+        // noinspection JSUnfilteredForInLoop
         return electron[prop];
       }
     });
@@ -87,28 +86,35 @@ for (const prop in electron) {
 
 app.once('ready', () => {
   require.cache[electronPath].exports.BrowserWindow = PatchedBrowserWindow;
-  session.defaultSession.webRequest.onBeforeRequest({
-    urls: [ 'https://canary.discordapp.com/_powercord/*' ]
-  }, (details, done) => {
-    appSettings.set('_POWERCORD_ROUTE', details.url);
-    appSettings.save();
-    // @todo: Redirect to the last classic route saved
-    done({ redirectURL: 'https://canary.discordapp.com/app' });
-  });
 
-  // csp must die
+  // headers must die
   session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
+    /*
+     * To people worried about security: those protection headers removal do *not* cause security issues.
+     *
+     * In a vanilla Discord it would actually lower the security level of the app, but with Powercord installed
+     * this is another story. Node integration is available within the render process, meaning scrips can do requests
+     * using native http module (bypassing content-security-policy), and could use BrowserViews to mimic the behaviour
+     * of an iframe (bypassing the x-frame-options header). So we decided, for convenience, to drop them entirely.
+     */
     Object.keys(responseHeaders)
-      .filter(k => (/^content-security-policy/i).test(k))
+      .filter(k => (/^content-security-policy/i).test(k) || (/^x-frame-options/i).test(k))
       .map(k => (delete responseHeaders[k]));
 
     done({ responseHeaders });
   });
 
   // source maps must die
-  // session.defaultSession.webRequest.onBeforeRequest((details, done) =>
-  //   done({ cancel: details.url.endsWith('.js.map') })
-  // );
+  session.defaultSession.webRequest.onBeforeRequest((details, done) => {
+    if (details.url.endsWith('.js.map')) {
+      // source maps must die
+      done({ cancel: true });
+    } else if (details.url.startsWith('https://canary.discordapp.com/_powercord')) {
+      done({ redirectURL: `https://canary.discordapp.com/app?_powercord_route=${encodeURIComponent(details.url.replace('https://canary.discordapp.com', ''))}` });
+    } else {
+      done({});
+    }
+  });
 
   for (const prop of failedExports) {
     require.cache[electronPath].exports[prop] = electron[prop];
