@@ -16,22 +16,22 @@ module.exports = class PluginManager extends Plugin {
       )
     );
 
-
     if (this.settings.get('__experimental_2019-10-25', false)) {
-      this.registerSettings('pc-pluginManager', 'Plugins', Settings);
+      this.registerSettings('pc-moduleManager-plugins', 'Plugins', Settings);
+      this.registerSettings('pc-moduleManager-themes', 'Themes', Soon);
     } else {
-      this.registerSettings('pc-pluginManager', 'Plugins', Soon);
+      this.registerSettings('pc-moduleManager-plugins', 'Plugins', Soon);
     }
   }
 
   __toggleExperimental () {
     const current = this.settings.get('__experimental_2019-10-25', false);
     if (!current) {
-      this.warn('WARNING: This will enable the experimental new plugin manager, that is NOT functional yet.');
+      this.warn('WARNING: This will enable the experimental new module manager, that is NOT functional yet.');
       this.warn('WARNING: Powercord Staff won\'t accept bug reports from this experimental version, nor provide support!');
       this.warn('WARNING: Use it at your own risk! It\'s labeled experimental for a reason.');
     } else {
-      this.log('Experimental Plugin Manager disabled.');
+      this.log('Experimental Module Manager disabled.');
     }
     this.settings.set('__experimental_2019-10-25', !current);
     powercord.pluginManager.remount(this.entityID);

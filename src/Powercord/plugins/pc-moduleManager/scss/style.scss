@@ -16,6 +16,15 @@
     margin-bottom: 0;
     opacity: .7;
   }
+
+  div {
+    margin-top: 20px;
+    display: flex;
+
+    a {
+      margin: 0 10px;
+    }
+  }
 }
 
 .powercord-plugins {

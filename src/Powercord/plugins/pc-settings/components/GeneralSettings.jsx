@@ -54,18 +54,19 @@ module.exports = class GeneralSettings extends React.Component {
           opened={getSetting('advancedSettings', false)}
           onChange={() => toggleSetting('advancedSettings')}
         >
-          <TextInput
-            value={getSetting('backendURL', WEBSITE)}
-            onChange={p => updateSetting('backendURL', !p ? WEBSITE : p)}
-            note='URL used for Spotify linking, plugin management and other internal functions.'
-          >
-            Backend URL
-          </TextInput>
-
           <SwitchItem
-            note='Should Powercord open overlay devtools when it gets injected? (useful for developing themes)'
+            note='Prevents Discord from showing a warning message when opening devtools.'
+            value={getSetting('yeetSelfXSS', false)}
+            onChange={() => toggleSetting('yeetSelfXSS')}
+          >
+            Disable Self XSS warning
+          </SwitchItem>
+          <SwitchItem
+            note2='Should Powercord open overlay devtools when it gets injected? (useful for developing themes).'
+            note='Overlay support is for now broken.'
             value={getSetting('openOverlayDevTools', false)}
             onChange={() => toggleSetting('openOverlayDevTools')}
+            disabled
           >
             Overlay DevTools
           </SwitchItem>
@@ -116,6 +117,14 @@ module.exports = class GeneralSettings extends React.Component {
           >
             Enable Discord Experiments
           </SwitchItem>
+          <TextInput
+            value={getSetting('backendURL', WEBSITE)}
+            onChange={p => updateSetting('backendURL', !p ? WEBSITE : p)}
+            note='URL used for Spotify linking, plugin management and other internal functions.'
+          >
+            Backend URL
+          </TextInput>
+
         </Category>
 
         <ButtonItem

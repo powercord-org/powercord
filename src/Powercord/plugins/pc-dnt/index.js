@@ -9,10 +9,6 @@ module.exports = class DoNotTrack extends Plugin {
     Analytics.__oldTrack = Analytics.track;
     Analytics.track = () => void 0;
 
-    const Warning = await getModule([ 'consoleWarning' ]);
-    Warning.__oldConsoleWarning = Warning.consoleWarning;
-    Warning.consoleWarning = () => void 0;
-
     const MethodWrapper = await getModule([ 'wrapMethod' ]);
     MethodWrapper.__oldWrapMethod = MethodWrapper.wrapMethod;
     MethodWrapper.wrapMethod = () => void 0;
@@ -39,9 +35,6 @@ module.exports = class DoNotTrack extends Plugin {
   async pluginWillUnload () {
     const Analytics = getModule([ 'AnalyticEventConfigs' ], false);
     Analytics.track = Analytics.__oldTrack;
-
-    const Warning = getModule([ 'consoleWarning' ], false);
-    Warning.consoleWarning = Warning.__oldConsoleWarning;
 
     const MethodWrapper = getModule([ 'wrapMethod' ], false);
     MethodWrapper.wrapMethod = MethodWrapper.__oldWrapMethod;

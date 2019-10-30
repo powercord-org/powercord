@@ -308,7 +308,7 @@ module.exports = class Updater extends Plugin {
 
         renderFooter () {
           const footer = super.renderFooter();
-          footer.props.children = 'OwO whats this';
+          footer.props.children = changelog.footer;
           return footer;
         }
 

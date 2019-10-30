@@ -1,6 +1,6 @@
 const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
-const { React, getModule, getAllModules, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule, getAllModules, getModuleByDisplayName, Router: { Route } } = require('powercord/webpack');
 const { getOwnerInstance, waitFor } = require('powercord/util');
 
 module.exports = class Router extends Plugin {
@@ -18,6 +18,7 @@ module.exports = class Router extends Plugin {
   }
 
   async _injectRouter () {
+    const AppView = await getModuleByDisplayName('FluxContainer(AppView)');
     const ViewsWithMainInterface = await getModuleByDisplayName('ViewsWithMainInterface');
     const { container } = await getModule([ 'container', 'downloadProgressCircle' ]);
     const RouteRenderer = getOwnerInstance(await waitFor(`.${container.replace(/ /g, '.')}`));
@@ -37,10 +38,14 @@ module.exports = class Router extends Plugin {
     });
 
     inject('pc-router-router', ViewsWithMainInterface.prototype, 'render', (args, res) => {
-      // @todo: let plugins chose if sidebar or not
-      res.props.children[0].props.children[1][7].props.path.push(
-        ...powercord.api.router.routes.map(route => `/_powercord${route.path}`)
-      );
+      powercord.api.router.routes.forEach(route => {
+        res.props.children[0].props.children[1].push(
+          React.createElement(Route, {
+            path: `/_powercord${route.path}`,
+            render: () => React.createElement(AppView)
+          })
+        );
+      });
       return res;
     });
 

@@ -211,12 +211,12 @@ module.exports = class Powercord extends Updatable {
   }
 
   // idk i was bored and people need to know the truth
-  isEmmaCute () {
-    return true;
+  get isEmmaCute () {
+    return () => true;
   }
 
-  isEmmaNotCute () {
-    return false;
+  get isEmmaNotCute () {
+    return () => true;
   }
 
   get emma () {
@@ -230,7 +230,16 @@ module.exports = class Powercord extends Updatable {
     };
   }
 
+  // No emma u wont edit those UwU
   set emma (_) {
+    throw new Error('TooCuteException: awooooo');
+  }
+
+  set isEmmaCute (_) {
+    throw new Error('TooCuteException: awooooo');
+  }
+
+  set isEmmaNotCute (_) {
     throw new Error('TooCuteException: awooooo');
   }
 

@@ -13,11 +13,15 @@ module.exports = class Settings extends Plugin {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this.patchSettingsComponent();
     this.patchExperiments();
+    this.patchSelfXSS();
   }
 
-  pluginWillUnload () {
+  async pluginWillUnload () {
     uninject('pc-settings-items');
     uninject('pc-settings-errorHandler');
+
+    const i18n = await getModule([ 'Messages' ]);
+    i18n.Messages = i18n._Messages;
   }
 
   async patchExperiments () {
@@ -67,9 +71,18 @@ module.exports = class Settings extends Plugin {
 
       return sections;
     });
+  }
 
-    inject('pc-settings-errorHandler', SettingsView.prototype, 'componentDidCatch', () => {
-      this.error('nee jij discord :) (There should be an error just before this message)');
+  async patchSelfXSS () {
+    const i18n = await getModule([ 'Messages' ]);
+    i18n._Messages = i18n.Messages;
+    i18n.Messages = new Proxy(i18n._Messages, {
+      get: (obj, prop) => {
+        if (prop === 'SELF_XSS_HEADER' && powercord.settings.get('yeetSelfXSS', false)) {
+          return null;
+        }
+        return obj[prop];
+      }
     });
   }
 };
