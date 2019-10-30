@@ -35,7 +35,7 @@ module.exports = class Settings extends React.Component {
 
         <SwitchItem
           note={
-            <span>Makes it so that the ‘shift’ key must be held down before clicking the left or right mouse button to initiate an edit.
+            <span>Makes it so that the ‘shift’ key must be held down before clicking the left or right mouse button to initiate an edit.&nbsp;
               <b style={{ color: 'rgb(240, 71, 71)' }}>HEADS UP:</b> Having this setting disabled will result in double-click edits by default. Don't say I didn't tell you.</span>
           }
           disabled={getSetting('dualControlEdits', false)}

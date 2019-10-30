@@ -1,10 +1,10 @@
-const { React, getModule, getAllModules, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { SwitchItem } = require('powercord/components/settings');
 const { AsyncComponent } = require('powercord/components');
 
 const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
 const FormText = AsyncComponent.from(getModuleByDisplayName('FormText'));
-const Checkbox = AsyncComponent.from(getAllModules(m => m.displayName && m.displayName === 'Checkbox')[1]);
+const Checkbox = AsyncComponent.from(getModuleByDisplayName('Checkbox'));
 const Clickable = AsyncComponent.from(getModuleByDisplayName('Clickable'));
 
 const translate = require('google-translate-api');

@@ -22,15 +22,19 @@ module.exports = class Codeblocks extends Plugin {
 
     inject('pc-embed-codeblock', Embed.prototype, 'renderAll', function (_, res) {
       const { embed } = this.props;
-      const codeblockRegExp = new RegExp(/(?:```([a-z]\S+)?)[^```]*```/);
+      const codeblockRegExp = new RegExp(/`{3}([\s\S]+?)`{3}/);
 
       if (codeblockRegExp.test(embed.rawDescription)) {
         for (const child of res.description.props.children) {
           _this.injectCodeblock(child);
         }
       } else if (embed.fields && embed.fields.some(field => codeblockRegExp.test(field.rawValue))) {
-        for (const child of res.fields.props.children[0].props.children[1].props.children) {
-          _this.injectCodeblock(child);
+        for (const child of res.fields.props.children) {
+          if (child.props.children && child.props.children[1] && child.props.children[1].props.children) {
+            for (const field of child.props.children[1].props.children) {
+              _this.injectCodeblock(field);
+            }
+          }
         }
       }
 
@@ -46,7 +50,7 @@ module.exports = class Codeblocks extends Plugin {
       const { children } = res.props;
       const { message } = this.props;
 
-      const codeblockRegExp = new RegExp(/(?:```([a-z]\S+)?)[^```]*```/);
+      const codeblockRegExp = new RegExp(/`{3}([\s\S]+?)`{3}/);
 
       res.props.children = function (e) {
         const res = children(e);
