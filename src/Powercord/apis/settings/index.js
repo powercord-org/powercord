@@ -34,6 +34,7 @@ module.exports = class Settings extends API {
   constructor () {
     super();
 
+    this.ErrorBoundary = ErrorBoundary;
     this.actions = actions;
     this.store = store;
     this.tabs = [];

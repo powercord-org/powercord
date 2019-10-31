@@ -298,7 +298,7 @@ module.exports = class Updater extends Plugin {
 
         renderHeader () {
           const header = super.renderHeader();
-          header.props.children[0].props.children = 'Powercord - What\'s New';
+          header.props.children[0].props.children = `Powercord - ${header.props.children[0].props.children}`;
           return header;
         }
 

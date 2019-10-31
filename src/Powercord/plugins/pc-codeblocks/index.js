@@ -106,33 +106,35 @@ module.exports = class Codeblocks extends Plugin {
       className: 'powercord-lines'
     }), React.createElement('button', {
       className: 'powercord-codeblock-copy-btn',
-      onClick: (e) => {
-        const { target } = e;
-
-        if (target.classList.contains('copied')) {
-          return;
-        }
-
-        target.innerText = 'copied!';
-        target.classList.add('copied');
-        setTimeout(() => {
-          target.innerText = 'copy';
-          target.classList.remove('copied');
-        }, 1000);
-
-        const range = document.createRange();
-        range.selectNode(target.parentElement.children[0]);
-
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
-
-        clipboard.writeText(selection.toString());
-
-        selection.removeAllRanges();
-      }
+      onClick: this._onClickHandler
     }, 'copy'));
 
     return children;
+  }
+
+  _onClickHandler (e) {
+    const { target } = e;
+
+    if (target.classList.contains('copied')) {
+      return;
+    }
+
+    target.innerText = 'copied!';
+    target.classList.add('copied');
+    setTimeout(() => {
+      target.innerText = 'copy';
+      target.classList.remove('copied');
+    }, 1000);
+
+    const range = document.createRange();
+    range.selectNode(target.parentElement.children[0]);
+
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    clipboard.writeText(selection.toString());
+
+    selection.removeAllRanges();
   }
 };

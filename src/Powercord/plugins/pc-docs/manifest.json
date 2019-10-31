@@ -3,5 +3,6 @@
   "version": "0.1",
   "description": "Powercord's documentation UI",
   "author": "Powercord Team",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": [ "pc-codeblocks" ]
 }
