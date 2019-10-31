@@ -216,7 +216,7 @@ module.exports = class Powercord extends Updatable {
   }
 
   get isEmmaNotCute () {
-    return () => true;
+    return () => false;
   }
 
   get emma () {
