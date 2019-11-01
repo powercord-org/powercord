@@ -49,6 +49,16 @@ class DocPage extends React.Component {
             }
           }));
           break;
+        case 'LIST':
+          render.push(React.createElement(element.ordered ? 'ol' : 'ul', null, element.items.map(item => {
+            const html = this._mdToHtml(item);
+            return React.createElement('li', {
+              dangerouslySetInnerHTML: {
+                __html: html.slice(23, html.length - 6)
+              }
+            });
+          })));
+          break;
         case 'NOTE':
           render.push(<FormNotice
             type={FormNotice.Types[element.color === 'INFO' ? 'PRIMARY' : element.color]}

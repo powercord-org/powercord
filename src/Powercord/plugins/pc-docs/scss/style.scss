@@ -1,6 +1,24 @@
 .powercord-documentation {
+  line-height: 20px;
+
   .formNotice-2_hHWR {
     margin-bottom: 20px;
+  }
+
+  ol, ul {
+    li {
+      margin-bottom: 10px;
+
+      &::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background-color: #7289da;
+        display: inline-block;
+        margin: 2px 10px;
+        border-radius: 50%;
+      }
+    }
   }
 
   em {
@@ -13,7 +31,7 @@
 
   h2, h3, h4, h5, h6 {
     font-weight: bold;
-    margin-top: 20px;
+    margin-top: 35px;
     margin-bottom: 15px;
   }
 

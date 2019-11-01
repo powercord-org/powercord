@@ -1,0 +1,22 @@
+module.exports = [
+  'emma_is_cute',
+  'cute',
+  'whatsdis',
+  'lighttheme',
+  'facebook',
+  'system32',
+  'hahayes',
+  'docker',
+  'deletthis',
+  'kpop',
+  'ratelimited',
+  'idk_if_ppl_will_like_this',
+  'should_be_fun',
+  'whatever',
+  'im_proud_of_this_one',
+  'eyes',
+  'zoomeyes',
+  'cool',
+  'epic',
+  'emma_is_v_cute'
+];

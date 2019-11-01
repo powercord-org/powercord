@@ -1,8 +1,8 @@
 const { Plugin } = require('powercord/entities');
 const { resolve } = require('path');
 
-const Soon = require('./components/Soon.jsx');
-const Settings = require('./components/Settings.jsx');
+const Soon = require('./components_legacy/Soon.jsx');
+const Settings = require('./components_legacy/Settings.jsx');
 const commands = require('./commands');
 
 module.exports = class PluginManager extends Plugin {
