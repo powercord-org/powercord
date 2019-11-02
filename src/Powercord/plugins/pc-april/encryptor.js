@@ -16,8 +16,7 @@ const encryptor = {
     // IV + salt
     const iv = randomBytes(16);
     const salt = randomBytes(32);
-    await writeFile(resolve(this.path, 'iv.enc'), iv);
-    await writeFile(resolve(this.path, 'salt.enc'), salt);
+    await writeFile(resolve(this.path, 'keys.enc'), Buffer.concat([ iv, salt ]));
 
     // Key
     const key = scryptSync(passphrase, salt, 32);
@@ -34,12 +33,13 @@ const encryptor = {
 
   async decrypt (passphrase) {
     const memes = [];
-    const iv = await readFile(resolve(this.path, 'iv.enc'));
-    const salt = await readFile(resolve(this.path, 'salt.enc'));
+    const keys = await readFile(resolve(this.path, 'keys.enc'));
+    const iv = keys.slice(0, 16);
+    const salt = keys.slice(16, 48);
     const key = scryptSync(passphrase, salt, 32);
     const files = await readdir(this.path);
     for (const file of files) {
-      if ([ 'iv.enc', 'salt.enc' ].includes(file)) {
+      if (file === 'keys.enc') {
         continue;
       }
 
