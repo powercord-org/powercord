@@ -77,19 +77,22 @@ module.exports = class Updater extends Plugin {
     await Promise.all(Array(parallel).fill(null).map(async () => {
       let entity;
       while ((entity = entities.shift())) {
-        const shouldUpdate = await entity._checkForUpdates();
-        if (shouldUpdate) {
-          const commits = await entity._getUpdateCommits();
-          if (skipped[entity.updateIdentifier] === commits[0].id) {
-            return;
+        const repo = await entity.getGitRepo();
+        if (repo) {
+          const shouldUpdate = await entity._checkForUpdates();
+          if (shouldUpdate) {
+            const commits = await entity._getUpdateCommits();
+            if (skipped[entity.updateIdentifier] === commits[0].id) {
+              return;
+            }
+            updates.push({
+              id: entity.updateIdentifier,
+              name: entity.constructor.name,
+              icon: entity.__proto__.__proto__.constructor.name.replace('Updatable', 'Powercord'),
+              commits,
+              repo
+            });
           }
-          updates.push({
-            id: entity.updateIdentifier,
-            name: entity.constructor.name,
-            icon: entity.__proto__.__proto__.constructor.name.replace('Updatable', 'Powercord'),
-            repo: await entity.getGitRepo(),
-            commits
-          });
         }
         done++;
         this.settings.set('checking_progress', [ done, entitiesLength ]);
