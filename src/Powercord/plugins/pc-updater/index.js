@@ -1,8 +1,6 @@
-const { ReactDOM, React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
-const { Toast } = require('powercord/components');
-const { createElement } = require('powercord/util');
 const { Plugin } = require('powercord/entities');
 
 const { resolve, join } = require('path');
@@ -105,20 +103,29 @@ module.exports = class Updater extends Plugin {
     if (updates.length > 0) {
       if (this.settings.get('automatic', false)) {
         this.doUpdate();
-      } else if (!document.querySelector('.powercord-updater')) {
-        this.notify('Updates are available', {
-          text: 'Update now',
-          onClick: (close) => {
-            this.doUpdate();
-            close();
-          }
-        }, {
-          text: 'Open Updater',
-          onClick: async (close) => {
-            const settingsModule = await getModule([ 'open', 'saveAccountChanges' ]);
-            settingsModule.open('pc-updater');
-            close();
-          }
+      } else if (!document.querySelector('.powercord-toast')) {
+        this.sendToast({
+          id: 'powercord-updater',
+          header: 'Updates are available!',
+          content: 'Click "Update" to update now or "Open Updater" to find out more.',
+          icon: 'wrench',
+          buttons: [ {
+            text: 'Update',
+            color: 'brand',
+            hoverColor: 'green',
+            type: 'outlined',
+            onClick: () => {
+              this.doUpdate();
+            }
+          }, {
+            text: 'Open Updater',
+            color: 'blue',
+            type: 'ghost',
+            onClick: async () => {
+              const settingsModule = await getModule([ 'open', 'saveAccountChanges' ]);
+              settingsModule.open('pc-updater');
+            }
+          } ]
         });
       }
     }
@@ -149,47 +156,34 @@ module.exports = class Updater extends Plugin {
     if (failed.length > 0) {
       this.settings.set('failed', true);
       this.settings.set('updates', failed);
-      if (!document.querySelector('.powercord-updater')) {
-        this.notify('Some updates failed to install', {
-          text: 'Force Update',
-          onClick: (close) => this.askForce(close)
-        }, {
-          text: 'Ignore',
-          onClick: (close) => close()
-        }, {
-          text: 'Open Updater',
-          onClick: async (close) => {
-            const settingsModule = await getModule([ 'open', 'saveAccountChanges' ]);
-            settingsModule.open('pc-updater');
-            close();
-          }
+      if (!document.querySelector('.powercord-toast')) {
+        this.sendToast({
+          id: 'powercord-updater',
+          header: 'Some updates failed to install...',
+          type: 'error',
+          buttons: [ {
+            text: 'Force Update',
+            danger: true,
+            onClick: () => this.askForce()
+          }, {
+            text: 'Ignore',
+            type: 'outlined',
+            color: 'grey'
+          }, {
+            text: 'Open Updater',
+            color: 'blue',
+            type: 'ghost',
+            onClick: async () => {
+              const settingsModule = await getModule([ 'open', 'saveAccountChanges' ]);
+              settingsModule.open('pc-updater');
+            }
+          } ]
         });
       }
     }
   }
 
   // MODALS
-  notify (text, button1, button2, button3, button4) {
-    if (document.getElementById('powercord-updater')) {
-      return;
-    }
-
-    const container = createElement('div', { id: 'powercord-updater' });
-    document.body.appendChild(container);
-    ReactDOM.render(
-      React.createElement(Toast, {
-        style: {
-          bottom: '25px',
-          right: '25px',
-          width: '320px'
-        },
-        header: text,
-        buttons: [ button1, button2, button3, button4 ]
-      }),
-      container
-    );
-  }
-
   askForce (callback) {
     openModal(() =>
       React.createElement(Confirm, {
