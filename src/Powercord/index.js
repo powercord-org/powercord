@@ -198,15 +198,23 @@ module.exports = class Powercord extends Updatable {
     if (success) {
       await exec('npm install --only=prod', { cwd: this.entityPath });
       const updater = this.pluginManager.get('pc-updater');
-      if (!document.querySelector('.powercord-updater') ||
-        require('powercord/webpack').getModule([ 'getCurrentUser' ], false).getCurrentUser().id === '610573816284053507' // @todo: consider removing this one day
-      ) {
-        updater.notify('Reload required to complete Powercord update', {
+      if (!document.querySelector('.powercord-toast')) {
+        updater.sendToast({
+          id: 'powercord-updater',
+          header: 'Update complete!',
+          content: 'Please click "Reload" to complete the final stages of this Powercord update.',
+          type: 'success',
+          buttons: [ {
           text: 'Reload',
+            color: 'brand',
+            hoverColor: 'green',
+            type: 'outlined',
           onClick: () => location.reload()
         }, {
           text: 'Postpone',
-          onClick: (close) => close()
+            color: 'grey',
+            type: 'outlined'
+          } ]
         });
       }
       updater.settings.set('awaiting_reload', true);

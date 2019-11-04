@@ -114,9 +114,7 @@ module.exports = class Updater extends Plugin {
             color: 'brand',
             hoverColor: 'green',
             type: 'outlined',
-            onClick: () => {
-              this.doUpdate();
-            }
+            onClick: () => this.doUpdate()
           }, {
             text: 'Open Updater',
             color: 'blue',
