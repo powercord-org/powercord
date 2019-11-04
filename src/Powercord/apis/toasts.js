@@ -26,7 +26,7 @@ module.exports = class Toasts extends API {
     this.toasts = [];
   }
 
-  registerToast ({ id, header, content, type, icon, style, imageClassName, buttons, callback }) {
+  registerToast ({ id, header, content, type, icon, style, imageClassName, buttons, callback, timeout }) {
     if (this.toasts.find(t => t.toast === id)) {
       return this.error(`ID ${id} is already used by another plugin!`);
     }
@@ -40,7 +40,8 @@ module.exports = class Toasts extends API {
       style,
       imageClassName,
       buttons,
-      callback
+      callback,
+      timeout
     });
   }
 

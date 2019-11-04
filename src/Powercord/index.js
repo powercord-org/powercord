@@ -205,13 +205,13 @@ module.exports = class Powercord extends Updatable {
           content: 'Please click "Reload" to complete the final stages of this Powercord update.',
           type: 'success',
           buttons: [ {
-          text: 'Reload',
+            text: 'Reload',
             color: 'brand',
             hoverColor: 'green',
             type: 'outlined',
-          onClick: () => location.reload()
-        }, {
-          text: 'Postpone',
+            onClick: () => location.reload()
+          }, {
+            text: 'Postpone',
             color: 'grey',
             type: 'outlined'
           } ]
