@@ -26,14 +26,14 @@ module.exports = class Toasts extends API {
     this.toasts = [];
   }
 
-  registerToast (id, ...props) {
+  registerToast (id, props) {
     if (this.toasts.find(t => t.toast === id)) {
       return this.error(`ID ${id} is already used by another plugin!`);
     }
 
     return this.toasts.push({
       id,
-      ...props[0]
+      ...props
     });
   }
 
@@ -41,8 +41,8 @@ module.exports = class Toasts extends API {
     this.toasts = this.toasts.filter(t => t.id !== toast);
   }
 
-  sendToast (id, ...props) {
-    this.registerToast(id, props[0]);
+  sendToast (id, props) {
+    this.registerToast(id, props);
     this.updateToastContainer();
   }
 
