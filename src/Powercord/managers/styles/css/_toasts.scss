@@ -33,40 +33,43 @@
   box-sizing: border-box;
   border-radius: 5px;
   position: absolute;
-  animation: slide-in 0.5s forwards;
+  animation: slide-in 0.5s forwards, shake 1.5s cubic-bezier(.36, .07, .19, .97) both;
+  max-width: 600px;
+  min-width: 223px;
   width: 320px;
   right: 25px;
   bottom: 25px;
 
   .header {
+    display: flex;
     color: var(--text-normal);
-    font-weight: 700;
+    font-weight: 600;
     font-size: 16px;
     line-height: 19px;
     background-color: var(--background-tertiary);
     box-shadow: 0 2px 3px 0 rgba(0, 0, 0, .2);
     border-radius: 5px 5px 0 0;
     padding: 12px 20px;
-    z-index: 2;
 
     .icon {
-      display: inline;
       margin-right: 5px;
+
+      img {
+        width: 18px;
+        height: 18px;
+      }
     }
 
     .dismiss {
-      position: absolute;
-      top: 1px;
-      right: 5px;
-      width: 36px;
-      height: 36px;
+      width: 20px;
+      height: 20px;
       background: url('/assets/7731c77d99babca1a8faec204d98c380.svg') no-repeat;
       background-position: 50% 55%;
       background-size: 10px 10px;
       opacity: 0.5;
       transition: opacity 0.2s;
+      margin-left: auto;
       cursor: pointer;
-      -webkit-app-region: no-drag;
 
       &:hover {
         opacity: 1;
@@ -82,21 +85,16 @@
     padding: 10px;
     justify-content: flex-end;
     flex-direction: column;
-    max-width: 320px;
 
     .content {
       color: var(--text-normal);
       font-size: 14px;
       line-height: 16px;
-      border-color: rgba(28, 36, 43, .6);
       background-color: #36393f;
-      transition: border-color .1s ease-in-out;
-      border-width: 2px;
-      border-style: solid;
+      border: 2px solid rgba(28, 36, 43, .6);
       border-radius: 5px;
       padding: 10px 6px;
       margin: 0 0 6px;
-      overflow: hidden;
     }
   }
 
@@ -108,16 +106,14 @@
     .button {
       box-sizing: border-box;
       min-width: calc(50% - 10px);
-      text-align: center;
       padding: 1.5%;
-      margin: 1.5% 5px;
-      cursor: pointer;
+      margin: 1.5% 3px;
       flex: 1;
     }
   }
 
   &.leaving {
-    animation: slide-out 0.7s forwards;
+    animation: slide-out 0.7s ease-out;
   }
 }
 
@@ -166,17 +162,34 @@ $types: (
 }
 
 /* animations */
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(1px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
 @keyframes slide-in {
   from {
     margin-right: -500px;
   }
-  to {}
 }
 
 @keyframes slide-out {
-  from {}
   to {
-    margin-right: -500px
+    margin-right: -500px;
+    opacity: 0;
   }
 }
  
