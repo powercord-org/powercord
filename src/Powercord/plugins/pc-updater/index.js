@@ -104,8 +104,7 @@ module.exports = class Updater extends Plugin {
       if (this.settings.get('automatic', false)) {
         this.doUpdate();
       } else if (!document.querySelector('.powercord-toast')) {
-        this.sendToast({
-          id: 'powercord-updater',
+        this.sendToast('powercord-updater', {
           header: 'Updates are available!',
           content: 'Click "Update" to update now or "Open Updater" to find out more.',
           icon: 'wrench',
@@ -155,8 +154,7 @@ module.exports = class Updater extends Plugin {
       this.settings.set('failed', true);
       this.settings.set('updates', failed);
       if (!document.querySelector('.powercord-toast')) {
-        this.sendToast({
-          id: 'powercord-updater',
+        this.sendToast('powercord-updater', {
           header: 'Some updates failed to install...',
           type: 'error',
           buttons: [ {

@@ -199,8 +199,7 @@ module.exports = class Powercord extends Updatable {
       await exec('npm install --only=prod', { cwd: this.entityPath });
       const updater = this.pluginManager.get('pc-updater');
       if (!document.querySelector('.powercord-toast')) {
-        updater.sendToast({
-          id: 'powercord-updater',
+        updater.sendToast('powercord-updater', {
           header: 'Update complete!',
           content: 'Please click "Reload" to complete the final stages of this Powercord update.',
           type: 'success',
