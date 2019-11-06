@@ -34,7 +34,7 @@ module.exports = class Updater extends Plugin {
     }
 
     this._interval = setInterval(this.checkForUpdates.bind(this), minutes * 60 * 1000);
-    // this.checkForUpdates();
+    this.checkForUpdates();
 
     const lastChangelog = this.settings.get('last_changelog', '');
     if (changelog.id !== lastChangelog) {
@@ -103,21 +103,20 @@ module.exports = class Updater extends Plugin {
     if (updates.length > 0) {
       if (this.settings.get('automatic', false)) {
         this.doUpdate();
-      } else if (!document.querySelector('.powercord-toast')) {
+      } else if (!document.querySelector('#powercord-updater')) {
         this.sendToast('powercord-updater', {
           header: 'Updates are available!',
           content: 'Click "Update" to update now or "Open Updater" to find out more.',
           icon: 'wrench',
           buttons: [ {
             text: 'Update',
-            color: 'brand',
-            hoverColor: 'green',
-            type: 'outlined',
+            color: 'green',
+            look: 'outlined',
             onClick: () => this.doUpdate()
           }, {
             text: 'Open Updater',
             color: 'blue',
-            type: 'ghost',
+            look: 'ghost',
             onClick: async () => {
               const settingsModule = await getModule([ 'open', 'saveAccountChanges' ]);
               settingsModule.open('pc-updater');
@@ -153,22 +152,22 @@ module.exports = class Updater extends Plugin {
     if (failed.length > 0) {
       this.settings.set('failed', true);
       this.settings.set('updates', failed);
-      if (!document.querySelector('.powercord-toast')) {
+      if (!document.querySelector('#powercord-updater')) {
         this.sendToast('powercord-updater', {
           header: 'Some updates failed to install...',
           type: 'error',
           buttons: [ {
             text: 'Force Update',
-            danger: true,
+            color: 'red',
             onClick: () => this.askForce()
           }, {
             text: 'Ignore',
-            type: 'outlined',
+            look: 'outlined',
             color: 'grey'
           }, {
             text: 'Open Updater',
             color: 'blue',
-            type: 'ghost',
+            look: 'ghost',
             onClick: async () => {
               const settingsModule = await getModule([ 'open', 'saveAccountChanges' ]);
               settingsModule.open('pc-updater');
@@ -301,7 +300,11 @@ module.exports = class Updater extends Plugin {
 
         renderFooter () {
           const footer = super.renderFooter();
-          footer.props.children = changelog.footer;
+          footer.props.children = React.createElement('span', {
+            dangerouslySetInnerHTML: {
+              __html: changelog.footer
+            }
+          });
           return footer;
         }
 

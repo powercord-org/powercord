@@ -24,7 +24,7 @@ module.exports = class Soon extends React.Component {
         >Open Themes Folder</a>
       </div>
       <div>
-        <a href='https://epic.weeb.services/2db734db2b.png' target='_blank'>Marvin did this :eyes:</a>
+        <a href='https://figma.com/file/WFNUFYEVYMTZf5YHDvFLdI' target='_blank'>Marvin did this :eyes:</a>
       </div>
     </div>;
   }

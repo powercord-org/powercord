@@ -17,55 +17,53 @@
  */
 
 const { API } = require('powercord/entities');
-const { getOwnerInstance, waitFor } = require('powercord/util');
 
-module.exports = class Toasts extends API {
+module.exports = class Notices extends API {
   constructor () {
     super();
 
-    this.toasts = [];
+    this.announcements = {};
+    this.toasts = {};
   }
 
-  registerToast (id, props) {
-    if (this.toasts.find(t => t.toast === id)) {
+  sendAnnouncement (id, props) {
+    if (this.announcements[id]) {
       return this.error(`ID ${id} is already used by another plugin!`);
     }
 
-    return this.toasts.push({
-      id,
-      ...props
-    });
+    this.announcements[id] = props;
+    this.emit('announcementAdded', id);
   }
 
-  unregisterToast (toast) {
-    this.toasts = this.toasts.filter(t => t.id !== toast);
+  closeAnnouncement (id) {
+    if (!this.announcements[id]) {
+      return;
+    }
+
+    delete this.announcements[id];
+    this.emit('announcementClosed', id);
   }
 
   sendToast (id, props) {
-    this.registerToast(id, props);
-    this.updateToastContainer();
+    if (this.toasts[id]) {
+      return this.error(`ID ${id} is already used by another plugin!`);
+    }
+
+    this.toasts[id] = props;
+    this.emit('toastAdded', id);
   }
 
   closeToast (id) {
-    const toast = this.toasts.find(toast => toast.id === id);
-    if (toast) {
-      if (toast.callback && typeof toast.callback === 'function') {
-        toast.callback();
-      }
-
-      toast.leaving = true;
+    const toast = this.toasts[id];
+    if (!toast) {
+      return;
     }
 
-    this.updateToastContainer();
+    if (toast.callback && typeof toast.callback === 'function') {
+      toast.callback();
+    }
 
-    setTimeout(() => {
-      this.unregisterToast(id);
-      this.updateToastContainer();
-    }, 500);
-  }
-
-  async updateToastContainer () {
-    const toastsContainer = await waitFor('.powercord-toastsContainer');
-    return getOwnerInstance(toastsContainer)._reactInternalFiber.return.stateNode.forceUpdate();
+    this.emit('toastLeaving', id);
+    setTimeout(() => delete this.toasts[id], 500);
   }
 };
