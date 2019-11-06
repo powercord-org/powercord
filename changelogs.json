@@ -1,63 +1,51 @@
 {
-  "id": "updater-24-10-19",
-  "date": "2019-10-24",
+  "id": "toast-06-11-19",
+  "date": "2019-11-06",
+  "image": "https://epic.weeb.services/1247d7bb1f.png",
   "contents": [
     {
       "type": "HEADER",
       "color": "GREEN",
-      "text": "Updater 2.0 is here!",
+      "text": "Improved Toaster",
       "noMargin": true
     },
     {
       "type": "CONTENTS",
-      "text": "We FINALLY made a proper updater within Powercord, able to update more than just Powercord. It also does come with some new features, including the one you're looking at right now, **change logs**.",
+      "text": "Powercord will now bake better toasts, with pre-applied butter or whatever you like to put on them.",
       "list": [
-        "**Plugin and themes** will now be handled by the updater.",
-        "**Update conflicts** can now be solved within the UI, instead of telling you to do it manually.",
-        "**Updater interface got a redesign**, you should definitely check it out after reading this changelog.",
-        "**You can now decide to completely skip an update**, and disable specific ones. There is also a button that lets you pause updates until next reload."
+        "**100% more cute**, because Harley did a good job.",
+        "**They are now part of the public plugin API** meaning you can make use of them in your plugins. Isn't that nice?",
+        "**Announcements are also part of the public API**, so if you want to send them you can!"
       ]
     },
     {
       "type": "HEADER",
       "color": "RED",
-      "text": "RIP Beta Tester"
+      "text": "Have a red category"
     },
     {
       "type": "CONTENTS",
-      "text": "As some people already did notice, **we removed the beta tester badge and role** in our server. However if you feel too sad, you can [donate to Powercord](https://patreon.com/aetheryx) to customize your badges color ($1) or **get a customizable badge** ($5) for extra profile swag. There's always a solution to your problems."
-    },
-    {
-      "type": "HEADER",
-      "color": "GREEN",
-      "text": "Some small features that got added"
-    },
-    {
-      "type": "CONTENTS",
-      "list": [
-        "**Added some error-handling** to the settings panels, it'll no longer make the whole settings page go blank if something goes wrong.",
-        "We rewrote some UIs to use Discord's internal components, so Powercord's settings panels should be **even more theme friendly**.",
-        "Some advanced features that require a restart now prompt you to restart Discord.",
-        "Announcements at the top of the window now shows from which plugin it's from, to prevent potential abuse.",
-        "Fixed a few broken components and added new pre-exported components for UI makers.",
-        "Fixed a bug where emma wasn't cute."
-      ]
+      "text": "Just wanted a second red category, because red is a cool color."
     },
     {
       "type": "HEADER",
       "color": "ORANGE",
-      "text": "Future updates and features"
+      "text": "More cool stuff"
     },
     {
       "type": "CONTENTS",
-      "text": "There are a LOT of features we want to implement in Powercord, and here are a few of them that'll hopefully implement soon:",
       "list": [
-        "Functional plugin manager. You heard me right, this will happen!!1!",
-        "Style manager, with customization features without needing any JS because a theme that requires JS is gross.",
-        "A better user interface to manage [donor](https://patreon.com/aetheryx) features such as badges color and custom badge without having to ping a developer.",
-        "And of course, best features of all time: [your features](https://github.com/powercord-org/powercord/issues)."
+        "**Updater got some tweaking** to help it not explode while updating. I thought it's be cool.",
+        "**Removed a spoiler** because spoilers are bad. I'm sure no one noticed it was here. And if you did, you saw nothing ok?",
+        "**Added a spoiler** because spoilers are cool. I'm sure you'll like it. It's about a wanted feature. That is cool.",
+        "**First install banner**'s \"Join Server\" button will now **open an invite prompt first**, instead of immediately dropping you into the server.",
+        "**Documentation is coming soon**, and most of the work client-side is done :zoomeyes:. We just need to write them now... Seeya in a few years! <3 After all, what is 10 years on the scale of the universe? Nothing right?",
+        "**Custom Route API** is here, which lets plugins register new React routes for more complex UIs. It is still experimental and subject to breaking changes.",
+        "**Backend API v2 is being worked on**, which will ship a lot of features that'll be then used in Powercord (like plugin installer OwO whats this).",
+        "Various tweaking and fixing to make Powercord overall more stable.",
+        "Increased emma's cuteness."
       ]
     }
   ],
-  "footer": "OwO whats this"
+  "footer": "Donate for #TeamTrees at <a href='https://teamtrees.org' target='_blank'>teamtrees.org</a>."
 }

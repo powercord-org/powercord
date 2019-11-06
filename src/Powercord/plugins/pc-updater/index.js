@@ -269,6 +269,7 @@ module.exports = class Updater extends Plugin {
     if (!this._ChangeLog) {
       const _this = this;
       const changeLogModule = await getModule([ 'changeLog' ]);
+      const { video } = await getModule([ 'video', 'added' ]);
       const DiscordChangeLog = await getModuleByDisplayName('ChangeLog');
 
       class ChangeLog extends DiscordChangeLog {
@@ -295,7 +296,15 @@ module.exports = class Updater extends Plugin {
         }
 
         renderVideo () {
-          return null;
+          if (!changelog.image) {
+            return null;
+          }
+
+          return React.createElement('img', {
+            src: changelog.image,
+            className: video,
+            alt: ''
+          });
         }
 
         renderFooter () {
