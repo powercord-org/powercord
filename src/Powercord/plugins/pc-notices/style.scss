@@ -1,3 +1,21 @@
+/*======== CSS Variables ========*/
+.theme-dark {
+  --toast-background: #2f3136;
+  --toast-header: #202225;
+  --toast-contents: #36393f;
+  --toast-box-shadow: rgba(0, 0, 0, .2);
+  --toast-border: rgba(28, 36, 43, .6);
+}
+
+.theme-light {
+  --toast-background: #fff;
+  --toast-header: #e3e5e8;
+  --toast-contents: #f2f3f5; 
+  --toast-box-shadow: rgba(0, 0, 0, .1);
+  --toast-border: rgba(28, 36, 43, .06);
+}
+
+/*======== Toast Styling ========*/
 .powercord-toasts-container {
   display: flex;
   flex-direction: column;
@@ -8,9 +26,9 @@
 .powercord-toast {
   display: flex;
   flex-direction: column;
-  background-color: var(--background-secondary);
-  border: 1px solid rgba(28, 36, 43, .6);
-  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, .2);
+  background-color: var(--toast-background);
+  border: 1px solid var(--toast-border);
+  box-shadow: 0 2px 10px 0 var(--toast-box-shadow);
   box-sizing: border-box;
   border-radius: 5px;
   position: absolute;
@@ -20,7 +38,7 @@
   width: 320px;
   right: 25px;
   bottom: 25px;
-  z-index: 9999;
+  z-index: 999;
 
   .header {
     display: flex;
@@ -29,7 +47,7 @@
     font-size: 16px;
     line-height: 19px;
     background-color: var(--background-tertiary);
-    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, .2);
+    box-shadow: 0 2px 3px 0 var(--toast-box-shadow);
     border-radius: 5px 5px 0 0;
     padding: 12px 20px;
 
@@ -70,8 +88,8 @@
       color: var(--text-normal);
       font-size: 14px;
       line-height: 16px;
-      background-color: #36393f;
-      border: 2px solid rgba(28, 36, 43, .6);
+      background-color: var(--toast-contents);
+      border: 2px solid var(--toast-border);
       border-radius: 5px;
       padding: 10px 6px;
       margin: 0 0 6px;
@@ -108,36 +126,17 @@
   }
 }
 
-/* light theme */
+/*========= Light Theme =========*/
 .theme-light .powercord-toast {
-  background-color: #fff;
   border: 1px solid hsla(0, 0%, 74.9%, .3);
-  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, .1);
-
-  .header {
-    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, .1);
-
-    .dismiss {
-      filter: brightness(.6);
-    }
-  }
-
-  .contents {
-    background-color: #fff;
-
-    .inner {
-      background-color: #fff;
-      border-color: rgba(28, 36, 43, .06);
-    }
-  }
 }
 
-/* header types */
+/*========= Header Types =========*/
 $types: (
-        info: #7289da,
-        warning: #faa61a,
-        danger: #f04747,
-        success: #43b581
+  info: #7289da,
+  warning: #faa61a,
+  danger: #f04747,
+  success: #43b581
 );
 
 .powercord-toast {
@@ -150,7 +149,7 @@ $types: (
   }
 }
 
-/* animations */
+/*========== Animations ==========*/
 @keyframes shake {
   10%, 90% {
     transform: translate3d(1px, 0, 0);

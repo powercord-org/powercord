@@ -24,9 +24,14 @@ module.exports = class Router extends Plugin {
     const RouteRenderer = getOwnerInstance(await waitFor(`.${container.split(' ')[0]}`));
 
     inject('pc-router-route', RouteRenderer.__proto__, 'render', (args, res) => {
-      res.props.children[1].props.children[2].props.children[1].props.children.push(
+      const { props: { children } } = findInTree(res, n => (
+        n && n.type && n.type.name === 't' &&
+        n.props && n.props.children
+      ));
+
+      children.push(
         ...powercord.api.router.routes.map(route => ({
-          ...res.props.children[1].props.children[2].props.children[1].props.children[0],
+          ...children[0],
           props: {
             // @todo: Error boundary
             render: () => React.createElement(route.render),
@@ -34,6 +39,7 @@ module.exports = class Router extends Plugin {
           }
         }))
       );
+
       return res;
     });
 
