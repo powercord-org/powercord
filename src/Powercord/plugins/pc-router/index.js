@@ -38,14 +38,21 @@ module.exports = class Router extends Plugin {
     });
 
     inject('pc-router-router', ViewsWithMainInterface.prototype, 'render', (args, res) => {
+      const routes = findInTree(res, n => (
+        Array.isArray(n) && n[0] &&
+        n[0].key &&
+        n[0].props.path && n[0].props.render
+      ));
+
       powercord.api.router.routes.forEach(route => {
-        res.props.children[0].props.children[1].push(
+        routes.push(
           React.createElement(Route, {
             path: `/_powercord${route.path}`,
             render: () => React.createElement(AppView)
           })
         );
       });
+
       return res;
     });
 
