@@ -1,7 +1,7 @@
 const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
 const { React, getModule, getAllModules, getModuleByDisplayName, Router: { Route } } = require('powercord/webpack');
-const { getOwnerInstance, waitFor } = require('powercord/util');
+const { findInTree, getOwnerInstance, waitFor } = require('powercord/util');
 
 module.exports = class Router extends Plugin {
   async startPlugin () {
@@ -21,7 +21,7 @@ module.exports = class Router extends Plugin {
     const AppView = await getModuleByDisplayName('FluxContainer(AppView)');
     const ViewsWithMainInterface = await getModuleByDisplayName('ViewsWithMainInterface');
     const { container } = await getModule([ 'container', 'downloadProgressCircle' ]);
-    const RouteRenderer = getOwnerInstance(await waitFor(`.${container.replace(/ /g, '.')}`));
+    const RouteRenderer = getOwnerInstance(await waitFor(`.${container.split(' ')[0]}`));
 
     inject('pc-router-route', RouteRenderer.__proto__, 'render', (args, res) => {
       res.props.children[1].props.children[2].props.children[1].props.children.push(
@@ -54,9 +54,7 @@ module.exports = class Router extends Plugin {
 
   async _rerender () {
     const { app } = getAllModules([ 'app' ]).find(m => Object.keys(m).length === 1);
-    // i'm proud of this shit ok
-    getOwnerInstance(await waitFor(`.${app.replace(/ /g, '.')}`))
-      ._reactInternalFiber.child.child.child.child.child.child.child.child.child.child.child.child
-      .stateNode.forceUpdate();
+    const instance = getOwnerInstance(await waitFor(`.${app.split(' ')[0]}`));
+    findInTree(instance._reactInternalFiber, n => n && n.historyUnlisten, { walkable: [ 'child', 'stateNode' ] }).forceUpdate();
   }
 };

@@ -11,7 +11,7 @@ module.exports = class Title extends React.Component {
   }
 
   render () {
-    const titleElement = document.querySelector(`.${this.props.className.replace(/ /g, '.')}`);
+    const titleElement = document.querySelector(`.${this.props.className.split(' ')[0]}`);
     this.canvas.font = titleElement ? getComputedStyle(titleElement).font : null;
     const titleWidth = Math.ceil(this.canvas.measureText(this.props.children).width) + 8;
     const animationDuration = (titleWidth - 78) * 90;

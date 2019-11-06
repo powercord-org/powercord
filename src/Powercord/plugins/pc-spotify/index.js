@@ -61,7 +61,7 @@ module.exports = class Spotify extends Plugin {
     uninject('pc-spotify-update');
     uninject('pc-spotify-premium');
 
-    getOwnerInstance(document.querySelector(`.${this.containerClasses.container.replace(/ /g, '.')}:not([id])`)).forceUpdate();
+    getOwnerInstance(document.querySelector(`.${this.containerClasses.container.split(' ')[0]}:not([id])`)).forceUpdate();
     powercord.off('webSocketMessage:dealer.spotify.com', this._handler);
 
     const el = document.querySelector('#powercord-spotify-modal');
@@ -86,7 +86,7 @@ module.exports = class Spotify extends Plugin {
   }
 
   async _injectModal () {
-    const container = await waitFor(`.${this.containerClasses.container.replace(/ /g, '.')}`);
+    const container = await waitFor(`.${this.containerClasses.container.split(' ')[0]}`);
     const instance = getOwnerInstance(container);
 
     const modal = React.createElement(this.settings.connectStore(Modal), { main: this });
@@ -96,7 +96,7 @@ module.exports = class Spotify extends Plugin {
 
   async _injectListeningAlong () {
     const classes = await getModule([ 'listeningAlong' ]);
-    const listeningAlong = await waitFor(`.${classes.listeningAlong.replace(/ /g, '.')}`);
+    const listeningAlong = await waitFor(`.${classes.listeningAlong.split(' ')[0]}`);
     const instance = getOwnerInstance(listeningAlong);
     await inject('pc-spotify-listeningAlong', instance.__proto__, 'render', (_, res) => {
       this._listeningAlongComponent = res;

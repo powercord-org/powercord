@@ -61,7 +61,7 @@ module.exports = class TitleBarGames extends Plugin {
   async patchTitlebar () {
     const _this = this;
 
-    const titleBar = await waitFor(`.${this.titleBarClass.titleBar.replace(/ /g, '.')}`);
+    const titleBar = await waitFor(`.${this.titleBarClass.titleBar.split(' ')[0]}`);
     const instance = getOwnerInstance(titleBar);
 
     const DirectTitleBarComponent = instance._reactInternalFiber.child.child.type;

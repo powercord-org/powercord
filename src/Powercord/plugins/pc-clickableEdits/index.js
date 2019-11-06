@@ -31,8 +31,8 @@ module.exports = class ClickableEdits extends Plugin {
   async patchMessageContent () {
     const _this = this;
 
-    const messageClasses = (await getModule([ 'container', 'messageCompact' ]));
-    const messageQuery = `.${messageClasses.content.replace(/ /g, '.')}`;
+    const messageClasses = await getModule([ 'container', 'messageCompact' ]);
+    const messageQuery = `.${messageClasses.content.split(' ')[0]}`;
 
     const instance = getOwnerInstance(await waitFor(messageQuery));
     const currentUser = (await getModule([ 'getCurrentUser' ])).getCurrentUser();
@@ -75,11 +75,11 @@ module.exports = class ClickableEdits extends Plugin {
       if (this.settings.get('dualControlEdits', false) ? dualControl : this.settings.get('useShiftKey', false) ? shiftKey : doubleClick) {
         if (e.target.className && (e.target.className.includes('markup') || e.target.className.includes('container'))) {
           const { textAreaEdit } = this.state.messageClasses;
-          const { startEditMessage: editMessage } = (await getModule([ 'editMessage' ]));
+          const { startEditMessage: editMessage } = await getModule([ 'editMessage' ]);
           editMessage(args[0], args[1], args[2]);
 
           setTimeout(() => {
-            const elem = document.getElementsByClassName(textAreaEdit.replace(/ /g, '.'))[0];
+            const elem = document.getElementsByClassName(textAreaEdit.split(' ')[0])[0];
             if (elem) {
               elem.focus();
               elem.setSelectionRange(elem.value.length, elem.value.length);

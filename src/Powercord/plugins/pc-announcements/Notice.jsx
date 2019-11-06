@@ -16,7 +16,7 @@ const Notice = class Notice extends React.Component {
 
   async componentDidMount () {
     if (!this.classesStore) {
-      const classes = (await getModule([ 'noticeBrand' ]));
+      const classes = await getModule([ 'noticeBrand' ]);
 
       this.setState({
         types: {

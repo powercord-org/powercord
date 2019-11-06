@@ -14,7 +14,7 @@ module.exports = class HeaderIcon extends React.PureComponent {
   }
 
   async componentDidMount () {
-    const classes = (await getModule([ 'iconWrapper', 'selected' ]));
+    const classes = await getModule([ 'iconWrapper', 'selected' ]);
     this.setState({ classes });
   }
 

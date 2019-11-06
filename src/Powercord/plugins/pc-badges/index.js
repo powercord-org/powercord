@@ -23,7 +23,7 @@ module.exports = class Badges extends Plugin {
     };
 
     Object.keys(this.badgeClasses).forEach(
-      key => this.badgeClasses[key] = `.${this.badgeClasses[key].replace(/ /g, '.')}`
+      key => this.badgeClasses[key] = `.${this.badgeClasses[key].split(' ')[0]}`
     );
 
     this.loadCSS(resolve(__dirname, 'style.scss'));

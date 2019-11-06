@@ -1,7 +1,7 @@
 const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
 const { ReactDOM, React, getModule, getModuleByDisplayName } = require('powercord/webpack');
-const { sleep, createElement, forceUpdateElement, getOwnerInstance } = require('powercord/util');
+const { sleep, createElement, forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 const { ContextMenu: { Submenu } } = require('powercord/components');
 
 const Settings = require('./components/Settings');
@@ -18,7 +18,7 @@ module.exports = class Translate extends Plugin {
     };
 
     Object.keys(this.messageClasses)
-      .forEach(key => this.messageClasses[key] = `.${this.messageClasses[key].replace(/ /g, '.')}`);
+      .forEach(key => this.messageClasses[key] = `.${this.messageClasses[key].split(' ')[0]}`);
 
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this.registerSettings('pc-translate', 'Translate', props => React.createElement(Settings, {
@@ -141,11 +141,17 @@ module.exports = class Translate extends Plugin {
       _this.state.original = _this.state.original || target.value;
 
       const setText = async (opts) => {
-        const { messagesWrapper } = (await getModule([ 'messagesWrapper' ]));
-        const buttonClasses = (await getModule([ 'channelTextArea', 'inner' ]));
+        const classes = {
+          ...await getModule([ 'uploadModal' ]),
+          ...await getModule([ 'messagesWrapper' ]),
+          ...await getModule([ 'channelTextArea', 'inner' ])
+        };
 
-        const textArea = getOwnerInstance(document.querySelector(`.${messagesWrapper.replace(/ /g, '.')} + form`));
+        const textArea = getOwnerInstance(await waitFor(`.${classes.messagesWrapper.split(' ')[0]} + form`));
         const selectedText = (await getModule([ 'getSelectionText' ])).getSelectionText();
+        const uploadModal = document.querySelector(`.${classes.uploadModal.split(' ')[0]}`)
+          ? getOwnerInstance(document.querySelector(`.${classes.uploadModal.split(' ')[0]}`))
+          : null;
 
         let value = selectedText.length > 0 ? selectedText : target.value;
 
@@ -158,22 +164,22 @@ module.exports = class Translate extends Plugin {
             `${target.value.slice(target.selectionEnd)}`;
         }
 
-        textArea.setState({ textValue: value });
+        (uploadModal !== null ? uploadModal : textArea).setState({ textValue: value });
 
         if (document.getElementById('powercord-translate-resetButton')) {
           return;
         }
 
-        const textAreaButtons = document.getElementsByClassName(buttonClasses.buttons)[0];
+        const textAreaButtons = document.getElementsByClassName(classes.buttons)[uploadModal !== null ? 1 : 0];
         const buttonContainer = createElement('div', { id: 'powercord-translate-resetButton',
-          className: buttonClasses.buttonContainer });
+          className: classes.buttonContainer });
 
         textAreaButtons.insertBefore(buttonContainer, textAreaButtons.firstChild);
 
         const ResetButton = require('./components/ResetButton.jsx');
         ReactDOM.render(React.createElement(ResetButton, {
           onClick: () => {
-            textArea.setState({ textValue: _this.state.original });
+            (uploadModal !== null ? uploadModal : textArea).setState({ textValue: _this.state.original });
 
             _this.removeResetButton();
           }

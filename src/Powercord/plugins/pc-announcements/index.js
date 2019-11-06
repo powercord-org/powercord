@@ -19,7 +19,7 @@ module.exports = class Announcements extends Plugin {
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.css'));
     const classes = await getModule([ 'base', 'container' ]);
-    this.noticeQuery = `.${classes.base.replace(/ /g, '.')}`;
+    this.noticeQuery = `.${classes.base.split(' ')[0]}`;
 
     this._patchNotices();
     const injectedFile = resolve(__dirname, '..', '..', '..', '__injected.txt');
@@ -34,9 +34,9 @@ module.exports = class Announcements extends Plugin {
           onClick: async () => {
             this.closeNotice('pc-first-welcome');
 
-            const { getGuilds } = (await getModule([ 'getGuilds' ]));
-            const { acceptInvite } = (await getModule([ 'acceptInvite' ]));
-            const { transitionToGuildSync } = (await getModule([ 'selectGuild' ]));
+            const { getGuilds } = await getModule([ 'getGuilds' ]);
+            const { acceptInvite } = await getModule([ 'acceptInvite' ]);
+            const { transitionToGuildSync } = await getModule([ 'selectGuild' ]);
 
             if (!getGuilds()[GUILD_ID]) {
               return acceptInvite(DISCORD_INVITE, {}, () => {

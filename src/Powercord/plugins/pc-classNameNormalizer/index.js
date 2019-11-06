@@ -41,7 +41,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
       return res;
     });
 
-    const guildHeaderQuery = `.${(await getModule([ 'iconBackgroundTierNone', 'container' ])).header.replace(/ /g, '.')}`;
+    const guildHeaderQuery = `.${(await getModule([ 'iconBackgroundTierNone', 'container' ])).header.split(' ')[0]}`;
     if (document.querySelector(guildHeaderQuery)) {
       forceUpdateElement(guildHeaderQuery);
     }
@@ -50,7 +50,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
   /* Credit goes to Cadence#3263 for partially coming up with and writing this implementation */
   async renderGuildClasses () {
     const guildClasses = await getModule([ 'blobContainer' ]);
-    const guildElement = (await waitFor(`.${guildClasses.blobContainer.replace(/ /g, '.')}`)).parentElement;
+    const guildElement = (await waitFor(`.${guildClasses.blobContainer.split(' ')[0]}`)).parentElement;
     const instance = getOwnerInstance(guildElement);
     inject('pc-cnn-gc', instance.__proto__, 'render', function (_, res) {
       // const { hovered } = res._owner.memoizedState;
@@ -71,12 +71,12 @@ module.exports = class ClassNameNormalizer extends Plugin {
       return res;
     });
 
-    forceUpdateElement(`.${guildElement.className.replace(/ /g, '.')}`, true);
+    forceUpdateElement(`.${guildElement.className.split(' ')[0]}`, true);
   }
 
   async renderFolderClasses () {
     const folderClasses = await getModule([ 'wrapper', 'folder' ]);
-    const instance = getOwnerInstance(await waitFor(`.${folderClasses.wrapper.replace(/ /g, '.')}`));
+    const instance = getOwnerInstance(await waitFor(`.${folderClasses.wrapper.split(' ')[0]}`));
     inject('pc-cnn-fc', instance.__proto__, 'render', function (_, res) {
       // const { hovered } = res._owner.memoizedState;
       const { audio, badge: mentions, selected, expanded, unread, video } = this.props;
@@ -95,7 +95,7 @@ module.exports = class ClassNameNormalizer extends Plugin {
       return res;
     });
 
-    forceUpdateElement(`.${folderClasses.wrapper.replace(/ /g, '.')}`, true);
+    forceUpdateElement(`.${folderClasses.wrapper.split(' ')[0]}`, true);
   }
 
   /*
