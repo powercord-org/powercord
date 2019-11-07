@@ -155,10 +155,11 @@ module.exports = class Updater extends Plugin {
       if (!document.querySelector('#powercord-updater')) {
         this.sendToast('powercord-updater', {
           header: 'Some updates failed to install...',
-          type: 'error',
+          type: 'danger',
           buttons: [ {
             text: 'Force Update',
             color: 'red',
+            look: 'outlined',
             onClick: () => this.askForce()
           }, {
             text: 'Ignore',
