@@ -22,6 +22,7 @@ module.exports = class Updater extends Plugin {
 
   async startPlugin () {
     this.settings.set('paused', false);
+    this.settings.set('failed', false);
     this.settings.set('updating', false);
     this.settings.set('awaiting_reload', false);
     this.loadCSS(resolve(__dirname, 'style.scss'));
