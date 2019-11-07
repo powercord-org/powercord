@@ -10,7 +10,7 @@
 .theme-light {
   --toast-background: #fff;
   --toast-header: #e3e5e8;
-  --toast-contents: #f2f3f5; 
+  --toast-contents: #f2f3f5;
   --toast-box-shadow: rgba(0, 0, 0, .1);
   --toast-border: rgba(28, 36, 43, .06);
 }
@@ -101,7 +101,7 @@
     flex-wrap: wrap;
     display: flex;
     width: 100%;
-    padding: 0 10px 10px;
+    padding: 10px;
 
     button {
       box-sizing: border-box;
@@ -119,6 +119,10 @@
         }
       }
     }
+  }
+
+  .contents + .buttons {
+    padding-top: 0;
   }
 
   &.leaving {

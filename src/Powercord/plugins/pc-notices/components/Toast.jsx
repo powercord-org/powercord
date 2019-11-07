@@ -80,7 +80,7 @@ class Toast extends React.PureComponent {
   }
 
   renderButtons () {
-    return <div className='buttons' style={this.props.content ? {} : { paddingTop: '10px' }}>
+    return <div className='buttons'>
       {this.props.buttons.map((button, i) => {
         const btnProps = {};
         [ 'size', 'look', 'color' ].forEach(prop => {
