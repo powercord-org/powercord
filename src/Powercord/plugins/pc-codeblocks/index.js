@@ -84,7 +84,7 @@ module.exports = class Codeblocks extends Plugin {
         const lang = children.props.className.split(' ').find(c => !c.includes('-') && c !== 'hljs');
 
         if (children.props.dangerouslySetInnerHTML) {
-          children.props.children = _this.renderCodeblock(lang, children.props.dangerouslySetInnerHTML.__html);
+          children.props.children = _this.renderCodeblock(lang, children.props.dangerouslySetInnerHTML);
 
           delete children.props.dangerouslySetInnerHTML;
         } else if (typeof children.props.children === 'string') {
@@ -98,10 +98,11 @@ module.exports = class Codeblocks extends Plugin {
 
   renderCodeblock (lang, innerHTML) {
     const children = [];
+    const isDangerouslySetInnerHTML = typeof innerHTML === 'object';
 
     children.push(React.createElement('div', {
-      dangerouslySetInnerHTML: { __html: innerHTML }
-    }), React.createElement('div', {
+      dangerouslySetInnerHTML: isDangerouslySetInnerHTML ? innerHTML : null
+    }, isDangerouslySetInnerHTML ? null : innerHTML), React.createElement('div', {
       className: 'powercord-codeblock-lang'
     }, lang), React.createElement('div', {
       className: 'powercord-lines'
