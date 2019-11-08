@@ -6,6 +6,7 @@ const { resolve } = require('path');
 
 module.exports = class Codeblocks extends Plugin {
   async startPlugin () {
+    return;
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this.patchEmbed();
     this.patchMessageContent();
