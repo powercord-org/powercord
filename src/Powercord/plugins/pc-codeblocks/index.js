@@ -1,6 +1,7 @@
 const { Plugin } = require('powercord/entities');
 const { React, getModuleByDisplayName } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
+const { findInTree } = require('powercord/util');
 const { clipboard } = require('electron');
 const { resolve } = require('path');
 
@@ -73,7 +74,9 @@ module.exports = class Codeblocks extends Plugin {
   injectCodeblock (codeblock) {
     const _this = this;
 
-    if (codeblock.props && codeblock.props.renderFallback) {
+    codeblock = findInTree(codeblock, n => n.type && n.type.name === '');
+
+    if (codeblock && codeblock.props && codeblock.props.renderFallback) {
       const { render } = codeblock.props;
 
       codeblock.props.render = function (t) {
