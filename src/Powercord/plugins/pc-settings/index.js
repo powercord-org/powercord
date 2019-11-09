@@ -30,6 +30,9 @@ module.exports = class Settings extends Plugin {
       Object.defineProperty(experimentsModule, 'isDeveloper', {
         get: () => powercord.settings.get('experiments', false)
       });
+
+      // Ensure components do get the update
+      experimentsModule._changeCallbacks.forEach(cb => cb());
     } catch (_) {
       // memes
     }

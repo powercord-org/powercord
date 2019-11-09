@@ -1,5 +1,5 @@
 const { remote } = require('electron');
-const { React } = require('powercord/webpack');
+const { React, getModule } = require('powercord/webpack');
 const { WEBSITE } = require('powercord/constants');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { TextInput, SwitchItem, ButtonItem, Category } = require('powercord/components/settings');
@@ -113,7 +113,12 @@ module.exports = class GeneralSettings extends React.Component {
                   Powercord is <b>not responsible</b> for what you do with this feature. Leave it disabled if you are unsure. The Powercord Team will not provide any support regarding any experiment.</span>
             }
             value={getSetting('experiments', false)}
-            onChange={() => toggleSetting('experiments')}
+            onChange={async () => {
+              toggleSetting('experiments');
+              // Update modules
+              const experimentsModule = await getModule(r => r.isDeveloper !== void 0);
+              experimentsModule._changeCallbacks.forEach(cb => cb());
+            }}
           >
             Enable Discord Experiments
           </SwitchItem>
