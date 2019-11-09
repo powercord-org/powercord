@@ -13,8 +13,9 @@ module.exports = async function injectAutocomplete () {
   }
 
   const inject = () => {
-    this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS = {
-      getText: (index, { commands }) => powercord.api.commands.prefix + commands[index].command,
+    const powercordCommands = {
+      getPlainText: (index, { commands }) => powercord.api.commands.prefix + commands[index].command,
+      getRawText: (...args) => powercordCommands.getPlainText(...args),
       matches: (isValid) => (
         isValid &&
         this.instance.props.value.startsWith(powercord.api.commands.prefix) &&
@@ -103,8 +104,8 @@ module.exports = async function injectAutocomplete () {
       return autocompleteRows;
     };
 
-    this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS_AUTOCOMPLETE = {
-      getText: (index, { commands }) => {
+    const powercordAutocomplete = {
+      getPlainText: (index, { commands }) => {
         if (commands[index].wildcard) {
           state = true;
           setImmediate(() => {
@@ -127,10 +128,12 @@ module.exports = async function injectAutocomplete () {
 
         return commands[index].command;
       },
-      matches: () => powercord.api.commands.commands
-        .filter(command => command.autocompleteFunc)
-        .some(currentCommandFilter) &&
-          autocompleteFunc(),
+      getRawText: (...args) => powercordAutocomplete.getPlainText(...args),
+      matches: () =>
+        powercord.api.commands.commands
+          .filter(command => command.autocompleteFunc)
+          .some(currentCommandFilter) &&
+        autocompleteFunc(),
       queryResults: autocompleteFunc,
       renderResults: (...args) => {
         if (state) {
@@ -187,6 +190,9 @@ module.exports = async function injectAutocomplete () {
         return [ header, commands ];
       }
     };
+
+    this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS_AUTOCOMPLETE = powercordAutocomplete;
+    this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS = powercordCommands;
   };
 
   const taClass = (await getModule([ 'channelTextArea', 'channelTextAreaEnabled' ]))
