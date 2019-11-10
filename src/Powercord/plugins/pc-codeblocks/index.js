@@ -1,20 +1,46 @@
 const { Plugin } = require('powercord/entities');
 const { React, getModuleByDisplayName } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
-const { findInTree } = require('powercord/util');
 const { clipboard } = require('electron');
 const { resolve } = require('path');
 
 module.exports = class Codeblocks extends Plugin {
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
-    this.patchEmbed();
     this.patchMessageContent();
+    this.patchEmbed();
+
+    this.codeblockRegExp = new RegExp(/`{3}([\s\S]+?)`{3}/);
   }
 
   pluginWillUnload () {
-    uninject('pc-embed-codeblock');
     uninject('pc-message-codeblock');
+    uninject('pc-embed-codeblock');
+  }
+
+  async patchMessageContent () {
+    const _this = this;
+    const MessageContent = await getModuleByDisplayName('MessageContent');
+
+    inject('pc-message-codeblock', MessageContent.prototype, 'render', function (_, res) {
+      const { message, content } = this.props;
+
+      if (_this.codeblockRegExp.test(message.content)) {
+        for (const child of content) {
+          if (child.props && child.props.className && child.props.className.includes('blockquoteContainer')) {
+            const blockquoteChildren = child.props.children[1].props.children;
+
+            for (const child of blockquoteChildren) {
+              _this.injectCodeblock(child);
+            }
+          } else {
+            _this.injectCodeblock(child);
+          }
+        }
+      }
+
+      return res;
+    });
   }
 
   async patchEmbed () {
@@ -23,16 +49,19 @@ module.exports = class Codeblocks extends Plugin {
 
     inject('pc-embed-codeblock', Embed.prototype, 'renderAll', function (_, res) {
       const { embed } = this.props;
-      const codeblockRegExp = new RegExp(/`{3}([\s\S]+?)`{3}/);
 
-      if (codeblockRegExp.test(embed.rawDescription)) {
-        for (const child of res.description.props.children) {
+      if (_this.codeblockRegExp.test(embed.rawDescription)) {
+        const { children } = res.description.props;
+
+        for (const child of children) {
           _this.injectCodeblock(child);
         }
-      } else if (embed.fields && embed.fields.some(field => codeblockRegExp.test(field.rawValue))) {
-        for (const child of res.fields.props.children) {
-          if (child.props.children && child.props.children[1] && child.props.children[1].props.children) {
-            for (const field of child.props.children[1].props.children) {
+      } else if (embed.fields && embed.fields.some(field => _this.codeblockRegExp.test(field.rawValue))) {
+        const { children } = res.fields.props;
+
+        for (const child of children) {
+          if (child[0].props.children && child[0].props.children[1] && child[0].props.children[1].props.children) {
+            for (const field of child[0].props.children[1].props.children) {
               _this.injectCodeblock(field);
             }
           }
@@ -43,40 +72,10 @@ module.exports = class Codeblocks extends Plugin {
     });
   }
 
-  async patchMessageContent () {
-    const _this = this;
-    const MessageContent = await getModuleByDisplayName('MessageContent');
-
-    inject('pc-message-codeblock', MessageContent.prototype, 'render', function (_, res) {
-      const { children } = res.props;
-      const { message } = this.props;
-
-      const codeblockRegExp = new RegExp(/`{3}([\s\S]+?)`{3}/);
-
-      res.props.children = function (e) {
-        const res = children(e);
-
-        if (codeblockRegExp.test(message.content)) {
-          const children = res.props.children[1].props.children[1];
-
-          for (const child of children) {
-            _this.injectCodeblock(child);
-          }
-        }
-
-        return res;
-      };
-
-      return res;
-    });
-  }
-
   injectCodeblock (codeblock) {
     const _this = this;
 
-    codeblock = findInTree(codeblock, n => n.type && n.type.name === '');
-
-    if (codeblock && codeblock.props && codeblock.props.renderFallback) {
+    if (codeblock.props && codeblock.props.renderFallback) {
       const { render } = codeblock.props;
 
       codeblock.props.render = function (t) {
