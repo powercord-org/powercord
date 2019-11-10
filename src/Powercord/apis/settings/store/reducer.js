@@ -47,11 +47,12 @@ module.exports = {
         persist(category, categorySettings);
       },
 
-      [ActionTypes.TOGGLE_SETTING]: ({ category, setting }) => {
+      [ActionTypes.TOGGLE_SETTING]: ({ category, setting, defaultValue }) => {
         let categorySettings = settings[category] || {};
+        const oldValue = categorySettings[setting];
         categorySettings = {
           ...categorySettings,
-          [setting]: !categorySettings[setting]
+          [setting]: oldValue === void 0 ? !defaultValue : !oldValue
         };
 
         settings = {

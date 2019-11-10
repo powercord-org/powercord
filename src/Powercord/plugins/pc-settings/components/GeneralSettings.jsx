@@ -46,6 +46,13 @@ module.exports = class GeneralSettings extends React.Component {
           Settings Sync
         </SwitchItem>
 
+        <SwitchItem
+          note='Disabling this makes you 10x less cool. :('
+          value={getSetting('aprilFools', true)}
+          onChange={() => toggleSetting('aprilFools', true)}
+        >
+          April Fools
+        </SwitchItem>
         <Category
           name='Advanced Settings'
           description={
@@ -74,7 +81,7 @@ module.exports = class GeneralSettings extends React.Component {
           <SwitchItem
             note='Prevents Discord from removing your token from localStorage, reducing the numbers of unwanted logouts.'
             value={getSetting('hideToken', true)}
-            onChange={() => toggleSetting('hideToken')}
+            onChange={() => toggleSetting('hideToken', true)}
           >
             Keep token stored
           </SwitchItem>

@@ -88,13 +88,13 @@ module.exports = class Settings extends API {
     };
   }
 
-  // React + Redux
+  // React + Flux
   _connectStores (category) {
     return Flux.connectStores([ this.store ], () => ({
       settings: this.store.getSettings(category),
       getSetting: (setting, defaultValue) => this.store.getSetting(category, setting, defaultValue),
       updateSetting: (setting, value) => this.actions.updateSetting(category, setting, value),
-      toggleSetting: (setting) => this.actions.toggleSetting(category, setting)
+      toggleSetting: (setting, defaultValue) => this.actions.toggleSetting(category, setting, defaultValue)
     }));
   }
 

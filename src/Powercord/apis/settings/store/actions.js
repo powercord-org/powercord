@@ -35,11 +35,12 @@ module.exports = {
     });
   },
 
-  toggleSetting (category, setting) {
+  toggleSetting (category, setting, defaultValue) {
     FluxDispatcher.dispatch({
       type: ActionTypes.TOGGLE_SETTING,
       category,
-      setting
+      setting,
+      defaultValue
     });
   },
 

@@ -8,7 +8,7 @@ module.exports = class Hastebin extends Plugin {
   startPlugin () {
     this.registerSettings('pc-hastebin', 'Hastebin', Settings);
 
-    const domain = this.settings.get('domain', 'https://hasteb.in');
+    const domain = this.settings.get('domain', 'https://haste.powercord.dev');
     this.registerCommand(
       'hastebin',
       [],
