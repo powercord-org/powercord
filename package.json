@@ -11,6 +11,7 @@
     "uninject": "node injectors/index.js uninject"
   },
   "funding": {
+    "type": "patreon",
     "url": "https://patreon.com/aetheryx"
   },
   "repository": {
