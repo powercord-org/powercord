@@ -52,6 +52,7 @@ $numbers: '';
 .hljs {
   overflow: hidden;
   position: relative;
+  white-space: pre-wrap !important;
   padding-left: calc(35px + .5em) !important;
 
   &:not([class$='hljs']) {

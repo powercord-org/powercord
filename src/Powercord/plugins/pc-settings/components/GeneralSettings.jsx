@@ -2,6 +2,7 @@ const { remote } = require('electron');
 const { React, getModule } = require('powercord/webpack');
 const { WEBSITE } = require('powercord/constants');
 const { open: openModal, close: closeModal } = require('powercord/modal');
+const { Icons: { FontAwesome } } = require('powercord/components');
 const { TextInput, SwitchItem, ButtonItem, Category } = require('powercord/components/settings');
 const { Confirm } = require('powercord/components/modal');
 
@@ -53,6 +54,17 @@ module.exports = class GeneralSettings extends React.Component {
         >
           April Fools
         </SwitchItem>
+
+        <SwitchItem
+          note={
+            <span>Replaces <a href="https://discordia.me/clyde" target="_blank">Clyde</a> in Powercord commands with a mixed range of avatars and usernames selected by plug-in developers - fallbacks to "Powercord" by default.</span>
+          }
+          value={getSetting('replaceClyde', true)}
+          onChange={() => toggleSetting('replaceClyde', true)}
+        >
+          Eradicate <strike>Clyde</strike>&ensp;<FontAwesome icon='robot'/>
+        </SwitchItem>
+
         <Category
           name='Advanced Settings'
           description={

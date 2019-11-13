@@ -198,7 +198,7 @@ module.exports = class Powercord extends Updatable {
     if (success) {
       await exec('npm install --only=prod', { cwd: this.entityPath });
       const updater = this.pluginManager.get('pc-updater');
-      if (!document.querySelector('#powercord-updater')) {
+      if (!document.querySelector('#powercord-updater, .powercord-updater')) {
         powercord.api.notices.sendToast('powercord-updater', {
           header: 'Update complete!',
           content: 'Please click "Reload" to complete the final stages of this Powercord update.',
