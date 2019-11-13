@@ -10,6 +10,9 @@
     "inject": "node injectors/index.js inject",
     "uninject": "node injectors/index.js uninject"
   },
+  "funding": {
+    "url": "https://patreon.com/aetheryx"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/powercord-org/powercord.git"
