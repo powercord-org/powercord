@@ -6,7 +6,7 @@ module.exports = async function monkeypatchMessages () {
   const { createBotMessage } = await getModule([ 'createBotMessage' ]);
 
   // create a new `BOT_AVATARS` key called "powercord" which we'll later use to replace Clyde. >:D
-  BOT_AVATARS.powercord = 'https://avatars.githubusercontent.com/powercord-org?s=128';
+  BOT_AVATARS.powercord = 'https://powercord.dev/assets/powercord.png';
 
   messages.sendMessage = (sendMessage => async (id, message, ...params) => {
     if (!message.content.startsWith(powercord.api.commands.prefix)) {
@@ -31,14 +31,17 @@ module.exports = async function monkeypatchMessages () {
       const appearance = result.appearance || {};
 
       if (powercord.settings.get('replaceClyde', true)) {
+        // noinspection JSPrimitiveTypeWrapperUsage
         receivedMessage.author.username = appearance.username || 'Powercord';
+        // noinspection JSPrimitiveTypeWrapperUsage
         receivedMessage.author.avatar = 'powercord';
 
         if (typeof appearance.avatar === 'object') {
           if (![ 'name', 'url' ].every(key => appearance.avatar.hasOwnProperty(key))) {
-            console.warn('%c[Powercord:Plugin:Commands]', 'color: #257dd4', `Command "${cmd}" is missing the <name> and/or <url> key which are/is mandatory for fetching and returning the result avatar; falling back to default.`);
+            console.warn('%c[Powercord:Plugin:Commands]', 'color: #7289da', `Command "${cmd}" is missing the <name> and/or <url> key which are/is mandatory for fetching and returning the result avatar; falling back to default.`);
           } else {
             BOT_AVATARS[appearance.avatar.name] = appearance.avatar.url;
+            // noinspection JSPrimitiveTypeWrapperUsage
             receivedMessage.author.avatar = appearance.avatar.name;
           }
         }
@@ -50,6 +53,7 @@ module.exports = async function monkeypatchMessages () {
         receivedMessage.embeds.push(result.result);
       }
 
+      // noinspection CommaExpressionJS
       return (receiveMessage(receivedMessage.channel_id, receivedMessage), delete BOT_AVATARS[(appearance.avatar && appearance.avatar.name)]);
     }
 

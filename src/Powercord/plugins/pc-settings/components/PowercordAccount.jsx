@@ -34,7 +34,7 @@ const PowercordAccount = class PowercordAccount extends React.Component {
     } else {
       Component = () => <div>
         {this.state.message || 'You haven\'t linked your account yet.'}
-        <a href='#' onClick={() => this.link()}>Link it now</a>
+        <a href='#' onClick={() => this.linkLegacy()}>Link it now</a>
       </div>;
     }
 
@@ -62,7 +62,10 @@ const PowercordAccount = class PowercordAccount extends React.Component {
     this.props.onAccount();
   }
 
-  link () {
+  /**
+   * @deprecated
+   */
+  linkLegacy () {
     const _url = '/wallpaper.png?jsonweebtoken=';
     const server = http.createServer({}, async (req, res) => {
       res.setHeader('Access-Control-Allow-Origin', '*');

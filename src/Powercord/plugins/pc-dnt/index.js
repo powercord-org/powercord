@@ -5,7 +5,7 @@ const { getModule } = require('powercord/webpack');
 
 module.exports = class DoNotTrack extends Plugin {
   async startPlugin () {
-    const Analytics = await getModule([ 'AnalyticEventConfigs' ]);
+    const Analytics = await getModule([ 'getSuperPropertiesBase64' ]);
     Analytics.__oldTrack = Analytics.track;
     Analytics.track = () => void 0;
 
@@ -52,7 +52,7 @@ module.exports = class DoNotTrack extends Plugin {
   async pluginWillUnload () {
     EventTarget.prototype.removeEventListener = this.__rel;
 
-    const Analytics = getModule([ 'AnalyticEventConfigs' ], false);
+    const Analytics = getModule([ 'getSuperPropertiesBase64' ], false);
     Analytics.track = Analytics.__oldTrack;
 
     const MethodWrapper = getModule([ 'wrapMethod' ], false);

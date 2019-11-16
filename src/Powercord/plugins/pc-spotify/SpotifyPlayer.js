@@ -42,7 +42,7 @@ module.exports = {
       }
     }
 
-    console.debug('%c[Powercord:Spotify]', 'color: #257dd4', 'No Spotify account linked to Powercord; Falling back to Discord\'s token');
+    console.debug('%c[Powercord:Spotify]', 'color: #7289da', 'No Spotify account linked to Powercord; Falling back to Discord\'s token');
     const spotifyUserID = await http.get(Endpoints.CONNECTIONS)
       .then(res =>
         res.body.find(connection =>

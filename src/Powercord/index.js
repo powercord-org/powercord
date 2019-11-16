@@ -49,6 +49,7 @@ module.exports = class Powercord extends Updatable {
     this.apiManager = new APIManager();
     this.account = null;
     this.isLinking = false;
+    this.hookRPCServer();
     this.patchWebSocket();
 
     if (document.readyState === 'loading') {
@@ -119,6 +120,21 @@ module.exports = class Powercord extends Updatable {
   }
 
   // Bad code
+  async hookRPCServer () {
+    const _this = this;
+    // eslint-disable-next-line no-unmodified-loop-condition
+    while (!global.DiscordNative) {
+      await sleep(1);
+    }
+
+    const discordRpc = DiscordNative.nativeModules.requireModule('discord_rpc');
+    const { createServer } = discordRpc.RPCWebSocket.http;
+    discordRpc.RPCWebSocket.http.createServer = function () {
+      _this.rpcServer = createServer();
+      return _this.rpcServer;
+    };
+  }
+
   patchWebSocket () {
     const _this = this;
 
@@ -145,7 +161,7 @@ module.exports = class Powercord extends Updatable {
     const token = this.settings.get('powercordToken', null);
     if (token) {
       const baseUrl = this.settings.get('backendURL', WEBSITE);
-      console.debug('%c[Powercord]', 'color: #257dd4', 'Logging in to your account...');
+      console.debug('%c[Powercord]', 'color: #7289da', 'Logging in to your account...');
 
       const resp = await get(`${baseUrl}/api/users/@me`)
         .set('Authorization', token)
@@ -177,11 +193,11 @@ module.exports = class Powercord extends Updatable {
         this.settings.set('powercordToken', null);
         this.account = null;
         this.isLinking = false;
-        return console.error('%c[Powercord]', 'color: #257dd4', 'Unable to fetch your account (Invalid token). Removed token from config');
+        return console.error('%c[Powercord]', 'color: #7289da', 'Unable to fetch your account (Invalid token). Removed token from config');
       } else if (resp.statusCode !== 200) {
         this.account = null;
         this.isLinking = false;
-        return console.error('%c[Powercord]', 'color: #257dd4', `An error occurred while fetching your account: ${resp.statusCode} - ${resp.statusText}`, resp.body);
+        return console.error('%c[Powercord]', 'color: #7289da', `An error occurred while fetching your account: ${resp.statusCode} - ${resp.statusText}`, resp.body);
       }
 
       this.account = resp.body;
@@ -189,7 +205,7 @@ module.exports = class Powercord extends Updatable {
     } else {
       this.account = null;
     }
-    console.debug('%c[Powercord]', 'color: #257dd4', 'Logged in!');
+    console.debug('%c[Powercord]', 'color: #7289da', 'Logged in!');
     this.isLinking = false;
   }
 

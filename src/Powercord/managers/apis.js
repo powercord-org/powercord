@@ -32,7 +32,7 @@ module.exports = class APIManager {
       powercord.api[api] = new APIClass();
       this.apis.push(api);
     } catch (e) {
-      console.error('%c[Powercord:API]', 'color: #257dd4', `An error occurred while initializing "${api}"!`, e);
+      console.error('%c[Powercord:API]', 'color: #7289da', `An error occurred while initializing "${api}"!`, e);
     }
   }
 

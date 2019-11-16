@@ -180,7 +180,7 @@ module.exports = class Settings extends API {
       const data = JSON.parse(settings);
       Object.keys(data).forEach(category => actions.updateSettings(category, data[category]));
     } catch (e) {
-      return console.error('%c[Powercord:SettingsManager]', 'color: #257dd4', 'Unable to sync settings!', e);
+      return console.error('%c[Powercord:SettingsManager]', 'color: #7289da', 'Unable to sync settings!', e);
     }
   }
 };

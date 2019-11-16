@@ -10,7 +10,6 @@ module.exports = (props) => {
     <div className='powercord-account-list-accounts'>
       <Account type='spotify'/>
       <Account type='github'/>
-
       {syncEnabled && <div className='powercord-account-list-account'>
         <Key/>
         <a className='powercord-account-item' href='#' onClick={() => props.passphrase()}>Update passphrase</a>

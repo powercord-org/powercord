@@ -88,11 +88,11 @@ module.exports = class PluginManager {
         optionalDependencies: []
       }, require(resolve(this.pluginDir, pluginID, 'manifest.json')));
     } catch (e) {
-      return console.error('%c[Powercord]', 'color: #257dd4', `Plugin ${pluginID} doesn't have a valid manifest - Skipping`);
+      return console.error('%c[Powercord]', 'color: #7289da', `Plugin ${pluginID} doesn't have a valid manifest - Skipping`);
     }
 
     if (!this.manifestKeys.every(key => manifest.hasOwnProperty(key))) {
-      return console.error('%c[Powercord]', 'color: #257dd4', `Plugin "${pluginID}" doesn't have a valid manifest - Skipping`);
+      return console.error('%c[Powercord]', 'color: #7289da', `Plugin "${pluginID}" doesn't have a valid manifest - Skipping`);
     }
 
     try {
@@ -114,7 +114,7 @@ module.exports = class PluginManager {
 
       this.plugins.set(pluginID, new PluginClass());
     } catch (e) {
-      console.error('%c[Powercord:Plugin]', 'color: #257dd4', `An error occurred while initializing "${pluginID}"!`, e);
+      console.error('%c[Powercord:Plugin]', 'color: #7289da', `An error occurred while initializing "${pluginID}"!`, e);
     }
   }
 
@@ -152,7 +152,7 @@ module.exports = class PluginManager {
       throw new Error(`Tried to load a non installed plugin (${plugin})`);
     }
     if (plugin.ready) {
-      return console.error('%c[Powercord]', 'color: #257dd4', `Tried to load an already loaded plugin (${pluginID})`);
+      return console.error('%c[Powercord]', 'color: #7289da', `Tried to load an already loaded plugin (${pluginID})`);
     }
 
     plugin._load();
@@ -164,7 +164,7 @@ module.exports = class PluginManager {
       throw new Error(`Tried to unload a non installed plugin (${plugin})`);
     }
     if (!plugin.ready) {
-      return console.error('%c[Powercord]', 'color: #257dd4', `Tried to unload a non loaded plugin (${plugin})`);
+      return console.error('%c[Powercord]', 'color: #7289da', `Tried to unload a non loaded plugin (${plugin})`);
     }
 
     plugin._unload();

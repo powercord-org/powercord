@@ -6,9 +6,7 @@ module.exports = class Passphrase extends React.Component {
   constructor () {
     super();
 
-    this.state = {
-      passphrase: ''
-    };
+    this.state = { passphrase: '' };
   }
 
   render () {

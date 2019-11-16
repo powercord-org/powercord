@@ -81,11 +81,11 @@ module.exports = class StyleManager {
     try {
       if (stat.isFile()) {
         theme = Theme.fromFile(themeID, filename);
-        console.warn('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" loaded in development mode`);
+        console.warn('%c[Powercord]', 'color: #7289da', `Theme "${themeID}" loaded in development mode`);
       } else {
         const manifest = require(resolve(this.themesDir, filename, 'powercord_manifest.json'));
         if (!this.manifestKeys.every(key => manifest.hasOwnProperty(key))) {
-          return console.error('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" doesn't have a valid manifest - Skipping`);
+          return console.error('%c[Powercord]', 'color: #7289da', `Theme "${themeID}" doesn't have a valid manifest - Skipping`);
         }
 
         if (!window.__OVERLAY__ && manifest.theme) {
@@ -93,7 +93,7 @@ module.exports = class StyleManager {
         } else if (window.__OVERLAY__ && manifest.overlayTheme) {
           manifest.effectiveTheme = manifest.overlayTheme;
         } else {
-          return console.warn('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" is not meant to run on that environment - Skipping`);
+          return console.warn('%c[Powercord]', 'color: #7289da', `Theme "${themeID}" is not meant to run on that environment - Skipping`);
         }
 
         theme = new Theme(themeID, {
@@ -102,7 +102,7 @@ module.exports = class StyleManager {
         }, true);
       }
     } catch (e) {
-      return console.error('%c[Powercord]', 'color: #257dd4', `Theme "${themeID}" doesn't have a valid manifest or is not a valid file - Skipping`);
+      return console.error('%c[Powercord]', 'color: #7289da', `Theme "${themeID}" doesn't have a valid manifest or is not a valid file - Skipping`);
     }
 
     this.themes.set(themeID, theme);
