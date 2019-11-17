@@ -1,51 +1,70 @@
 {
-  "id": "toast-06-11-19",
-  "date": "2019-11-06",
-  "image": "https://epic.weeb.services/1247d7bb1f.png",
+  "id": "pluginManager-17-11-19",
+  "date": "2019-11-17",
   "contents": [
     {
       "type": "HEADER",
       "color": "GREEN",
-      "text": "Improved Toaster",
+      "text": "It's back!!!1!1!",
       "noMargin": true
     },
     {
       "type": "CONTENTS",
-      "text": "Powercord will now bake better toasts, with pre-applied butter or whatever you like to put on them.",
+      "text": "Powercord Plugin Manager is **back**! You can now enable, disable and uninstall plugin from Powercord's UI.",
       "list": [
-        "**100% more cute**, because Harley did a good job.",
-        "**They are now part of the public plugin API** meaning you can make use of them in your plugins. Isn't that nice?",
-        "**Announcements are also part of the public API**, so if you want to send them you can!"
+        "**Dependencies are (properly) handled**, so you shouldn't encounter much problems.",
+        "**No installer yet**, as this still under development. We're making progress though. Soon:tm:",
+        "**Theme manager is also coming soon!** With some very cool features, including letting themes have a settings panel, without a single line of JS. Can't wait tbh"
       ]
+    },
+    {
+      "type": "HEADER",
+      "color": "GREEN",
+      "text": "No more Powercord unplugs"
+    },
+    {
+      "type": "CONTENTS",
+      "text": "We've implemented something that should completely prevent Powercord from no longer being injected after a Canary version change. We haven't fully tested it, but it should be working fine. Let us know if you encounter unexpected unplugs!"
     },
     {
       "type": "HEADER",
       "color": "RED",
-      "text": "Have a red category"
+      "text": "Core cleanup"
     },
     {
       "type": "CONTENTS",
-      "text": "Just wanted a second red category, because red is a cool color."
+      "text": "We removed deprecated methods and features from Powercord's core, including old injection methods and normalized `.pc-` classes. We also got rid of some bugs, because we don't like them."
+    },
+    {
+      "type": "HEADER",
+      "color": "BLURPLE",
+      "text": "About listing websites"
+    },
+    {
+      "type": "CONTENTS",
+      "text": "Back in april, we've made an announcement about BetterDocs and other listing websites. Long story short, we want to avoid what happened in the past, with malicious plugins being listed and developers not being asked for authorization before listing. We're in the process of writing some guidelines for those websites, and we're implementing some features for them, including:",
+      "list": [
+        "**New RPC events**, to interact with Powercord, to open install window from their website for example. We'll provide documentation soon.",
+        "**An API endpoint** to fetch plugins that **explicitly mentionned** they agree with being listed externally. We'll also provide documentation soon."
+      ]
     },
     {
       "type": "HEADER",
       "color": "ORANGE",
-      "text": "More cool stuff"
+      "text": "Have more changes"
     },
     {
       "type": "CONTENTS",
       "list": [
-        "**Updater got some tweaking** to help it not explode while updating. I thought it's be cool.",
-        "**Removed a spoiler** because spoilers are bad. I'm sure no one noticed it was here. And if you did, you saw nothing ok?",
-        "**Added a spoiler** because spoilers are cool. I'm sure you'll like it. It's about a wanted feature. That is cool.",
-        "**First install banner**'s \"Join Server\" button will now **open an invite prompt first**, instead of immediately dropping you into the server.",
-        "**Documentation is coming soon**, and most of the work client-side is done :zoomeyes:. We just need to write them now... Seeya in a few years! <3 After all, what is 10 years on the scale of the universe? Nothing right?",
-        "**Custom Route API** is here, which lets plugins register new React routes for more complex UIs. It is still experimental and subject to breaking changes.",
-        "**Backend API v2 is being worked on**, which will ship a lot of features that'll be then used in Powercord (like plugin installer OwO whats this).",
-        "Various tweaking and fixing to make Powercord overall more stable.",
-        "Increased emma's cuteness."
+        "**Clyde's avatar and name** can now be **customized** in commands. If you want to keep Clyde, you can disable this in General Settings.",
+        "**Powercord's April Fools** can be disabled in General Settings, if you're against fun. :^)",
+        "**Fixed a security vulnerability** because that's not a good thing. Thanks to amy#0001 for bringing this to our attention <3",
+        "**.hastebin command** now uses a **self-hosted haste** at https://haste.powercord.dev. Thanks to AlexFlipnote#0001 for the sweet theme!",
+        "**Custom RPC events** will probably be part of the plugin API, stay tuned :eyes:",
+        "**Changed label colors** in console to blurple. Very important change!",
+        "Fixed a bug where emma wasn't cute enough."
       ]
     }
   ],
-  "footer": "Donate for #TeamTrees at <a href='https://teamtrees.org' target='_blank'>teamtrees.org</a>."
+  "footer": "Btw have I told you I use arch?"
 }

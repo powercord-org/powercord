@@ -1,0 +1,94 @@
+.powercord-entities-manage-container {
+  .powercord-plugin {
+    padding: 20px;
+    margin-bottom: 20px;
+
+    &-header {
+      display: flex;
+      margin-bottom: 10px;
+
+      h4 {
+        font-size: 18px;
+        flex: 1;
+      }
+    }
+
+    &-container, &-permissions {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      > div {
+        width: 33%;
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+
+        > div {
+          width: 24px;
+          height: 24px;
+          margin-right: 10px;
+        }
+
+        span + div {
+          width: 14px;
+          height: 14px;
+          margin-left: 10px;
+        }
+
+        svg {
+          flex-shrink: 0;
+          width: 100%;
+        }
+
+        &.description {
+          width: 100%;
+        }
+      }
+    }
+
+    &-permissions {
+      padding-top: 10px;
+      margin-top: 10px;
+      flex-wrap: nowrap;
+      flex-direction: column;
+
+      .item {
+        width: 100%;
+        margin: 5px 0;
+
+        + .item {
+          margin-left: 25px;
+        }
+      }
+    }
+
+    &-footer {
+      padding-top: 20px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+
+      .btn-group {
+        display: flex;
+
+        button + button {
+          margin-left: 10px;
+        }
+      }
+    }
+
+    &-permissions, &-footer {
+      border-top: 1px var(--background-modifier-accent) solid;
+    }
+
+    // https://github.com/facebook/react/issues/4251
+    input[disabled] {
+      pointer-events: none;
+    }
+  }
+
+  .powercord-theme {
+
+  }
+}

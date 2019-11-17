@@ -1,11 +1,11 @@
 const { Plugin } = require('powercord/entities');
 const { resolve } = require('path');
 
-const Soon = require('./components_legacy/Soon.jsx');
-const Settings = require('./components_legacy/Settings.jsx');
+const layout = require('./components/manage/Layout.jsx');
+const Soon = require('./components/Soon.jsx');
 const commands = require('./commands');
 
-module.exports = class PluginManager extends Plugin {
+module.exports = class ModuleManager extends Plugin {
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'scss', 'style.scss'));
 
@@ -17,10 +17,12 @@ module.exports = class PluginManager extends Plugin {
     );
 
     if (this.settings.get('__experimental_2019-10-25', false)) {
-      this.registerSettings('pc-moduleManager-plugins', 'Plugins', Settings);
-      this.registerSettings('pc-moduleManager-themes', 'Themes', Soon);
+      this.log('Experimental Module Manager enabled.');
+      this.registerSettings('pc-moduleManager-plugins', 'Plugins', layout('plugins', true));
+      this.registerSettings('pc-moduleManager-themes', 'Themes', layout('themes', true));
     } else {
-      this.registerSettings('pc-moduleManager-plugins', 'Plugins', Soon);
+      this.registerSettings('pc-moduleManager-plugins', 'Plugins', layout('plugins', false));
+      this.registerSettings('pc-moduleManager-themes', 'Themes', Soon);
     }
   }
 

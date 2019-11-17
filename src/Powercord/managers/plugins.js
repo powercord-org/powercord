@@ -18,13 +18,7 @@
 
 const { resolve } = require('path');
 const { readdirSync } = require('fs');
-const { get } = require('powercord/http');
 const { rmdirRf } = require('powercord/util');
-const { WEBSITE } = require('powercord/constants');
-
-const { promisify } = require('util');
-const cp = require('child_process');
-const exec = promisify(cp.exec);
 
 module.exports = class PluginManager {
   constructor () {
@@ -39,21 +33,6 @@ module.exports = class PluginManager {
     return this.plugins.get(pluginID);
   }
 
-  async getPluginName (pluginID) {
-    const plugin = this.get(pluginID);
-    if (plugin) {
-      return plugin.manifest.name;
-    }
-
-    // API request
-    const baseUrl = powercord.settings.get('backendURL', WEBSITE);
-    try {
-      return (await get(`${baseUrl}/api/plugins/${pluginID}`).then(r => r.body)).manifest.name || void 0;
-    } catch (e) {
-      return void 0;
-    }
-  }
-
   getPlugins () {
     return [ ...this.plugins.keys() ];
   }
@@ -64,18 +43,6 @@ module.exports = class PluginManager {
 
   isEnabled (plugin) {
     return !powercord.settings.get('disabledPlugins', []).includes(plugin);
-  }
-
-  // Resolvers
-  resolveDependents (plugin, dept = []) {
-    const dependents = this.getPlugins().filter(p => this.getDependenciesSync(p).includes(plugin));
-    dependents.forEach(dpt => {
-      if (!dept.includes(dpt)) {
-        dept.push(dpt);
-        dept.push(...this.resolveDependents(dpt, dept));
-      }
-    });
-    return dept.filter((d, p) => dept.indexOf(d) === p);
   }
 
   // Mount/load/enable/install shit
@@ -200,9 +167,8 @@ module.exports = class PluginManager {
   }
 
   // Install
-  async install (pluginID) {
-    await exec(`git clone https://github.com/powercord-org/${pluginID}`, this.pluginDir);
-    this.mount(pluginID);
+  async install (pluginID) { // eslint-disable-line no-unused-vars
+    throw new Error('no');
   }
 
   async uninstall (pluginID) {
@@ -239,7 +205,7 @@ module.exports = class PluginManager {
   }
 
   _sortPlugins (pluginA, pluginB) {
-    const priority = [ 'pc-commands', 'pc-settings', 'pc-pluginManager', 'pc-updater' ].reverse();
+    const priority = [ 'pc-dnt', 'pc-commands', 'pc-settings', 'pc-pluginManager', 'pc-updater' ].reverse();
     const priorityA = priority.indexOf(pluginA);
     const priorityB = priority.indexOf(pluginB);
     return (priorityA === priorityB ? 0 : (priorityA < priorityB ? 1 : -1));

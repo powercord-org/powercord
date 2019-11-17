@@ -1,4 +1,5 @@
 const { React } = require('powercord/webpack');
+const { Card } = require('powercord/components');
 
 const Header = require('./Header');
 const Container = require('./Container');
@@ -16,14 +17,13 @@ module.exports = class Plugin extends React.Component {
 
   render () {
     const {
-      id, installed, enabled, manifest, // Properties
+      plugin: { entityID: id, manifest }, enabled, // Properties
       onEnable, onDisable, onInstall, onUninstall // Events
     } = this.props;
 
-    return <div className='powercord-plugin'>
+    return <Card className='powercord-plugin'>
       <Header
         name={manifest.name}
-        installed={installed}
         enabled={enabled}
         onEnable={onEnable}
         onDisable={onDisable}
@@ -37,12 +37,11 @@ module.exports = class Plugin extends React.Component {
       {(manifest.permissions || []).length > 0 && <Permissions permissions={manifest.permissions}/>}
       <Footer
         id={id}
-        installed={installed}
         installing={this.state.installing}
         onUninstall={() => this.process(onUninstall)}
         onInstall={() => this.process(onInstall)}
       />
-    </div>;
+    </Card>;
   }
 
   async process (func) {

@@ -1,30 +1,28 @@
-const { shell: { openExternal } } = require('electron');
 const { React } = require('powercord/webpack');
-const { REPO_URL } = require('powercord/constants');
 const { Button, Spinner } = require('powercord/components');
 
-module.exports = ({ id, installed, installing, onUninstall, onInstall }) =>
+module.exports = ({ id, installing, onUninstall }) =>
   <div className='powercord-plugin-footer'>
-    <Button
+    {/* <Button
       onClick={() => openExternal(`https://github.com/${REPO_URL}`)}
       look={Button.Looks.LINK}
       size={Button.Sizes.SMALL}
       color={Button.Colors.TRANSPARENT}
     >
       Repository
-    </Button>
+    </Button> */}
 
     <div className='btn-group'>
       {!id.startsWith('pc-') && <Button
         disabled={installing}
-        onClick={installed ? onUninstall : onInstall}
-        color={installed ? Button.Colors.RED : Button.Colors.GREEN}
+        onClick={onUninstall}
+        color={Button.Colors.RED}
         look={Button.Looks.FILLED}
         size={Button.Sizes.SMALL}
       >
         {installing
           ? <Spinner type='pulsingEllipsis'/>
-          : (installed ? 'Uninstall' : 'Install')}
+          : 'Uninstall'}
       </Button>}
     </div>
   </div>;
