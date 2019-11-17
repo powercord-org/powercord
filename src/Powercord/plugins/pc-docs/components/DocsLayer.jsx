@@ -30,6 +30,7 @@ class DocsLayer extends React.Component {
     sectionsCache = [];
     sections.forEach(section => {
       sectionsCache.push(
+        { section: 'DIVIDER' },
         {
           section: 'HEADER',
           label: section.metadata.name
@@ -43,6 +44,7 @@ class DocsLayer extends React.Component {
         }))
       );
     });
+    sectionsCache.shift();
     this.setState({
       sections: sectionsCache,
       section: sectionsCache[1].section
