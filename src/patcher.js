@@ -25,7 +25,6 @@ const { BrowserWindow, app, session } = electron;
 const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
-
 let settings;
 try {
   settings = require(resolve(__dirname, '..', 'settings', 'pc-general.json'));
@@ -126,13 +125,20 @@ app.once('ready', () => {
   }
 });
 
-const discordPackage = require(join(discordPath, 'package.json'));
+(async () => {
+  if (process.argv[1] === '--squirrel-obsolete') {
+    const main = require('../injectors/main.js');
+    const platform = require(`../injectors/${process.platform}.js`);
+    await main.inject(platform);
+  }
+  const discordPackage = require(join(discordPath, 'package.json'));
 
-electron.app.setAppPath(discordPath);
-electron.app.setName(discordPackage.name);
+  electron.app.setAppPath(discordPath);
+  electron.app.setName(discordPackage.name);
 
-Module._load(
-  join(discordPath, discordPackage.main),
-  null,
-  true
-);
+  Module._load(
+    join(discordPath, discordPackage.main),
+    null,
+    true
+  );
+})();
