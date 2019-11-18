@@ -17,14 +17,44 @@
  */
 
 const sucrase = require('sucrase');
-const { readFileSync } = require('fs');
+const { join } = require('path');
+const { readFileSync, promises: { mkdir, writeFile } } = require('fs');
+const { createHash } = require('crypto');
 
-module.exports = () =>
-  require.extensions['.jsx'] = (_module, filename) =>
-    _module._compile(
-      sucrase.transform(readFileSync(filename, 'utf8'), {
+const cacheDir = join(__dirname, '../../../cache/jsx/');
+
+const checksum = (str) => createHash('sha1').update(str).digest('hex');
+
+module.exports = () => {
+  mkdir(cacheDir, { recursive: true });
+
+  require.extensions['.jsx'] = (_module, filename) => {
+    const source = readFileSync(filename, 'utf8');
+    const hash = checksum(`/* jsx-sucrase | ${filename} */${source}`);
+    const transformPath = join(cacheDir, `${hash}.js`);
+
+    let alreadyTransformed = false;
+    let transform;
+    try {
+      transform = readFileSync(transformPath, 'utf8');
+      alreadyTransformed = true;
+    } catch (err) {
+      transform = sucrase.transform(source, {
         transforms: [ 'jsx' ],
         filePath: filename
-      }).code,
-      filename
-    );
+      }).code;
+    }
+
+    _module._compile(transform, filename);
+
+    // Atomic writes when
+    try {
+      if (!alreadyTransformed) {
+        writeFile(transformPath, transform);
+      }
+    } catch (err) {
+      console.error('[JSX]', 'Failed to write to cache');
+      console.error(err);
+    }
+  };
+};
