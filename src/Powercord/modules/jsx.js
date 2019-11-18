@@ -47,7 +47,6 @@ module.exports = () => {
 
     _module._compile(transform, filename);
 
-    // Atomic writes when
     try {
       if (!alreadyTransformed) {
         writeFile(transformPath, transform);
