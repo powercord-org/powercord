@@ -37,7 +37,14 @@ const { transparentWindow, experimentalWebPlatform } = settings;
 class PatchedBrowserWindow extends BrowserWindow {
   // noinspection JSAnnotator - Make JetBrains happy
   constructor (opts) {
-    if (opts.webPreferences && opts.webPreferences.preload) {
+    if (opts.webContents) {
+      // Go Live (general purpose?) popout. Might be interesting to investigate how it works as it has very low startup latency.
+    } else if (opts.webPreferences && opts.webPreferences.nodeIntegration) {
+      // Splash Screen
+    } else if (opts.webPreferences && opts.webPreferences.offscreen) {
+      // Overlay
+    } else if (opts.webPreferences && opts.webPreferences.preload) {
+      // Discord
       global.originalPreload = opts.webPreferences.preload;
       opts.webPreferences.preload = join(__dirname, 'preload.js');
       opts.webPreferences.nodeIntegration = true;

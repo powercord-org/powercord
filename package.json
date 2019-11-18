@@ -15,8 +15,8 @@
     "url": "git+https://github.com/powercord-org/powercord.git"
   },
   "keywords": [],
-  "author": "Aetheryx",
-  "license": "MIT",
+  "author": "aetheryx",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/powercord-org/powercord/issues"
   },

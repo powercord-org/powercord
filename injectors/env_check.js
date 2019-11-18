@@ -39,14 +39,11 @@ module.exports = () => {
 
   try {
     for (const dependency in dependencies) {
+      // noinspection JSUnfilteredForInLoop
       require(dependency);
     }
   } catch (_) {
-    const stackTrace = JSON.stringify(_.stack);
-    const firstMissingDept = stackTrace.split('\\n')[0].match(/'(.*?[^\\])'/)[1];
-    const dependenciesArray = Object.keys(dependencies);
-
-    console.log(`(${dependenciesArray.length - dependenciesArray.indexOf(firstMissingDept)}/${dependenciesArray.length}) Dependencies are not installed. Let's fix that...`);
+    console.log('Some dependencies are not installed. Let\'s fix that...');
     execSync('npm install --only=prod', {
       cwd: resolve(__dirname, '..'),
       stdio: [ null, null, null ]
