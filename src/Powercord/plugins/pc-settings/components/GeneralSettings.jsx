@@ -62,7 +62,7 @@ module.exports = class GeneralSettings extends React.Component {
           value={getSetting('replaceClyde', true)}
           onChange={() => toggleSetting('replaceClyde', true)}
         >
-          Eradicate <strike>Clyde</strike>&ensp;<FontAwesome icon='robot'/>
+          Eradicate Clyde&ensp;<FontAwesome icon='robot'/>
         </SwitchItem>
 
         <Category
