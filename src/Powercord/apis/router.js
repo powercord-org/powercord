@@ -18,14 +18,15 @@ module.exports = class Router extends API {
     DiscordNative.globals.appSettings.save();
   }
 
-  registerRoute (path, render) {
+  registerRoute (path, render, noSidebar = false) {
     if (this.routes.find(c => c.path === path)) {
       return this.error(`Path ${path} is already registered by another plugin!`);
     }
 
     this.routes.push({
       path,
-      render
+      render,
+      noSidebar
     });
     this._change();
   }

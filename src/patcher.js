@@ -43,8 +43,11 @@ class PatchedBrowserWindow extends BrowserWindow {
       // Splash Screen
     } else if (opts.webPreferences && opts.webPreferences.offscreen) {
       // Overlay
+      global.originalPreload = opts.webPreferences.preload;
+      opts.webPreferences.preload = join(__dirname, 'preload.js');
+      opts.webPreferences.nodeIntegration = true;
     } else if (opts.webPreferences && opts.webPreferences.preload) {
-      // Discord
+      // Discord Client
       global.originalPreload = opts.webPreferences.preload;
       opts.webPreferences.preload = join(__dirname, 'preload.js');
       opts.webPreferences.nodeIntegration = true;

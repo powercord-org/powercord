@@ -2,6 +2,7 @@ const { Plugin } = require('powercord/entities');
 const { resolve } = require('path');
 
 const layout = require('./components/manage/Layout.jsx');
+const store = require('./components/store/Store');
 const Soon = require('./components/Soon.jsx');
 const commands = require('./commands');
 
@@ -20,6 +21,8 @@ module.exports = class ModuleManager extends Plugin {
       this.log('Experimental Module Manager enabled.');
       this.registerSettings('pc-moduleManager-plugins', 'Plugins', layout('plugins', true));
       this.registerSettings('pc-moduleManager-themes', 'Themes', layout('themes', true));
+
+      this.registerRoute('/store/plugins', store('plugins'), true);
     } else {
       this.registerSettings('pc-moduleManager-plugins', 'Plugins', layout('plugins', false));
       this.registerSettings('pc-moduleManager-themes', 'Themes', Soon);

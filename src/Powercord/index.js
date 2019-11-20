@@ -61,18 +61,16 @@ module.exports = class Powercord extends Updatable {
 
   // Powercord initialization
   async init () {
-    // Webpack
-    await Webpack.init();
-
-    // Modules
-    await Promise.all(modules.map(mdl => mdl()));
     const isOverlay = (/overlay/).test(location.pathname);
-
-    // In Discord client I have usually 21 entries in it. In the overlay I usually have 18 entries
-    while (window.webpackJsonp.length < (isOverlay ? 18 : 21)) {
-      await sleep(1);
+    if (isOverlay) { // eh
+      // await sleep(250);
     }
 
+    // Webpack & Modules
+    await Webpack.init();
+    await Promise.all(modules.map(mdl => mdl()));
+
+    // Start
     await this.startup();
     this.fetchAccount();
 

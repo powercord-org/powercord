@@ -28,8 +28,6 @@ require('module')
     join(__dirname, 'fake_node_modules')
   );
 
-const isOverlay = (/overlay/).test(location.pathname);
-
 const Powercord = require('./Powercord');
 global.powercord = new Powercord();
 
@@ -42,22 +40,9 @@ if (
 }
 
 require(remote.getGlobal('originalPreload'));
-
-
-(async () => {
-  const { sleep } = require('powercord/util');
-
-  while (!powercord.initialized) {
-    await sleep(1);
+powercord.once('loaded', () => {
+  if (window.__OVERLAY__ && powercord.api.settings.store.getSetting('pc-general', 'openOverlayDevTools', false)) {
+    // @todo: figure out why they won't open
+    setTimeout(() => remote.getCurrentWindow().openDevTools({ mode: 'detach' }), 2e3);
   }
-
-  if (powercord.api.settings.store.getSetting('pc-general', 'openOverlayDevTools', false) && isOverlay) {
-    setTimeout(() => {
-      remote
-        .getCurrentWindow()
-        .openDevTools({
-          mode: 'detach'
-        });
-    }, 1500);
-  }
-})();
+});

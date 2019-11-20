@@ -1,4 +1,4 @@
-const { React } = require('powercord/webpack');
+const { React, getModule } = require('powercord/webpack');
 const { TextInput } = require('powercord/components/settings');
 const { Button, Divider, FormNotice } = require('powercord/components');
 
@@ -16,7 +16,13 @@ module.exports = ({ type, experimental, search, onSearch, onOpenFolder }) =>
     />}
     <div className='powercord-entities-manage-header'>
       <h3>Installed {type}</h3>
-      {experimental && <Button onClick={() => void 0}>Explore Plugins</Button>}
+      {experimental && <Button onClick={async () => {
+        const { popLayer } = await getModule([ 'popLayer' ]);
+        // @todo: Figure out why does it cause the app to rerender
+        const { transitionTo } = await getModule([ 'transitionTo' ]);
+        popLayer();
+        transitionTo('/_powercord/store/plugins');
+      }}>Explore Plugins</Button>}
       <div className='powercord-entities-manage-opener'>
         <Button color={Button.Colors.PRIMARY} look={Button.Looks.OUTLINED} onClick={onOpenFolder}>
           Open {type[0].toUpperCase() + type.slice(1)} Folder

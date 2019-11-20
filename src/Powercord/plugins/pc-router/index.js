@@ -13,6 +13,7 @@ module.exports = class Router extends Plugin {
 
   pluginWillUnload () {
     powercord.api.router.removeChangeListener(this._listener);
+    uninject('pc-router-route-side');
     uninject('pc-router-route');
     uninject('pc-router-router');
   }
@@ -22,7 +23,6 @@ module.exports = class Router extends Plugin {
     const ViewsWithMainInterface = await getModuleByDisplayName('ViewsWithMainInterface');
     const { container } = await getModule([ 'container', 'downloadProgressCircle' ]);
     const RouteRenderer = getOwnerInstance(await waitFor(`.${container.split(' ')[0]}`));
-
     inject('pc-router-route', RouteRenderer.__proto__, 'render', (args, res) => {
       res.props.children[1].props.children[2].props.children[1].props.children.push(
         ...powercord.api.router.routes.map(route => ({
@@ -34,9 +34,20 @@ module.exports = class Router extends Plugin {
           }
         }))
       );
-
       return res;
     });
+
+    inject('pc-router-route-side', RouteRenderer.__proto__, 'render', function (args) {
+      const renderer = this.renderChannelSidebar;
+      this.renderChannelSidebar = (props) => {
+        const rte = powercord.api.router.routes.find(r => r.path === props.match.path.slice(11));
+        if (rte && rte.noSidebar) {
+          return null;
+        }
+        return renderer.call(this, props);
+      };
+      return args;
+    }, true);
 
     inject('pc-router-router', ViewsWithMainInterface.prototype, 'render', (args, res) => {
       const routes = findInTree(res, n => (
