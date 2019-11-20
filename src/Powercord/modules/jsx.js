@@ -18,7 +18,7 @@
 
 const sucrase = require('sucrase');
 const { join } = require('path');
-const { readFileSync, promises: { mkdir, writeFile } } = require('fs');
+const { readFileSync, mkdirSync, promises: { writeFile } } = require('fs');
 const { createHash } = require('crypto');
 
 const cacheDir = join(__dirname, '../../../cache/jsx/');
@@ -26,7 +26,7 @@ const cacheDir = join(__dirname, '../../../cache/jsx/');
 const checksum = (str) => createHash('sha1').update(str).digest('hex');
 
 module.exports = () => {
-  mkdir(cacheDir, { recursive: true });
+  mkdirSync(cacheDir, { recursive: true });
 
   require.extensions['.jsx'] = (_module, filename) => {
     const source = readFileSync(filename, 'utf8');
