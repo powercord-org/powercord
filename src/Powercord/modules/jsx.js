@@ -18,27 +18,27 @@
 
 const sucrase = require('sucrase');
 const { join } = require('path');
-const { readFileSync, mkdirSync, existsSync, statSync, writeFile } = require('fs');
+const { readFileSync, existsSync, mkdirSync, writeFile } = require('fs');
 const { createHash } = require('crypto');
 
-const cacheDir = join(__dirname, '../../../.cache');
-
-if (!existsSync(cacheDir)) {
-  mkdirSync(cacheDir);
-}
+const cacheDir = join(__dirname, '../../../cache/jsx/');
 
 const checksum = (str) => createHash('sha1').update(str).digest('hex');
 
 module.exports = () => {
+  if (!existsSync(cacheDir)) {
+    mkdirSync(cacheDir, { recursive: true });
+  }
+
   require.extensions['.jsx'] = (_module, filename) => {
-    const stat = statSync(filename);
-    const hash = checksum(filename + stat.mtime.toISOString());
+    const source = readFileSync(filename, 'utf8');
+    const hash = checksum(`/* sucrase-jsx | ${filename} */ ${source}`);
     const cached = join(cacheDir, `${hash}.js`);
 
     try {
       _module._compile(readFileSync(cached, 'utf8'), filename);
     } catch (_) {
-      const res = sucrase.transform(readFileSync(filename, 'utf8'), {
+      const res = sucrase.transform(source, {
         transforms: [ 'jsx' ],
         filePath: filename
       }).code;
@@ -46,7 +46,7 @@ module.exports = () => {
       _module._compile(res, filename);
 
       writeFile(cached, res, (err) => {
-        if (!err) {
+        if (err) {
           console.error('[JSX]', 'Failed to write to cache');
           console.error(err);
         }
