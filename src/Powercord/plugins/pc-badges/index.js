@@ -48,11 +48,9 @@ module.exports = class Badges extends Plugin {
     const GuildBadge = await getModuleByDisplayName('GuildBadge');
     inject('pc-badges-guilds-tooltip', GuildBadge.prototype, 'render', function (_, res) {
       const { guild } = this.props;
-      if (_this.guildBadges[guild.id]) {
-        return _this._renderBadge(
-          _this.guildBadges[guild.id],
-          res
-        );
+      // GuildBadges is used in different places, size prop seems GuildTooltip "exclusive"
+      if (this.props.size && _this.guildBadges[guild.id]) {
+        return [ _this._renderBadge(_this.guildBadges[guild.id]), res ];
       }
 
       return res;
@@ -65,9 +63,7 @@ module.exports = class Badges extends Plugin {
     inject('pc-badges-guilds-header', GuildHeader.prototype, 'renderHeader', function (_, res) {
       if (_this.guildBadges[this.props.guild.id]) {
         res.props.children.unshift(
-          _this._renderBadge(
-            _this.guildBadges[this.props.guild.id]
-          )
+          _this._renderBadge(_this.guildBadges[this.props.guild.id])
         );
       }
       return res;
@@ -110,15 +106,13 @@ module.exports = class Badges extends Plugin {
     }
   }
 
-  _renderBadge ({ name, icon }, children) {
-    children = [ React.createElement('img', {
-      className: 'powercord-guild-badge',
-      src: icon
-    }), children ].filter(Boolean);
-
+  _renderBadge ({ name, icon }) {
     return React.createElement(Tooltip, {
       text: name,
       position: 'bottom'
-    }, children.length < 2 ? children[0] : children);
+    }, React.createElement('img', {
+      className: 'powercord-guild-badge',
+      src: icon
+    }));
   }
 };
