@@ -24,21 +24,16 @@
         display: flex;
         align-items: center;
 
-        > div {
+        > svg {
           width: 24px;
           height: 24px;
           margin-right: 10px;
         }
 
-        span + div {
+        span + svg  {
           width: 14px;
           height: 14px;
           margin-left: 10px;
-        }
-
-        svg {
-          flex-shrink: 0;
-          width: 100%;
         }
 
         &.description {

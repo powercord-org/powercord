@@ -24,7 +24,7 @@ module.exports = class Passphrase extends React.Component {
           use it, but you can just leave this empty and your data will be sent unencrypted.
           <div className='space'/>
           If you're already using sync on other machines, put the same passphrase you used.
-          <b>Using another passphrase will overwrite old data, so be careful</b>
+          <b>Using another passphrase will overwrite old data, so be careful</b>.
         </div>
         <TextInput
           type='password'

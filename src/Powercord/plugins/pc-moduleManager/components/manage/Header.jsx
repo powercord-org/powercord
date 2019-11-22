@@ -18,11 +18,10 @@ module.exports = ({ type, experimental, search, onSearch, onOpenFolder }) =>
       <h3>Installed {type}</h3>
       {experimental && <Button onClick={async () => {
         const { popLayer } = await getModule([ 'popLayer' ]);
-        // @todo: Figure out why does it cause the app to rerender
         const { transitionTo } = await getModule([ 'transitionTo' ]);
         popLayer();
         transitionTo('/_powercord/store/plugins');
-      }}>Explore Plugins</Button>}
+      }}>Explore {type[0].toUpperCase() + type.slice(1)}</Button>}
       <div className='powercord-entities-manage-opener'>
         <Button color={Button.Colors.PRIMARY} look={Button.Looks.OUTLINED} onClick={onOpenFolder}>
           Open {type[0].toUpperCase() + type.slice(1)} Folder
