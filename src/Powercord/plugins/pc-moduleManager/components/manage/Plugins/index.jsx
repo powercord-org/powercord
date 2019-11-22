@@ -61,10 +61,11 @@ module.exports = class Plugins extends React.Component {
 
   _renderUninstall (plugin) {
     const plugins = powercord.pluginManager.get(plugin).dependents;
+    const headerConfirm = `Uninstall plugin${plugins.length > 0 ? 's' : ''}`;
     return <Confirm
       red
-      header='Uninstall plugins'
-      confirmText='Uninstall plugins'
+      header={headerConfirm}
+      confirmText={headerConfirm}
       cancelText='Cancel'
       onConfirm={async () => {
         for (const plugin of plugins) {

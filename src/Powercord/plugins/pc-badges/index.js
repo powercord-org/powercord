@@ -16,17 +16,18 @@ module.exports = class Badges extends Plugin {
   }
 
   async startPlugin () {
-    this.badgeClasses = {
-      container: (await getModule([ 'iconBackgroundTierNone', 'container' ])).container,
+    this.classes = {
+      ...await getModule([ 'headerInfo' ]),
       ...await getAllModules([ 'modal', 'inner' ])[1],
-      ...await getModule([ 'headerInfo' ])
+      header: (await getModule([ 'iconBackgroundTierNone', 'container' ])).header
     };
 
-    Object.keys(this.badgeClasses).forEach(
-      key => this.badgeClasses[key] = `.${this.badgeClasses[key].split(' ')[0]}`
+    Object.keys(this.classes).forEach(
+      key => this.classes[key] = `.${this.classes[key].split(' ')[0]}`
     );
 
     this.loadCSS(resolve(__dirname, 'style.scss'));
+    this._patchGuildTooltips();
     this._patchGuildHeaders();
     this._patchUserComponent();
     this._fetchBadges();
@@ -35,10 +36,27 @@ module.exports = class Badges extends Plugin {
   pluginWillUnload () {
     uninject('pc-badges-users');
     uninject('pc-badges-guilds-header');
+    uninject('pc-badges-guilds-tooltip');
 
-    if (document.querySelector(this.badgeClasses.container)) {
-      forceUpdateElement(this.badgeClasses.container);
+    if (document.querySelector(this.classes.header)) {
+      forceUpdateElement(this.classes.header);
     }
+  }
+
+  async _patchGuildTooltips () {
+    const _this = this;
+    const GuildBadge = await getModuleByDisplayName('GuildBadge');
+    inject('pc-badges-guilds-tooltip', GuildBadge.prototype, 'render', function (_, res) {
+      const { guild } = this.props;
+      if (_this.guildBadges[guild.id]) {
+        return _this._renderBadge(
+          _this.guildBadges[guild.id],
+          res
+        );
+      }
+
+      return res;
+    });
   }
 
   async _patchGuildHeaders () {
@@ -57,9 +75,9 @@ module.exports = class Badges extends Plugin {
   }
 
   async _patchUserComponent () {
-    const { badgeClasses } = this;
+    const { classes } = this;
     const instance = getOwnerInstance((await waitFor([
-      badgeClasses.modal, badgeClasses.headerInfo, badgeClasses.nameTag
+      classes.modal, classes.headerInfo, classes.nameTag
     ].join(' '))).parentElement);
 
     const UserProfileBody = instance._reactInternalFiber.return.type;
@@ -84,21 +102,23 @@ module.exports = class Badges extends Plugin {
       const baseUrl = powercord.settings.get('backendURL', WEBSITE);
       this.guildBadges = await get(`${baseUrl}/api/badges`).then(res => res.body);
 
-      if (document.querySelector(this.badgeClasses.container)) {
-        forceUpdateElement(this.badgeClasses.container);
+      if (document.querySelector(this.classes.header)) {
+        forceUpdateElement(this.classes.header);
       }
     } catch (e) {
       // Let it fail silently
     }
   }
 
-  _renderBadge ({ name, icon }) {
+  _renderBadge ({ name, icon }, children) {
+    children = [ React.createElement('img', {
+      className: 'powercord-guild-badge',
+      src: icon
+    }), children ].filter(Boolean);
+
     return React.createElement(Tooltip, {
       text: name,
       position: 'bottom'
-    }, React.createElement('img', {
-      className: 'powercord-guild-badge',
-      src: icon
-    }));
+    }, children.length < 2 ? children[0] : children);
   }
 };
