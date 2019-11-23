@@ -18,12 +18,12 @@ module.exports = async function injectAutocomplete () {
       getRawText: (...args) => powercordCommands.getPlainText(...args),
       matches: (isValid) => (
         isValid &&
-        this.instance.props.value.startsWith(powercord.api.commands.prefix) &&
-        !this.instance.props.value.includes(' ')
+        this.instance.props.textValue.startsWith(powercord.api.commands.prefix) &&
+        !this.instance.props.textValue.includes(' ')
       ),
       queryResults: () => ({
         commands: powercord.api.commands.commands.filter(c =>
-          c.command.startsWith(this.instance.props.value.slice(powercord.api.commands.prefix.length).toLowerCase())
+          c.command.startsWith(this.instance.props.textValue.slice(powercord.api.commands.prefix.length).toLowerCase())
         )
       }),
       renderResults: (...args) => {
@@ -79,8 +79,8 @@ module.exports = async function injectAutocomplete () {
 
     const currentCommandFilter = command =>
       [ command.command, ...command.aliases ].some(commandName =>
-        this.instance.props.value.startsWith(powercord.api.commands.prefix) &&
-        (this.instance.props.value.slice(powercord.api.commands.prefix.length).toLowerCase()).startsWith(commandName)
+        this.instance.props.textValue.startsWith(powercord.api.commands.prefix) &&
+        (this.instance.props.textValue.slice(powercord.api.commands.prefix.length).toLowerCase()).startsWith(commandName)
       );
     const autocompleteFunc = () => {
       const currentCommand = powercord.api.commands.commands
