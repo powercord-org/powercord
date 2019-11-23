@@ -90,7 +90,7 @@ module.exports = async function injectAutocomplete () {
       }
 
       const autocompleteRows = currentCommand.autocompleteFunc(
-        this.instance.props.value
+        this.instance.props.textValue
           .slice(powercord.api.commands.prefix.length)
           .split(' ')
           .slice(1)
@@ -115,7 +115,7 @@ module.exports = async function injectAutocomplete () {
             });
             state = false;
           });
-          return this.instance.props.value.split(' ').pop();
+          return this.instance.props.textArea.split(' ').pop();
         } else if (commands[index].instruction) {
           setImmediate(() => {
             webContents.sendInputEvent({
