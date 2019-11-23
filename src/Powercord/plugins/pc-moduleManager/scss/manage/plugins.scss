@@ -28,12 +28,17 @@
           width: 24px;
           height: 24px;
           margin-right: 10px;
+          flex-shrink: 0;
         }
 
-        span + svg  {
+        span + svg, span + div svg {
           width: 14px;
           height: 14px;
           margin-left: 10px;
+        }
+
+        span + div {
+          cursor: pointer;
         }
 
         &.description {

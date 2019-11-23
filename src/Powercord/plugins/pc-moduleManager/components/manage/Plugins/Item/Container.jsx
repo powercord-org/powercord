@@ -1,5 +1,9 @@
 const { React } = require('powercord/webpack');
-const { Tooltip, Icon } = require('powercord/components');
+const { open: openModal } = require('powercord/modal');
+const { Clickable, Tooltip, Icon } = require('powercord/components');
+
+const LicenseModal = require('../../../License');
+const licenses = require('../../../../licenses');
 
 module.exports = ({ author, version, description, license }) => {
   const versionInt = parseInt(version.replace(/\./g, ''));
@@ -25,6 +29,12 @@ module.exports = ({ author, version, description, license }) => {
         <Icon name='Scale'/>
       </Tooltip>
       <span>{license}</span>
+      {licenses[license] &&
+      <Clickable onClick={() => openModal(() => <LicenseModal license={licenses[license]}/>)}>
+        <Tooltip text='Learn more' position='top'>
+          <Icon name='Info'/>
+        </Tooltip>
+      </Clickable>}
     </div>
     <div className='description'>
       <Tooltip text='Description' position='top'>
