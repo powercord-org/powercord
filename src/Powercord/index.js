@@ -37,6 +37,7 @@ module.exports = class Powercord extends Updatable {
   constructor () {
     super(join(__dirname, '..', '..'), '', 'powercord');
 
+    this.cacheFolder = join(__dirname, '..', '..', '.cache');
     this.api = {};
     this.gitInfos = {
       upstream: '???',

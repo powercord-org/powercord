@@ -21,15 +21,18 @@ const { join } = require('path');
 const { readFileSync, existsSync, mkdirSync, writeFile } = require('fs');
 const { createHash } = require('crypto');
 
-const cacheDir = join(__dirname, '../../../.cache/jsx/');
-
 const checksum = (str) => createHash('sha1').update(str).digest('hex');
 
 module.exports = () => {
-  if (!existsSync(cacheDir)) {
-    mkdirSync(cacheDir, { recursive: true });
-  }
+  const cacheDir = join(powercord.cacheFolder, 'jsx');
 
+  const ensureFolder = () => {
+    if (!existsSync(cacheDir)) {
+      mkdirSync(cacheDir, { recursive: true });
+    }
+  };
+
+  // noinspection JSDeprecatedSymbols
   require.extensions['.jsx'] = (_module, filename) => {
     const source = readFileSync(filename, 'utf8');
     const hash = checksum(`/* sucrase-jsx | ${filename} */ ${source}`);
@@ -53,4 +56,8 @@ module.exports = () => {
       });
     }
   };
+
+  // noinspection JSDeprecatedSymbols
+  require.extensions['.jsx'].ensureFolder = ensureFolder;
+  ensureFolder();
 };

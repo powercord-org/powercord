@@ -1,18 +1,22 @@
 const { remote } = require('electron');
 const { React, getModule } = require('powercord/webpack');
-const { WEBSITE } = require('powercord/constants');
-const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Icons: { FontAwesome } } = require('powercord/components');
+const { open: openModal, close: closeModal } = require('powercord/modal');
 const { TextInput, SwitchItem, ButtonItem, Category } = require('powercord/components/settings');
 const { Confirm } = require('powercord/components/modal');
+const { WEBSITE } = require('powercord/constants');
+const { rmdirRf } = require('powercord/util');
 
 const PassphraseModal = require('./PassphraseModal.jsx');
 const Account = require('./PowercordAccount');
 
 module.exports = class GeneralSettings extends React.Component {
-  constructor () {
-    super();
-    this.state = { cleaning: false };
+  constructor (props) {
+    super(props);
+    this.state = {
+      discordCleared: false,
+      powercordCleared: false
+    };
   }
 
   render () {
@@ -48,7 +52,7 @@ module.exports = class GeneralSettings extends React.Component {
         </SwitchItem>
 
         <SwitchItem
-          note='Disabling this makes you 10x less cool. :('
+          note={`Disables Powercord's april fools. ${getSetting('aprilFools', true) ? 'Disabling it makes you 10x less cool. :(' : 'Enabling it will increase your coolness by 1000%'}`}
           value={getSetting('aprilFools', true)}
           onChange={() => toggleSetting('aprilFools', true)}
         >
@@ -57,7 +61,8 @@ module.exports = class GeneralSettings extends React.Component {
 
         <SwitchItem
           note={
-            <span>Replaces <a href="https://discordia.me/clyde" target="_blank">Clyde</a> in Powercord commands with a mixed range of avatars and usernames selected by plug-in developers - fallbacks to "Powercord" by default.</span>
+            <>Replaces <a href="https://discordia.me/clyde" target="_blank">Clyde</a> in Powercord commands with a mixed
+              range of avatars and usernames selected by plug-in developers - fallbacks to "Powercord" by default.</>
           }
           value={getSetting('replaceClyde', true)}
           onChange={() => toggleSetting('replaceClyde', true)}
@@ -67,9 +72,7 @@ module.exports = class GeneralSettings extends React.Component {
 
         <Category
           name='Advanced Settings'
-          description={
-            <span>Exercise caution changing anything in this category if you don't know what you're doing. <b>Seriously.</b></span>
-          }
+          description={'Don\'t touch stuff in here if you don\'t know what you\'re doing. Unexpected things can happen to your cat.'}
           opened={getSetting('advancedSettings', false)}
           onChange={() => toggleSetting('advancedSettings')}
         >
@@ -89,7 +92,6 @@ module.exports = class GeneralSettings extends React.Component {
           >
             Overlay DevTools
           </SwitchItem>
-
           <SwitchItem
             note='Prevents Discord from removing your token from localStorage, reducing the numbers of unwanted logouts.'
             value={getSetting('hideToken', true)}
@@ -97,12 +99,13 @@ module.exports = class GeneralSettings extends React.Component {
           >
             Keep token stored
           </SwitchItem>
-
           <SwitchItem
             note={
-              <span>Makes any windows opened by Discord transparent, useful for themeing.<br/><b
-                style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> This will break <b>window snapping</b> on Windows. <b>Hardware acceleration</b> must be turned <b>off</b> on Linux.
-                You may encounter issues and have black background in some cases, like when the window is cut off at the top or the bottom due to monitor resolution or when devtools are open and docked. <b>Requires restart</b>.</span>
+              <>Makes any windows opened by Discord transparent, useful for themeing.<br/>
+                <b style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> This will break <b>window snapping</b> on Windows.
+                <b>Hardware acceleration</b> must be turned <b>off</b> on Linux. You may encounter issues and have black
+                background in some cases, like when the window is cut off at the top or the bottom due to monitor
+                resolution or when devtools are open and docked. <b>Requires restart</b>.</>
             }
             value={getSetting('transparentWindow', false)}
             onChange={() => {
@@ -112,10 +115,10 @@ module.exports = class GeneralSettings extends React.Component {
           >
             Transparent Window
           </SwitchItem>
-
           <SwitchItem
-            note={
-              <span>Enables Chromium's experimental Web Platform features that are in development, such as CSS <code>backdrop-filter</code>. Since features are in development you may encounter issues and APIs may change at any time. <b>Requires restart</b>.</span>}
+            note={<>Enables Chromium's experimental Web Platform features that are in development, such as CSS
+              <code>backdrop-filter</code>. Since features are in development you may encounter issues and APIs may
+              change at any time. <b>Requires restart</b>.</>}
             value={getSetting('experimentalWebPlatform', false)}
             onChange={() => {
               toggleSetting('experimentalWebPlatform');
@@ -124,13 +127,12 @@ module.exports = class GeneralSettings extends React.Component {
           >
             Experimental Web Platform features
           </SwitchItem>
-
           <SwitchItem
-            note={
-              <span><b style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> Enabling this gives you access to features that can be <b>detected by Discord</b> and may result in an <b
-                style={{ color: 'rgb(240, 71, 71)' }}>account termination</b>.
-                  Powercord is <b>not responsible</b> for what you do with this feature. Leave it disabled if you are unsure. The Powercord Team will not provide any support regarding any experiment.</span>
-            }
+            note={<><b style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> Enabling this gives you access to features
+              that can be <b>detected by Discord</b> and may result in an <b style={{ color: 'rgb(240, 71, 71)' }}>
+                account termination</b>. Powercord is <b>not responsible</b> for what you do with this feature. Leave
+              it disabled if you are unsure. The Powercord Team will not provide any support regarding any
+              experiment.</>}
             value={getSetting('experiments', false)}
             onChange={async () => {
               toggleSetting('experiments');
@@ -144,20 +146,26 @@ module.exports = class GeneralSettings extends React.Component {
           <TextInput
             value={getSetting('backendURL', WEBSITE)}
             onChange={p => updateSetting('backendURL', !p ? WEBSITE : p)}
-            note='URL used for Spotify linking, plugin management and other internal functions.'
+            note={'URL used to fetch some assets and to query Powercord\'s REST API.'}
           >
             Backend URL
           </TextInput>
-
         </Category>
-
         <ButtonItem
-          note={'Removes everything stored in Discord\'s cache folder. This will temporarily make Discord slower, as all resources will have to be fetched again.'}
-          button={this.state.cleaning ? 'Clearing cache...' : 'Clear cache'}
-          disabled={this.state.cleaning}
-          onClick={() => this.clearCache()}
+          note={'Clears Powercord\'s cache. Next restart might feel slower as some files will have to be built again.'}
+          button={this.state.powercordCleared ? 'Cache cleared!' : 'Clear Powercord\'s cache'}
+          success={this.state.powercordCleared}
+          onClick={() => this.clearPowercordCache()}
         >
-          Clear Cache
+          Clear Powercord's Cache
+        </ButtonItem>
+        <ButtonItem
+          note={'Removes everything stored in Discord\'s cache folder. This will temporarily make Discord feel slower, as all resources will have to be fetched again.'}
+          button={this.state.discordCleared ? 'Cache cleared!' : 'Clear Discord\'s cache'}
+          success={this.state.discordCleared}
+          onClick={() => this.clearDiscordCache()}
+        >
+          Clear Discord's Cache
         </ButtonItem>
       </div>
     );
@@ -176,9 +184,21 @@ module.exports = class GeneralSettings extends React.Component {
     />);
   }
 
-  clearCache () {
-    this.setState({ clearing: true });
-    remote.getCurrentWindow().webContents.session.clearCache(() => this.setState({ clearing: false }));
+  clearDiscordCache () {
+    this.setState({ discordCleared: true });
+    remote.getCurrentWindow().webContents.session.clearCache(() => void 0);
+    setTimeout(() => {
+      this.setState({ discordCleared: false });
+    }, 2500);
+  }
+
+  clearPowercordCache () {
+    this.setState({ powercordCleared: true });
+    // noinspection JSDeprecatedSymbols
+    rmdirRf(powercord.cacheFolder).then(() => require.extensions['.jsx'].ensureFolder());
+    setTimeout(() => {
+      this.setState({ powercordCleared: false });
+    }, 2500);
   }
 
   askRestart () {
