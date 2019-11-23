@@ -21,8 +21,8 @@ const Strings = {
   },
   PATENT_USE: {
     name: 'Patent use',
-    permission: 'This license provides an express grant of patent rights from contributors.',
-    limitation: 'This license explicitly states that it does NOT grant any rights in the patents of contributors.'
+    permissions: 'This license provides an express grant of patent rights from contributors.',
+    limitations: 'This license explicitly states that it does NOT grant any rights in the patents of contributors.'
   },
   PRIVATE_USE: {
     name: 'Private use',
@@ -62,8 +62,14 @@ const Strings = {
   }
 };
 
-module.exports = ({ license: { name, description, url, permissions, conditions, limitations } }) =>
-  <Modal
+module.exports = ({ license: { name, description, url, permissions, conditions, limitations } }) => {
+  const data = {
+    permissions,
+    conditions,
+    limitations
+  };
+
+  return <Modal
     header={name}
     cancelText='Got it'
     onCancel={closeModal}
@@ -75,29 +81,18 @@ module.exports = ({ license: { name, description, url, permissions, conditions, 
     </Modal.Header>
     <Modal.Content>
       <p className='powercord-entities-license-desc'>{description}</p>
-      <div className='powercord-entities-license-data permissions'>
-        <FormTitle tag='h4'>Permissions</FormTitle>
-        {permissions.map(perm => <div key={perm} className='powercord-entities-license-entry'>
-          <span>{Strings[perm].name}</span>
-          <div>{Strings[perm].permission || Strings[perm].desc}</div>
-        </div>)}
-      </div>
-      <div className='powercord-entities-license-data limitations'>
-        <FormTitle tag='h4'>Limitations</FormTitle>
-        {limitations.map(perm => <div key={perm} className='powercord-entities-license-entry'>
-          <span>{Strings[perm].name}</span>
-          <div>{Strings[perm].limitation || Strings[perm].desc}</div>
-        </div>)}
-      </div>
-      <div className='powercord-entities-license-data conditions'>
-        <FormTitle tag='h4'>Conditions</FormTitle>
-        {conditions.map(perm => <div key={perm} className='powercord-entities-license-entry'>
-          <span>{Strings[perm].name}</span>
-          <div>{Strings[perm].condition || Strings[perm].desc}</div>
-        </div>)}
-      </div>
+      {[ 'permissions', 'limitations', 'conditions' ].map(type =>
+        <div className={`powercord-entities-license-data ${type}`}>
+          <FormTitle tag='h4'>{type}</FormTitle>
+          {data[type].map(perm => <div key={perm} className='powercord-entities-license-entry'>
+            <span>{Strings[perm].name}</span>
+            <div>{Strings[perm][type] || Strings[perm].desc}</div>
+          </div>)}
+        </div>
+      )}
       <Card className='powercord-entities-license-card'>
         This is not legal advice. Data from <a target='_blank' href={url}>choosealicense.com</a>.
       </Card>
     </Modal.Content>
   </Modal>;
+};
