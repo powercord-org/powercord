@@ -21,7 +21,7 @@ const { join } = require('path');
 const { readFileSync, existsSync, mkdirSync, writeFile } = require('fs');
 const { createHash } = require('crypto');
 
-const cacheDir = join(__dirname, '../../../cache/jsx/');
+const cacheDir = join(__dirname, '../../../.cache/jsx/');
 
 const checksum = (str) => createHash('sha1').update(str).digest('hex');
 
@@ -47,7 +47,7 @@ module.exports = () => {
 
       writeFile(cached, res, (err) => {
         if (err) {
-          console.error('[JSX]', 'Failed to write to cache');
+          console.error('%c[Powercord:JSX]', 'color: #7289da', 'Failed to write to cache');
           console.error(err);
         }
       });
