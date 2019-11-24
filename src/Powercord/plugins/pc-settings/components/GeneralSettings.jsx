@@ -28,14 +28,12 @@ module.exports = class GeneralSettings extends React.Component {
           passphrase={this.passphrase.bind(this)}
           onAccount={() => this.forceUpdate()}
         />
-
         <TextInput
           defaultValue={getSetting('prefix', '.')}
           onChange={p => updateSetting('prefix', !p ? '.' : p)}
         >
           Command Prefix
         </TextInput>
-
         <SwitchItem
           note='Sync all of your Powercord settings across devices. Requires a Powercord account!'
           value={powercord.account && getSetting('settingsSync', false)}
@@ -50,15 +48,6 @@ module.exports = class GeneralSettings extends React.Component {
         >
           Settings Sync
         </SwitchItem>
-
-        <SwitchItem
-          note={`Disables Powercord's april fools. ${getSetting('aprilFools', true) ? 'Disabling it makes you 10x less cool. :(' : 'Enabling it will increase your coolness by 1000%'}`}
-          value={getSetting('aprilFools', true)}
-          onChange={() => toggleSetting('aprilFools', true)}
-        >
-          April Fools
-        </SwitchItem>
-
         <SwitchItem
           note={
             <>Replaces <a href="https://discordia.me/clyde" target="_blank">Clyde</a> in Powercord commands with a mixed
