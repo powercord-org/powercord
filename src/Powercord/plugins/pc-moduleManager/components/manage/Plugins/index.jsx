@@ -90,7 +90,7 @@ module.exports = class Plugins extends React.Component {
   }
 
   _getPlugins () {
-    let plugins = [ ...powercord.pluginManager.plugins.values() ];
+    let plugins = [ ...powercord.pluginManager.plugins.values() ].filter(p => !p.manifest.__newManifest);
     if (this.props.search !== '') {
       const search = this.props.search.toLowerCase();
       plugins = plugins.filter(p =>

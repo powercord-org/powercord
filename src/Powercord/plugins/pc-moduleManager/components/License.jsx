@@ -81,6 +81,9 @@ module.exports = ({ license: { name, description, url, permissions, conditions, 
     </Modal.Header>
     <Modal.Content>
       <p className='powercord-entities-license-desc'>{description}</p>
+      <Card className='powercord-entities-license-card'>
+        This is not legal advice. Data from <a target='_blank' href={url}>choosealicense.com</a>.
+      </Card>
       {[ 'permissions', 'limitations', 'conditions' ].map(type =>
         <div className={`powercord-entities-license-data ${type}`}>
           <FormTitle tag='h4'>{type}</FormTitle>
@@ -90,9 +93,6 @@ module.exports = ({ license: { name, description, url, permissions, conditions, 
           </div>)}
         </div>
       )}
-      <Card className='powercord-entities-license-card'>
-        This is not legal advice. Data from <a target='_blank' href={url}>choosealicense.com</a>.
-      </Card>
     </Modal.Content>
   </Modal>;
 };

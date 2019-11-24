@@ -29,8 +29,8 @@
 
       &:before {
         content: '';
-        width: 14px;
-        height: 14px;
+        width: 8px;
+        height: 8px;
         margin-right: 10px;
         border-radius: 50%;
         background-color: #fff;
@@ -40,8 +40,10 @@
 
   &-card {
     text-align: center;
-    margin-top: 40px;
-    margin-bottom: 20px;
+    margin-top: 20px;
+    margin-bottom: 40px;
     padding: 10px;
+    border-color: #e19517;
+    background-color: rgba(225, 149, 23, .15);
   }
 }
