@@ -3,6 +3,7 @@ const { Button, FormNotice, FormTitle, Tooltip } = require('powercord/components
 const { SwitchItem, TextInput, Category, ButtonItem } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
+const { REPO_URL } = require('powercord/constants');
 
 const Icons = require('./Icons');
 const Update = require('./Update');
@@ -73,7 +74,7 @@ module.exports = class UpdaterSettings extends React.Component {
         <div className="about">
           <div>
             <span>Upstream:</span>
-            <span>{powercord.gitInfos.upstream.replace('powercord-org/powercord', 'Official')}</span>
+            <span>{powercord.gitInfos.upstream.replace(REPO_URL, 'Official')}</span>
           </div>
           <div>
             <span>Revision:</span>

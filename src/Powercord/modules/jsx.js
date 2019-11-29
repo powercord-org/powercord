@@ -35,7 +35,7 @@ module.exports = () => {
   // noinspection JSDeprecatedSymbols
   require.extensions['.jsx'] = (_module, filename) => {
     const source = readFileSync(filename, 'utf8');
-    const hash = checksum(`/* sucrase-jsx | ${filename} */ ${source}`);
+    const hash = checksum(`/* sucrase-jsx (${sucrase.getVersion()}) | ${filename} */ ${source}`);
     const cached = join(cacheDir, `${hash}.js`);
 
     try {
