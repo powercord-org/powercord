@@ -1,8 +1,6 @@
 const { Flux, React, getModule } = require('powercord/webpack');
-const { Card, Icon, FormTitle, Spinner, Button, Icons: { SdkWordmark }, AsyncComponent } = require('powercord/components');
-const Badges = require('../../pc-badges/Badges');
+const { Icons: { SdkWordmark }, AsyncComponent } = require('powercord/components');
 
-const Helmet = AsyncComponent.from((async () => (await getModule([ 'Helmet ' ])).Helmet)());
 const TitleBar = AsyncComponent.from((async () => {
   const titleBar = await getModule(m => typeof m === 'function' && m.toString().includes('PlatformTypes.WINDOWS') && m.toString().includes('PlatformTypes.OSX'));
   const windows = titleBar({ type: 'WINDOWS' }).type;
@@ -13,13 +11,36 @@ const TitleBar = AsyncComponent.from((async () => {
   };
 })());
 
-module.exports = class SdkWindow extends React.Component {
+class SdkWindow extends React.Component {
+  componentDidMount () {
+    this.htmlProps();
+  }
+
+  componentDidUpdate () {
+    this.htmlProps();
+  }
+
+  async htmlProps () {
+    const windowManager = await getModule([ 'getWindow' ]);
+    const guestWindow = windowManager.getWindow('DISCORD_POWERCORD_SANDBOX');
+    guestWindow.document.head.parentElement.className = [ `theme-${this.props.theme}`, this.props.fontScaleClass ].join(' ');
+    guestWindow.document.head.parentElement.style = `font-size: ${this.props.fontScale}%`;
+    guestWindow.document.head.parentElement.lang = this.props.locale;
+  }
+
   render () {
     return <>
-      <TitleBar type='WINDOWS' windowKey='DISCORD_POWERCORD_SANDBOX' themeOverride='dark'/>
-      <Helmet>
-        <html className='theme-dark powercord-sdk'/>
-      </Helmet>
+      <TitleBar type='WINDOWS' windowKey='DISCORD_POWERCORD_SANDBOX' themeOverride={this.props.theme}/>
     </>;
   }
-};
+}
+
+module.exports = Flux.connectStoresAsync(
+  [ getModule([ 'theme', 'locale' ]), getModule([ 'fontScale', 'darkSidebar' ]) ],
+  ([ settings1Store, settings2Store ]) => ({
+    locale: settings1Store.locale,
+    theme: settings1Store.theme,
+    fontScale: settings2Store.fontScale,
+    fontScaleClass: settings2Store.fontScaleClass
+  })
+)(SdkWindow);

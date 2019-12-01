@@ -147,7 +147,7 @@ const images = {
     background: '/assets/c486dc65ce2877eeb18e4c39bb49507a.svg'
   },
   light: {
-    background: 'https://epic.weeb.services/8cf8344bdc.png'
+    background: '/assets/8c1fd3ecbbf620ec49cecda2aa53f256.svg'
   }
 };
 
