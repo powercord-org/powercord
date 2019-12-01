@@ -63,21 +63,10 @@ class DocsLayer extends React.Component {
   }
 }
 
-let connectedModule = null;
-module.exports = (props) => <AsyncComponent
-  _provider={async () => {
-    if (!connectedModule) {
-      const themeStore = await getModule([ 'theme' ]);
-      const sidebarStore = await getModule([ 'darkSidebar' ]);
-      connectedModule = Flux.connectStores(
-        [ themeStore, sidebarStore ],
-        () => ({
-          theme: themeStore.theme,
-          sidebarTheme: sidebarStore.darkSidebar ? 'dark' : void 0
-        })
-      )(DocsLayer);
-    }
-    return connectedModule;
-  }}
-  {...props}
-/>;
+module.exports = Flux.connectStoresAsync(
+  [ getModule([ 'theme' ]), getModule([ 'darkSidebar' ]) ],
+  ([ themeStore, sidebarStore ]) => ({
+    sidebarTheme: sidebarStore.darkSidebar ? 'dark' : void 0,
+    theme: themeStore.theme
+  })
+)(DocsLayer);

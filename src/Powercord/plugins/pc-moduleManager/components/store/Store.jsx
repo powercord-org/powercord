@@ -151,17 +151,4 @@ const images = {
   }
 };
 
-let connectedModule = null;
-module.exports = (props) => <AsyncComponent
-  _provider={async () => {
-    if (!connectedModule) {
-      const userStore = await getModule([ 'getCurrentUser' ]);
-      const settingsStore = await getModule([ 'theme' ]);
-      connectedModule = Flux.connectStores([ settingsStore, userStore ], () => ({
-        images: images[settingsStore.theme]
-      }))(Store);
-    }
-    return connectedModule;
-  }}
-  {...props}
-/>;
+module.exports = Flux.connectStoresAsync([ getModule([ 'theme' ]) ], ([ settingsStore ]) => ({ images: images[settingsStore.theme] }))(Store);

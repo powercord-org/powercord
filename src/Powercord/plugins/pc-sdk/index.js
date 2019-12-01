@@ -2,6 +2,7 @@ const { React, getModule, getModuleByDisplayName } = require('powercord/webpack'
 const { Tooltip, Icons: { CodeBraces } } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
 const { Plugin } = require('powercord/entities');
+const SdkWindow = require('./components/SdkWindow');
 
 module.exports = class SDK extends Plugin {
   async startPlugin () {
@@ -26,7 +27,11 @@ module.exports = class SDK extends Plugin {
         className: [ classes.iconWrapper, classes.clickable ].join(' ')
       }, React.createElement(CodeBraces, {
         className: classes.icon,
-        onClick: () => console.log('memes')
+        onClick: async () => {
+          const popoutModule = await getModule([ 'setAlwaysOnTop', 'open' ]);
+          popoutModule.open('DISCORD_POWERCORD_SANDBOX', () => React.createElement(SdkWindow));
+          popoutModule.setAlwaysOnTop('DISCORD_POWERCORD_SANDBOX', true);
+        }
       })));
 
       if (!res.props.toolbar) {
