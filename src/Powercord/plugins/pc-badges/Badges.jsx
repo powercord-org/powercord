@@ -6,7 +6,7 @@ const { Tooltip } = require('powercord/components');
 const Badge = require('./Badge.jsx');
 
 const badgesStore = {};
-const badges = [ 'developer', 'staff', 'contributor', 'early', 'hunter' ];
+const badges = [ 'developer', 'staff', 'contributor', 'hunter', 'early' ];
 
 module.exports = class Badges extends React.PureComponent {
   constructor (props) {
@@ -29,7 +29,7 @@ module.exports = class Badges extends React.PureComponent {
 
   render () {
     return [
-      this.state.custom &&
+      this.state.custom && this.state.custom.icon && this.state.custom.name &&
       <Tooltip text={this.state.custom.name} position='top'>
         <div className='powercord-badge donor' style={{
           '--custom': `url('${this.state.custom.icon}')`,
@@ -37,14 +37,10 @@ module.exports = class Badges extends React.PureComponent {
           '--custom-name': `url('${this.state.custom.name}')`
         }}/>
       </Tooltip>,
-      ...Object.entries(this.state)
-        .map(([ badgeName, hasBadge ]) => (
-          hasBadge && badges.includes(badgeName) &&
-          <Badge
-            badge={badgeName} key={badgeName}
-            color={this.state.custom && this.state.custom.color ? this.state.custom.color : '7289DA'}
-          />
-        ))
+      badges.map(badge => this.state[badge] && <Badge
+        badge={badge} key={badge}
+        color={this.state.custom && this.state.custom.color ? this.state.custom.color : '7289DA'}
+      />)
     ];
   }
 };
