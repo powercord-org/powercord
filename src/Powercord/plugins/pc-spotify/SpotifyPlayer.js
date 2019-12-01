@@ -21,21 +21,18 @@ module.exports = {
 
     if (powercord.account && powercord.account.spotify) {
       const baseUrl = powercord.settings.get('backendURL', WEBSITE);
-      const resp = await get(`${baseUrl}/api/users/@me/spotify`)
+      const resp = await get(`${baseUrl}/api/v2/users/@me/spotify`)
         .set('Authorization', powercord.account.token)
         .then(r => r.body);
 
       if (resp.revoked) {
-        const announcements = powercord.pluginManager.get('pc-announcements');
-        announcements.sendNotice({
-          id: 'pc-spotify-revoked',
-          type: announcements.Notice.TYPES.ORANGE,
+        powercord.api.notices.sendAnnouncement('spotify-revoked', {
+          color: 'orange',
           message: revokedMessages[resp.revoked],
           button: {
             text: 'Relink Spotify',
             onClick: () => openExternal(`${baseUrl}/oauth/spotify`)
-          },
-          alwaysDisplay: true
+          }
         });
       } else if (resp.token) {
         return resp.token;

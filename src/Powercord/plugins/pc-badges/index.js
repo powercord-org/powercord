@@ -38,9 +38,7 @@ module.exports = class Badges extends Plugin {
     uninject('pc-badges-guilds-header');
     uninject('pc-badges-guilds-tooltip');
 
-    if (document.querySelector(this.classes.header)) {
-      forceUpdateElement(this.classes.header);
-    }
+    forceUpdateElement(this.classes.header);
   }
 
   async _patchGuildTooltips () {
@@ -96,7 +94,7 @@ module.exports = class Badges extends Plugin {
   async _fetchBadges () {
     try {
       const baseUrl = powercord.settings.get('backendURL', WEBSITE);
-      this.guildBadges = await get(`${baseUrl}/api/badges`).then(res => res.body);
+      this.guildBadges = await get(`${baseUrl}/api/v2/guilds/badges`).then(res => res.body);
 
       if (document.querySelector(this.classes.header)) {
         forceUpdateElement(this.classes.header);

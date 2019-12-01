@@ -140,7 +140,7 @@ module.exports = class Settings extends API {
       isEncrypted = true;
     }
 
-    await post(`${baseUrl}/api/users/@me/settings`)
+    await post(`${baseUrl}/api/v2/users/@me/settings`)
       .set('Authorization', token)
       .set('Content-Type', 'application/json')
       .send({
@@ -158,7 +158,7 @@ module.exports = class Settings extends API {
     const token = this.store.getSetting('pc-general', 'powercordToken');
     const baseUrl = this.store.getSetting('pc-general', 'backendURL', WEBSITE);
 
-    let { isEncrypted, powercord: settings } = (await get(`${baseUrl}/api/users/@me/settings`)
+    let { isEncrypted, powercord: settings } = (await get(`${baseUrl}/api/v2/users/@me/settings`)
       .set('Authorization', token)
       .then(r => r.body));
 

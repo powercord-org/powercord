@@ -99,7 +99,7 @@ const PowercordAccount = class PowercordAccount extends React.Component {
       }
 
       const baseUrl = powercord.settings.get('backendURL', WEBSITE);
-      openExternal(`${baseUrl}/api/users/link`);
+      openExternal(`${baseUrl}/api/v2/users/@me/link/legacy`);
 
       const timeout = setTimeout(() => {
         this.state.server.close();

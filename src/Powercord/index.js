@@ -162,7 +162,7 @@ module.exports = class Powercord extends Updatable {
       const baseUrl = this.settings.get('backendURL', WEBSITE);
       console.debug('%c[Powercord]', 'color: #7289da', 'Logging in to your account...');
 
-      const resp = await get(`${baseUrl}/api/users/@me`)
+      const resp = await get(`${baseUrl}/api/v2/users/@me`)
         .set('Authorization', token)
         .catch(e => e);
 

@@ -22,16 +22,15 @@ module.exports = class ModuleManager extends Plugin {
       )
     );
 
+    this.registerSettings('pc-moduleManager-plugins', 'Plugins', layout('plugins'));
     if (this.settings.get('__experimental_2019-10-25', false)) {
       this.log('Experimental Module Manager enabled.');
       this._injectCommunityContent();
-      this.registerSettings('pc-moduleManager-plugins', 'Plugins', layout('plugins', true));
       this.registerSettings('pc-moduleManager-themes', 'Themes', layout('themes', true));
 
       this.registerRoute('/store/plugins', Store, true);
       this.registerRoute('/store/themes', Store, true);
     } else {
-      this.registerSettings('pc-moduleManager-plugins', 'Plugins', layout('plugins', false));
       this.registerSettings('pc-moduleManager-themes', 'Themes', Soon);
     }
   }

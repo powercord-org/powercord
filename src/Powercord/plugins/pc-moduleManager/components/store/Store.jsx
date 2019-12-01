@@ -1,5 +1,5 @@
 const { React, Flux, getModule, getModuleByDisplayName } = require('powercord/webpack');
-const { Tooltip, Clickable, Icon, HeaderBar, AsyncComponent, Icons: { Certificate, Server } } = require('powercord/components');
+const { Tooltip, Clickable, Icon, HeaderBar, AsyncComponent, Icons: { Plugin: PluginIcon, Theme, Certificate, Server } } = require('powercord/components');
 
 const VerticalScroller = AsyncComponent.from(getModuleByDisplayName('VerticalScroller'));
 const SearchBox = AsyncComponent.from((async () => {
@@ -70,9 +70,9 @@ class Store extends React.Component {
       height: '100%'
     }}>
       <iframe
-        width="100%" height="100%"
+        width='100%' height='100%'
         src={`https://www.youtube.com/embed/${ids[Math.floor(Math.random() * ids.length)]}`}
-        frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        frameBorder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture'
         allowFullScreen/>
     </div>;
 
@@ -81,18 +81,9 @@ class Store extends React.Component {
     const { headerBar, store } = classes;
     return <div className='powercord-text powercord-store'>
       <HeaderBar transparent={false} toolbar={this.renderToolbar()}>
-        <Clickable
-          className={[ headerBar.iconWrapper, headerBar.clickable ].join(' ')}
-          onClick={async () => {
-            const settingsModule = await getModule([ 'open', 'saveAccountChanges' ]);
-            settingsModule.open(`pc-moduleManager-${this.state.type}`);
-            setTimeout(() => history.back(), 350);
-          }}
-        >
-          <Tooltip text='Go back to Settings' position='bottom'>
-            <Icon name='ArrowLeft' className={headerBar.icon}/>
-          </Tooltip>
-        </Clickable>
+        <div className={headerBar.iconWrapper}>
+          {this.state.type === 'plugins' ? <PluginIcon/> : <Theme/>}
+        </div>
         <HeaderBar.Title>Browse {this.state.type[0].toUpperCase() + this.state.type.slice(1)}</HeaderBar.Title>
       </HeaderBar>
       <VerticalScroller outerClassName={[ store.container, 'powercord-store-container' ].join(' ')}>
