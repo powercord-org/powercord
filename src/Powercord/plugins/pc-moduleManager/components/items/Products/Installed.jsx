@@ -1,10 +1,10 @@
 const { React } = require('powercord/webpack');
 const { Card } = require('powercord/components');
 
-const Header = require('./parts/Installed/Header');
-const Container = require('./parts/Installed/Details');
+const Header = require('./parts/InstalledHeader');
+const Container = require('./parts/InstalledDetails');
 const Permissions = require('./parts/Permissions');
-const Footer = require('./parts/Installed/Footer');
+const Footer = require('./parts/InstalledFooter');
 
 module.exports = class Installed extends React.Component {
   render () {

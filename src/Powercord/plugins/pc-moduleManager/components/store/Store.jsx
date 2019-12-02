@@ -1,7 +1,6 @@
 const { React, Flux, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { Tooltip, Clickable, Icon, HeaderBar, AsyncComponent, Icons: { Plugin: PluginIcon, Theme, Certificate, Server } } = require('powercord/components');
 
-const Card = require('../items/Products/Card');
 const Product = require('../items/Products/Product');
 const VerticalScroller = AsyncComponent.from(getModuleByDisplayName('VerticalScroller'));
 const SearchBox = AsyncComponent.from((async () => {
@@ -168,9 +167,12 @@ class Store extends React.Component {
               ? entity.manifest.name.toLowerCase().includes(this.state.search.toLowerCase())
               : entity)
           .map(entity =>
-            <Card className='powercord-store-product'>
-              <Product product={entity} previews={[ this.props.images.banner ]} type={this.state.type}/>
-            </Card>
+            <Product
+              product={entity}
+              className='powercord-store-product'
+              previews={[ 'https://www.figma.com/file/WFNUFYEVYMTZf5YHDvFLdI/image/a85019acab20c35fb137fe590dd619fc89004280' ]}
+              type={this.state.type}
+            />
           )
         }
       </div>
@@ -180,12 +182,10 @@ class Store extends React.Component {
 
 const images = {
   dark: {
-    background: '/assets/c486dc65ce2877eeb18e4c39bb49507a.svg',
-    banner: '/assets/d03d90cb6f12a7ea06274b278dfa4160.svg'
+    background: '/assets/c486dc65ce2877eeb18e4c39bb49507a.svg'
   },
   light: {
-    background: '/assets/8c1fd3ecbbf620ec49cecda2aa53f256.svg',
-    banner: '/assets/7b6ed225050df29a07cb5db712d35a73.svg'
+    background: '/assets/8c1fd3ecbbf620ec49cecda2aa53f256.svg'
   }
 };
 

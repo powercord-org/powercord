@@ -2,8 +2,8 @@ const { React } = require('powercord/webpack');
 const { open: openModal } = require('powercord/modal');
 const { Clickable, Tooltip, Icon, Icons: { Chemistry } } = require('powercord/components');
 
-const LicenseModal = require('../../../../License');
-const licenses = require('../../../../../licenses');
+const LicenseModal = require('../../../License');
+const licenses = require('../../../../licenses');
 
 module.exports = React.memo(
   ({ author, version, description, license }) =>

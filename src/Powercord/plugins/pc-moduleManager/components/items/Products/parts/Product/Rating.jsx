@@ -1,20 +1,20 @@
 const { React } = require('powercord/webpack');
 const { Tooltip, FormTitle, Icons: { ThumbsUp, ThumbsDown } } = require('powercord/components');
 
-module.exports = ({ rating }) =>
+module.exports = ({ votes }) =>
   <div className='powercord-store-product-rating'>
     <FormTitle>Rating</FormTitle>
     <div className='item'>
-      <Tooltip text='Positive (+1)' position='top'>
-        <div className='positive'>
+      <Tooltip text='Vote +1' position='top'>
+        <div className='vote-up'>
           <ThumbsUp/>
-          <span className='positive-count'>{rating[0]}</span>
+          <span className='count'>{votes.up}</span>
         </div>
       </Tooltip>
-      <Tooltip text='Negative (-1)' position='top'>
-        <div className='negative'>
+      <Tooltip text='Vote -1' position='top'>
+        <div className='vote-down'>
           <ThumbsDown/>
-          <span className='negative-count'>{rating[1]}</span>
+          <span className='count'>{votes.down}</span>
         </div>
       </Tooltip>
     </div>

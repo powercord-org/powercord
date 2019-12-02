@@ -48,7 +48,7 @@
         margin-right: 6px;
         margin-left: -2px;
         width: 16px;
-        height: 14px;
+        height: 16px;
       }
 
       .name {
@@ -94,7 +94,7 @@
   }
 
   &-rating {
-    .positive, .negative {
+    .vote-up, .vote-down {
       display: flex;
       align-items: center;
       transition: opacity .1s ease;
@@ -110,21 +110,21 @@
       }
     }
 
-    .positive {
+    .vote-up {
       color: #43b581;
       margin-right: 6px;
 
-      .positive-count {
+      .count {
         color: var(--text-normal);
         font-weight: 600;
         margin: 0 6px;
       }
     }
 
-    .negative {
+    .vote-down {
       color: #f04747;
 
-      .negative-count {
+      .count {
         color: var(--text-muted);
         margin-left: 6px;
       }
