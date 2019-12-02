@@ -1,0 +1,158 @@
+&-product {
+  font-size: 14px;
+  color: var(--channels-default);
+
+  > div {
+    width: 308px;
+    cursor: default;
+    border-radius: 5px;
+  }
+
+  >:not(.powercord-store-product-preview) {
+    .title {
+      margin-top: 16px;
+    }
+  }
+
+  &-info {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    position: relative;
+    align-content: stretch;
+    padding: 0 16px 16px;
+
+    .name, .description {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      width: 100%;
+
+      .name {
+        font-size: 16px;
+        color: var(--text-normal);
+        white-space: nowrap;
+        line-height: 20px;
+      }
+    }
+
+    .description {
+      flex: 1 1 auto;
+      line-height: 18px;
+      margin: 8px 0 16px;
+      color: var(--header-secondary);
+    }
+  }
+
+  .powercord-plugin-permissions, &-rating, &-tags, &-footer {
+    margin: 0 12px 12px;
+    padding-top: 8px;
+    border-top: 1px var(--background-modifier-accent) solid;
+    overflow: hidden;
+
+    .item {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+  }
+
+  .powercord-plugin-permissions {
+    .item {
+      margin: 3px 5px;
+
+      svg {
+        width: 24px;
+        flex-shrink: 0;
+        margin-right: 6px;
+        color: var(--interactive-normal);
+      }
+    }
+  }
+
+  &-rating {
+    .positive, .negative {
+      display: flex;
+      align-items: center;
+      transition: opacity .1s ease;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    .positive {
+      color: #43b581;
+      margin-right: 6px;
+
+      .positive-count {
+        color: var(--text-normal);
+        font-weight: 600;
+        margin: 0 6px;
+      }
+    }
+
+    .negative {
+      color: #f04747;
+
+      .negative-count {
+        color: var(--text-muted);
+        margin-left: 6px;
+      }
+    }
+  }
+
+  &-tags {
+    .tag {
+      color: #fff;
+      font-size: 12px;
+      background-color: var(--interactive-muted);
+      margin-right: 4px;
+      border-radius: 2px;
+      padding: 3px 5px;
+
+      &.nsfw {
+        background-color: #f04747;
+      }
+    }
+  }
+
+  &-footer {
+    font-size: 21px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .actions-group-1, .actions-group-2 {
+      display: flex;
+      align-items: center;
+
+      div, span, svg {
+        cursor: pointer;
+        margin-right: 6px;
+        transition: opacity .2s ease;
+        opacity: 0.8;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      :last-child {
+        margin-right: 0;
+      }
+    }
+
+    .actions-group-1 {
+      margin-right: auto;
+    }
+  }
+}
