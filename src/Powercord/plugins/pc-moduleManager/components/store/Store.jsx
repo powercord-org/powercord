@@ -64,6 +64,24 @@ class Store extends React.Component {
   }
 
   render () {
+    // dont touch mah stuff :angery:
+    const ids = [ 'h6DNdop6pD8', 'd1YBv2mWll0', 'dQw4w9WgXcQ', 'A963X1RaRfk', 'q4OItmKWFKw', 'NHEaYbDWyQE' ];
+    return <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+      height: '100%'
+    }}>
+      <iframe
+        width='100%' height='100%'
+        src={`https://www.youtube.com/embed/${ids[Math.floor(Math.random() * ids.length)]}`}
+        frameBorder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture'
+        allowFullScreen/>
+    </div>;
+
+    /* eslint-disable no-unreachable */
+    // noinspection UnreachableCodeJS
     const { headerBar, store } = classes;
     return <div className='powercord-text powercord-store'>
       <HeaderBar transparent={false} toolbar={this.renderToolbar()}>
