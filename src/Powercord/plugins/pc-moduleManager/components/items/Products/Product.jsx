@@ -18,6 +18,7 @@ module.exports = class Product extends React.Component {
       <Header
         name={manifest.name}
         description={manifest.description}
+        verified={true}
       />
 
       {this.props.type === 'plugins' && (manifest.permissions || []).length > 0 &&

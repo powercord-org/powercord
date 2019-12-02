@@ -1,5 +1,5 @@
 const { React } = require('powercord/webpack');
-const { Icon, Icons: { FontAwesome, GitHub } } = require('powercord/components');
+const { Icon, Icons: { FontAwesome, GitHub, Comment, CloudDownload } } = require('powercord/components');
 
 module.exports = () =>
   <div className='powercord-store-product-footer'>
@@ -10,10 +10,10 @@ module.exports = () =>
       </div>
       <div className='actions-group-2'>
         <span className='review' style={{ color: '#ffd74b' }}>
-          <FontAwesome icon='comment-alt-edit'/>
+          <Comment/>
         </span>
         <span className='download' style={{ color: '#43b581' }}>
-          <Icon name='CloudDownload'/>
+          <CloudDownload/>
         </span>
         <span className='report' style={{ color: '#f04747' }}>
           <Icon name='Flag'/>

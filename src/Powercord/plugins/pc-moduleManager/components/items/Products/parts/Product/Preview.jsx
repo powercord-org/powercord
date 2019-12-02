@@ -1,5 +1,5 @@
 const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
-const { AsyncComponent, Mask } = require('powercord/components');
+const { AsyncComponent } = require('powercord/components');
 
 const CarouselWithSlide = AsyncComponent.from(getModuleByDisplayName('CarouselWithSlide'));
 
@@ -27,13 +27,11 @@ module.exports = class Preview extends React.Component {
           items={[ ...Array(5) ].map(() => this.props.previews[0])}
           renderItem={(item) =>
             <div className={classes.splash}>
-              <Mask mask={Mask.Masks.VERTICAL_FADE} width={308} height={144}>
-                <img
-                  src={item}
-                  alt=''
-                  className={classes.splashImage}
-                />
-              </Mask>
+              <img
+                src={item}
+                alt=''
+                className={classes.splashImage}
+              />
             </div>
           }
         />

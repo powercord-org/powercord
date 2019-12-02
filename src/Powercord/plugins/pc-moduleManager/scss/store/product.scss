@@ -14,6 +14,16 @@
     }
   }
 
+  &-preview {
+    img {
+      height: 148px;
+    }
+
+    > div > div {
+      padding-top: 14.25% !important;
+    }
+  }
+
   &-info {
     display: flex;
     flex: 1 1 auto;
@@ -32,6 +42,14 @@
       align-items: center;
       font-weight: 600;
       width: 100%;
+
+      .verifiedIcon {
+        flex: 0 0 16px;
+        margin-right: 6px;
+        margin-left: -2px;
+        width: 16px;
+        height: 14px;
+      }
 
       .name {
         font-size: 16px;
@@ -82,6 +100,11 @@
       transition: opacity .1s ease;
       cursor: pointer;
 
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+
       &:hover {
         opacity: 0.8;
       }
@@ -124,7 +147,7 @@
   }
 
   &-footer {
-    font-size: 21px;
+    font-size: 20px;
 
     svg {
       width: 24px;
