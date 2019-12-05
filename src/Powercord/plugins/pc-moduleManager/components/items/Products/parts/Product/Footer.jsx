@@ -1,23 +1,30 @@
 const { React } = require('powercord/webpack');
-const { Icon, Icons: { FontAwesome, GitHub, Comment, CloudDownload } } = require('powercord/components');
+const { Tooltip, Icon, Clickable, Icons: { GitHub, CloudDownload } } = require('powercord/components');
 
-module.exports = () =>
-  <div className='powercord-store-product-footer'>
-    <div className='item'>
-      <div className='actions-group-1'>
-        <GitHub/>
-        <FontAwesome icon='cog'/>
-      </div>
-      <div className='actions-group-2'>
-        <span className='review' style={{ color: '#ffd74b' }}>
-          <Comment/>
-        </span>
-        <span className='download' style={{ color: '#43b581' }}>
-          <CloudDownload/>
-        </span>
-        <span className='report' style={{ color: '#f04747' }}>
-          <Icon name='Flag'/>
-        </span>
-      </div>
+module.exports = ({ github, owner, isLoggedIn, onSettings, onReport, onInstall }) =>
+  <div className='powercord-product-footer'>
+    <div className='buttons'>
+      {(github || true) && <Tooltip text='View on GitHub' placement='top'>
+        <a href={`https://github.com/${github}`} target='_blank' className='github'>
+          <GitHub width={24} height={24}/>
+        </a>
+      </Tooltip>}
+      {(owner || true) && <Tooltip text='Settings' placement='top'>
+        <Clickable className='settings' onClick={() => onSettings}>
+          <Icon name='Gear' width={24} height={24}/>
+        </Clickable>
+      </Tooltip>}
+    </div>
+    <div className='buttons'>
+      <Tooltip text='Install' placement='top'>
+        <Clickable className='download' onClick={() => onInstall}>
+          <CloudDownload width={24} height={24}/>
+        </Clickable>
+      </Tooltip>
+      {(isLoggedIn || true) && <Tooltip text='Report' placement='top'>
+        <Clickable className='report' onClick={() => onReport}>
+          <Icon width={24} height={24} name='ReportFlag'/>
+        </Clickable>
+      </Tooltip>}
     </div>
   </div>;

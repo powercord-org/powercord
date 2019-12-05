@@ -7,57 +7,31 @@ const Rating = require('./parts/Product/Rating');
 const Tags = require('./parts/Product/Tags');
 const Footer = require('./parts/Product/Footer');
 
+let classes = null;
+setImmediate(async () => classes = await getModule([ 'card', 'loaded' ]));
+
 module.exports = class Product extends React.Component {
-  constructor (props) {
-    super(props);
-
-    this.state = {
-      classes: {},
-      loaded: false
-    };
-  }
-
-  async componentDidMount () {
-    this.setState({
-      classes: { ...await getModule([ 'card', 'loaded' ]) }
-    });
-  }
-
   render () {
-    const { classes } = this.state;
+    // @todo: proper data structure
     const { product: { manifest } } = this.props;
-    return <>
-      <div className={[ this.props.className, this.state.loaded ? classes.loaded : classes.loading ].join(' ')}>
-        <div className={classes.card} onLoad={() => this.setState({ loaded: true })}>
-          {this.props.type === 'themes' &&
-            <Preview previews={manifest.previews || this.props.previews} />
-          }
-
-          <Header
-            name={manifest.name}
-            description={manifest.description}
-            verified={true}
-          />
-
-          {this.props.type === 'plugins' && (manifest.permissions || []).length > 0 &&
-            <Permissions permissions={manifest.permissions}/>
-          }
-
-          <Rating
-            votes={{
-              up: 110,
-              down: 1
-            }}
-          />
-
-          <Tags
-            tags={manifest.tags || [ 'Cute', 'owo', 'whats', 'this' ]}
-            nsfw={manifest.nsfw || true}
-          />
-
-          <Footer/>
-        </div>
+    return <div className='powercord-product'>
+      <div className={classes.card}>
+        <div className='powercord-product-abandonware'>Discontinued</div>
+        {(1 !== 2) && <Preview previews={[
+          'https://epic.weeb.services/e3c67734c8.jpg',
+          'https://epic.weeb.services/3356e6506c.jpg',
+          'https://epic.weeb.services/520ea675ae.jpg',
+          'https://epic.weeb.services/915a2b6995.jpg',
+          'https://epic.weeb.services/128904cc6a.jpg'
+        ]}/>}
+        <Header name={manifest.name} verified={true}/>
+        {/* @todo metadata */}
+        <div className='powercord-product-description'>{manifest.description}</div>
+        {(manifest.permissions || []).length > 0 && <Permissions svgSize={18} permissions={manifest.permissions}/>}
+        <Rating up={1337} down={69} self={null} onVote={(type) => console.log(type)}/>
+        {(manifest.tags || true) && <Tags tags={manifest.tags || [ 'emma', 'is', 'cute' ]}/>}
+        <Footer/>
       </div>
-    </>;
+    </div>;
   }
 };

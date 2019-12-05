@@ -1,21 +1,22 @@
 const { React } = require('powercord/webpack');
-const { Tooltip, FormTitle, Icons: { ThumbsUp, ThumbsDown } } = require('powercord/components');
+const { Tooltip, Clickable, FormTitle, Icons: { ThumbsUp, ThumbsDown } } = require('powercord/components');
 
-module.exports = ({ votes }) =>
-  <div className='powercord-store-product-rating'>
+module.exports = ({ up, down, self, onVote }) =>
+  <div className='powercord-product-rating'>
     <FormTitle>Rating</FormTitle>
-    <div className='item'>
-      <Tooltip text='Vote +1' position='top'>
-        <div className='vote-up'>
-          <ThumbsUp/>
-          <span className='count'>{votes.up}</span>
-        </div>
+    <div className='voting'>
+      <Tooltip delay={1000} text='Upvote' position='top'>
+        <Clickable onClick={() => onVote(1)} className='upvote'>
+          <ThumbsUp width={18} height={18}/>
+          <span className={[ 'count', self === 1 ? 'self' : '' ].join(' ')}>{up}</span>
+        </Clickable>
       </Tooltip>
-      <Tooltip text='Vote -1' position='top'>
-        <div className='vote-down'>
-          <ThumbsDown/>
-          <span className='count'>{votes.down}</span>
-        </div>
+      <span className='separator'/>
+      <Tooltip delay={1000} text='Downvote' position='top'>
+        <Clickable onClick={() => onVote(0)} className='downvote'>
+          <ThumbsDown width={18} height={18}/>
+          <span className={[ 'count', self === 0 ? 'self' : '' ].join(' ')}>{down}</span>
+        </Clickable>
       </Tooltip>
     </div>
   </div>;

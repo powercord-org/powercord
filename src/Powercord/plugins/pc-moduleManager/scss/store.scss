@@ -1,0 +1,54 @@
+.powercord-store {
+  width: 100%;
+  background: var(--background-primary);
+  padding-bottom: 48px;
+
+  &-body {
+    padding-bottom: 48px;
+  }
+
+  &-search {
+    margin-top: 50px;
+
+    > div {
+      margin-bottom: 0;
+    }
+  }
+
+  &-filters, &-products {
+    width: 75%;
+    margin: 0 auto;
+  }
+
+  &-filters {
+    display: flex;
+    margin-top: 75px;
+
+    .filter {
+      display: flex;
+      align-items: center;
+      margin-right: 25px;
+      cursor: pointer;
+
+      .label {
+        color: var(--channels-default);
+        font-weight: 600;
+        margin-right: 5px;
+      }
+    }
+  }
+
+  &-products {
+    margin-top: 40px;
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fill, 308px);
+    grid-auto-rows: min-content;
+    justify-content: space-between;
+    transition: opacity .5s ease;
+
+    &.faded {
+      opacity: .2;
+    }
+  }
+}

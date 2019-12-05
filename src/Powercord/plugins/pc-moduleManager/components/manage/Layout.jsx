@@ -25,7 +25,9 @@ module.exports = (type, experimental) =>
       };
 
       this.openFolder = () => DiscordNative.fileManager.showItemInFolder(`${things[type].folder}/.`);
-      this.fetchEntities = async () => {
+
+      // @todo if i left this todo i'm actually stupid
+      this.fetchEntities = async () => { // async?
         this.setState({ fetching: true });
 
         powercord.api.notices.closeToast('missing-entities-notify');
@@ -40,12 +42,13 @@ module.exports = (type, experimental) =>
             try {
               entityManager.mount(filename);
 
+              // no cfg checks
               if (type === 'plugins') {
+                // consistency (array-style above)
                 entityManager.load(filename);
               } else {
                 entityManager.enable(filename);
               }
-
               missingEntities.push(filename);
             } catch (e) {
               invalidEntity = filename;
@@ -59,20 +62,21 @@ module.exports = (type, experimental) =>
           this.setState({ fetching: false });
 
           if (missingEntities.length > 0 || invalidEntity) {
-            /* eslint-disable multiline-ternary */
+            /* eslint-disable multiline-ternary */ // reeee
             powercord.api.notices.sendToast('missing-entities-notify', {
               header: invalidEntity
                 ? `An invalid ${type.slice(0, -1)} was found - check console for errors!`
-                : `Found ${missingEntities.length} missing ${entity}!`,
-              content: <div dangerouslySetInnerHTML={{ __html:
+                : `Found ${missingEntities.length} missing ${entity}!`, // necessary?
+              content: <div dangerouslySetInnerHTML={{ __html: // xss ftw
                 `${invalidEntity ? `Refetch was stopped as '${invalidEntity}' has failed to meet a valid configuration.
                 ${missingEntities.length > 0 ? '<br/><br/>' : ''}` : ''}
 
                 ${missingEntities.length > 0 ? `The following ${subjectiveEntity} retrieved
                 ${invalidEntity ? ' prior to receiving this error' : ''}:
                 <ul>
+                  <!-- key in non-react context? tf -->
                   ${missingEntities.map(entity => `<li key=${entity}>&ndash; ${entity}</li>`).join('')}
-                </ul>` : ''}`
+                </ul>` : ''}` // y no react
               }}>
               </div>,
               buttons: [ {
@@ -91,8 +95,9 @@ module.exports = (type, experimental) =>
           }
         };
 
-        setTimeout(notifyResult, 600);
+        setTimeout(notifyResult, 600); // delay?
       };
+      // ccl: y at component lvl; needed?
     }
 
     render () {

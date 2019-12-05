@@ -1,39 +1,43 @@
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModuleByDisplayName } = require('powercord/webpack');
 const { AsyncComponent } = require('powercord/components');
 
-const CarouselWithSlide = AsyncComponent.from(getModuleByDisplayName('CarouselWithSlide'));
+const Mask = AsyncComponent.from(getModuleByDisplayName('Mask'));
+const CarouselWithSlide = AsyncComponent.from((async () => {
+  const CarouselWithSlide = await getModuleByDisplayName('CarouselWithSlide');
+  return class Carousel extends CarouselWithSlide {
+    render () {
+      const res = super.render();
+      delete res.props.onMouseEnter;
+      delete res.props.onMouseLeave;
+      if (this.props.items.length < 2) {
+        delete res.props.children[1];
+      } else {
+        const Controller = res.props.children[1].type;
+        res.props.children[1].type = class NewController extends Controller {
+          componentDidMount () {
+            // Shut eslint
+          }
+
+          componentWillUnmount () {
+            // Shut eslint
+          }
+        };
+      }
+      return res;
+    }
+  };
+})());
 
 module.exports = class Preview extends React.Component {
-  constructor (props) {
-    super(props);
-
-    this.state = {
-      classes: {}
-    };
-  }
-
-  async componentDidMount () {
-    this.setState({
-      classes: { ...await getModule([ 'card', 'loaded' ]) }
-    });
-  }
-
   render () {
-    const { classes } = this.state;
     return <>
-      <div className='powercord-store-product-preview'>
+      <div className='powercord-product-preview'>
         <CarouselWithSlide
-          delay={3e4}
-          items={[ ...Array(5) ].map(() => this.props.previews[0])}
-          renderItem={(item) =>
-            <div className={classes.splash}>
-              <img
-                src={item}
-                alt=''
-                className={classes.splashImage}
-              />
-            </div>
-          }
+          paused
+          items={this.props.previews}
+          renderItem={(item) => <Mask mask='svg-mask-vertical-fade' width={320} height={174}>
+            <img src={item} alt=''/>
+          </Mask>}
         />
       </div>
     </>;

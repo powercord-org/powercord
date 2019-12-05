@@ -5,28 +5,28 @@ const easterEgg = Math.floor(Math.random() * 1337) === 69;
 
 const perms = {
   keypresses: {
-    icon: () => <Keyboard/>,
+    icon: ({ svgSize }) => <Keyboard width={svgSize} height={svgSize}/>,
     text: 'Listen to keypresses'
   },
   use_eud: {
-    icon: () => <Icon name={easterEgg ? 'Facebook' : 'PersonShield'}/>,
+    icon: ({ svgSize }) => <Icon width={svgSize} height={svgSize} name={easterEgg ? 'Facebook' : 'PersonShield'}/>,
     text: 'Collect and use your data'
   },
   filesystem: {
-    icon: () => <Icon name='Copy'/>,
+    icon: ({ svgSize }) => <Icon width={svgSize} height={svgSize} name='Copy'/>,
     text: 'Read and write files on your computer'
   },
   ext_api: {
-    icon: () => <ImportExport/>,
+    icon: ({ svgSize }) => <ImportExport width={svgSize} height={svgSize}/>,
     text: 'Perform requests to remote services'
   }
 };
 
-module.exports = ({ permissions }) =>
-  <div className='powercord-plugin-permissions'>
+module.exports = ({ permissions, svgSize }) =>
+  <div className='powercord-product-permissions'>
     <FormTitle>Permissions</FormTitle>
     {Object.keys(perms).map(perm => permissions.includes(perm) &&
       <div className='item'>
-        {React.createElement(perms[perm].icon)} {perms[perm].text}
+        {React.createElement(perms[perm].icon, { svgSize })} {perms[perm].text}
       </div>)}
   </div>;

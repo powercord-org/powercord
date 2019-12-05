@@ -22,7 +22,7 @@ const SearchBox = AsyncComponent.from((async () => {
 let classes = null;
 setImmediate(async () => {
   classes = {
-    body: (await getModule([ 'searchHelpTextVisible' ])).body,
+    quickSelectArrow: (await getModule([ 'quickSelectArrow' ])).quickSelectArrow,
     backgroundFill: (await getModule([ 'backgroundFill' ])).backgroundFill,
     topic: (await getModule([ 'topic', 'expandable' ])).topic,
     headerBar: await getModule([ 'iconWrapper', 'clickable' ]),
@@ -84,14 +84,17 @@ class Store extends React.Component {
     const { headerBar, store } = classes;
     return <div className='powercord-text powercord-store'>
       <HeaderBar transparent={false} toolbar={this.renderToolbar()}>
-        <div className={headerBar.iconWrapper} style={{ width: '24px' }}>
-          {this.state.type === 'plugins' ? <PluginIcon/> : <Theme/>}
+        <div className={headerBar.iconWrapper}>
+          {this.state.type === 'plugins'
+            ? <PluginIcon className={headerBar.icon} width={24} height={24}/>
+            : <Theme className={headerBar.icon} width={24} height={24}/>}
         </div>
         <HeaderBar.Title>Browse {this.state.type[0].toUpperCase() + this.state.type.slice(1)}</HeaderBar.Title>
       </HeaderBar>
       <img className={classes.backgroundFill} alt='background' src={this.props.images.background}/>
       <VerticalScroller outerClassName={[ store.container, 'powercord-store-container' ].join(' ')}>
-        <div className={[ classes.body, 'powercord-store-body' ].join(' ')}>
+        {/**/ Object.values(Icon.Names).map(name => <Icon name={name}/>) /**/}
+        <div className='powercord-store-body'>
           <SearchBox
             placeholder={`Search for ${this.state.word} ${this.state.type}...`}
             searchTerm={this.state.search}
@@ -144,14 +147,17 @@ class Store extends React.Component {
         <div className='filter'>
           <div className='label'>Browsing:</div>
           <div className='value'>All {this.state.type}</div>
+          <div className={classes.quickSelectArrow}/>
         </div>
         <div className='filter'>
           <div className='label'>Type:</div>
           <div className='value'>Cute</div>
+          <div className={classes.quickSelectArrow}/>
         </div>
         <div className='filter'>
           <div className='label'>Sort by:</div>
           <div className='value'>Newest</div>
+          <div className={classes.quickSelectArrow}/>
         </div>
       </div>
     </>;
@@ -159,22 +165,10 @@ class Store extends React.Component {
 
   renderList () {
     const entityManager = powercord[this.state.type === 'plugins' ? 'pluginManager' : 'styleManager'];
+    // @todo: do it but it's not shit and uses new manifest format
     return <>
-      <div className='powercord-store-list'>
-        {[ ...entityManager[this.state.type].values() ]
-          .filter(entity =>
-            this.state.search !== ''
-              ? entity.manifest.name.toLowerCase().includes(this.state.search.toLowerCase())
-              : entity)
-          .map(entity =>
-            <Product
-              product={entity}
-              className='powercord-store-product'
-              previews={[ 'https://www.figma.com/file/WFNUFYEVYMTZf5YHDvFLdI/image/a85019acab20c35fb137fe590dd619fc89004280' ]}
-              type={this.state.type}
-            />
-          )
-        }
+      <div className={[ 'powercord-store-products', this.state.focused ? 'faded' : '' ].join(' ')}>
+        {[ ...entityManager[this.state.type].values() ].map(entity => <Product product={entity} type={this.state.type}/>)}
       </div>
     </>;
   }

@@ -36,10 +36,6 @@
 div[class^='topSectionNormal-'] .powercord-badge {
   &.donor {
     background-image: var(--custom);
-
-    svg {
-      color: #E61727;
-    }
   }
 
   svg {
@@ -57,4 +53,55 @@ header .powercord-guild-badge {
   width: 16px;
   height: 16px;
   margin-right: 4px;
+}
+
+/* POWERCORD CUTIE */
+.powercord-donate-modal {
+  .powercord-cutie {
+    color: #fff;
+  }
+
+  .powercord-cutie-flower {
+    background-image: url(https://canary.discordapp.com/assets/07302a0ce95bfc27d75e6d9748f7c3c4.svg);
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    left: 50%;
+    top: 25px;
+    animation: cutie-flower 3.1s infinite;
+  }
+
+  @keyframes cutie-flower {
+    from, to {
+      transform: translateX(-50%) translateY(9px);
+    }
+    50% {
+      transform: translateX(-50%) translateY(0)
+    }
+  }
+
+  .powercord-donate-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 22px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+  }
+
+  .powercord-donate-subtitle {
+    text-align: center;
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+
+    &:before, &:after {
+      content: '';
+      flex: 1;
+      background-color: var(--background-accent);
+      margin: 0 10px;
+      height: 1px;
+    }
+  }
 }
