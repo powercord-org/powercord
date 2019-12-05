@@ -111,10 +111,11 @@ module.exports = class Badges extends Plugin {
       text: name,
       position: 'bottom'
     }, React.createElement(Clickable, {
-      onClick: () => openModal(DonateModal)
+      onClick: () => openModal(DonateModal),
+      className: 'powercord-guild-badge'
     }, React.createElement('img', {
-      className: 'powercord-guild-badge',
-      src: icon
+      src: icon,
+      alt: ''
     })));
   }
 };
