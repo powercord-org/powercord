@@ -7,6 +7,8 @@
   width: 24px;
   height: 24px;
   margin-right: 6px;
+  cursor: pointer;
+  box-sizing: border-box;
 
   &.developer, &.contributor {
     height: 23px;
@@ -14,13 +16,7 @@
   }
 
   &.early {
-    margin-top: 2px;
-    width: 20px;
-    height: 20px;
-  }
-
-  &.tester {
-    width: 17px;
+    padding: 2px;
   }
 
   &.donor {
@@ -61,25 +57,6 @@ header .powercord-guild-badge {
     color: #fff;
   }
 
-  .powercord-cutie-flower {
-    background-image: url(https://canary.discordapp.com/assets/07302a0ce95bfc27d75e6d9748f7c3c4.svg);
-    width: 52px;
-    height: 52px;
-    position: absolute;
-    left: 50%;
-    top: 25px;
-    animation: cutie-flower 3.1s infinite;
-  }
-
-  @keyframes cutie-flower {
-    from, to {
-      transform: translateX(-50%) translateY(9px);
-    }
-    50% {
-      transform: translateX(-50%) translateY(0)
-    }
-  }
-
   .powercord-donate-title {
     text-align: center;
     font-weight: bold;
@@ -102,6 +79,39 @@ header .powercord-guild-badge {
       background-color: var(--background-accent);
       margin: 0 10px;
       height: 1px;
+    }
+  }
+
+  .powercord-donate-tier {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px var(--background-accent) solid;
+
+    .icon {
+      width: 48px;
+      margin-right: 15px;
+    }
+
+    .details span {
+      display: block;
+    }
+
+    .price {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 5px;
+
+      sup {
+        font-size: 16px;
+        font-weight: normal;
+      }
+    }
+
+    &:last-child {
+      margin-bottom: 25px;
+      border-bottom-width: 0;
     }
   }
 }

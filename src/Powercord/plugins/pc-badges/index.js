@@ -2,12 +2,14 @@ const { resolve } = require('path');
 const { get } = require('powercord/http');
 const { Plugin } = require('powercord/entities');
 const { WEBSITE } = require('powercord/constants');
-const { Tooltip } = require('powercord/components');
+const { open: openModal } = require('powercord/modal');
+const { Clickable, Tooltip } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
 const { React, getModule, getModuleByDisplayName, getAllModules } = require('powercord/webpack');
 const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 
-const BadgesComponent = require('./Badges.jsx');
+const DonateModal = require('./DonateModal');
+const BadgesComponent = require('./Badges');
 
 module.exports = class Badges extends Plugin {
   constructor () {
@@ -108,9 +110,11 @@ module.exports = class Badges extends Plugin {
     return React.createElement(Tooltip, {
       text: name,
       position: 'bottom'
+    }, React.createElement(Clickable, {
+      onClick: () => openModal(DonateModal)
     }, React.createElement('img', {
       className: 'powercord-guild-badge',
       src: icon
-    }));
+    })));
   }
 };

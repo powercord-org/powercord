@@ -1,15 +1,15 @@
 const { React } = require('powercord/webpack');
 const { BadgeTooltips } = require('powercord/constants');
-const { Tooltip, Icons: { badges } } = require('powercord/components');
+const { Clickable, Tooltip, Icons: { badges } } = require('powercord/components');
 
-module.exports = ({ badge, color }) => {
+module.exports = ({ badge, color, onClick }) => {
   const Badge = badges[badge[0].toUpperCase() + badge.toLowerCase().slice(1)];
 
   return (
     <Tooltip text={BadgeTooltips[badge.toUpperCase()]} position='top'>
-      <div className={`powercord-badge ${badge}`}>
+      <Clickable onClick={onClick} className={`powercord-badge ${badge}`}>
         <Badge style={{ '--badge-color': `#${color}` }}/>
-      </div>
+      </Clickable>
     </Tooltip>
   );
 };
