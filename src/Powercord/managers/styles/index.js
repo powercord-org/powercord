@@ -143,7 +143,8 @@ module.exports = class StyleManager {
   }
 
   // Start/Stop
-  async loadThemes () {
+  async loadThemes (sync = false) {
+    const missingThemes = [];
     this.loadPluginCSS('powercord-core', resolve(__dirname, 'css', 'index.scss'));
 
     const files = readdirSync(this.themesDir);
@@ -153,16 +154,27 @@ module.exports = class StyleManager {
       }
 
       const themeID = filename.split('.').shift();
-      await this.mount(themeID, filename);
+      if (!sync) {
+        await this.mount(themeID, filename);
 
-      // if theme didn't mounted
-      if (!this.themes.get(themeID)) {
-        continue;
+        // if theme didn't mounted
+        if (!this.themes.get(themeID)) {
+          continue;
+        }
       }
 
       if (!powercord.settings.get('disabledThemes', []).includes(themeID)) {
+        if (sync && !this.isInstalled(themeID)) {
+          await this.mount(themeID, filename);
+          missingThemes.push(themeID);
+        }
+
         this.themes.get(themeID).apply();
       }
+    }
+
+    if (sync) {
+      return missingThemes;
     }
   }
 

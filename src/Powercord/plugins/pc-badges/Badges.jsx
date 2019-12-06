@@ -1,7 +1,7 @@
 const { shell: { openExternal } } = require('electron');
 const { get } = require('powercord/http');
-const { WEBSITE } = require('powercord/constants');
-const { open: openModal, close: closeModal } = require('powercord/modal');
+const { WEBSITE, REPO_URL } = require('powercord/constants');
+const { open: openModal } = require('powercord/modal');
 const { Clickable, Tooltip } = require('powercord/components');
 const { React, getModule, constants: { Routes } } = require('powercord/webpack');
 const { GUILD_ID, DISCORD_INVITE } = require('powercord/constants');
@@ -13,13 +13,14 @@ const badgesStore = {};
 const badges = {
   developer: () => openExternal(`${WEBSITE}/contributors`),
   staff: async () => {
-    closeModal();
     const store = await getModule([ 'getGuilds' ]);
     if (store.getGuilds()[GUILD_ID]) {
       const router = await getModule([ 'transitionTo' ]);
       const channel = await getModule([ 'getLastSelectedChannelId' ]);
+      const userProfileModal = await getModule([ 'fetchProfile' ]);
       // eslint-disable-next-line new-cap
       router.transitionTo(Routes.CHANNEL(GUILD_ID, channel.getChannelId(GUILD_ID)));
+      userProfileModal.close();
     } else {
       const windowManager = await getModule([ 'flashFrame', 'minimize' ]);
       const { INVITE_BROWSER: { handler: popInvite } } = await getModule([ 'INVITE_BROWSER' ]);
@@ -30,7 +31,7 @@ const badges = {
     }
   },
   contributor: () => openExternal(`${WEBSITE}/contributors`),
-  hunter: () => openExternal('https://github.com/powercord-org/powercord/issues'),
+  hunter: () => openExternal(`https://github.com/${REPO_URL}/issues?q=label:bug`),
   early: () => void 0
 };
 

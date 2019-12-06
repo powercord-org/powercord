@@ -181,9 +181,10 @@ module.exports = class PluginManager {
   }
 
   // Start
-  startPlugins () {
+  startPlugins (sync = false) {
+    const missingPlugins = [];
     const isOverlay = (/overlay/).test(location.pathname);
-    readdirSync(this.pluginDir).sort(this._sortPlugins).forEach(filename => this.mount(filename));
+    readdirSync(this.pluginDir).sort(this._sortPlugins).forEach(filename => !this.isInstalled(filename) && this.mount(filename));
     for (const plugin of [ ...this.plugins.values() ]) {
       if (powercord.settings.get('disabledPlugins', []).includes(plugin.entityID)) {
         continue;
@@ -193,10 +194,19 @@ module.exports = class PluginManager {
         (plugin.manifest.appMode === 'app' && !isOverlay) ||
         plugin.manifest.appMode === 'both'
       ) {
-        this.load(plugin.entityID);
+        if (sync && !this.get(plugin.entityID).ready) {
+          this.load(plugin.entityID);
+          missingPlugins.push(plugin.entityID);
+        } else if (!sync) {
+          this.load(plugin.entityID);
+        }
       } else {
         this.plugins.delete(plugin);
       }
+    }
+
+    if (sync) {
+      return missingPlugins;
     }
   }
 
