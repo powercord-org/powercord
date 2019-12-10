@@ -5,7 +5,7 @@ const { WEBSITE } = require('powercord/constants');
 const { open: openModal } = require('powercord/modal');
 const { Clickable, Tooltip } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
-const { React, getModule, getModuleByDisplayName, getAllModules } = require('powercord/webpack');
+const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 
 const DonateModal = require('./DonateModal');
@@ -20,7 +20,7 @@ module.exports = class Badges extends Plugin {
   async startPlugin () {
     this.classes = {
       ...await getModule([ 'headerInfo' ]),
-      ...await getAllModules([ 'modal', 'inner' ])[1],
+      ...await getModule([ 'modal', 'inner' ]),
       header: (await getModule([ 'iconBackgroundTierNone', 'container' ])).header
     };
 
