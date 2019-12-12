@@ -1,6 +1,7 @@
 const { React } = require('powercord/webpack');
 const { Button, Spinner } = require('powercord/components');
 
+// @todo: merge with Product/
 module.exports = ({ id, installing, onUninstall }) =>
   <div className='powercord-plugin-footer'>
     {/* <Button

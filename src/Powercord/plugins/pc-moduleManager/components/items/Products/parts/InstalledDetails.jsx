@@ -5,6 +5,7 @@ const { Clickable, Tooltip, Icon, Icons: { Chemistry } } = require('powercord/co
 const LicenseModal = require('../../../License');
 const licenses = require('../../../../licenses');
 
+// @todo: merge with Product/
 module.exports = React.memo(
   ({ author, version, description, license }) =>
     <div className='powercord-plugin-container'>

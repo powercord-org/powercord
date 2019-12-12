@@ -9,6 +9,7 @@ const Footer = require('./parts/InstalledFooter');
 module.exports = class Installed extends React.Component {
   render () {
     const {
+      // @todo: more generic
       plugin: { entityID: id, manifest }, enabled, // Properties
       onEnable, onDisable, onInstall, onUninstall // Events
     } = this.props;
@@ -26,7 +27,7 @@ module.exports = class Installed extends React.Component {
         description={manifest.description}
         license={manifest.license}
       />
-      {(manifest.permissions || []).length > 0 && <Permissions permissions={manifest.permissions}/>}
+      {(manifest.permissions || []).length > 0 && <Permissions svgSize={22} permissions={manifest.permissions}/>}
       <Footer
         id={id}
         buttons

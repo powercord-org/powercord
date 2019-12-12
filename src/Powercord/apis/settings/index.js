@@ -20,7 +20,7 @@ const { randomBytes, scryptSync, createCipheriv, createDecipheriv } = require('c
 const { React, Flux, getModuleByDisplayName } = require('powercord/webpack');
 const { AsyncComponent } = require('powercord/components');
 const { WEBSITE } = require('powercord/constants');
-const { get, post } = require('powercord/http');
+const { get, put } = require('powercord/http');
 const { API } = require('powercord/entities');
 
 const store = require('./store');
@@ -140,7 +140,7 @@ module.exports = class Settings extends API {
       isEncrypted = true;
     }
 
-    await post(`${baseUrl}/api/v2/users/@me/settings`)
+    await put(`${baseUrl}/api/v2/users/@me/settings`)
       .set('Authorization', token)
       .set('Content-Type', 'application/json')
       .send({

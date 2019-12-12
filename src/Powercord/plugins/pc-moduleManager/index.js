@@ -22,11 +22,11 @@ module.exports = class ModuleManager extends Plugin {
       )
     );
 
-    this.registerSettings('pc-moduleManager-plugins', 'Plugins', layout('plugins'));
+    this.registerSettings('pc-moduleManager-plugins', 'Plugins', layout('plugins', false, this._fetchEntities));
     if (this.settings.get('__experimental_2019-10-25', false)) {
       this.log('Experimental Module Manager enabled.');
       this._injectCommunityContent();
-      this.registerSettings('pc-moduleManager-themes', 'Themes', layout('themes', true));
+      this.registerSettings('pc-moduleManager-themes', 'Themes', layout('themes', true, this._fetchEntities));
 
       this.registerRoute('/store/plugins', Store, true);
       this.registerRoute('/store/themes', Store, true);
@@ -83,6 +83,43 @@ module.exports = class ModuleManager extends Plugin {
 
     const { containerDefault } = await getModule([ 'containerDefault' ]);
     forceUpdateElement(`.${containerDefault}`, true);
+  }
+
+  async _fetchEntities (type) {
+    powercord.api.notices.closeToast('missing-entities-notify');
+
+    const entityManager = powercord[type === 'plugins' ? 'pluginManager' : 'styleManager'];
+    const missingEntities = await type === 'plugins' ? entityManager.startPlugins(true) : entityManager.loadThemes(true);
+    const entity = missingEntities.length === 1 ? type.slice(0, -1) : type;
+    const subjectiveEntity = `${entity} ${entity === type ? 'were' : 'was'}`;
+
+    let props = {};
+
+    if (missingEntities.length > 0) {
+      props = {
+        header: `Found ${missingEntities.length} missing ${entity}!`,
+        content: React.createElement('div', null,
+          `The following ${subjectiveEntity} retrieved:`,
+          React.createElement('ul', null, missingEntities.map(entity =>
+            React.createElement('li', null, `– ${entity}`))
+          )
+        ),
+        buttons: [ {
+          text: 'OK',
+          color: 'green',
+          look: 'outlined'
+        } ],
+        type: 'success'
+      };
+    } else {
+      props = {
+        header: `No missing ${type} were found - try again later!`,
+        type: 'danger',
+        timeout: 10e3
+      };
+    }
+
+    powercord.api.notices.sendToast('missing-entities-notify', props);
   }
 
   __toggleExperimental () {

@@ -20,6 +20,3 @@ settings/*.json
 config.json
 *injected.txt
 *.nogit.*
-
-# whats dis
-src/Powercord/plugins/pc-april/classified/

@@ -1,6 +1,7 @@
 const { React } = require('powercord/webpack');
 const { Tooltip, Switch } = require('powercord/components');
 
+// @todo: merge with Product/
 module.exports = ({ name, enabled, onDisable, onEnable }) =>
   <div className='powercord-plugin-header'>
     <h4>{name}</h4>

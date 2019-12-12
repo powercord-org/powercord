@@ -40,7 +40,7 @@ module.exports = class Hastebin extends Plugin {
         } catch (e) {
           return {
             send: false,
-            result: `Upload to the specifified domain ${domain} failed. Please check that the server is setup properly.`
+            result: `Upload to the specified domain ${domain} failed. Please check that the server is setup properly.`
           };
         }
       }

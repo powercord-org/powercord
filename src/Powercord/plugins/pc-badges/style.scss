@@ -7,6 +7,8 @@
   width: 24px;
   height: 24px;
   margin-right: 6px;
+  cursor: pointer;
+  box-sizing: border-box;
 
   &.developer, &.contributor {
     height: 23px;
@@ -14,13 +16,8 @@
   }
 
   &.early {
-    margin-top: 2px;
-    width: 20px;
-    height: 20px;
-  }
-
-  &.tester {
-    width: 17px;
+    padding: 2px;
+    cursor: initial;
   }
 
   &.donor {
@@ -36,10 +33,6 @@
 div[class^='topSectionNormal-'] .powercord-badge {
   &.donor {
     background-image: var(--custom);
-
-    svg {
-      color: #E61727;
-    }
   }
 
   svg {
@@ -51,10 +44,79 @@ div[class^='topSectionNormal-'] .powercord-badge {
   width: 20px;
   height: 20px;
   margin-right: 8px;
+
+  img {
+    width: 100%;
+  }
 }
 
 header .powercord-guild-badge {
   width: 16px;
   height: 16px;
   margin-right: 4px;
+}
+
+/* POWERCORD CUTIE */
+.powercord-donate-modal {
+  .powercord-cutie {
+    color: #fff;
+  }
+
+  .powercord-donate-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 22px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+  }
+
+  .powercord-donate-subtitle {
+    text-align: center;
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+
+    &:before, &:after {
+      content: '';
+      flex: 1;
+      background-color: var(--background-accent);
+      margin: 0 10px;
+      height: 1px;
+    }
+  }
+
+  .powercord-donate-tier {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px var(--background-accent) solid;
+
+    .icon {
+      width: 48px;
+      margin-right: 15px;
+    }
+
+    .details span {
+      display: block;
+    }
+
+    .price {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 5px;
+
+      sup {
+        font-size: 16px;
+        font-weight: normal;
+      }
+    }
+
+    &:last-child {
+      margin-bottom: 25px;
+      border-bottom-width: 0;
+    }
+  }
 }

@@ -2,10 +2,10 @@ const { resolve } = require('path');
 const { existsSync } = require('fs');
 const { unlink } = require('fs').promises;
 const { Plugin } = require('powercord/entities');
-const { React, getModule } = require('powercord/webpack');
+const { React, getModule, getModuleByDisplayName, constants: { Routes } } = require('powercord/webpack');
 const { getOwnerInstance, waitFor } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
-const { DISCORD_INVITE } = require('powercord/constants');
+const { GUILD_ID, DISCORD_INVITE } = require('powercord/constants');
 
 const ToastContainer = require('./components/ToastContainer');
 const AnnouncementContainer = require('./components/AnnouncementContainer');
@@ -44,14 +44,11 @@ module.exports = class Toasts extends Plugin {
   }
 
   async _patchToasts () {
-    const { app } = await getModule([ 'app' ]);
-    const instance = getOwnerInstance(await waitFor(`.${app.split(' ')[0]}`));
-    inject('pc-notices-toast', instance.__proto__, 'render', (_, res) => {
+    const Chat = await getModuleByDisplayName('Chat');
+    inject('pc-notices-toast', Chat.prototype, 'render', (_, res) => {
       res.props.children.push(React.createElement(ToastContainer));
       return res;
     });
-
-    instance.forceUpdate();
   }
 
   _welcomeNewUser () {
@@ -61,12 +58,20 @@ module.exports = class Toasts extends Plugin {
       button: {
         text: 'Join Server',
         onClick: async () => {
-          const windowManager = await getModule([ 'flashFrame', 'minimize' ]);
-          const { INVITE_BROWSER: { handler: popInvite } } = await getModule([ 'INVITE_BROWSER' ]);
-          const oldMinimize = windowManager.minimize;
-          windowManager.minimize = () => void 0;
-          popInvite({ args: { code: DISCORD_INVITE } });
-          windowManager.minimize = oldMinimize;
+          const store = await getModule([ 'getGuilds' ]);
+          if (store.getGuilds()[GUILD_ID]) {
+            const channel = await getModule([ 'getLastSelectedChannelId' ]);
+            const router = await getModule([ 'transitionTo' ]);
+            // eslint-disable-next-line new-cap
+            router.transitionTo(Routes.CHANNEL(GUILD_ID, channel.getChannelId(GUILD_ID)));
+          } else {
+            const windowManager = await getModule([ 'flashFrame', 'minimize' ]);
+            const { INVITE_BROWSER: { handler: popInvite } } = await getModule([ 'INVITE_BROWSER' ]);
+            const oldMinimize = windowManager.minimize;
+            windowManager.minimize = () => void 0;
+            popInvite({ args: { code: DISCORD_INVITE } });
+            windowManager.minimize = oldMinimize;
+          }
         }
       }
     });

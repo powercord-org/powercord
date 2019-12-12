@@ -1,6 +1,7 @@
 const { React, Flux, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { Tooltip, Clickable, Icon, HeaderBar, AsyncComponent, Icons: { Plugin: PluginIcon, Theme, Certificate, Server } } = require('powercord/components');
 
+const Product = require('../items/Products/Product');
 const VerticalScroller = AsyncComponent.from(getModuleByDisplayName('VerticalScroller'));
 const SearchBox = AsyncComponent.from((async () => {
   const { searchHelpTextVisible } = await getModule([ 'searchHelpTextVisible' ]);
@@ -21,6 +22,7 @@ const SearchBox = AsyncComponent.from((async () => {
 let classes = null;
 setImmediate(async () => {
   classes = {
+    quickSelectArrow: (await getModule([ 'quickSelectArrow' ])).quickSelectArrow,
     backgroundFill: (await getModule([ 'backgroundFill' ])).backgroundFill,
     topic: (await getModule([ 'topic', 'expandable' ])).topic,
     headerBar: await getModule([ 'iconWrapper', 'clickable' ]),
@@ -61,6 +63,7 @@ class Store extends React.Component {
   }
 
   render () {
+    // dont touch mah stuff :angery:
     const ids = [ 'h6DNdop6pD8', 'd1YBv2mWll0', 'dQw4w9WgXcQ', 'A963X1RaRfk', 'q4OItmKWFKw', 'NHEaYbDWyQE' ];
     return <div style={{
       display: 'flex',
@@ -82,24 +85,30 @@ class Store extends React.Component {
     return <div className='powercord-text powercord-store'>
       <HeaderBar transparent={false} toolbar={this.renderToolbar()}>
         <div className={headerBar.iconWrapper}>
-          {this.state.type === 'plugins' ? <PluginIcon/> : <Theme/>}
+          {this.state.type === 'plugins'
+            ? <PluginIcon className={headerBar.icon} width={24} height={24}/>
+            : <Theme className={headerBar.icon} width={24} height={24}/>}
         </div>
         <HeaderBar.Title>Browse {this.state.type[0].toUpperCase() + this.state.type.slice(1)}</HeaderBar.Title>
       </HeaderBar>
+      <img className={classes.backgroundFill} alt='background' src={this.props.images.background}/>
       <VerticalScroller outerClassName={[ store.container, 'powercord-store-container' ].join(' ')}>
-        <img className={classes.backgroundFill} alt='background' src={this.props.images.background}/>
-        <SearchBox
-          placeholder={`Search for ${this.state.word} ${this.state.type}...`}
-          searchTerm={this.state.search}
-          focused={this.state.focused}
-          onFocus={() => this.setState({ focused: true })}
-          onBlur={() => this.setState({ focused: false })}
-          onChange={search => this.setState({ search })}
-          onClear={() => this.clearSearch()}
-          onKeyPress={e => e.charCode === 13 && this.doSearch()}
-          autoFocus={false}
-        />
         {/**/ Object.values(Icon.Names).map(name => <Icon name={name}/>) /**/}
+        <div className='powercord-store-body'>
+          <SearchBox
+            placeholder={`Search for ${this.state.word} ${this.state.type}...`}
+            searchTerm={this.state.search}
+            focused={this.state.focused}
+            onFocus={() => this.setState({ focused: true })}
+            onBlur={() => this.setState({ focused: false })}
+            onChange={search => this.setState({ search })}
+            onClear={() => this.clearSearch()}
+            onKeyPress={e => e.charCode === 13 && this.doSearch()}
+            autoFocus={false}
+          />
+          {this.renderFilters()}
+          {this.renderList()}
+        </div>
       </VerticalScroller>
     </div>;
   }
@@ -129,6 +138,38 @@ class Store extends React.Component {
           <Server className={headerBar.icon}/>
         </Clickable>
       </Tooltip>}
+    </>;
+  }
+
+  renderFilters () {
+    return <>
+      <div className='powercord-store-filters'>
+        <div className='filter'>
+          <div className='label'>Browsing:</div>
+          <div className='value'>All {this.state.type}</div>
+          <div className={classes.quickSelectArrow}/>
+        </div>
+        <div className='filter'>
+          <div className='label'>Type:</div>
+          <div className='value'>Cute</div>
+          <div className={classes.quickSelectArrow}/>
+        </div>
+        <div className='filter'>
+          <div className='label'>Sort by:</div>
+          <div className='value'>Newest</div>
+          <div className={classes.quickSelectArrow}/>
+        </div>
+      </div>
+    </>;
+  }
+
+  renderList () {
+    const entityManager = powercord[this.state.type === 'plugins' ? 'pluginManager' : 'styleManager'];
+    // @todo: do it but it's not shit and uses new manifest format
+    return <>
+      <div className={[ 'powercord-store-products', this.state.focused ? 'faded' : '' ].join(' ')}>
+        {[ ...entityManager[this.state.type].values() ].map(entity => <Product product={entity} type={this.state.type}/>)}
+      </div>
     </>;
   }
 }

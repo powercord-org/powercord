@@ -6,7 +6,8 @@
 @import "./manage/plugins";
 
 // Store
-@import "./store/store";
+@import "./store";
+@import "./product";
 
 // Soon:tm:
 .powercord-plugin-soon {

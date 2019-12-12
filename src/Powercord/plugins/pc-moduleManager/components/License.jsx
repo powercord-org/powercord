@@ -1,5 +1,4 @@
 const { React, getModuleByDisplayName } = require('powercord/webpack');
-const { close: closeModal } = require('powercord/modal');
 const { Card, AsyncComponent } = require('powercord/components');
 const { Modal } = require('powercord/components/modal');
 
@@ -70,9 +69,6 @@ module.exports = ({ license: { name, description, url, permissions, conditions, 
   };
 
   return <Modal
-    header={name}
-    cancelText='Got it'
-    onCancel={closeModal}
     className='powercord-text powercord-entities-license'
     _pass={{ ref: s => setImmediate(() => s && s.getScroller() && s.getScroller().scrollTo(0)) }}
   >

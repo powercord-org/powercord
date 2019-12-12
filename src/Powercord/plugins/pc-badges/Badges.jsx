@@ -1,12 +1,39 @@
+const { shell: { openExternal } } = require('electron');
 const { get } = require('powercord/http');
-const { React } = require('powercord/webpack');
-const { WEBSITE } = require('powercord/constants');
-const { Tooltip } = require('powercord/components');
+const { WEBSITE, REPO_URL } = require('powercord/constants');
+const { open: openModal } = require('powercord/modal');
+const { Clickable, Tooltip } = require('powercord/components');
+const { React, getModule, constants: { Routes } } = require('powercord/webpack');
+const { GUILD_ID, DISCORD_INVITE } = require('powercord/constants');
 
-const Badge = require('./Badge.jsx');
+const DonateModal = require('./DonateModal');
+const Badge = require('./Badge');
 
 const badgesStore = {};
-const badges = [ 'developer', 'staff', 'contributor', 'early', 'hunter' ];
+const badges = {
+  developer: () => openExternal(`${WEBSITE}/contributors`),
+  staff: async () => {
+    const store = await getModule([ 'getGuilds' ]);
+    if (store.getGuilds()[GUILD_ID]) {
+      const router = await getModule([ 'transitionTo' ]);
+      const channel = await getModule([ 'getLastSelectedChannelId' ]);
+      const userProfileModal = await getModule([ 'fetchProfile' ]);
+      // eslint-disable-next-line new-cap
+      router.transitionTo(Routes.CHANNEL(GUILD_ID, channel.getChannelId(GUILD_ID)));
+      userProfileModal.close();
+    } else {
+      const windowManager = await getModule([ 'flashFrame', 'minimize' ]);
+      const { INVITE_BROWSER: { handler: popInvite } } = await getModule([ 'INVITE_BROWSER' ]);
+      const oldMinimize = windowManager.minimize;
+      windowManager.minimize = () => void 0;
+      popInvite({ args: { code: DISCORD_INVITE } });
+      windowManager.minimize = oldMinimize;
+    }
+  },
+  contributor: () => openExternal(`${WEBSITE}/contributors`),
+  hunter: () => openExternal(`https://github.com/${REPO_URL}/issues?q=label:bug`),
+  early: () => void 0
+};
 
 module.exports = class Badges extends React.PureComponent {
   constructor (props) {
@@ -29,22 +56,18 @@ module.exports = class Badges extends React.PureComponent {
 
   render () {
     return [
-      this.state.custom &&
+      this.state.custom && this.state.custom.icon && this.state.custom.name &&
       <Tooltip text={this.state.custom.name} position='top'>
-        <div className='powercord-badge donor' style={{
+        <Clickable onClick={() => openModal(DonateModal)} className='powercord-badge donor' style={{
           '--custom': `url('${this.state.custom.icon}')`,
           '--custom-white': `url('${this.state.custom.white}')`,
           '--custom-name': `url('${this.state.custom.name}')`
         }}/>
       </Tooltip>,
-      ...Object.entries(this.state)
-        .map(([ badgeName, hasBadge ]) => (
-          hasBadge && badges.includes(badgeName) &&
-          <Badge
-            badge={badgeName} key={badgeName}
-            color={this.state.custom && this.state.custom.color ? this.state.custom.color : '7289DA'}
-          />
-        ))
+      Object.keys(badges).map(badge => this.state[badge] && <Badge
+        badge={badge} key={badge} onClick={badges[badge]}
+        color={this.state.custom && this.state.custom.color ? this.state.custom.color : '7289DA'}
+      />)
     ];
   }
 };
