@@ -129,4 +129,53 @@
     margin-top: 40px;
     margin-bottom: 8px;
   }
+
+  .debugInfo {
+    display: flex;
+    color: var(--header-secondary);
+
+    code {
+      white-space: pre-wrap;
+      font-size: 75%;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-left: 20px;
+    }
+
+    .column {
+      padding: 0 0 8px 5px;
+      flex-basis: 25%;
+    }
+
+    .full-column {
+      padding: 0 0 8px 5px;
+      flex-basis: 100%;
+    }
+
+    &:hover {
+      button {
+        opacity: 1;
+      }
+
+      code > :last-child > :last-child {
+        flex-basis: 85%;
+      }
+    }
+
+    button {
+      opacity: 0;
+      align-self: flex-end;
+      transition: opacity .1s ease;
+      position: absolute;
+      right: 20px;
+
+      > div {
+        overflow: visible;
+      }
+    }
+  }
 }

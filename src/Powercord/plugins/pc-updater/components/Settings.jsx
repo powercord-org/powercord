@@ -1,9 +1,10 @@
-const { React, getModule } = require('powercord/webpack');
-const { Button, FormNotice, FormTitle, Tooltip } = require('powercord/components');
+const { React, getModule, constants: { Routes } } = require('powercord/webpack');
+const { Clickable, Button, FormNotice, FormTitle, Tooltip } = require('powercord/components');
 const { SwitchItem, TextInput, Category, ButtonItem } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
 const { REPO_URL } = require('powercord/constants');
+const { clipboard } = require('electron');
 
 const Icons = require('./Icons');
 const Update = require('./Update');
@@ -12,7 +13,13 @@ module.exports = class UpdaterSettings extends React.Component {
   constructor () {
     super();
     this.plugin = powercord.pluginManager.get('pc-updater');
-    this.state = { opened: false };
+    this.state = {
+      opened: false,
+      pathsRevealed: false,
+      pluginsRevealed: false,
+      debugInfoOpened: false,
+      copied: false
+    };
   }
 
   render () {
@@ -201,6 +208,15 @@ module.exports = class UpdaterSettings extends React.Component {
         >
           Change Release Channel
         </ButtonItem>
+
+        <Category
+          name='Debugging Information'
+          description='Things that you may find useful for troubleshooting or flexing on some stats.'
+          opened={this.state.debugInfoOpened}
+          onChange={() => this.setState({ debugInfoOpened: !this.state.debugInfoOpened })}
+        >
+          {this.renderDebugInfo(moment)}
+        </Category>
       </>}
     </div>;
   }
@@ -237,6 +253,132 @@ module.exports = class UpdaterSettings extends React.Component {
       type={FormNotice.Types.WARNING}
       title={title}
       body={body}
+    />;
+  }
+
+  renderDebugInfo (moment) {
+    const { getRegisteredExperiments, getExperimentOverrides } = getModule(
+      [ 'initialize', 'getRegisteredExperiments' ], false);
+    // eslint-disable-next-line new-cap
+    const buildId = (/build_id=([^&]+)/).exec(Routes.OVERLAY())[1];
+    const sentry = getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ], false);
+    const plugins = powercord.pluginManager.getPlugins().filter(plugin =>
+      !powercord.pluginManager.get(plugin).isInternal && powercord.pluginManager.isEnabled(plugin)
+    );
+    let experiments = [].concat(...[ ...powercord.pluginManager.plugins.values() ]
+      .filter(plugin => plugin.experiments && plugin.experiments.length > 0)
+      .map(plugin => plugin.experiments.map(experiment => ({
+        [experiment]: powercord.api.settings.store.getSetting(plugin.entityID, experiment, false)
+      })))
+    );
+
+    if (experiments.length > 0) {
+      experiments = Object.assign(...experiments);
+    } else {
+      experiments = null;
+    }
+
+    const experimentOverrides = Object.keys(getExperimentOverrides()).length;
+    const totalExperiments = Object.keys(getRegisteredExperiments()).length;
+
+    const discordPath = window.__dirname.substr(0, window.__dirname.lastIndexOf('resources') - 1);
+    const maskPath = (path) => {
+      path = path.replace(/(?:\/home\/|C:\\Users\\|\/Users\/)([ \w.-]+).*/, (path, username) => {
+        const usernameIndex = path.indexOf(username);
+        return [ path.slice(0, usernameIndex), username.charAt(0) + username.slice(1).replace(/[a-zA-Z]/g, '*'),
+          path.slice(usernameIndex + username.length) ].join('');
+      });
+
+      return path;
+    };
+
+    const createPathReveal = (title, path) => <div className='full-column'
+      onMouseEnter={() => this.setState({ pathsRevealed: true })}
+      onMouseLeave={() => this.setState({ pathsRevealed: false })}
+    >
+      {title}:&#10;{this.state.pathsRevealed ? path : maskPath(path)}
+    </div>;
+
+    return <FormNotice
+      type={FormNotice.Types.PRIMARY}
+      body={<div className='debugInfo'>
+        <code>
+          <b>System / Discord:</b>
+          <div className='row'>
+            <div className='column'>OS:&#10;{window.platform.os.toString()}</div>
+            <div className='column'>Platform:&#10;{navigator.platform}</div>
+            <div className='column'>Release Channel:&#10;{window.GLOBAL_ENV.RELEASE_CHANNEL}</div>
+            <div className='column'>App Version:&#10;{sentry._globalContext.extra.hostVersion}</div>
+            <div className='column'>Build Number:&#10;{sentry._globalOptions.release}</div>
+            <div className='column'>Build ID:&#10;{buildId}</div>
+            <div className='column'>Experiments:&#10;{experimentOverrides} / {totalExperiments}</div>
+          </div>
+
+          <b>Process Versions:</b>
+          <div className='row'>
+            <div className='column'>React:&#10;{React.version}</div>
+            {[ 'electron', 'chrome', 'node' ].map(pkg =>
+              <div className='column'>{pkg.charAt(0).toUpperCase() + pkg.slice(1)}:&#10;{process.versions[pkg]}</div>
+            )}
+          </div>
+
+          <b>Powercord:</b>
+          <div className='row'>
+            <div className='column'>Commands:&#10;{powercord.api.commands.commands.length}</div>
+            <div className='column'>Settings:&#10;{Object.keys(powercord.api.settings.store.settings).length}</div>
+            <div className='column'>Plugins:&#10;{powercord.pluginManager.getPlugins()
+              .filter(plugin => powercord.pluginManager.isEnabled(plugin)).length} / {powercord.pluginManager.plugins.size}
+            </div>
+            <div className='column'>Themes:&#10;{powercord.styleManager.getThemes()
+              .filter(theme => powercord.styleManager.isEnabled(theme)).length} / {powercord.styleManager.themes.size}
+            </div>
+            <div className='column'>Experiments:&#10;{(experiments && `${Object.keys(experiments)
+              .filter(experiment => experiments[experiment]).length} / ${Object.keys(experiments).length}`) || 'n/a'}
+            </div>
+            <div className='column'>{`Settings Sync:\n${powercord.settings.get('settingsSync', false)}`}</div>
+            {powercord.cacheFolder &&
+              <div className='column'>Cached Files:&#10;{require('fs')
+                .readdirSync(`${powercord.cacheFolder}/jsx`, (_, files) => files).length}
+              </div>
+            }
+            <div className='column'>{`Account:\n${!!powercord.account}`}</div>
+            <div className='column'>APIs:&#10;{powercord.apiManager.apis.length}</div>
+          </div>
+
+          <b>Git:</b>
+          <div className='row'>
+            <div className='column'>Upstream:&#10;{powercord.gitInfos.upstream}</div>
+            <div className='column'>Revision:&#10;
+              <a
+                href={`https://github.com/${powercord.gitInfos.upstream}/commit/${powercord.gitInfos.revision}`}
+                target='_blank'
+              >
+                [{powercord.gitInfos.revision.substring(0, 7)}]
+              </a>
+            </div>
+            <div className='column'>Branch:&#10;{powercord.gitInfos.branch}</div>
+            <div className='column'>{`Latest:\n${!this.props.getSetting('updates', []).find(update => update.id === 'powercord')}`}</div>
+          </div>
+
+          <b>Listings:</b>
+          <div className='row'>
+            {createPathReveal('Powercord Path', powercord.basePath)}
+            {createPathReveal('Discord Path', discordPath)}
+            <div className='full-column'>Experiments:&#10;{(getExperimentOverrides() && Object.keys(getExperimentOverrides()).join(', ')) || 'n/a'}</div>
+            <div className='full-column'>
+              Plugins:&#10;{(plugins.length > 1 && `${(this.state.pluginsRevealed ? plugins : plugins.slice(0, 6)).join(', ')}; `) || 'n/a'}
+              {plugins.length > 1 && <Clickable tag='a' onClick={() => this.setState({ pluginsRevealed: !this.state.pluginsRevealed })}>{this.state.pluginsRevealed ? 'Show less' : 'Show more'}</Clickable>}
+            </div>
+          </div>
+        </code>
+        <Button
+          size={Button.Sizes.SMALL}
+          color={this.state.copied ? Button.Colors.GREEN : Button.Colors.BRAND}
+          onClick={() => this.handleDebugInfoCopy(moment, experimentOverrides)}
+        >
+          {this.state.copied ? 'Copied!' : 'Copy'}
+        </Button>
+      </div>}
     />;
   }
 
@@ -288,5 +430,22 @@ module.exports = class UpdaterSettings extends React.Component {
     >
       <div className='powercord-text'>{content}</div>
     </Confirm>);
+  }
+
+  // --- HANDLERS
+  handleDebugInfoCopy (moment) {
+    const extract = document.querySelector('.debugInfo > code')
+      .innerText.replace(/(.*?):(?=\s(?!C:\\).*?:)/g, '\n[$1]').replace(/(.*?):\s(.*.+)/g, '$1="$2"').replace(/[ -](\w*(?=.*=))/g, '$1');
+
+    this.setState({ copied: true });
+    clipboard.writeText(
+      `\`\`\`ini
+      # Debugging Information | Result created: ${moment().calendar()}
+      ${extract.substring(0, extract.indexOf('\nPlugins', extract.indexOf('\nPlugins') + 1))}
+      Plugins="${powercord.pluginManager.getPlugins().filter(plugin => !powercord.pluginManager.get(plugin).isInternal &&
+        powercord.pluginManager.isEnabled(plugin)).join(', ')}"
+      \`\`\``.replace(/ {6}|n\/a/g, '').replace(/(?![0-9]{1,3}) \/ (?=[0-9]{1,3})/g, '/')
+    );
+    setTimeout(() => this.setState({ copied: false }), 2500);
   }
 };
