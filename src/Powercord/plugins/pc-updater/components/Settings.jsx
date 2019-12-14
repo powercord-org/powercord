@@ -105,35 +105,35 @@ module.exports = class UpdaterSettings extends React.Component {
           >
             {disabled ? 'Enable' : 'Resume'} Updates
           </Button>
-          : !checking && !updating && <>
-          {updates.length > 0 && <Button
-            size={Button.Sizes.SMALL}
-            color={failed ? Button.Colors.RED : Button.Colors.GREEN}
-            onClick={() => failed ? this.plugin.askForce() : this.plugin.doUpdate()}
-          >
-            {failed ? 'Force Update' : 'Update Now'}
-          </Button>}
-          <Button
-            size={Button.Sizes.SMALL}
-            onClick={() => this.plugin.checkForUpdates(true)}
-          >
-            Check for Updates
-          </Button>
-          <Button
-            size={Button.Sizes.SMALL}
-            color={Button.Colors.YELLOW}
-            onClick={() => this.askPauseUpdates()}
-          >
-            Pause updates
-          </Button>
-          <Button
-            size={Button.Sizes.SMALL}
-            color={Button.Colors.RED}
-            onClick={() => this.askDisableUpdates(null, () => this.props.updateSetting('disabled', true))}
-          >
-            Disable updates
-          </Button>
-        </>}
+          : (!checking && !updating && <>
+            {updates.length > 0 && <Button
+              size={Button.Sizes.SMALL}
+              color={failed ? Button.Colors.RED : Button.Colors.GREEN}
+              onClick={() => failed ? this.plugin.askForce() : this.plugin.doUpdate()}
+            >
+              {failed ? 'Force Update' : 'Update Now'}
+            </Button>}
+            <Button
+              size={Button.Sizes.SMALL}
+              onClick={() => this.plugin.checkForUpdates(true)}
+            >
+              Check for Updates
+            </Button>
+            <Button
+              size={Button.Sizes.SMALL}
+              color={Button.Colors.YELLOW}
+              onClick={() => this.askPauseUpdates()}
+            >
+              Pause updates
+            </Button>
+            <Button
+              size={Button.Sizes.SMALL}
+              color={Button.Colors.RED}
+              onClick={() => this.askDisableUpdates(null, () => this.props.updateSetting('disabled', true))}
+            >
+              Disable updates
+            </Button>
+          </>)}
       </div>
       {!disabled && !paused && !checking && updates.length > 0 && <div className='updates'>
         {updates.map(update => <Update
@@ -257,10 +257,9 @@ module.exports = class UpdaterSettings extends React.Component {
   }
 
   renderDebugInfo (moment) {
-    const { getRegisteredExperiments, getExperimentOverrides } = getModule(
-      [ 'initialize', 'getRegisteredExperiments' ], false);
+    const { getRegisteredExperiments, getExperimentOverrides } = getModule([ 'initialize', 'getRegisteredExperiments' ], false);
     // eslint-disable-next-line new-cap
-    const buildId = (/build_id=([^&]+)/).exec(Routes.OVERLAY())[1];
+    const [ , buildId ] = Routes.OVERLAY().match(/build_id=([[a-f0-9]+)/);
     const sentry = window.__SENTRY__.hub;
     const plugins = powercord.pluginManager.getPlugins().filter(plugin =>
       !powercord.pluginManager.get(plugin).isInternal && powercord.pluginManager.isEnabled(plugin)
@@ -292,12 +291,14 @@ module.exports = class UpdaterSettings extends React.Component {
       return path;
     };
 
-    const createPathReveal = (title, path) => <div className='full-column'
-      onMouseEnter={() => this.setState({ pathsRevealed: true })}
-      onMouseLeave={() => this.setState({ pathsRevealed: false })}
-    >
-      {title}:&#10;{this.state.pathsRevealed ? path : maskPath(path)}
-    </div>;
+    const createPathReveal = (title, path) =>
+      <div
+        className='full-column'
+        onMouseEnter={() => this.setState({ pathsRevealed: true })}
+        onMouseLeave={() => this.setState({ pathsRevealed: false })}
+      >
+        {title}:&#10;{this.state.pathsRevealed ? path : maskPath(path)}
+      </div>;
 
     return <FormNotice
       type={FormNotice.Types.PRIMARY}
@@ -337,9 +338,9 @@ module.exports = class UpdaterSettings extends React.Component {
             </div>
             <div className='column'>{`Settings Sync:\n${powercord.settings.get('settingsSync', false)}`}</div>
             {powercord.cacheFolder &&
-              <div className='column'>Cached Files:&#10;{require('fs')
-                .readdirSync(`${powercord.cacheFolder}/jsx`, (_, files) => files).length}
-              </div>
+            <div className='column'>Cached Files:&#10;{require('fs')
+              .readdirSync(`${powercord.cacheFolder}/jsx`, (_, files) => files).length}
+            </div>
             }
             <div className='column'>{`Account:\n${!!powercord.account}`}</div>
             <div className='column'>APIs:&#10;{powercord.apiManager.apis.length}</div>
@@ -357,17 +358,22 @@ module.exports = class UpdaterSettings extends React.Component {
               </a>
             </div>
             <div className='column'>Branch:&#10;{powercord.gitInfos.branch}</div>
-            <div className='column'>{`Latest:\n${!this.props.getSetting('updates', []).find(update => update.id === 'powercord')}`}</div>
+            <div
+              className='column'>{`Latest:\n${!this.props.getSetting('updates', []).find(update => update.id === 'powercord')}`}</div>
           </div>
 
           <b>Listings:</b>
           <div className='row'>
             {createPathReveal('Powercord Path', powercord.basePath)}
             {createPathReveal('Discord Path', discordPath)}
-            <div className='full-column'>Experiments:&#10;{(getExperimentOverrides() && Object.keys(getExperimentOverrides()).join(', ')) || 'n/a'}</div>
+            <div
+              className='full-column'>Experiments:&#10;{(getExperimentOverrides() && Object.keys(getExperimentOverrides()).join(', ')) || 'n/a'}</div>
             <div className='full-column'>
               Plugins:&#10;{(plugins.length > 1 && `${(this.state.pluginsRevealed ? plugins : plugins.slice(0, 6)).join(', ')}; `) || 'n/a'}
-              {plugins.length > 1 && <Clickable tag='a' onClick={() => this.setState({ pluginsRevealed: !this.state.pluginsRevealed })}>{this.state.pluginsRevealed ? 'Show less' : 'Show more'}</Clickable>}
+              {plugins.length > 1 &&
+              <Clickable tag='a' onClick={() => this.setState({ pluginsRevealed: !this.state.pluginsRevealed })}>
+                {this.state.pluginsRevealed ? 'Show less' : 'Show more'}
+              </Clickable>}
             </div>
           </div>
         </code>
