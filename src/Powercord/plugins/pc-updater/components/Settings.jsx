@@ -261,7 +261,7 @@ module.exports = class UpdaterSettings extends React.Component {
       [ 'initialize', 'getRegisteredExperiments' ], false);
     // eslint-disable-next-line new-cap
     const buildId = (/build_id=([^&]+)/).exec(Routes.OVERLAY())[1];
-    const sentry = getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ], false);
+    const sentry = window.__SENTRY__.hub;
     const plugins = powercord.pluginManager.getPlugins().filter(plugin =>
       !powercord.pluginManager.get(plugin).isInternal && powercord.pluginManager.isEnabled(plugin)
     );
@@ -281,7 +281,7 @@ module.exports = class UpdaterSettings extends React.Component {
     const experimentOverrides = Object.keys(getExperimentOverrides()).length;
     const totalExperiments = Object.keys(getRegisteredExperiments()).length;
 
-    const discordPath = window.__dirname.substr(0, window.__dirname.lastIndexOf('resources') - 1);
+    const discordPath = process.resourcesPath.slice(0, -10);
     const maskPath = (path) => {
       path = path.replace(/(?:\/home\/|C:\\Users\\|\/Users\/)([ \w.-]+).*/, (path, username) => {
         const usernameIndex = path.indexOf(username);
@@ -306,10 +306,10 @@ module.exports = class UpdaterSettings extends React.Component {
           <b>System / Discord:</b>
           <div className='row'>
             <div className='column'>OS:&#10;{window.platform.os.toString()}</div>
-            <div className='column'>Platform:&#10;{navigator.platform}</div>
+            <div className='column'>Platform:&#10;{process.platform}</div>
             <div className='column'>Release Channel:&#10;{window.GLOBAL_ENV.RELEASE_CHANNEL}</div>
-            <div className='column'>App Version:&#10;{sentry._globalContext.extra.hostVersion}</div>
-            <div className='column'>Build Number:&#10;{sentry._globalOptions.release}</div>
+            <div className='column'>App Version:&#10;{sentry.getScope()._extra.hostVersion}</div>
+            <div className='column'>Build Number:&#10;{sentry.getClient()._options.release}</div>
             <div className='column'>Build ID:&#10;{buildId}</div>
             <div className='column'>Experiments:&#10;{experimentOverrides} / {totalExperiments}</div>
           </div>
@@ -374,7 +374,7 @@ module.exports = class UpdaterSettings extends React.Component {
         <Button
           size={Button.Sizes.SMALL}
           color={this.state.copied ? Button.Colors.GREEN : Button.Colors.BRAND}
-          onClick={() => this.handleDebugInfoCopy(moment, experimentOverrides)}
+          onClick={() => this.handleDebugInfoCopy(moment)}
         >
           {this.state.copied ? 'Copied!' : 'Copy'}
         </Button>

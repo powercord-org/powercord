@@ -39,7 +39,13 @@ module.exports = {
         };
       },
 
-      [ActionTypes.UPDATE_SETTINGS]: ({ category, categorySettings }) => {
+      [ActionTypes.UPDATE_SETTINGS]: ({ category, settings }) => {
+        let categorySettings = settings[category] || {};
+        categorySettings = {
+          ...categorySettings,
+          ...settings
+        };
+
         settings = {
           ...settings,
           [category]: categorySettings

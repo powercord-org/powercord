@@ -75,8 +75,7 @@ module.exports = class Powercord extends Updatable {
     await this.startup();
     this.fetchAccount();
 
-    const SentryModule = await require('powercord/webpack').getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ]);
-    const buildId = SentryModule._globalOptions.release;
+    const { _options: { release: buildId } } = window.__SENTRY__.hub.getClient();
     this.gitInfos = await this.pluginManager.get('pc-updater').getGitInfos();
     this.buildInfo = `Release Channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Discord's Build Number: ${buildId} - Powercord's git revision: ${this.gitInfos.revision}@${this.gitInfos.branch}`;
 
@@ -86,6 +85,12 @@ module.exports = class Powercord extends Updatable {
       tokenModule.hideToken = () => void 0;
       tokenModule.showToken(); // just to be sure
     }
+
+    window.addEventListener('beforeunload', () => {
+      if (this.account && this.settings.get('settingsSync', false)) {
+        powercord.api.settings.upload();
+      }
+    });
 
     this.emit('loaded');
   }

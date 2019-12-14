@@ -122,22 +122,27 @@ module.exports = class Settings extends API {
     const baseUrl = this.store.getSetting('pc-general', 'backendURL', WEBSITE);
 
     let isEncrypted = false;
-    let payload = JSON.stringify(this.store.settings);
+    const payloads = {
+      powercord: JSON.stringify(this.store.settings),
+      discord: JSON.stringify(this.localStorage)
+    };
 
     if (passphrase !== '') {
-      // key + IV
-      const iv = randomBytes(16);
-      const salt = randomBytes(32);
-      const key = scryptSync(passphrase, salt, 32);
+      for (const payload in payloads) {
+        // key + IV
+        const iv = randomBytes(16);
+        const salt = randomBytes(32);
+        const key = scryptSync(passphrase, salt, 32);
 
-      // Encryption
-      const cipher = createCipheriv('aes-256-cbc', key, iv);
-      let encrypted = cipher.update(payload);
-      encrypted = Buffer.concat([ encrypted, cipher.final() ]);
+        // Encryption
+        const cipher = createCipheriv('aes-256-cbc', key, iv);
+        let encrypted = cipher.update(payloads[payload]);
+        encrypted = Buffer.concat([ encrypted, cipher.final() ]);
 
-      // tada
-      payload = `${salt.toString('hex')}::${iv.toString('hex')}::${encrypted.toString('hex')}`;
-      isEncrypted = true;
+        // tada
+        payloads[payload] = `${salt.toString('hex')}::${iv.toString('hex')}::${encrypted.toString('hex')}`;
+        isEncrypted = true;
+      }
     }
 
     await put(`${baseUrl}/api/v2/users/@me/settings`)
@@ -145,7 +150,8 @@ module.exports = class Settings extends API {
       .set('Content-Type', 'application/json')
       .send({
         isEncrypted,
-        powercord: payload
+        powercord: payloads.powercord,
+        discord: payloads.discord
       });
   }
 
@@ -157,30 +163,57 @@ module.exports = class Settings extends API {
     const passphrase = this.store.getSetting('pc-general', 'passphrase', '');
     const token = this.store.getSetting('pc-general', 'powercordToken');
     const baseUrl = this.store.getSetting('pc-general', 'backendURL', WEBSITE);
-
-    let { isEncrypted, powercord: settings } = (await get(`${baseUrl}/api/v2/users/@me/settings`)
+    const response = (await get(`${baseUrl}/api/v2/users/@me/settings`)
       .set('Authorization', token)
       .then(r => r.body));
 
-    if (isEncrypted && passphrase !== '') {
-      try {
-        const [ salt, iv, encrypted ] = settings.split('::');
-        const key = scryptSync(passphrase, Buffer.from(salt, 'hex'), 32);
-        const decipher = createDecipheriv('aes-256-cbc', key, Buffer.from(iv, 'hex'));
-        let decrypted = decipher.update(Buffer.from(encrypted, 'hex'));
-        decrypted = Buffer.concat([ decrypted, decipher.final() ]);
+    const settings = {
+      powercord: response.powercord,
+      discord: response.discord
+    };
 
-        settings = decrypted.toString();
+    if (response.isEncrypted && passphrase !== '') {
+      try {
+        for (const origin in settings) {
+          const [ salt, iv, encrypted ] = settings[origin].split('::');
+          const key = scryptSync(passphrase, Buffer.from(salt, 'hex'), 32);
+          const decipher = createDecipheriv('aes-256-cbc', key, Buffer.from(iv, 'hex'));
+          let decrypted = decipher.update(Buffer.from(encrypted, 'hex'));
+          decrypted = Buffer.concat([ decrypted, decipher.final() ]);
+
+          settings[origin] = decrypted.toString();
+        }
       } catch (e) {
         return; // Probably bad passphrase
       }
     }
 
+    const data = JSON.parse(settings.discord);
+    Object.keys(data).forEach(item => window.localStorage.setItem(item, JSON.stringify(data[item])));
+
     try {
-      const data = JSON.parse(settings);
+      const data = JSON.parse(settings.powercord);
       Object.keys(data).forEach(category => actions.updateSettings(category, data[category]));
     } catch (e) {
       return console.error('%c[Powercord:SettingsManager]', 'color: #7289da', 'Unable to sync settings!', e);
     }
+  }
+
+  get localStorage () {
+    const { localStorage } = window;
+    const blacklist = [
+      'APPLICATION_RPC_RESPONSE', 'deviceProperties', 'email_cache',
+      'gatewayURL', 'referralProperties', 'token', 'user_id_cache'
+    ];
+
+    const items = {};
+
+    for (const item in localStorage) {
+      if (localStorage.hasOwnProperty(item) && !blacklist.includes(item)) {
+        items[item] = JSON.parse(localStorage[item]);
+      }
+    }
+
+    return items;
   }
 };
