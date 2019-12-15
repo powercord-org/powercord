@@ -1,4 +1,20 @@
-// based off of https://github.com/rauenzi/BetterDiscordAddons/blob/master/Plugins/DoNotTrack/DoNotTrack.plugin.js
+/**
+ * Powercord, a lightweight @discordapp client mod focused on simplicity and performance
+ * Copyright (C) 2018-2019  aetheryx & Bowser65
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 const { Plugin } = require('powercord/entities');
 const { getModule } = require('powercord/webpack');
@@ -13,20 +29,23 @@ module.exports = class DoNotTrack extends Plugin {
     Reporter.__oldSubmitLiveCrashReport = Reporter.submitLiveCrashReport;
     Reporter.submitLiveCrashReport = () => void 0;
 
-    const Sentry = window.__SENTRY__.hub;
-    const SentryClient = Sentry.getClient();
-    const SentryBreadcrumbs = Sentry.getIntegration({ id: 'Breadcrumbs' });
-    Sentry.__oldAddBreadcrumb = Sentry.addBreadcrumb;
-    SentryBreadcrumbs.__old_domBreadcrumb = SentryBreadcrumbs._domBreadcrumb;
-    SentryClient.__old_processEvent = SentryClient._processEvent;
-    SentryClient.__old_prepareEvent = SentryClient._prepareEvent;
+    const Sentry = {
+      main: window.__SENTRY__.hub,
+      client: window.__SENTRY__.hub.getClient(),
+      breadcrumbs: window.__SENTRY__.hub.getIntegration({ id: 'Breadcrumbs' })
+    };
+
+    Sentry.main.__oldAddBreadcrumb = Sentry.main.addBreadcrumb;
+    Sentry.breadcrumbs.__old_domBreadcrumb = Sentry.breadcrumbs._domBreadcrumb;
+    Sentry.client.__old_processEvent = Sentry.client._processEvent;
+    Sentry.client.__old_prepareEvent = Sentry.client._prepareEvent;
     window.__oldConsole = window.console;
 
-    SentryClient.close();
-    Sentry.addBreadcrumb = () => void 0;
-    SentryBreadcrumbs._domBreadcrumb = () => void 0;
-    SentryClient._processEvent = () => void 0;
-    SentryClient._prepareEvent = () => void 0;
+    Sentry.client.close();
+    Sentry.main.addBreadcrumb = () => void 0;
+    Sentry.breadcrumbs._domBreadcrumb = () => void 0;
+    Sentry.client._processEvent = () => void 0;
+    Sentry.client._prepareEvent = () => void 0;
     Object.assign(window.console, [ 'debug', 'info', 'warn', 'error', 'log', 'assert' ].forEach(
       (method) => window.console[method] = window.console[method].__sentry_original__)
     );
@@ -58,14 +77,17 @@ module.exports = class DoNotTrack extends Plugin {
     const Reporter = getModule([ 'submitLiveCrashReport' ], false);
     Reporter.submitLiveCrashReport = Reporter.__oldSubmitLiveCrashReport;
 
-    const Sentry = window.__SENTRY__.hub;
-    const SentryClient = Sentry.getClient();
-    const SentryBreadcrumbs = Sentry.getIntegration({ id: 'Breadcrumbs' });
-    SentryClient.getOptions().enabled = true;
-    Sentry.addBreadcrumb = Sentry.__oldAddBreadcrumb;
-    SentryBreadcrumbs._domBreadcrumb = SentryBreadcrumbs.__old_domBreadcrumb;
-    SentryClient._processEvent = SentryClient.__old_processEvent;
-    SentryClient._prepareEvent = SentryClient.__old_prepareEvent;
+    const Sentry = {
+      main: window.__SENTRY__.hub,
+      client: window.__SENTRY__.hub.getClient(),
+      breadcrumbs: window.__SENTRY__.hub.getIntegration({ id: 'Breadcrumbs' })
+    };
+
+    Sentry.client.getOptions().enabled = true;
+    Sentry.main.addBreadcrumb = Sentry.main.__oldAddBreadcrumb;
+    Sentry.breadcrumbs._domBreadcrumb = Sentry.breadcrumbs.__old_domBreadcrumb;
+    Sentry.client._processEvent = Sentry.client.__old_processEvent;
+    Sentry.client._prepareEvent = Sentry.client.__old_prepareEvent;
     window.console = window.__oldConsole;
   }
 };
