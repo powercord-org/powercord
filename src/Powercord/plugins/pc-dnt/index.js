@@ -15,15 +15,16 @@ module.exports = class DoNotTrack extends Plugin {
 
     const Sentry = window.__SENTRY__.hub;
     const SentryClient = Sentry.getClient();
+    const SentryBreadcrumbs = Sentry.getIntegration({ id: 'Breadcrumbs' });
     Sentry.__oldAddBreadcrumb = Sentry.addBreadcrumb;
-    Sentry.getIntegration({ id: 'Breadcrumbs' })._old_domBreadcrumb = Sentry.getIntegration({ id: 'Breadcrumbs' })._domBreadcrumb;
-    SentryClient.old_processEvent = SentryClient._processEvent;
-    SentryClient.old_prepareEvent = SentryClient._prepareEvent;
+    SentryBreadcrumbs.__old_domBreadcrumb = SentryBreadcrumbs._domBreadcrumb;
+    SentryClient.__old_processEvent = SentryClient._processEvent;
+    SentryClient.__old_prepareEvent = SentryClient._prepareEvent;
     window.__oldConsole = window.console;
 
     SentryClient.close();
     Sentry.addBreadcrumb = () => void 0;
-    Sentry.getIntegration({ id: 'Breadcrumbs' })._domBreadcrumb = () => void 0;
+    SentryBreadcrumbs._domBreadcrumb = () => void 0;
     SentryClient._processEvent = () => void 0;
     SentryClient._prepareEvent = () => void 0;
     Object.assign(window.console, [ 'debug', 'info', 'warn', 'error', 'log', 'assert' ].forEach(
@@ -59,11 +60,12 @@ module.exports = class DoNotTrack extends Plugin {
 
     const Sentry = window.__SENTRY__.hub;
     const SentryClient = Sentry.getClient();
+    const SentryBreadcrumbs = Sentry.getIntegration({ id: 'Breadcrumbs' });
     SentryClient.getOptions().enabled = true;
     Sentry.addBreadcrumb = Sentry.__oldAddBreadcrumb;
-    Sentry.getIntegration({ id: 'Breadcrumbs' })._domBreadcrumb = Sentry.getIntegration({ id: 'Breadcrumbs' })._old_domBreadcrumb;
-    SentryClient._processEvent = SentryClient.old_processEvent;
-    SentryClient._prepareEvent = SentryClient.old_prepareEvent;
+    SentryBreadcrumbs._domBreadcrumb = SentryBreadcrumbs.__old_domBreadcrumb;
+    SentryClient._processEvent = SentryClient.__old_processEvent;
+    SentryClient._prepareEvent = SentryClient.__old_prepareEvent;
     window.console = window.__oldConsole;
   }
 };
