@@ -124,7 +124,7 @@ module.exports = class Settings extends API {
     let isEncrypted = false;
     const payloads = {
       powercord: JSON.stringify(this.store.settings),
-      discord: JSON.stringify(this.localStorage)
+      discord: JSON.stringify(this.localStorage.items)
     };
 
     if (passphrase !== '') {
@@ -150,8 +150,7 @@ module.exports = class Settings extends API {
       .set('Content-Type', 'application/json')
       .send({
         isEncrypted,
-        powercord: payloads.powercord,
-        discord: payloads.discord
+        ...payloads
       });
   }
 
@@ -214,6 +213,6 @@ module.exports = class Settings extends API {
       }
     }
 
-    return items;
+    return { items };
   }
 };

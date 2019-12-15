@@ -9,27 +9,26 @@ module.exports = class DoNotTrack extends Plugin {
     Analytics.__oldTrack = Analytics.track;
     Analytics.track = () => void 0;
 
-    const MethodWrapper = await getModule([ 'wrapMethod' ]);
-    MethodWrapper.__oldWrapMethod = MethodWrapper.wrapMethod;
-    MethodWrapper.wrapMethod = () => void 0;
+    const Reporter = await getModule([ 'submitLiveCrashReport' ]);
+    Reporter.__oldSubmitLiveCrashReport = Reporter.submitLiveCrashReport;
+    Reporter.submitLiveCrashReport = () => void 0;
 
-    const Reporter = await getModule([ 'report' ]);
-    Reporter.__oldReport = Reporter.report;
-    Reporter.report.uninstall();
-
-    const Sentry = await getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ]);
-    Sentry.__old_breadcrumbEventHandler = Sentry._breadcrumbEventHandler;
-    Sentry.__oldCaptureBreadcrumb = Sentry.captureBreadcrumb;
-    Sentry.__old_sendProcessedPayload = Sentry._sendProcessedPayload;
-    Sentry.__old_send = Sentry._send;
+    const Sentry = window.__SENTRY__.hub;
+    const SentryClient = Sentry.getClient();
+    Sentry.__oldAddBreadcrumb = Sentry.addBreadcrumb;
+    Sentry.getIntegration({ id: 'Breadcrumbs' })._old_domBreadcrumb = Sentry.getIntegration({ id: 'Breadcrumbs' })._domBreadcrumb;
+    SentryClient.old_processEvent = SentryClient._processEvent;
+    SentryClient.old_prepareEvent = SentryClient._prepareEvent;
     window.__oldConsole = window.console;
 
-    Sentry.uninstall();
-    Sentry._breadcrumbEventHandler = () => () => void 0;
-    Sentry.captureBreadcrumb = () => void 0;
-    Sentry._sendProcessedPayload = () => void 0;
-    Sentry._send = () => void 0;
-    Object.assign(window.console, Sentry._originalConsoleMethods);
+    SentryClient.close();
+    Sentry.addBreadcrumb = () => void 0;
+    Sentry.getIntegration({ id: 'Breadcrumbs' })._domBreadcrumb = () => void 0;
+    SentryClient._processEvent = () => void 0;
+    SentryClient._prepareEvent = () => void 0;
+    Object.assign(window.console, [ 'debug', 'info', 'warn', 'error', 'log', 'assert' ].forEach(
+      (method) => window.console[method] = window.console[method].__sentry_original__)
+    );
 
     /*
      * Discord calls removeEventListener with a single argument in their ConfettiCannon component. Sentry prevents it
@@ -55,18 +54,16 @@ module.exports = class DoNotTrack extends Plugin {
     const Analytics = getModule([ 'getSuperPropertiesBase64' ], false);
     Analytics.track = Analytics.__oldTrack;
 
-    const MethodWrapper = getModule([ 'wrapMethod' ], false);
-    MethodWrapper.wrapMethod = MethodWrapper.__oldWrapMethod;
+    const Reporter = getModule([ 'submitLiveCrashReport' ], false);
+    Reporter.submitLiveCrashReport = Reporter.__oldSubmitLiveCrashReport;
 
-    const Reporter = getModule([ 'report' ], false);
-    Reporter.report = Reporter.__oldReport;
-
-    const Sentry = getModule([ '_originalConsoleMethods', '_wrappedBuiltIns' ], false);
-    Sentry.install();
-    Sentry._breadcrumbEventHandler = Sentry.__old_breadcrumbEventHandler;
-    Sentry.captureBreadcrumb = Sentry.__oldCaptureBreadcrumb;
-    Sentry._sendProcessedPayload = Sentry.__old_sendProcessedPayload;
-    Sentry._send = Sentry.__old_send;
+    const Sentry = window.__SENTRY__.hub;
+    const SentryClient = Sentry.getClient();
+    SentryClient.getOptions().enabled = true;
+    Sentry.addBreadcrumb = Sentry.__oldAddBreadcrumb;
+    Sentry.getIntegration({ id: 'Breadcrumbs' })._domBreadcrumb = Sentry.getIntegration({ id: 'Breadcrumbs' })._old_domBreadcrumb;
+    SentryClient._processEvent = SentryClient.old_processEvent;
+    SentryClient._prepareEvent = SentryClient.old_prepareEvent;
     window.console = window.__oldConsole;
   }
 };
