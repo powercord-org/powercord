@@ -2,7 +2,7 @@ const { resolve } = require('path');
 const { Plugin } = require('powercord/entities');
 const { WEBSITE } = require('powercord/constants');
 const { inject, uninject } = require('powercord/injector');
-const { getModuleByDisplayName, getModule } = require('powercord/webpack');
+const { React, getModuleByDisplayName, getModule } = require('powercord/webpack');
 
 const GeneralSettings = require('./components/GeneralSettings.jsx');
 
@@ -14,10 +14,16 @@ module.exports = class Settings extends Plugin {
     this.patchSettingsComponent();
     this.patchExperiments();
     this.patchSelfXSS();
+
+    if (this.settings.get('__experimental_2019-12-16', false)) {
+      this.log('Experimental Settings enabled.');
+      this.patchSettingsContextMenu();
+    }
   }
 
   async pluginWillUnload () {
     uninject('pc-settings-items');
+    uninject('pc-settings-actions');
     uninject('pc-settings-errorHandler');
 
     const i18n = await getModule([ 'Messages' ]);
@@ -76,6 +82,38 @@ module.exports = class Settings extends Plugin {
     });
   }
 
+  async patchSettingsContextMenu () {
+    const SubMenuItem = await getModuleByDisplayName('FluxContainer(SubMenuItem)');
+    const ImageMenuItem = await getModuleByDisplayName('ImageMenuItem');
+    const SettingsContextMenu = await getModuleByDisplayName('UserSettingsCogContextMenu');
+    inject('pc-settings-actions', SettingsContextMenu.prototype, 'render', (args, res) => {
+      const parent = React.createElement(SubMenuItem, {
+        label: 'Powercord',
+        render: () => powercord.api.settings.tabs.map(tab => React.createElement(ImageMenuItem, {
+          label: tab.label,
+          action: async () => {
+            const settingsModule = await getModule([ 'open', 'saveAccountChanges' ]);
+            settingsModule.open(tab.section);
+          }
+        }))
+      });
+
+      parent.key = 'Powercord';
+
+      const items = res.props.children.find(child => Array.isArray(child));
+      const changelog = items.find(item => item && item.key === 'changelog');
+      if (changelog) {
+        items.splice(items.indexOf(changelog), 0, parent);
+      } else {
+        this.error('Unable to locate \'Change Log\' item; forcing element to context menu!');
+
+        res.props.children.push(parent);
+      }
+
+      return res;
+    });
+  }
+
   async patchSelfXSS () {
     const i18n = await getModule([ 'Messages' ]);
     i18n._Messages = i18n.Messages;
@@ -87,5 +125,18 @@ module.exports = class Settings extends Plugin {
         return obj[prop];
       }
     });
+  }
+
+  __toggleExperimental () {
+    const current = this.settings.get('__experimental_2019-12-16', false);
+    if (!current) {
+      this.warn('WARNING: This will enable the new and experimental settings context menu, that is NOT functional yet.');
+      this.warn('WARNING: Powercord Staff won\'t accept bug reports from this experimental version, nor provide support!');
+      this.warn('WARNING: Use it at your own risk! It\'s labeled experimental for a reason.');
+    } else {
+      this.log('Experimental Settings disabled.');
+    }
+    this.settings.set('__experimental_2019-12-16', !current);
+    powercord.pluginManager.remount(this.entityID);
   }
 };
