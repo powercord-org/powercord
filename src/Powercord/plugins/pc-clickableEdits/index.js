@@ -15,9 +15,9 @@ module.exports = class ClickableEdits extends Plugin {
   }
 
   async startPlugin () {
-    this.state.messageClasses = {
-      textAreaEdit: (await getModule([ 'textAreaEdit' ])).textAreaEdit
-    };
+    const { textArea } = await getModule([ 'textArea', 'textAreaDisabled' ]);
+    const { containerCozy } = await getModule([ 'containerCozy' ]);
+    this.state.textAreaEdit = `.${containerCozy.split(' ')[0]} .${textArea}`;
 
     this.patchMessageContent();
     this.registerSettings('pc-clickableEdits', 'Clickable Edits', Settings);
@@ -74,12 +74,11 @@ module.exports = class ClickableEdits extends Plugin {
 
       if (this.settings.get('dualControlEdits', false) ? dualControl : this.settings.get('useShiftKey', false) ? shiftKey : doubleClick) {
         if (e.target.className && (e.target.className.includes('markup') || e.target.className.includes('container'))) {
-          const { textAreaEdit } = this.state.messageClasses;
-          const { startEditMessage: editMessage } = await getModule([ 'editMessage' ]);
-          editMessage(args[0], args[1], args[2]);
+          const { startEditMessage } = await getModule([ 'editMessage' ]);
+          startEditMessage(args[0], args[1], args[2]);
 
           setTimeout(() => {
-            const elem = document.getElementsByClassName(textAreaEdit.split(' ')[0])[0];
+            const elem = document.querySelector(this.state.textAreaEdit);
             if (elem) {
               elem.focus();
               elem.setSelectionRange(elem.value.length, elem.value.length);

@@ -1,7 +1,7 @@
 const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
-const { ReactDOM, React, getModule, getModuleByDisplayName } = require('powercord/webpack');
-const { sleep, createElement, forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
+const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { sleep, createElement, forceUpdateElement, getOwnerInstance } = require('powercord/util');
 const { ContextMenu: { Submenu } } = require('powercord/components');
 
 const Settings = require('./components/Settings');
@@ -85,7 +85,10 @@ module.exports = class Translate extends Plugin {
       if (embed) {
         if (_this.translations[embed.id] && !embed.original) {
           // eslint-disable-next-line object-property-newline
-          embed.original = { title: embed.title, description: embed.description };
+          embed.original = {
+            title: embed.title,
+            description: embed.description
+          };
           embed.title = _this.translations[embed.id].title;
           embed.description = _this.translations[embed.id].description;
         } else if (!_this.translations[embed.id] && embed.original) {
@@ -99,7 +102,7 @@ module.exports = class Translate extends Plugin {
         message.original = [ ...this.props.content ];
 
         if (this.props.content.length > 1) {
-          const newContentParsed = this.props.content.map((content, index) => {
+          this.props.content = this.props.content.map((content, index) => {
             const translations = _this.translations[message.id];
 
             if (typeof content === 'string') {
@@ -111,8 +114,6 @@ module.exports = class Translate extends Plugin {
 
             return this.props.content[index];
           });
-
-          this.props.content = newContentParsed;
         } else {
           this.props.content = [ _this.translations[message.id] ];
         }
@@ -124,72 +125,75 @@ module.exports = class Translate extends Plugin {
       return args;
     }, true);
 
-    const ChannelTextArea = await getModuleByDisplayName('ChannelTextArea');
-    inject('pc-translate-resetButtonRemove', ChannelTextArea.prototype, 'handleSubmit', (args) => {
-      this.removeResetButton();
-
-      return args;
-    });
-
-    const NativeContextMenu = await getModuleByDisplayName('NativeContextMenu');
-    inject('pc-translate-nativeContext', NativeContextMenu.prototype, 'render', function (_, res) {
-      if (this.props.type !== 'CHANNEL_TEXT_AREA') {
-        return res;
-      }
-
-      const { _textArea: target } = getOwnerInstance(this.props.target);
-      _this.state.original = _this.state.original || target.value;
-
-      const setText = async (opts) => {
-        const classes = {
-          ...await getModule([ 'uploadModal' ]),
-          ...await getModule([ 'messagesWrapper' ]),
-          ...await getModule([ 'channelTextArea', 'inner' ])
-        };
-
-        const textArea = getOwnerInstance(await waitFor(`.${classes.messagesWrapper.split(' ')[0]} + form`));
-        const selectedText = (await getModule([ 'getSelectionText' ])).getSelectionText();
-        const uploadModal = document.querySelector(`.${classes.uploadModal.split(' ')[0]}`)
-          ? getOwnerInstance(document.querySelector(`.${classes.uploadModal.split(' ')[0]}`))
-          : null;
-
-        let value = selectedText.length > 0 ? selectedText : target.value;
-
-        const { text } = await translate(value, opts);
-
-        if (selectedText.length === 0) {
-          value = text;
-        } else {
-          value = `${target.value.slice(0, target.selectionStart)}${text}` +
-            `${target.value.slice(target.selectionEnd)}`;
-        }
-
-        (uploadModal !== null ? uploadModal : textArea).setState({ textValue: value });
-
-        if (document.getElementById('powercord-translate-resetButton')) {
-          return;
-        }
-
-        const textAreaButtons = document.getElementsByClassName(classes.buttons)[uploadModal !== null ? 1 : 0];
-        const buttonContainer = createElement('div', { id: 'powercord-translate-resetButton',
-          className: classes.buttonContainer });
-
-        textAreaButtons.insertBefore(buttonContainer, textAreaButtons.firstChild);
-
-        const ResetButton = require('./components/ResetButton.jsx');
-        ReactDOM.render(React.createElement(ResetButton, {
-          onClick: () => {
-            (uploadModal !== null ? uploadModal : textArea).setState({ textValue: _this.state.original });
-
-            _this.removeResetButton();
-          }
-        }), buttonContainer);
-      };
-
-      _this.addTranslateSubMenu(res, setText);
-
-      return res;
-    });
+    /*
+     * @todo: fix
+     * const ChannelTextArea = await getModuleByDisplayName('ChannelTextArea');
+     * inject('pc-translate-resetButtonRemove', ChannelTextArea.prototype, 'handleSubmit', (args) => {
+     * this.removeResetButton();
+     *
+     * return args;
+     * });
+     *
+     * const NativeContextMenu = await getModuleByDisplayName('NativeContextMenu');
+     * inject('pc-translate-nativeContext', NativeContextMenu.prototype, 'render', function (_, res) {
+     * if (this.props.type !== 'CHANNEL_TEXT_AREA') {
+     *   return res;
+     * }
+     *
+     * const { _textArea: target } = getOwnerInstance(this.props.target);
+     * _this.state.original = _this.state.original || target.value;
+     *
+     * const setText = async (opts) => {
+     *   const classes = {
+     *     ...await getModule([ 'uploadModal' ]),
+     *     ...await getModule([ 'messagesWrapper' ]),
+     *     ...await getModule([ 'channelTextArea', 'inner' ])
+     *   };
+     *
+     *   const textArea = getOwnerInstance(await waitFor(`.${classes.messagesWrapper.split(' ')[0]} + form`));
+     *   const selectedText = (await getModule([ 'getSelectionText' ])).getSelectionText();
+     *   const uploadModal = document.querySelector(`.${classes.uploadModal.split(' ')[0]}`)
+     *     ? getOwnerInstance(document.querySelector(`.${classes.uploadModal.split(' ')[0]}`))
+     *     : null;
+     *
+     *   let value = selectedText.length > 0 ? selectedText : target.value;
+     *
+     *   const { text } = await translate(value, opts);
+     *
+     *   if (selectedText.length === 0) {
+     *     value = text;
+     *   } else {
+     *     value = `${target.value.slice(0, target.selectionStart)}${text}` +
+     *       `${target.value.slice(target.selectionEnd)}`;
+     *   }
+     *
+     *   (uploadModal !== null ? uploadModal : textArea).setState({ textValue: value });
+     *
+     *   if (document.getElementById('powercord-translate-resetButton')) {
+     *     return;
+     *   }
+     *
+     *   const textAreaButtons = document.getElementsByClassName(classes.buttons)[uploadModal !== null ? 1 : 0];
+     *   const buttonContainer = createElement('div', { id: 'powercord-translate-resetButton',
+     *     className: classes.buttonContainer });
+     *
+     *   textAreaButtons.insertBefore(buttonContainer, textAreaButtons.firstChild);
+     *
+     *   const ResetButton = require('./components/ResetButton.jsx');
+     *   ReactDOM.render(React.createElement(ResetButton, {
+     *     onClick: () => {
+     *       (uploadModal !== null ? uploadModal : textArea).setState({ textValue: _this.state.original });
+     *
+     *       _this.removeResetButton();
+     *     }
+     *   }), buttonContainer);
+     * };
+     *
+     * _this.addTranslateSubMenu(res, setText);
+     *
+     * return res;
+     * });
+     */
 
     const MessageContextMenu = await getModuleByDisplayName('MessageContextMenu');
     inject('pc-translate-context', MessageContextMenu.prototype, 'render', function (_, res) {
@@ -239,10 +243,12 @@ module.exports = class Translate extends Plugin {
                       const { text, from } = await translate(content, opts);
 
                       fromLang = translate.languages[from.language.iso];
-                      contentArray.push({ original: content,
+                      contentArray.push({
+                        original: content,
                         translation: content.startsWith(' ') && content.endsWith(' ')
                           ? ` ${text} `
-                          : content.startsWith(' ') ? ` ${text}` : content.endsWith(' ') ? `${text} ` : text });
+                          : content.startsWith(' ') ? ` ${text}` : content.endsWith(' ') ? `${text} ` : text
+                      });
 
                       return contentArray;
                     });

@@ -4,6 +4,14 @@ const { getModule } = require('powercord/webpack');
 const { webContents } = require('electron').remote.getCurrentWindow();
 
 module.exports = async function injectAutocomplete () {
+  /*
+   * @todo: fix this
+   * Looks like they've made autocomplete an entire new module (['createAutocompleterResult', 'AutocompleterResultTypes' ])
+   * might be worth looking into it, probably the best way
+   */
+  return;
+  /* eslint-disable no-unreachable */
+  // noinspection UnreachableCodeJS
   let state;
   const disabledPlugins = powercord.settings.get('disabledPlugins', []);
   const plugins = [ ...powercord.pluginManager.plugins.keys() ]
