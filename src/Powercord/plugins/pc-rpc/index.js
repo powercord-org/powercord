@@ -4,10 +4,17 @@ const { WEBSITE } = require('powercord/constants');
 const { inject, uninject } = require('powercord/injector');
 
 module.exports = class RPC extends Plugin {
-  async _startPlugin () { // Soon :)
+  async startPlugin () { // Soon :)
     this.handlers = await getModule([ 'INVITE_BROWSER' ]);
     this._patchHTTPServer();
     this._patchWebSocketServer();
+
+    this._boundAddEvent = this._addEvent.bind(this);
+    this._boundRemoveEvent = this._removeEvent.bind(this);
+
+    powercord.api.rpc.registerScope('POWERCORD_PRIVATE', w => w === WEBSITE);
+    powercord.api.rpc.on('eventAdded', this._boundAddEvent);
+    powercord.api.rpc.on('eventRemoved', this._boundRemoveEvent);
   }
 
   pluginWillUnload () {
@@ -16,6 +23,10 @@ module.exports = class RPC extends Plugin {
 
     powercord.rpcServer.removeAllListeners('request');
     powercord.rpcServer.on('request', this._originalHandler);
+
+    powercord.api.rpc.unregisterScope('POWERCORD_PRIVATE');
+    powercord.api.rpc.off('eventAdded', this._boundAddEvent);
+    powercord.api.rpc.off('eventRemoved', this._boundRemoveEvent);
   }
 
   _patchHTTPServer () {
@@ -57,26 +68,18 @@ module.exports = class RPC extends Plugin {
     inject('pc-rpc-ws-promise', websocketHandler, 'validateSocketClient', (args, res) => {
       if (args[3] === 'powercord') {
         res.catch(() => void 0); // Shut
-        // noinspection JSPrimitiveTypeWrapperUsage
-        args[0].authorization.scopes = [ 'POWERCORD' ];
-        if (args[1] === WEBSITE) {
-          args[0].authorization.scopes.push('POWERCORD_PRIVATE');
-        }
+        args[0].authorization.scopes = [
+          'POWERCORD',
+          ...Object.keys(powercord.api.rpc.scopes).filter(s => powercord.api.rpc.scopes[s](args[1]))
+        ];
         return new Promise(res => res());
       }
       return res;
     });
   }
 
-  _addEvent (event, handler, validation, internal = false) {
-    const rpcHandler = {
-      scope: internal ? 'POWERCORD_PRIVATE' : 'POWERCORD',
-      handler
-    };
-    if (validation) {
-      rpcHandler.validation = validation;
-    }
-    this.handlers[event] = rpcHandler;
+  _addEvent (event) {
+    this.handlers[event] = powercord.rpc.api.events[event];
   }
 
   _removeEvent (event) {
