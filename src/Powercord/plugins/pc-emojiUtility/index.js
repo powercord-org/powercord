@@ -472,8 +472,9 @@ module.exports = class EmojiUtility extends Plugin {
 
     const handleImageContext = function (args, res) {
       const { target } = this.props;
+      const imageWrapper = getModule([ 'imageWrapper' ], false).imageWrapper;
 
-      if (target.tagName.toLowerCase() === 'img' && target.parentElement.classList.contains('pc-imageWrapper')) {
+      if (target.tagName.toLowerCase() === 'img' && target.parentElement.classList.contains(imageWrapper)) {
         /* NativeContextMenu's children is a single object, turn it in to an array to be able to push */
         if (typeof res.props.children === 'object') {
           const children = [];
