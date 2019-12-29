@@ -1,107 +1,26 @@
-const { inject: pcInject } = require('powercord/injector');
-const { waitFor, getOwnerInstance, sleep } = require('powercord/util');
-const { getModule } = require('powercord/webpack');
 const { webContents } = require('electron').remote.getCurrentWindow();
+const { getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { inject } = require('powercord/injector');
 
+let state;
 module.exports = async function injectAutocomplete () {
-  /*
-   * @todo: fix this
-   * Looks like they've made autocomplete an entire new module (['createAutocompleterResult', 'AutocompleterResultTypes' ])
-   * might be worth looking into it, probably the best way
-   */
-  return;
-  /* eslint-disable no-unreachable */
-  // noinspection UnreachableCodeJS
-  let state;
-  const disabledPlugins = powercord.settings.get('disabledPlugins', []);
-  const plugins = [ ...powercord.pluginManager.plugins.keys() ]
-    .filter(plugin => !disabledPlugins.includes(plugin));
-  while (!plugins.every(plugin => powercord.pluginManager.get(plugin))) { // ugly fix lol
-    await sleep(1);
-  }
+  const _this = this;
+  const ChannelAutocomplete = await getModuleByDisplayName('ChannelAutocomplete');
+  inject('pc-commands-autocomplete', ChannelAutocomplete.prototype, 'render', function (_, res) {
+    const { textValue } = this.props;
+    const currentCommandFilter = (command) => [ command.command, ...command.aliases ].some(commandName =>
+      textValue.startsWith(powercord.api.commands.prefix) &&
+      (textValue.slice(powercord.api.commands.prefix.length).toLowerCase()).startsWith(commandName)
+    );
 
-  const inject = () => {
-    const powercordCommands = {
-      getPlainText: (index, { commands }) => powercord.api.commands.prefix + commands[index].command,
-      getRawText: (...args) => powercordCommands.getPlainText(...args),
-      matches: (isValid) => (
-        isValid &&
-        this.instance.props.textValue.startsWith(powercord.api.commands.prefix) &&
-        !this.instance.props.textValue.includes(' ')
-      ),
-      queryResults: () => ({
-        commands: powercord.api.commands.commands.filter(c =>
-          c.command.startsWith(this.instance.props.textValue.slice(powercord.api.commands.prefix.length).toLowerCase())
-        )
-      }),
-      renderResults: (...args) => {
-        const renderedResults = this.instance.props.autocompleteOptions.COMMAND.renderResults(...args);
-        if (!renderedResults) {
-          return;
-        }
-
-        const [ header, commands ] = renderedResults;
-
-        header.type = class PatchedHeaderType extends header.type {
-          renderContent (...originalArgs) {
-            const rendered = super.renderContent(...originalArgs);
-
-            if (
-              Array.isArray(rendered.props.children) &&
-              rendered.props.children[1]
-            ) {
-              const commandPreviewChildren = rendered.props.children[1].props.children;
-              if (commandPreviewChildren[0].startsWith('/')) {
-                commandPreviewChildren[0] = commandPreviewChildren[0]
-                  .replace(`/${powercord.api.commands.prefix.slice(1)}`, powercord.api.commands.prefix);
-              }
-            }
-
-            return rendered;
-          }
-        };
-
-        for (const command of commands) {
-          command.type = class PatchedCommandType extends command.type {
-            renderContent (...originalArgs) {
-              const rendered = super.renderContent(...originalArgs);
-
-              const { children } = rendered.props;
-              if (children[0].props.name === 'Slash') {
-                rendered.props.children.shift();
-              }
-
-              const commandName = children[0].props;
-              if (!commandName.children.startsWith(powercord.api.commands.prefix)) {
-                commandName.children = powercord.api.commands.prefix + commandName.children;
-              }
-
-              return rendered;
-            }
-          };
-        }
-
-        return [ header, commands ];
-      }
-    };
-
-    const currentCommandFilter = command =>
-      [ command.command, ...command.aliases ].some(commandName =>
-        this.instance.props.textValue.startsWith(powercord.api.commands.prefix) &&
-        (this.instance.props.textValue.slice(powercord.api.commands.prefix.length).toLowerCase()).startsWith(commandName)
-      );
     const autocompleteFunc = () => {
-      const currentCommand = powercord.api.commands.commands
-        .find(currentCommandFilter);
+      const currentCommand = powercord.api.commands.commands.find(currentCommandFilter);
       if (!currentCommand) {
         return false;
       }
 
       const autocompleteRows = currentCommand.autocompleteFunc(
-        this.instance.props.textValue
-          .slice(powercord.api.commands.prefix.length)
-          .split(' ')
-          .slice(1)
+        textValue.slice(powercord.api.commands.prefix.length).split(' ').slice(1)
       );
 
       if (autocompleteRows) {
@@ -112,36 +31,10 @@ module.exports = async function injectAutocomplete () {
       return autocompleteRows;
     };
 
-    const powercordAutocomplete = {
-      getPlainText: (index, { commands }) => {
-        if (commands[index].wildcard) {
-          state = true;
-          setImmediate(() => {
-            webContents.sendInputEvent({
-              type: 'char',
-              keyCode: '\u000d'
-            });
-            state = false;
-          });
-          return this.instance.props.textArea.split(' ').pop();
-        } else if (commands[index].instruction) {
-          setImmediate(() => {
-            webContents.sendInputEvent({
-              type: 'keyDown',
-              keyCode: 'Backspace'
-            });
-          });
-          return '';
-        }
-
-        return commands[index].command;
-      },
-      getRawText: (...args) => powercordAutocomplete.getPlainText(...args),
-      matches: () =>
-        powercord.api.commands.commands
-          .filter(command => command.autocompleteFunc)
-          .some(currentCommandFilter) &&
-        autocompleteFunc(),
+    const { autocompleteOptions } = this.state;
+    autocompleteOptions.POWERCORD_AUTOCOMPLETE = {
+      matches: () => powercord.api.commands.commands.filter(command => command.autocompleteFunc)
+        .some(currentCommandFilter) && autocompleteFunc(),
       queryResults: autocompleteFunc,
       renderResults: (...args) => {
         if (state) {
@@ -152,20 +45,21 @@ module.exports = async function injectAutocomplete () {
           ? args[4].commands.__header
           : [ args[4].commands.__header ];
 
-        const renderedResults = this.instance.props.autocompleteOptions.COMMAND.renderResults(...args);
+        const renderedResults = autocompleteOptions.COMMAND.renderResults(...args);
         if (!renderedResults) {
           return;
         }
 
         const [ header, commands ] = renderedResults;
-
         header.type = class PatchedHeaderType extends header.type {
           render () {
             const rendered = super.render();
+
             if (!customHeader[0]) {
               rendered.props.children.props.children = null;
               rendered.props.children.props.style = { padding: '4px' };
             }
+
             return rendered;
           }
 
@@ -196,29 +90,99 @@ module.exports = async function injectAutocomplete () {
         }
 
         return [ header, commands ];
-      }
+      },
+      getPlainText: (index, { commands }) => {
+        if (commands[index].wildcard) {
+          state = true;
+
+          setImmediate(() => {
+            webContents.sendInputEvent({
+              type: 'char',
+              keyCode: '\u000d'
+            });
+
+            state = false;
+          });
+
+          return textValue.split(' ').pop();
+        } else if (commands[index].instruction) {
+          setImmediate(() => {
+            webContents.sendInputEvent({
+              type: 'keyDown',
+              keyCode: 'Backspace'
+            });
+          });
+
+          return '';
+        }
+
+        return commands[index].command;
+      },
+      getRawText: (...args) => autocompleteOptions.POWERCORD_AUTOCOMPLETE.getPlainText(...args)
     };
 
-    this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS_AUTOCOMPLETE = powercordAutocomplete;
-    this.instance.props.autocompleteOptions.POWERCORD_CUSTOM_COMMANDS = powercordCommands;
-  };
+    _this.instance = this;
 
-  const taClass = (await getModule([ 'channelTextArea', 'channelTextAreaEnabled' ]))
-    .channelTextArea.split(' ')[0];
-
-  const element = await waitFor(`.${taClass}`);
-  this.instance = getOwnerInstance(element);
-
-  pcInject('pc-commands-autocomplete', this.instance.__proto__, 'render', (args, originReturn) => {
-    setImmediate(() => {
-      const element = document.querySelector(`.${taClass}`);
-      if (element) {
-        this.instance = getOwnerInstance(element);
-        inject();
-      }
-    });
-    return originReturn;
+    return res;
   });
 
-  inject();
+  const autocomplete = await getModule([ 'getAutocompleteOptions' ]);
+  autocomplete.getAutocompleteOptions = (getAutocompleteOptions => (e, t, n, r, a) => {
+    const autocompleteOptions = getAutocompleteOptions(e, t, n, r, a);
+    autocompleteOptions.POWERCORD_COMMANDS = {
+      matches: (prefix, value, isAtStart) => isAtStart && (prefix + value).startsWith(powercord.api.commands.prefix),
+      queryResults: (value) => ({ commands: powercord.api.commands.commands.filter(({ command }) =>
+        command.startsWith(value.slice(powercord.api.commands.prefix.length - 1).toLowerCase())
+      ) }),
+      renderResults: (...args) => {
+        const renderedResults = autocompleteOptions.COMMAND.renderResults(...args);
+        if (!renderedResults) {
+          return;
+        }
+
+        const [ header, commands ] = renderedResults;
+        header.type = class PatchedHeaderType extends header.type {
+          renderContent (...originalArgs) {
+            const rendered = super.renderContent(...originalArgs);
+            if (Array.isArray(rendered.props.children) && rendered.props.children[1]) {
+              const commandPreviewChildren = rendered.props.children[1].props.children;
+              if (commandPreviewChildren[0].startsWith('/')) {
+                commandPreviewChildren[0] = commandPreviewChildren[0].replace(
+                  `/${powercord.api.commands.prefix.slice(1)}`, powercord.api.commands.prefix
+                );
+              }
+            }
+
+            return rendered;
+          }
+        };
+
+        for (const command of commands) {
+          command.type = class PatchedCommandType extends command.type {
+            renderContent (...originalArgs) {
+              const rendered = super.renderContent(...originalArgs);
+              const { children } = rendered.props;
+
+              if (children[0].props.name === 'Slash') {
+                rendered.props.children.shift();
+              }
+
+              const commandName = children[0].props;
+              if (!commandName.children.startsWith(powercord.api.commands.prefix)) {
+                commandName.children = powercord.api.commands.prefix + commandName.children;
+              }
+
+              return rendered;
+            }
+          };
+        }
+
+        return [ header, commands ];
+      },
+      getPlainText: (index, { commands }) => powercord.api.commands.prefix + commands[index].command,
+      getRawText: (...args) => autocompleteOptions.POWERCORD_COMMANDS.getPlainText(...args)
+    };
+
+    return autocompleteOptions;
+  })(autocomplete.__getAutocompleteOptions = autocomplete.getAutocompleteOptions);
 };

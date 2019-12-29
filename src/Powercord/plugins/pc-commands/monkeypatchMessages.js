@@ -38,7 +38,7 @@ module.exports = async function monkeypatchMessages () {
 
         if (typeof appearance.avatar === 'object') {
           if (![ 'name', 'url' ].every(key => appearance.avatar.hasOwnProperty(key))) {
-            console.warn('%c[Powercord:Plugin:Commands]', 'color: #7289da', `Command "${cmd}" is missing the <name> and/or <url> key which are/is mandatory for fetching and returning the result avatar; falling back to default.`);
+            this.warn(`Command "${cmd}" is missing the <name> and/or <url> key which are/is mandatory for fetching and returning the result avatar; falling back to default.`);
           } else {
             BOT_AVATARS[appearance.avatar.name] = appearance.avatar.url;
             // noinspection JSPrimitiveTypeWrapperUsage

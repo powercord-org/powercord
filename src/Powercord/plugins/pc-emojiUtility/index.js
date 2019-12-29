@@ -579,24 +579,20 @@ module.exports = class EmojiUtility extends Plugin {
      * });
      */
 
-    /*
-     * @todo: fix
-     * @see injectAutocomplete.js
-     *
-     * const ChannelTextArea = await getModuleByDisplayName('ChannelTextArea');
-     * inject('pc-emojiUtility-hideEmojisComplete', ChannelTextArea.prototype, 'componentDidUpdate', (args) => {
-     *   const { autocompleteOptions, channel } = args.find(key => key && key.autocompleteOptions);
-     *
-     *   if (autocompleteOptions) {
-     *     autocompleteOptions.EMOJIS.queryResults = (value) => ({
-     *       emojis: this.queryEmojiResults(value, channel).emojis.filter(emoji =>
-     *         !emoji.guildId || !this.getHiddenGuilds().includes(emoji.guildId))
-     *     });
-     *   }
-     *
-     *   return args;
-     * });
-     */
+    const ChannelAutocomplete = await getModuleByDisplayName('ChannelAutocomplete');
+    inject('pc-emojiUtility-hideEmojisComplete', ChannelAutocomplete.prototype, 'grabAutocompleteOptions', (args) => {
+      const { channel } = args[0];
+      const { autocompleteOptions } = args[1];
+
+      if (autocompleteOptions) {
+        autocompleteOptions.EMOJIS.queryResults = (value) => ({
+          emojis: this.queryEmojiResults(value, channel).emojis.filter(emoji =>
+            !emoji.guildId || !this.getHiddenGuilds().includes(emoji.guildId))
+        });
+      }
+
+      return args;
+    });
 
     this.registerSettings('pc-emojiUtility', 'Emote Utility', Settings);
 
