@@ -1,41 +1,34 @@
 const { Plugin } = require('powercord/entities');
-const { React, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
+const { findInReactTree } = require('powercord/util');
 const { clipboard } = require('electron');
 const { resolve } = require('path');
 
 module.exports = class Codeblocks extends Plugin {
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
-    this.patchMessageContent();
-    this.patchEmbed();
-
-    this.codeblockRegExp = new RegExp(/`{3}([\s\S]+?)`{3}/);
+    this.patchCodeblocks();
   }
 
   pluginWillUnload () {
-    uninject('pc-message-codeblock');
-    uninject('pc-embed-codeblock');
+    uninject('pc-codeblocks-inline');
+    uninject('pc-codeblocks-embed');
   }
 
-  async patchMessageContent () {
-    const _this = this;
-    const MessageContent = await getModuleByDisplayName('MessageContent');
+  async patchCodeblocks () {
+    const parser = await getModule([ 'parse', 'parseTopic' ]);
+    inject('pc-codeblocks-inline', parser.defaultRules.codeBlock, 'react', (args, res) => {
+      this.injectCodeblock(args, res);
 
-    inject('pc-message-codeblock', MessageContent.prototype, 'render', function (_, res) {
-      const { message, content } = this.props;
+      return res;
+    });
 
-      if (_this.codeblockRegExp.test(message.content)) {
-        for (const child of content) {
-          if (child.props && child.props.className && child.props.className.includes('blockquoteContainer')) {
-            const blockquoteChildren = child.props.children[1].props.children;
-
-            for (const child of blockquoteChildren) {
-              _this.injectCodeblock(child);
-            }
-          } else {
-            _this.injectCodeblock(child);
-          }
+    inject('pc-codeblocks-embed', parser, 'parseAllowLinks', (_, res) => {
+      for (const children of res) {
+        const codeblock = findInReactTree(children, n => n.type && n.type.name === '');
+        if (codeblock) {
+          this.injectCodeblock(null, codeblock);
         }
       }
 
@@ -43,67 +36,34 @@ module.exports = class Codeblocks extends Plugin {
     });
   }
 
-  async patchEmbed () {
-    const _this = this;
-    const Embed = await getModuleByDisplayName('Embed');
+  injectCodeblock (args, codeblock) {
+    const { render } = codeblock.props;
 
-    inject('pc-embed-codeblock', Embed.prototype, 'renderAll', function (_, res) {
-      const { embed } = this.props;
+    codeblock.props.render = (codeblock) => {
+      const res = render(codeblock);
 
-      if (_this.codeblockRegExp.test(embed.rawDescription)) {
-        const { children } = res.description.props;
+      const { children } = res.props;
+      const lang = args ? args[0].lang : children.props.className.split(' ').find(className => !className.includes('-') && className !== 'hljs');
 
-        for (const child of children) {
-          _this.injectCodeblock(child);
-        }
-      } else if (embed.fields && embed.fields.some(field => _this.codeblockRegExp.test(field.rawValue))) {
-        const { children } = res.fields.props;
+      if (children.props.dangerouslySetInnerHTML) {
+        children.props.children = this.renderCodeblock(lang, children.props.dangerouslySetInnerHTML);
 
-        for (const child of children) {
-          if (child[0].props.children && child[0].props.children[1] && child[0].props.children[1].props.children) {
-            for (const field of child[0].props.children[1].props.children) {
-              _this.injectCodeblock(field);
-            }
-          }
-        }
+        delete children.props.dangerouslySetInnerHTML;
+      } else if (typeof children.props.children === 'string') {
+        children.props.children = this.renderCodeblock(lang, children.props.children);
       }
 
       return res;
-    });
+    };
   }
 
-  injectCodeblock (codeblock) {
-    const _this = this;
-
-    if (codeblock.props && codeblock.props.renderFallback) {
-      const { render } = codeblock.props;
-
-      codeblock.props.render = function (t) {
-        const res = render(t);
-        const { children } = res.props;
-
-        const lang = children.props.className.split(' ').find(c => !c.includes('-') && c !== 'hljs');
-
-        if (children.props.dangerouslySetInnerHTML) {
-          children.props.children = _this.renderCodeblock(lang, children.props.dangerouslySetInnerHTML);
-
-          delete children.props.dangerouslySetInnerHTML;
-        } else if (typeof children.props.children === 'string') {
-          children.props.children = _this.renderCodeblock(lang, children.props.children);
-        }
-
-        return res;
-      };
-    }
-  }
-
-  renderCodeblock (lang, innerHTML) {
+  renderCodeblock (lang, content) {
     const children = [];
-    const isDangerouslySetInnerHTML = typeof innerHTML === 'object';
+    const isDangerouslySetInnerHTML = typeof content === 'object';
 
     children.push(React.createElement('div', {
-      dangerouslySetInnerHTML: isDangerouslySetInnerHTML ? innerHTML : null
-    }, isDangerouslySetInnerHTML ? null : innerHTML), React.createElement('div', {
+      dangerouslySetInnerHTML: isDangerouslySetInnerHTML ? content : null
+    }, isDangerouslySetInnerHTML ? null : content), React.createElement('div', {
       className: 'powercord-codeblock-lang'
     }, lang), React.createElement('div', {
       className: 'powercord-lines'
@@ -124,6 +84,7 @@ module.exports = class Codeblocks extends Plugin {
 
     target.innerText = 'copied!';
     target.classList.add('copied');
+
     setTimeout(() => {
       target.innerText = 'copy';
       target.classList.remove('copied');
