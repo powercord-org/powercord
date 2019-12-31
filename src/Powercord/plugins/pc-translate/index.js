@@ -1,7 +1,7 @@
 const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
-const { sleep, createElement, forceUpdateElement, getOwnerInstance } = require('powercord/util');
+const { ReactDOM, React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { sleep, createElement, forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 const { ContextMenu: { Submenu } } = require('powercord/components');
 
 const Settings = require('./components/Settings');
@@ -33,11 +33,11 @@ module.exports = class Translate extends Plugin {
     this.removeResetButton();
 
     // uninject('pc-translate-icon');
-    uninject('pc-translate-nativeContext');
+    uninject('pc-translate-slateContext');
     uninject('pc-translate-context');
     uninject('pc-translate-content');
     uninject('pc-translate-contentRemove');
-    uninject('pc-translate-resetButtonRemove');
+    uninject('pc-translate-clearRestore');
   }
 
   async _injectTranslator () {
@@ -125,75 +125,84 @@ module.exports = class Translate extends Plugin {
       return args;
     }, true);
 
-    /*
-     * @todo: fix
-     * const ChannelTextArea = await getModuleByDisplayName('ChannelTextArea');
-     * inject('pc-translate-resetButtonRemove', ChannelTextArea.prototype, 'handleSubmit', (args) => {
-     * this.removeResetButton();
-     *
-     * return args;
-     * });
-     *
-     * const NativeContextMenu = await getModuleByDisplayName('NativeContextMenu');
-     * inject('pc-translate-nativeContext', NativeContextMenu.prototype, 'render', function (_, res) {
-     * if (this.props.type !== 'CHANNEL_TEXT_AREA') {
-     *   return res;
-     * }
-     *
-     * const { _textArea: target } = getOwnerInstance(this.props.target);
-     * _this.state.original = _this.state.original || target.value;
-     *
-     * const setText = async (opts) => {
-     *   const classes = {
-     *     ...await getModule([ 'uploadModal' ]),
-     *     ...await getModule([ 'messagesWrapper' ]),
-     *     ...await getModule([ 'channelTextArea', 'inner' ])
-     *   };
-     *
-     *   const textArea = getOwnerInstance(await waitFor(`.${classes.messagesWrapper.split(' ')[0]} + form`));
-     *   const selectedText = (await getModule([ 'getSelectionText' ])).getSelectionText();
-     *   const uploadModal = document.querySelector(`.${classes.uploadModal.split(' ')[0]}`)
-     *     ? getOwnerInstance(document.querySelector(`.${classes.uploadModal.split(' ')[0]}`))
-     *     : null;
-     *
-     *   let value = selectedText.length > 0 ? selectedText : target.value;
-     *
-     *   const { text } = await translate(value, opts);
-     *
-     *   if (selectedText.length === 0) {
-     *     value = text;
-     *   } else {
-     *     value = `${target.value.slice(0, target.selectionStart)}${text}` +
-     *       `${target.value.slice(target.selectionEnd)}`;
-     *   }
-     *
-     *   (uploadModal !== null ? uploadModal : textArea).setState({ textValue: value });
-     *
-     *   if (document.getElementById('powercord-translate-resetButton')) {
-     *     return;
-     *   }
-     *
-     *   const textAreaButtons = document.getElementsByClassName(classes.buttons)[uploadModal !== null ? 1 : 0];
-     *   const buttonContainer = createElement('div', { id: 'powercord-translate-resetButton',
-     *     className: classes.buttonContainer });
-     *
-     *   textAreaButtons.insertBefore(buttonContainer, textAreaButtons.firstChild);
-     *
-     *   const ResetButton = require('./components/ResetButton.jsx');
-     *   ReactDOM.render(React.createElement(ResetButton, {
-     *     onClick: () => {
-     *       (uploadModal !== null ? uploadModal : textArea).setState({ textValue: _this.state.original });
-     *
-     *       _this.removeResetButton();
-     *     }
-     *   }), buttonContainer);
-     * };
-     *
-     * _this.addTranslateSubMenu(res, setText);
-     *
-     * return res;
-     * });
-     */
+    const ChannelEditorContainer = await getModuleByDisplayName('ChannelEditorContainer');
+    inject('pc-translate-clearRestore', ChannelEditorContainer.prototype, 'componentDidUpdate', (args, res) => {
+      if (args[0].textValue.length <= 1 || args[1].submitting) {
+        this.removeResetButton();
+      }
+
+      return res;
+    });
+
+    const SlateContextMenu = await getModule(m => m.default && m.default.displayName === 'SlateContextMenu');
+    inject('pc-translate-slateContext', SlateContextMenu, 'default', (args, res) => {
+      const channelEditorContainer = args[0].editor._reactInternalFiber.return;
+      const { memoizedProps: { textValue } } = channelEditorContainer;
+
+      this.state.original = this.state.original || textValue;
+
+      const setText = async (opts) => {
+        const classes = {
+          ...await getModule([ 'uploadModal' ]),
+          ...await getModule([ 'messagesWrapper' ]),
+          ...await getModule([ 'channelTextArea', 'inner' ])
+        };
+
+        const { deserialize } = await getModule([ 'deserialize' ]);
+        const textArea = getOwnerInstance(await waitFor(`.${classes.messagesWrapper.split(' ')[0]} + form .${classes.channelTextArea.split(' ')[0]}`));
+        const selectedText = args[0].editor.getSelectedText();
+        const uploadModal = document.querySelector(`.${classes.uploadModal.split(' ')[0]}`)
+          ? getOwnerInstance(document.querySelector(`.${classes.uploadModal.split(' ')[0]}`))
+          : null;
+
+        let value = selectedText.length > 0 ? selectedText : textValue;
+
+        const { text } = await translate(value, opts);
+
+        if (selectedText.length === 0) {
+          value = text;
+        } else {
+          const selection = {
+            start: args[0].editor.editorRef.value.selection.start.offset,
+            end: args[0].editor.editorRef.value.selection.end.offset
+          };
+
+          value = `${textValue.slice(0, selection.start)}${text}` +
+            `${textValue.slice(selection.end)}`;
+        }
+
+        (uploadModal !== null ? uploadModal : textArea).setState({
+          textValue: value,
+          richValue: deserialize(value)
+        });
+
+        if (document.getElementById('powercord-translate-resetButton')) {
+          return;
+        }
+
+        const textAreaButtons = document.getElementsByClassName(classes.buttons)[uploadModal !== null ? 1 : 0];
+        const buttonContainer = createElement('div', { id: 'powercord-translate-resetButton',
+          className: classes.buttonContainer });
+
+        textAreaButtons.insertBefore(buttonContainer, textAreaButtons.firstChild);
+
+        const ResetButton = require('./components/ResetButton.jsx');
+        ReactDOM.render(React.createElement(ResetButton, {
+          onClick: () => {
+            (uploadModal !== null ? uploadModal : textArea).setState({
+              textValue: this.state.original,
+              richValue: deserialize(this.state.original)
+            });
+
+            this.removeResetButton();
+          }
+        }), buttonContainer);
+      };
+
+      this.addTranslateSubMenu(res, setText);
+
+      return res;
+    });
 
     const MessageContextMenu = await getModuleByDisplayName('MessageContextMenu');
     inject('pc-translate-context', MessageContextMenu.prototype, 'render', function (_, res) {
