@@ -1,6 +1,6 @@
 /**
  * Powercord, a lightweight @discordapp client mod focused on simplicity and performance
- * Copyright (C) 2018-2019  aetheryx & Bowser65
+ * Copyright (C) 2018-2020  aetheryx & Bowser65
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

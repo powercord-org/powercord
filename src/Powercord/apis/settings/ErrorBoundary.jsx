@@ -1,6 +1,6 @@
 /**
  * Powercord, a lightweight @discordapp client mod focused on simplicity and performance
- * Copyright (C) 2018-2019  aetheryx & Bowser65
+ * Copyright (C) 2018-2020  aetheryx & Bowser65
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ class ErrorBoundary extends React.Component {
       .slice(1, 7)
       .join('\n');
 
-    let errorStack = '';
+    let errorStack;
     if (RE_INVARIANT_URL.test(error.stack || '')) {
       const uri = parse(RE_INVARIANT_URL.exec(error.stack)[0], true);
 
