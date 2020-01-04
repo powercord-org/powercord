@@ -8,6 +8,7 @@ const { resolve } = require('path');
 module.exports = class Codeblocks extends Plugin {
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.hljs = await getModule([ 'highlight' ]);
     this.patchCodeblocks();
   }
 
@@ -60,10 +61,11 @@ module.exports = class Codeblocks extends Plugin {
   renderCodeblock (lang, content) {
     const children = [];
     const isDangerouslySetInnerHTML = typeof content === 'object';
+    const isValidLanguage = typeof this.hljs.getLanguage(lang) !== 'undefined';
 
     children.push(React.createElement('div', {
       dangerouslySetInnerHTML: isDangerouslySetInnerHTML ? content : null
-    }, isDangerouslySetInnerHTML ? null : content), React.createElement('div', {
+    }, isDangerouslySetInnerHTML ? null : content), isValidLanguage && React.createElement('div', {
       className: 'powercord-codeblock-lang'
     }, lang), React.createElement('div', {
       className: 'powercord-lines'
