@@ -257,7 +257,7 @@ module.exports = class UpdaterSettings extends React.Component {
   }
 
   renderDebugInfo (moment) {
-    const { getRegisteredExperiments, getExperimentOverrides } = getModule([ 'initialize', 'getRegisteredExperiments' ], false);
+    const { getRegisteredExperiments, getExperimentOverrides } = getModule([ 'initialize', 'getExperimentOverrides' ], false);
     // eslint-disable-next-line new-cap
     const [ , buildId ] = Routes.OVERLAY().match(/build_id=([[a-f0-9]+)/);
     const sentry = window.__SENTRY__.hub;
