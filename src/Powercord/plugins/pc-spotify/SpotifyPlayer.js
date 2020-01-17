@@ -109,6 +109,15 @@ module.exports = {
     ).then(r => r.body);
   },
 
+  search (query, type = 'track', limit = 20) {
+    return this.genericRequest(
+      get(`${this.BASE_URL}/search`)
+        .query('q', query)
+        .query('type', type)
+        .query('limit', limit)
+    ).then(r => r.body);
+  },
+
   play (data) {
     return this.genericRequest(
       put(`${this.BASE_PLAYER_URL}/play`)

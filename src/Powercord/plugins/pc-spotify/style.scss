@@ -34,40 +34,42 @@ div[class*='listeningAlong'] + .powercord-spotify {
 
   &-playlist {
     display: flex;
-    height: 60px;
-    padding: 4px;
+    height: 65px;
     align-items: center;
-    width: 45%;
-    border: 1px solid var(--text-normal);
-    border-radius: 4px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    width: 49%;
+    border: 1px dashed var(--background-tertiary);
+    border-radius: 5px;
+    margin: 2px 0;
     color: var(--text-normal);
+    background: var(--background-secondary);
+    transition: all .2s ease;
 
     .image {
       margin-right: 10px;
-      border-radius: 4px;
+      border-radius: 50%;
+      border: 2px solid var(--background-tertiary);
+      margin-left: 5px;
+      width: 50px;
     }
 
-    &-modal-header {
-      color: var(--text-normal);
-      font-weight: bold;
-      text-transform: uppercase;
+    .name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-right: 5px;
     }
 
     &-group {
       display: flex;
       justify-content: space-evenly;
       flex-wrap: wrap;
-      padding-bottom: 5px;
-      color: var(--text-normal);
+      padding-bottom: 24px;
     }
   }
 
   &-playlist:hover {
     cursor: pointer;
-    background: var(--text-normal);
-    color: var(--background-primary);
+    background: var(--background-modifier-hover);
+    opacity: .8;
   }
 
   .username {
@@ -138,7 +140,7 @@ div[class*='listeningAlong'] + .powercord-spotify {
     &-bar {
       cursor: pointer;
       height: 2px;
-      transition: height .3s;
+      transition: all .3s;
       transition-delay: .25s;
 
       &-progress {
@@ -175,6 +177,7 @@ div[class*='listeningAlong'] + .powercord-spotify {
     .powercord-spotify-seek-bar {
       height: 4px;
       transition-delay: 0s;
+      background: var(--background-primary);
     }
 
     .powercord-spotify-seek-elements,
@@ -191,9 +194,9 @@ div[class*='listeningAlong'] + .powercord-spotify {
   }
 }
 
-.powercord-spotify-seek-btngrp button{
+.powercord-spotify-seek-btngrp button {
   color: var(--text-normal);
-  &.active, &.active:hover{
+  &.active, &.active:hover {
     color: #1ed860;
   }
 }
@@ -204,6 +207,6 @@ div[class*='listeningAlong'] + .powercord-spotify {
   }
 
   75%, 100% {
-    transform: translateX(calc(-100% + 78px));
+    transform: translateX(calc(-100% + 84px));
   }
 }

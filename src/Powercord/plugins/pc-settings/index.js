@@ -78,6 +78,27 @@ module.exports = class Settings extends Plugin {
         })(sections.find(c => c.section === 'CUSTOM').element);
       }
 
+      const latestCommitHash = powercord.gitInfos.revision.substring(0, 7);
+      const debugInfo = sections[sections.findIndex(c => c.section === 'CUSTOM') + 1];
+      if (debugInfo) {
+        debugInfo.element = ((_element) => function () {
+          const res = _element();
+          if (res.props.children && res.props.children.length === 3) {
+            res.props.children.push(
+              Object.assign({}, res.props.children[0], {
+                props: Object.assign({}, res.props.children[0].props, {
+                  children: [ 'Powercord', ' ', React.createElement('span', {
+                    className: res.props.children[0].props.children[4].props.className,
+                    children: [ powercord.gitInfos.branch, ' (', `${latestCommitHash}`, ')' ]
+                  }) ]
+                })
+              })
+            );
+          }
+          return res;
+        })(debugInfo.element);
+      }
+
       return sections;
     });
   }

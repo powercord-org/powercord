@@ -13,8 +13,8 @@ module.exports = class Title extends React.Component {
   render () {
     const titleElement = document.querySelector(`.${this.props.className.split(' ')[0]}`);
     this.canvas.font = titleElement ? getComputedStyle(titleElement).font : null;
-    const titleWidth = Math.ceil(this.canvas.measureText(this.props.children).width) + 8;
-    const animationDuration = (titleWidth - 78) * 90;
+    const titleWidth = Math.ceil(this.canvas.measureText(this.props.children).width);
+    const animationDuration = (titleWidth - 84) * 90;
     let { className } = this.props;
     if (this.state.hovered) {
       className += ' translating';
@@ -22,13 +22,13 @@ module.exports = class Title extends React.Component {
 
     return (
       <span
-        onMouseEnter={() => this.setState({ hovered: titleWidth > 78 })}
+        onMouseEnter={() => this.setState({ hovered: titleWidth > 84 })}
         onMouseLeave={() => this.setState({ hovered: false })}
         className={className}
         style={{
           animationDuration: `${animationDuration}ms`,
-          width: this.state.hovered ? titleWidth : 78,
-          maxWidth: this.state.hovered ? titleWidth : 78
+          width: this.state.hovered ? titleWidth : 84,
+          maxWidth: this.state.hovered ? titleWidth : 84
         }}
       >{this.props.children}</span>
     );

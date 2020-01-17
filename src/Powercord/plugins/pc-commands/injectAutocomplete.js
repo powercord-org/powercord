@@ -144,12 +144,20 @@ module.exports = async function injectAutocomplete () {
         header.type = class PatchedHeaderType extends header.type {
           renderContent (...originalArgs) {
             const rendered = super.renderContent(...originalArgs);
+            if (rendered.props.children === 'Commands') {
+              rendered.props.children = `Powercord ${rendered.props.children}`;
+            }
+
             if (Array.isArray(rendered.props.children) && rendered.props.children[1]) {
               const commandPreviewChildren = rendered.props.children[1].props.children;
               if (commandPreviewChildren[0].startsWith('/')) {
                 commandPreviewChildren[0] = commandPreviewChildren[0].replace(
                   `/${powercord.api.commands.prefix.slice(1)}`, powercord.api.commands.prefix
                 );
+              }
+
+              if (commandPreviewChildren[0] === powercord.api.commands.prefix) {
+                rendered.props.children = 'Powercord Commands';
               }
             }
 
@@ -164,12 +172,13 @@ module.exports = async function injectAutocomplete () {
               const { children } = rendered.props;
 
               if (children[0].props.name === 'Slash') {
-                rendered.props.children.shift();
-              }
+                delete children[0].props;
 
-              const commandName = children[0].props;
-              if (!commandName.children.startsWith(powercord.api.commands.prefix)) {
-                commandName.children = powercord.api.commands.prefix + commandName.children;
+                children[0].type = children[2].type;
+                children[0].props = {
+                  children: powercord.api.commands.prefix,
+                  style: { color: '#72767d' }
+                };
               }
 
               return rendered;
