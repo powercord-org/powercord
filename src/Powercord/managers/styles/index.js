@@ -91,9 +91,9 @@ module.exports = class StyleManager {
             message: `Theme "${themeID}" doesn't have a valid manifest`,
             button: {
               text: 'Generate manifest',
-              onClick: () => openExternal(`https://ghostlydilemma.github.io/powercord-manifest-generator/`)
+              onClick: () => openExternal('https://ghostlydilemma.github.io/powercord-manifest-generator/')
             }
-          })
+          });
         }
 
         if (!window.__OVERLAY__ && manifest.theme) {
@@ -115,7 +115,7 @@ module.exports = class StyleManager {
         message: `Theme "${themeID}" doesn't have a valid manifest or is not a valid file`,
         button: {
           text: 'Generate manifest',
-          onClick: () => openExternal(`https://ghostlydilemma.github.io/powercord-manifest-generator/`)
+          onClick: () => openExternal('https://ghostlydilemma.github.io/powercord-manifest-generator/')
         }
       });
     }
