@@ -86,13 +86,14 @@ module.exports = class StyleManager {
       } else {
         const manifest = require(resolve(this.themesDir, filename, 'powercord_manifest.json'));
         if (!this.manifestKeys.every(key => manifest.hasOwnProperty(key))) {
-          return powercord.api.notices.sendAnnouncement('invalid-theme-manifest', {
-            color: 'orange',
-            message: `Theme "${themeID}" doesn't have a valid manifest`,
-            button: {
-              text: 'Generate manifest',
-              onClick: () => openExternal('https://ghostlydilemma.github.io/powercord-manifest-generator/')
-            }
+          return powercord.api.notices.sendToast('invalid-theme-manifest', {
+            header: `Theme "${themeID}" doesn't have a valid manifest`,
+            type: 'danger',
+            buttons: [ {
+              text: 'Generate Manifest',
+              look: 'ghost',
+              onClick: () => openExternal('https://ghostlydilemma.github.io/powercord-manifest-generator')
+            } ]
           });
         }
 
@@ -110,13 +111,14 @@ module.exports = class StyleManager {
         }, true);
       }
     } catch (e) {
-      return powercord.api.notices.sendAnnouncement('invalid-theme-manifest', {
-        color: 'orange',
-        message: `Theme "${themeID}" doesn't have a valid manifest or is not a valid file`,
-        button: {
-          text: 'Generate manifest',
-          onClick: () => openExternal('https://ghostlydilemma.github.io/powercord-manifest-generator/')
-        }
+      return powercord.api.notices.sendToast('invalid-theme-manifest', {
+        header: `Theme "${themeID}" doesn't have a valid manifest or is not a valid file`,
+        type: 'danger',
+        buttons: [ {
+          text: 'Generate Manifest',
+          look: 'ghost',
+          onClick: () => openExternal('https://ghostlydilemma.github.io/powercord-manifest-generator')
+        } ]
       });
     }
 
