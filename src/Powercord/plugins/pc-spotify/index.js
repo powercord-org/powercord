@@ -31,7 +31,7 @@ module.exports = class Spotify extends Plugin {
     };
 
     this._injectModal();
-    this._injectListeningAlong();
+    // @todo: fix this._injectListeningAlong();
     this._patchAutoPause();
     this._patchSpotifySocket();
     this._patchPremiumDialog();

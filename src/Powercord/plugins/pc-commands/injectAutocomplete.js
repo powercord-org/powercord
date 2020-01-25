@@ -144,12 +144,13 @@ module.exports = async function injectAutocomplete () {
         header.type = class PatchedHeaderType extends header.type {
           renderContent (...originalArgs) {
             const rendered = super.renderContent(...originalArgs);
-            if (rendered.props.children === 'Commands') {
-              rendered.props.children = `Powercord ${rendered.props.children}`;
+            if (typeof rendered.props.children === 'string') {
+              rendered.props.children = 'Powercord Commands';
             }
 
             if (Array.isArray(rendered.props.children) && rendered.props.children[1]) {
-              const commandPreviewChildren = rendered.props.children[1].props.children;
+              const index = typeof rendered.props.children[1] === 'string' ? 0 : 1;
+              const commandPreviewChildren = rendered.props.children[index].props.children;
               if (commandPreviewChildren[0].startsWith('/')) {
                 commandPreviewChildren[0] = commandPreviewChildren[0].replace(
                   `/${powercord.api.commands.prefix.slice(1)}`, powercord.api.commands.prefix
