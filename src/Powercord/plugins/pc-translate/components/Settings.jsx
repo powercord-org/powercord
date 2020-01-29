@@ -1,4 +1,4 @@
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
 const { SwitchItem } = require('powercord/components/settings');
 const { AsyncComponent } = require('powercord/components');
 
@@ -76,7 +76,7 @@ module.exports = class Settings extends React.Component {
                           : hiddenLanguages.filter(hiddenLang => hiddenLang !== lang))
                       }
                     >
-                      <span>{translate.languages[lang]}</span>
+                      <span>{Messages[lang] || translate.languages[lang]}</span>
                     </Checkbox>
                   </li>
                 )}

@@ -2,18 +2,17 @@ const { resolve } = require('path');
 const { Plugin } = require('powercord/entities');
 const { WEBSITE } = require('powercord/constants');
 const { inject, uninject } = require('powercord/injector');
-const { React, getModuleByDisplayName, getModule } = require('powercord/webpack');
+const { React, getModuleByDisplayName, getModule, i18n: { Messages } } = require('powercord/webpack');
 
 const GeneralSettings = require('./components/GeneralSettings.jsx');
 
 module.exports = class Settings extends Plugin {
   startPlugin () {
-    this.registerSettings('pc-general', 'General Settings', powercord.settings.connectStore(GeneralSettings), false);
+    this.registerSettings('pc-general', () => Messages.POWERCORD_GENERAL_SETTINGS, powercord.settings.connectStore(GeneralSettings), false);
 
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this.patchSettingsComponent();
     this.patchExperiments();
-    this.patchSelfXSS();
 
     if (this.settings.get('__experimental_2019-12-16', false)) {
       this.log('Experimental Settings enabled.');
@@ -25,9 +24,6 @@ module.exports = class Settings extends Plugin {
     uninject('pc-settings-items');
     uninject('pc-settings-actions');
     uninject('pc-settings-errorHandler');
-
-    const i18n = await getModule([ 'Messages' ]);
-    i18n.Messages = i18n._Messages;
   }
 
   async patchExperiments () {
@@ -55,7 +51,10 @@ module.exports = class Settings extends Plugin {
             section: 'HEADER',
             label: 'Powercord'
           },
-          ...powercord.api.settings.tabs,
+          ...powercord.api.settings.tabs.map(t => ({
+            ...t,
+            label: typeof t.label === 'function' ? t.label() : t.label
+          })),
           { section: 'DIVIDER' }
         );
       }
@@ -132,19 +131,6 @@ module.exports = class Settings extends Plugin {
       }
 
       return res;
-    });
-  }
-
-  async patchSelfXSS () {
-    const i18n = await getModule([ 'Messages' ]);
-    i18n._Messages = i18n.Messages;
-    i18n.Messages = new Proxy(i18n._Messages, {
-      get: (obj, prop) => {
-        if (prop === 'SELF_XSS_HEADER' && powercord.settings.get('yeetSelfXSS', false)) {
-          return null;
-        }
-        return obj[prop];
-      }
     });
   }
 

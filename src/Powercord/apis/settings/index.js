@@ -107,7 +107,7 @@ module.exports = class Settings extends API {
       panelContents = null;
     }
 
-    const h2 = React.createElement(FormTitle, { tag: 'h2' }, title);
+    const h2 = React.createElement(FormTitle, { tag: 'h2' }, typeof title === 'function' ? title() : title);
     return React.createElement(ErrorBoundary, null, React.createElement(FormSection, {}, h2, panelContents));
   }
 

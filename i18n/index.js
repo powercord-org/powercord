@@ -16,36 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@import 'contextMenu';
-@import 'keybindRecorder';
-@import 'settings';
-
-// Ensure Font Awesome icons doesn't get altered by a careless theme or
-// by Discord's font overrides for specific languages such as Japanese
-.fab {
-  // noinspection CssNoGenericFontName
-  font-family: "Font Awesome 5 Brands" !important;
-}
-
-.fad {
-  // noinspection CssNoGenericFontName
-  font-family: "Font Awesome 5 Duotone" !important;
-}
-
-.fal, .far {
-  // noinspection CssNoGenericFontName
-  font-family: "Font Awesome 5 Pro" !important;
-}
-
-.fa, .fas {
-  // noinspection CssNoGenericFontName
-  font-family: "Font Awesome 5 Pro" !important;
-}
-
-.powercord-text {
-  color: var(--text-normal);
-}
-
-body {
-  font-family: Whitney, Helvetica Neue, Helvetica, Arial, sans-serif !important;
-}
+require('fs')
+  .readdirSync(__dirname)
+  .filter(file => file !== 'index.js')
+  .forEach(filename => {
+    const moduleName = filename.split('.')[0];
+    exports[moduleName] = require(`${__dirname}/${filename}`);
+  });

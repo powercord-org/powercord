@@ -1,5 +1,5 @@
 const { remote } = require('electron');
-const { React, getModule } = require('powercord/webpack');
+const { React, getModule, i18n: { Messages } } = require('powercord/webpack');
 const { Icons: { FontAwesome } } = require('powercord/components');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { TextInput, SwitchItem, ButtonItem, Category } = require('powercord/components/settings');
@@ -60,18 +60,11 @@ module.exports = class GeneralSettings extends React.Component {
         </SwitchItem>
 
         <Category
-          name='Advanced Settings'
+          name={Messages.ADVANCED_SETTINGS}
           description={'Don\'t touch stuff in here if you don\'t know what you\'re doing. Unexpected things can happen to your cat.'}
           opened={getSetting('advancedSettings', false)}
           onChange={() => toggleSetting('advancedSettings')}
         >
-          <SwitchItem
-            note='Prevents Discord from showing a warning message when opening devtools.'
-            value={getSetting('yeetSelfXSS', false)}
-            onChange={() => toggleSetting('yeetSelfXSS')}
-          >
-            Disable Self XSS warning
-          </SwitchItem>
           <SwitchItem
             note2='Should Powercord open overlay devtools when it gets injected? (useful for developing themes).'
             note='Overlay support is for now broken.'
@@ -92,7 +85,7 @@ module.exports = class GeneralSettings extends React.Component {
             note={
               <>Makes any windows opened by Discord transparent, useful for themeing.<br/>
                 <b style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> This will break <b>window snapping</b> on Windows.
-                <b>Hardware acceleration</b> must be turned <b>off</b> on Linux. You may encounter issues and have black
+                &nbsp;<b>Hardware acceleration</b> must be turned <b>off</b> on Linux. You may encounter issues and have black
                 background in some cases, like when the window is cut off at the top or the bottom due to monitor
                 resolution or when devtools are open and docked. <b>Requires restart</b>.</>
             }

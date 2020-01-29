@@ -1,4 +1,4 @@
-const { React } = require('powercord/webpack');
+const { React, i18n: { Messages } } = require('powercord/webpack');
 const { Button, Spinner } = require('powercord/components');
 
 // @todo: merge with Product/
@@ -23,7 +23,7 @@ module.exports = ({ id, installing, onUninstall }) =>
       >
         {installing
           ? <Spinner type='pulsingEllipsis'/>
-          : 'Uninstall'}
+          : Messages.APPLICATION_CONTEXT_MENU_UNINSTALL}
       </Button>}
     </div>
   </div>;
