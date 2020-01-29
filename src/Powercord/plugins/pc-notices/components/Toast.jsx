@@ -1,17 +1,29 @@
-const { React } = require('powercord/webpack');
-const { Button, Tooltip, Clickable, Icons: { FontAwesome } } = require('powercord/components');
+const { React, getModuleByDisplayName } = require('powercord/webpack');
+const { AsyncComponent, Button, Tooltip, Clickable, Icons: { FontAwesome } } = require('powercord/components');
+
+const Progress = AsyncComponent.from(getModuleByDisplayName('Progress'));
 
 class Toast extends React.PureComponent {
   constructor (props) {
     super(props);
 
-    this.state = { timeout: null };
+    this.state = {
+      timeout: null,
+      progress: 100
+    };
   }
 
   componentDidMount () {
     if (this.props.timeout && !isNaN(this.props.timeout)) {
       const timeout = setTimeout(() => powercord.api.notices.closeToast(this.props.id), this.props.timeout);
       this.setState({ timeout });
+
+      let timeLeft = this.props.timeout;
+
+      setInterval(() => {
+        timeLeft -= 1000;
+        this.setState({ progress: (timeLeft / this.props.timeout) * 100 });
+      }, 1e3);
     }
   }
 
@@ -26,6 +38,7 @@ class Toast extends React.PureComponent {
         {this.props.header && this.renderHeader()}
         {this.props.content && this.renderContent()}
         {this.props.buttons && Array.isArray(this.props.buttons) && this.renderButtons()}
+        {this.state.timeout && this.renderProgress()}
       </div>
     );
   }
@@ -114,6 +127,14 @@ class Toast extends React.PureComponent {
         </Button>;
       })}
     </div>;
+  }
+
+  renderProgress () {
+    return <Progress
+      percent={this.state.progress}
+      foregroundGradientColor={[ '#738ef5', '#b3aeff' ]}
+      animate={true}
+    />;
   }
 }
 

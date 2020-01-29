@@ -89,7 +89,7 @@ module.exports = class Settings extends Plugin {
                 props: Object.assign({}, res.props.children[0].props, {
                   children: [ 'Powercord', ' ', React.createElement('span', {
                     className: res.props.children[0].props.children[4].props.className,
-                    children: [ powercord.gitInfos.branch, ' (', `${latestCommitHash}`, ')' ]
+                    children: [ powercord.gitInfos.branch, ' (', latestCommitHash, ')' ]
                   }) ]
                 })
               })
