@@ -109,7 +109,7 @@ module.exports = class Spotify extends Plugin {
 
   async _patchAutoPause (revert) {
     if (this.settings.get('noAutoPause', true)) {
-      const mdl = await getModule([ 'SpotifyResourceTypes', 'SpotifyAPI' ]);
+      const mdl = await getModule([ 'SpotifyAPI' ]);
       if (revert) {
         mdl.pause = mdl._pause;
       } else {
