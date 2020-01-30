@@ -22,8 +22,8 @@ const SearchBox = AsyncComponent.from((async () => {
 let classes = null;
 setImmediate(async () => {
   classes = {
+    background: (await getModule([ 'bg', 'body' ])).bg,
     quickSelectArrow: (await getModule([ 'quickSelectArrow' ])).quickSelectArrow,
-    backgroundFill: (await getModule([ 'backgroundFill' ])).backgroundFill,
     topic: (await getModule([ 'topic', 'expandable' ])).topic,
     headerBar: await getModule([ 'iconWrapper', 'clickable' ]),
     store: await getModule([ 'storeHomeWidth', 'container' ])
@@ -91,7 +91,7 @@ class Store extends React.Component {
         </div>
         <HeaderBar.Title>Browse {this.state.type[0].toUpperCase() + this.state.type.slice(1)}</HeaderBar.Title>
       </HeaderBar>
-      <img className={classes.backgroundFill} alt='background' src={this.props.images.background}/>
+      <img className={classes.background} alt='background' src={this.props.images.background}/>
       <VerticalScroller outerClassName={[ store.container, 'powercord-store-container' ].join(' ')}>
         {/**/ Object.values(Icon.Names).map(name => <Icon name={name}/>) /**/}
         <div className='powercord-store-body'>

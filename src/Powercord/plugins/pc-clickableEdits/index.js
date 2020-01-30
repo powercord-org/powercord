@@ -1,5 +1,5 @@
 const { Plugin } = require('powercord/entities');
-const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
+const { forceUpdateElement, sleep } = require('powercord/util');
 const { contextMenu, getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 
@@ -17,10 +17,18 @@ module.exports = class ClickableEdits extends Plugin {
   async startPlugin () {
     const { textArea } = await getModule([ 'textArea', 'textAreaDisabled' ]);
     const { containerCozy } = await getModule([ 'containerCozy' ]);
-    this.state.textAreaEdit = `.${containerCozy.split(' ')[0]} .${textArea}`;
 
-    this.patchMessageContent();
+    this.state.textAreaEdit = `.${containerCozy.split(' ')[0]} .${textArea}`;
+    this.classes = {
+      ...await getModule([ 'messages', 'scroller' ])
+    };
+
+    while (!getModule([ 'getCurrentUser' ], false).getCurrentUser()) {
+      await sleep(100);
+    }
+
     this.registerSettings('pc-clickableEdits', 'Clickable Edits', Settings);
+    this.patchMessageContent();
   }
 
   pluginWillUnload () {
@@ -29,29 +37,26 @@ module.exports = class ClickableEdits extends Plugin {
   }
 
   async patchMessageContent () {
-    const _this = this;
-
-    const messageClasses = await getModule([ 'container', 'messageCompact' ]);
-    const messageQuery = `.${messageClasses.content.split(' ')[0]}`;
-
-    const instance = getOwnerInstance(await waitFor(messageQuery));
+    const messages = `.${this.classes.messages}`;
     const currentUser = (await getModule([ 'getCurrentUser' ])).getCurrentUser();
 
-    function renderMessage (_, res) {
-      const { message, channel } = this.props;
-
-      if (message && message.author.id === currentUser.id) {
-        res.props.onMouseUp = _this.handleMessageEdit(channel.id, message.id, message.content);
+    const renderMessage = (args, res) => {
+      const { childrenMessageContent: { props: { message } } } = args[0];
+      if (message.author.id === currentUser.id) {
+        res.props.onMouseUp = this.handleMessageEdit(message.channel_id, message.id, message.content);
       }
 
       return res;
-    }
+    };
 
-    inject('pc-clickableEdits-MessageContent', instance.__proto__, 'render', renderMessage);
+    this.state.messageQuery = messages;
 
-    forceUpdateElement(messageQuery, true);
+    const Message = await getModule(m => m.default && m.default.displayName === 'Message');
+    inject('pc-clickableEdits-MessageContent', Message, 'default', renderMessage);
 
-    this.state.messageQuery = messageQuery;
+    Message.default.displayName = 'Message';
+
+    forceUpdateElement(this.state.messageQuery, true);
   }
 
   handleMessageEdit (channelId, messageId, content) {
