@@ -8,6 +8,10 @@ const webContents = require('electron').remote.getCurrentWindow();
 
 module.exports = class TitleBarGames extends Plugin {
   async startPlugin () {
+    return;
+
+    /* eslint-disable no-unreachable */
+    // noinspection UnreachableCodeJS
     if (process.platform !== 'win32') {
       return this.warn('Exiting due to unsupported platform.');
     }
