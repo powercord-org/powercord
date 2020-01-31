@@ -126,7 +126,6 @@ module.exports = class Settings extends Plugin {
         items.splice(items.indexOf(changelog), 0, parent);
       } else {
         this.error('Unable to locate \'Change Log\' item; forcing element to context menu!');
-
         res.props.children.push(parent);
       }
 

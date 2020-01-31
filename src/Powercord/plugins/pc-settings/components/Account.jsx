@@ -1,5 +1,4 @@
-const { shell: { openExternal } } = require('electron');
-const { React } = require('powercord/webpack');
+const { React, i18n: { Messages } } = require('powercord/webpack');
 const { WEBSITE } = require('powercord/constants');
 
 module.exports = (props) => {
@@ -9,7 +8,7 @@ module.exports = (props) => {
     <img src={`${WEBSITE}/assets/${props.type}.png`} alt={props.type}/>
     <span className='powercord-account-item'>
       {powercord.account[props.type] ||
-      <a href='#' onClick={() => openExternal(`${baseUrl}/oauth/${props.type}`)}>Link it now</a>}
+      <a href={`${baseUrl}/oauth/${props.type}`} target='_blank'>{Messages.POWERCORD_LINK_NOW}</a>}
     </span>
   </div>;
 };

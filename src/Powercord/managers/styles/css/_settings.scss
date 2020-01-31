@@ -88,6 +88,13 @@ div[class*='switchItem-'] label button {
     border-left: 1px var(--background-modifier-accent) solid;
     padding-left: 33px;
   }
+
+  .description-3_Ncsb {
+    white-space: pre-line;
+    strong strong {
+      color: #f04747;
+    }
+  }
 }
 
 .theme-light .powercord-pc-icon {
