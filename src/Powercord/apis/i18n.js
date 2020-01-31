@@ -51,7 +51,6 @@ module.exports = class I18N extends API {
   }
 
   loadStrings (locale, strings) {
-    console.log(locale, strings);
     if (!this.messages[locale]) {
       this.messages[locale] = strings;
     } else {
