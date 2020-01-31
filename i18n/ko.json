@@ -17,7 +17,7 @@
   "POWERCORD_SETTINGS_SYNC": "동기화 설정",
   "POWERCORD_SETTINGS_SYNC_DESC": "동기화 된 장치에서 전원 코드의 모든 설정. 당신은 전원 코드의 계정이 필요합니다!",
   "POWERCORD_SETTINGS_NO_CLYDE": "근절 클라이드",
-  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "전원 코드 플러그 아바타와 이름 개발자의 선택의 혼합 범위의 명령의 대안 [클라이드] ({discordia URL은}) 기본 (대체)에 의해 \"그하는 전원을\"폴백합니다.",
+  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "전원 코드 플러그 아바타와 이름 개발자의 선택의 혼합 범위의 명령의 대안 [클라이드] ({discordiaUrl}) 기본 (대체)에 의해 \"그하는 전원을\"폴백합니다.",
   "POWERCORD_SETTINGS_ADVANCED_DESC": "당신이 무슨 일을하는지 모르는 경우, 여기 아무것도 만지지 마십시오. 예기치 않은 일들이 당신의 고양이에 발생할 수 있습니다.",
   "POWERCORD_SETTINGS_OVERLAY": "오버레이 DevTools로로",
   "POWERCORD_SETTINGS_OVERLAY_DESC": "@ 모두",
