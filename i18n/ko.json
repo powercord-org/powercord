@@ -28,7 +28,6 @@
   "POWERCORD_SETTINGS_EXP_WEB_PLATFORM": "실험 웹 플랫폼 기능",
   "POWERCORD_SETTINGS_EXP_WEB_PLATFORM_DESC": "예 : \"배경 필터\"와 같은 CSS는, 당신은 크롬 웹 플랫폼 실험 개발 기능을 사용할 수 있습니다. 기능을 개발하기 때문에 문제가 발생할 것이며, API는 언제든지 변경 될 수 있습니다. ** 그것은 다시 시작해야합니다.",
   "POWERCORD_SETTINGS_DISCORD_EXPERIMENTS": "불소 실험을 사용하여",
-  "POWERCORD_SETTINGS_DISCORD_EXPERIMENTS_DESC": "**** 경고 :이 **** 불소  검색 할 수 있습니다 사용하는 경우, **** **** 당신이 기능에 액세스 할 수있는 계정이 종료 될 수 있습니다. 그하는 전원는 ** 어떤이 기능에 대해 책임을지지 않습니다. 당신이하지 않는두면 확인이 가능합니다. 하는 전원 팀은 ** 실험에 대한 지원을 제공하지 않습니다.",
   "POWERCORD_SETTINGS_BACKEND": "백엔드 URL",
   "POWERCORD_SETTINGS_BACKEND_DESC": "URL은 REST API 및 일부 자산을 철회 할 수있는하는 전원를 조회하는 데 사용됩니다.",
   "POWERCORD_SETTINGS_CACHE_POWERCORD": "전원  코드의 캐시를 지 웁니다",
