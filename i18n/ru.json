@@ -30,7 +30,7 @@
   "POWERCORD_SETTINGS_DISCORD_EXPERIMENTS": "Включить Discord Experiments",
   "POWERCORD_SETTINGS_DISCORD_EXPERIMENTS_DESC": "****ПРЕДУПРЕЖДЕНИЕ:**** Включая это вы получаете доступ к функциям, которые могут быть обнаружены Discord и могут привести к ****удалению аккаунта****. Powercord **не отвечает** за то что вы используете эту фунцию. Оставьте его отключенным, если вы не уверены. Команда Powercord **не будет** оказывать какую-либо поддержку в отношении любого эксперимента.",
   "POWERCORD_SETTINGS_BACKEND": "Backend URL",
-  "POWERCORD_SETTINGS_BACKEND_DESC": "URL used to fetch some assets and to query Powercord's REST API.",
+  "POWERCORD_SETTINGS_BACKEND_DESC": "URL, используемый для получения некоторых ресурсов и запроса REST API Powercord.",
   "POWERCORD_SETTINGS_CACHE_POWERCORD": "Отчистить кэш Powercord",
   "POWERCORD_SETTINGS_CACHE_POWERCORD_DESC": "Чистит кэш Powercord. Следущий перезапуск может показаться медленным, так как некоторые файлы нужно будет собрать заново.",
   "POWERCORD_SETTINGS_CACHE_DISCORD": "Отчистить кэш Discord",
