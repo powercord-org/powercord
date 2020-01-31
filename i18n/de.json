@@ -21,7 +21,7 @@
   "POWERCORD_SETTINGS_ADVANCED_DESC": "Fass hier nichts an, solange du dich nicht auskennst. Wundersame Dinge könnten deiner Katze widerfahren.",
   "POWERCORD_SETTINGS_OVERLAY": "Overlay DevTools",
   "POWERCORD_SETTINGS_OVERLAY_DESC": "Ooops, hier fehlt noch was uwu (TODO)",
-  "POWERCORD_SETTINGS_KEEP_TOKEN": "Speichere deinen Discord (Anemelde) Token",
+  "POWERCORD_SETTINGS_KEEP_TOKEN": "Speichere deinen Discord (Anmelde) Token",
   "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Hindert Discord daran, deinen (Anmelde) Token aus dem localStorage zu löschen. Dadurch wirst du selterner ungewollt abgemeldet.",
   "POWERCORD_SETTINGS_TRANSPARENT": "Durchsichtiges Fenster",
   "POWERCORD_SETTINGS_TRANSPARENT_DESC": "Alle Fenster die durch Discord geöffnet werden, sind durchsichtig, hilfreich für Theme-Development.\n****WARNUNG:**** Hierdurch wird das dynamische \"Einschnappen\" von Fenstern in Windows nicht mehr funktionieren. **Hardwarebeschleunigung** muss auf Linux **abgedreht** sein. Es kann zu Fehlern kommen. Beispiele: Ein schwarzer Hintergrund, abgeschnittene (Discord) Fenster - oben sowie unten, vor allem in Kombination mit geöffneten DevTools. **Neustart wird benötigt.**",
