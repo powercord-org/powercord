@@ -28,7 +28,7 @@
   "POWERCORD_SETTINGS_EXP_WEB_PLATFORM": "Recursos Experimentais da Plataforma Web",
   "POWERCORD_SETTINGS_EXP_WEB_PLATFORM_DESC": "Ativa os recursos experimentais da Plataforma Web do Chromium que estão em desenvolvimento, como CSS \"backdrop-filter\". Como estes recursos estão em desenvolvimento, você poderá encontrar problemas e APIs poderão mudar a qualquer momento. **Requer reinicialização**.",
   "POWERCORD_SETTINGS_DISCORD_EXPERIMENTS": "Ativar Experimentos no Discord",
-  "POWERCORD_SETTINGS_DISCORD_EXPERIMENTS_DESC": "****AVISO:**** A ativação desta opção fornece acesso a recursos que podem ser detetados pelo Discord e podem resultar num **encerramento da sua conta**. Powercord **não é responsável** pelo o que você faz com este recurso. Deixe-o desativado se não tiver certeza. A equipe do Powercord **não** oferecerá suporte para qualquer experimento.",
+  "POWERCORD_SETTINGS_DISCORD_EXPERIMENTS_DESC": "****AVISO:**** A ativação desta opção fornece acesso a recursos que podem ser detetados pelo Discord e podem resultar num ****encerramento da sua conta****. Powercord **não é responsável** pelo o que você faz com este recurso. Deixe-o desativado se não tiver certeza. A equipe do Powercord **não** oferecerá suporte para qualquer experimento.",
   "POWERCORD_SETTINGS_BACKEND": "URL de Backend (Processo Interno)",
   "POWERCORD_SETTINGS_BACKEND_DESC": "URL usado para procurar alguns elementos/recursos e consultar a API REST do Powercord.",
   "POWERCORD_SETTINGS_CACHE_POWERCORD": "Limpar a Cache do Powercord",
