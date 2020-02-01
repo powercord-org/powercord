@@ -41,8 +41,7 @@ if (
 
 require(remote.getGlobal('originalPreload'));
 powercord.once('loaded', () => {
-  if (window.__OVERLAY__ && powercord.api.settings.store.getSetting('pc-general', 'openOverlayDevTools', false)) {
-    // @todo: figure out why they won't open
+  if (powercord.api.settings.store.getSetting('pc-general', 'openOverlayDevTools', false)) {
     setTimeout(() => remote.getCurrentWindow().openDevTools({ mode: 'detach' }), 2e3);
   }
 });
