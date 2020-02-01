@@ -1,4 +1,4 @@
-const { React, constants: { Permissions }, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { React, constants: { Permissions }, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
 const { Icons: { Plugin: PluginIcon, Theme } } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
 const { forceUpdateElement } = require('powercord/util');
@@ -10,9 +10,11 @@ const layout = require('./components/manage/Layout.jsx');
 const Store = require('./components/store/Store');
 const Soon = require('./components/Soon.jsx');
 const commands = require('./commands');
+const i18n = require('./licenses/index');
 
 module.exports = class ModuleManager extends Plugin {
   async startPlugin () {
+    powercord.api.i18n.loadAllStrings(i18n);
     this.loadCSS(resolve(__dirname, 'scss', 'style.scss'));
 
     Object.values(commands).forEach(cmd =>
@@ -22,16 +24,16 @@ module.exports = class ModuleManager extends Plugin {
       )
     );
 
-    this.registerSettings('pc-moduleManager-plugins', 'Plugins', layout('plugins', false, this._fetchEntities));
+    this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, layout('plugins', false, this._fetchEntities));
     if (this.settings.get('__experimental_2019-10-25', false)) {
       this.log('Experimental Module Manager enabled.');
       this._injectCommunityContent();
-      this.registerSettings('pc-moduleManager-themes', 'Themes', layout('themes', true, this._fetchEntities));
+      this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, layout('themes', true, this._fetchEntities));
 
       this.registerRoute('/store/plugins', Store, true);
       this.registerRoute('/store/themes', Store, true);
     } else {
-      this.registerSettings('pc-moduleManager-themes', 'Themes', Soon);
+      this.registerSettings('pc-moduleManager-themes', Messages.POWERCORD_THEMES, Soon);
     }
   }
 
@@ -57,12 +59,12 @@ module.exports = class ModuleManager extends Plugin {
       const data = {
         [STORE_PLUGINS]: {
           icon: PluginIcon,
-          name: 'Plugins',
+          name: Messages.POWERCORD_PLUGINS,
           route: '/_powercord/store/plugins'
         },
         [STORE_THEMES]: {
           icon: Theme,
-          name: 'Themes',
+          name: Messages.POWERCORD_THEMES,
           route: '/_powercord/store/themes'
         }
       };
@@ -93,8 +95,7 @@ module.exports = class ModuleManager extends Plugin {
     const entity = missingEntities.length === 1 ? type.slice(0, -1) : type;
     const subjectiveEntity = `${entity} ${entity === type ? 'were' : 'was'}`;
 
-    let props = {};
-
+    let props;
     if (missingEntities.length > 0) {
       props = {
         header: `Found ${missingEntities.length} missing ${entity}!`,

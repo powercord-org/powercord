@@ -16,7 +16,7 @@ module.exports = React.memo(
         <span>{author}</span>
       </div>
       <div className='version'>
-        <Tooltip text='Version' position='top'>
+        <Tooltip text={Messages.POWERCORD_PLUGINS_VERSION} position='top'>
           <Icon name='StoreTag'/>
         </Tooltip>
         <span>v{version}</span>
@@ -26,12 +26,12 @@ module.exports = React.memo(
         </Tooltip>}
       </div>
       <div className='license'>
-        <Tooltip text='License' position='top'>
+        <Tooltip text={Messages.POWERCORD_PLUGINS_LICENSE} position='top'>
           <Icon name='Scale'/>
         </Tooltip>
         <span>{license}</span>
         {licenses[license] &&
-        <Clickable onClick={() => openModal(() => <LicenseModal license={licenses[license]}/>)}>
+        <Clickable onClick={() => openModal(() => <LicenseModal spdx={license} license={licenses[license]}/>)}>
           <Tooltip text={Messages.LEARN_MORE} position='top'>
             <Icon name='Info'/>
           </Tooltip>

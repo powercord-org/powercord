@@ -1,7 +1,6 @@
 {
   "0BSD": {
     "name": "BSD Zero Clause License",
-    "description": "The BSD Zero Clause license goes further than the BSD 2-Clause license to allow you unlimited freedom with the software without requirements to include the copyright notice, license text, or disclaimer in either source or binary forms.",
     "url": "https://choosealicense.com/licenses/0bsd/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -17,7 +16,6 @@
   },
   "AFL-3.0": {
     "name": "Academic Free License v3.0",
-    "description": "The Academic Free License is a variant of the Open Software License that does not require that the source code of derivative works be disclosed. It contains explicit copyright and patent grants and reserves trademark rights in the author.",
     "url": "https://choosealicense.com/licenses/afl-3.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -38,7 +36,6 @@
   },
   "AGPL-3.0": {
     "name": "GNU Affero General Public License v3.0",
-    "description": "Permissions of this strongest copyleft license are conditioned on making available complete source code of licensed works and modifications, which include larger works using a licensed work, under the same license. Copyright and license notices must be preserved. Contributors provide an express grant of patent rights. When a modified version is used to provide a service over a network, the complete source code of the modified version must be made available.",
     "url": "https://choosealicense.com/licenses/agpl-3.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -61,7 +58,6 @@
   },
   "Apache-2.0": {
     "name": "Apache License 2.0",
-    "description": "A permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.",
     "url": "https://choosealicense.com/licenses/apache-2.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -82,7 +78,6 @@
   },
   "Artistic-2.0": {
     "name": "Artistic License 2.0",
-    "description": "Heavily favored by the Perl community, the Artistic license requires that modified versions of the software do not prevent users from running the standard version.",
     "url": "https://choosealicense.com/licenses/artistic-2.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -103,7 +98,6 @@
   },
   "BSD-2-Clause": {
     "name": "BSD 2-Clause \"Simplified\" License",
-    "description": "A permissive license that comes in two variants, the BSD 2-Clause and BSD 3-Clause. Both have very minute differences to the MIT license.",
     "url": "https://choosealicense.com/licenses/bsd-2-clause/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -121,7 +115,6 @@
   },
   "BSD-3-Clause-Clear": {
     "name": "BSD 3-Clause Clear License",
-    "description": "A variant of the BSD 3-Clause License that explicitly does not grant any patent rights.",
     "url": "https://choosealicense.com/licenses/bsd-3-clause-clear/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -140,7 +133,6 @@
   },
   "BSD-3-Clause": {
     "name": "BSD 3-Clause \"New\" or \"Revised\" License",
-    "description": "A permissive license similar to the BSD 2-Clause License, but with a 3rd clause that prohibits others from using the name of the project or its contributors to promote derived products without written consent.",
     "url": "https://choosealicense.com/licenses/bsd-3-clause/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -158,7 +150,6 @@
   },
   "BSL-1.0": {
     "name": "Boost Software License 1.0",
-    "description": "A simple permissive license only requiring preservation of copyright and license notices for source (and not binary) distribution. Licensed works, modifications, and larger works may be distributed under different terms and without source code.",
     "url": "https://choosealicense.com/licenses/bsl-1.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -176,7 +167,6 @@
   },
   "CC-BY-4.0": {
     "name": "Creative Commons Attribution 4.0 International",
-    "description": "Permits almost any use subject to providing credit and license notice. Frequently used for media assets and educational materials. The most common license for Open Access scientific publications. Not recommended for software.",
     "url": "https://choosealicense.com/licenses/cc-by-4.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -197,7 +187,6 @@
   },
   "CC-BY-SA-4.0": {
     "name": "Creative Commons Attribution Share Alike 4.0 International",
-    "description": "Similar to CC-BY-4.0 but requires derivatives be distributed under the same or a similar, compatible license. Frequently used for media assets and educational materials. A previous version is the default license for Wikipedia and other Wikimedia projects. Not recommended for software.",
     "url": "https://choosealicense.com/licenses/cc-by-sa-4.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -219,7 +208,6 @@
   },
   "CC0-1.0": {
     "name": "Creative Commons Zero v1.0 Universal",
-    "description": "The Creative Commons CC0 Public Domain Dedication waives copyright interest in a work you've created and dedicates it to the world-wide public domain. Use CC0 to opt out of copyright entirely and ensure your work has the widest reach. As with the Unlicense and typical software licenses, CC0 disclaims warranties. CC0 is very similar to the Unlicense.",
     "url": "https://choosealicense.com/licenses/cc0-1.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -237,7 +225,6 @@
   },
   "CECILL-2.1": {
     "name": "CeCILL Free Software License Agreement v2.1",
-    "description": "Strong copyleft license made by three French public research organisations, CEA, CNRS, and Inria, compatible with AGPL-3.0, EUPL-1.1, and GPL-2.0, or later versions of those licenses.",
     "url": "https://choosealicense.com/licenses/cecill-2.1/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -258,7 +245,6 @@
   },
   "ECL-2.0": {
     "name": "Educational Community License v2.0",
-    "description": "The Educational Community License version 2.0 (\"ECL\") consists of the Apache 2.0 license, modified to change the scope of the patent grant in section 3 to be specific to the needs of the education communities using this license.",
     "url": "https://choosealicense.com/licenses/ecl-2.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -279,7 +265,6 @@
   },
   "EPL-1.0": {
     "name": "Eclipse Public License 1.0",
-    "description": "This commercially-friendly copyleft license provides the ability to commercially license binaries; a modern royalty-free patent license grant; and the ability for linked works to use other licenses, including commercial ones.",
     "url": "https://choosealicense.com/licenses/epl-1.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -300,7 +285,6 @@
   },
   "EPL-2.0": {
     "name": "Eclipse Public License 2.0",
-    "description": "This commercially-friendly copyleft license provides the ability to commercially license binaries; a modern royalty-free patent license grant; and the ability for linked works to use other licenses, including commercial ones.",
     "url": "https://choosealicense.com/licenses/epl-2.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -321,7 +305,6 @@
   },
   "EUPL-1.1": {
     "name": "European Union Public License 1.1",
-    "description": "The “European Union Public Licence” (EUPL) is a copyleft free/open source software license created on the initiative of and approved by the European Commission in 22 official languages of the European Union.",
     "url": "https://choosealicense.com/licenses/eupl-1.1/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -345,7 +328,6 @@
   },
   "EUPL-1.2": {
     "name": "European Union Public License 1.2",
-    "description": "The European Union Public Licence (EUPL) is a copyleft free/open source software license created on the initiative of and approved by the European Commission in 22 official languages of the European Union.",
     "url": "https://choosealicense.com/licenses/eupl-1.2/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -369,7 +351,6 @@
   },
   "GPL-2.0": {
     "name": "GNU General Public License v2.0",
-    "description": "The GNU GPL is the most widely used free software license and has a strong copyleft requirement. When distributing derived works, the source code of the work must be made available under the same license. There are multiple variants of the GNU GPL, each with different requirements.",
     "url": "https://choosealicense.com/licenses/gpl-2.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -390,7 +371,6 @@
   },
   "GPL-3.0": {
     "name": "GNU General Public License v3.0",
-    "description": "Permissions of this strong copyleft license are conditioned on making available complete source code of licensed works and modifications, which include larger works using a licensed work, under the same license. Copyright and license notices must be preserved. Contributors provide an express grant of patent rights.",
     "url": "https://choosealicense.com/licenses/gpl-3.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -412,7 +392,6 @@
   },
   "ISC": {
     "name": "ISC License",
-    "description": "A permissive license lets people do anything with your code with proper attribution and without warranty. The ISC license is functionally equivalent to the BSD 2-Clause and MIT licenses, removing some language that is no longer necessary.",
     "url": "https://choosealicense.com/licenses/isc/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -430,7 +409,6 @@
   },
   "LGPL-2.1": {
     "name": "GNU Lesser General Public License v2.1",
-    "description": "Primarily used for software libraries, the GNU LGPL requires that derived works be licensed under the same license, but works that only link to it do not fall under this restriction. There are two commonly used versions of the GNU LGPL.",
     "url": "https://choosealicense.com/licenses/lgpl-2.1/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -451,7 +429,6 @@
   },
   "LGPL-3.0": {
     "name": "GNU Lesser General Public License v3.0",
-    "description": "Permissions of this copyleft license are conditioned on making available complete source code of licensed works and modifications under the same license or the GNU GPLv3. Copyright and license notices must be preserved. Contributors provide an express grant of patent rights. However, a larger work using the licensed work through interfaces provided by the licensed work may be distributed under different terms and without source code for the larger work.",
     "url": "https://choosealicense.com/licenses/lgpl-3.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -473,7 +450,6 @@
   },
   "LPPL-1.3c": {
     "name": "LaTeX Project Public License v1.3c",
-    "description": "The LaTeX Project Public License (LPPL) is the primary license under which the LaTeX kernel and the base LaTeX packages are distributed.",
     "url": "https://choosealicense.com/licenses/lppl-1.3c/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -493,7 +469,6 @@
   },
   "MIT": {
     "name": "MIT License",
-    "description": "A short and simple permissive license with conditions only requiring preservation of copyright and license notices. Licensed works, modifications, and larger works may be distributed under different terms and without source code.",
     "url": "https://choosealicense.com/licenses/mit/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -511,7 +486,6 @@
   },
   "MPL-2.0": {
     "name": "Mozilla Public License 2.0",
-    "description": "Permissions of this weak copyleft license are conditioned on making available source code of licensed files and modifications of those files under the same license (or in certain cases, one of the GNU licenses). Copyright and license notices must be preserved. Contributors provide an express grant of patent rights. However, a larger work using the licensed work may be distributed under different terms and without source code for files added in the larger work.",
     "url": "https://choosealicense.com/licenses/mpl-2.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -533,7 +507,6 @@
   },
   "MS-PL": {
     "name": "Microsoft Public License",
-    "description": "An open source license with a patent grant.",
     "url": "https://choosealicense.com/licenses/ms-pl/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -552,7 +525,6 @@
   },
   "MS-RL": {
     "name": "Microsoft Reciprocal License",
-    "description": "An open source license with a patent grant similar to the Microsoft Public License, with the additional condition that any source code for any derived file be provided under this license.",
     "url": "https://choosealicense.com/licenses/ms-rl/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -573,7 +545,6 @@
   },
   "NCSA": {
     "name": "University of Illinois/NCSA Open Source License",
-    "description": "The University of Illinois/NCSA Open Source License, or UIUC license, is a permissive free software license, based on the MIT/X11 license and the BSD 3-clause License. Its conditions include requiring the preservation of copyright and license notices both in source and in binary distributions and the prohibition of using the names of the authors or the project organization to promote or endorse derived products.",
     "url": "https://choosealicense.com/licenses/ncsa/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -591,7 +562,6 @@
   },
   "ODbL-1.0": {
     "name": "ODC Open Database License v1.0",
-    "description": "The Open Database License (ODbL) is a license agreement intended to allow users to freely share, modify, and use a database while maintaining this same freedom for others.",
     "url": "https://choosealicense.com/licenses/odbl-1.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -613,7 +583,6 @@
   },
   "OFL-1.1": {
     "name": "SIL Open Font License 1.1",
-    "description": "The Open Font License (OFL) is maintained by SIL International. It attempts to be a compromise between the values of the free software and typeface design communities. It is used for almost all open source font projects, including those by Adobe, Google and Mozilla.",
     "url": "https://choosealicense.com/licenses/ofl-1.1/",
     "permissions": [
       "PRIVATE_USE",
@@ -632,7 +601,6 @@
   },
   "OSL-3.0": {
     "name": "Open Software License 3.0",
-    "description": "OSL 3.0 is a copyleft license that does not require reciprocal licensing on linked works. It also provides an express grant of patent rights from contributors to users, with a termination clause triggered if a user files a patent infringement lawsuit.",
     "url": "https://choosealicense.com/licenses/osl-3.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -656,7 +624,6 @@
   },
   "PostgreSQL": {
     "name": "PostgreSQL License",
-    "description": "A very short, BSD-style license, used specifically for PostgreSQL.",
     "url": "https://choosealicense.com/licenses/postgresql/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -674,7 +641,6 @@
   },
   "Unlicense": {
     "name": "The Unlicense",
-    "description": "A license with no conditions whatsoever which dedicates works to the public domain. Unlicensed works, modifications, and larger works may be distributed under different terms and without source code.",
     "url": "https://choosealicense.com/licenses/unlicense/",
     "permissions": [
       "PRIVATE_USE",
@@ -690,7 +656,6 @@
   },
   "UPL-1.0": {
     "name": "Universal Permissive License v1.0",
-    "description": "A permissive, OSI and FSF approved, GPL compatible license, expressly allowing attribution with just a copyright notice and a short form link rather than the full text of the license.  Includes an express grant of patent rights.  Licensed works and modifications may be distributed under different terms and without source code, and the patent grant may also optionally be expanded to larger works to permit use as a contributor license agreement.",
     "url": "https://choosealicense.com/licenses/upl-1.0/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -709,7 +674,6 @@
   },
   "WTFPL": {
     "name": "Do What The F*ck You Want To Public License",
-    "description": "The easiest license out there. It gives the user permissions to do whatever they want with your code.",
     "url": "https://choosealicense.com/licenses/wtfpl/",
     "permissions": [
       "COMMERCIAL_USE",
@@ -722,7 +686,6 @@
   },
   "Zlib": {
     "name": "zlib License",
-    "description": "A short permissive license, compatible with GPL. Requires altered source versions to be documented as such.",
     "url": "https://choosealicense.com/licenses/zlib/",
     "permissions": [
       "COMMERCIAL_USE",

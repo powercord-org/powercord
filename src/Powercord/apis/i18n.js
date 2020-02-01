@@ -46,6 +46,10 @@ module.exports = class I18N extends API {
     delete i18n._proxyContext.defaultMessages.SELF_XSS_HEADER;
   }
 
+  loadAllStrings (strings) {
+    Object.keys(strings).forEach(locale => this.loadStrings(locale, strings[locale]));
+  }
+
   loadStrings (locale, strings) {
     if (!this.messages[locale]) {
       this.messages[locale] = strings;

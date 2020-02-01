@@ -1,5 +1,5 @@
-const { React } = require('powercord/webpack');
-const { Button, Tooltip } = require('powercord/components');
+const { React, i18n: { Messages } } = require('powercord/webpack');
+const { Button } = require('powercord/components');
 
 const Icons = require('./Icons');
 
@@ -14,22 +14,20 @@ module.exports = class Update extends React.Component {
     return <div className='update'>
       <div className='title'>
         <div className='icon'>
-          <Tooltip text={icon} position='left'>
-            {React.createElement(Icons[icon])}
-          </Tooltip>
+          {React.createElement(Icons[icon])}
         </div>
         <div className='name'>{name}</div>
         <div className='actions'>
           {updating
             ? <Button color={Button.Colors.GREEN} disabled>
-              Updating...
+              {Messages.POWERCORD_UPDATES_UPDATING_ITEM}
             </Button>
             : <>
               <Button look={Button.Looks.OUTLINED} color={Button.Colors.RED} onClick={onSkip}>
-                Skip this update
+                {Messages.POWERCORD_UPDATES_SKIP}
               </Button>
               <Button color={Button.Colors.RED} onClick={onDisable}>
-                Disable updates
+                {Messages.POWERCORD_UPDATES_DISABLE}
               </Button>
             </>}
         </div>

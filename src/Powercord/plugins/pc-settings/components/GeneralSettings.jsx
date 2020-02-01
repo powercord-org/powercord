@@ -32,10 +32,10 @@ module.exports = class GeneralSettings extends React.Component {
           defaultValue={getSetting('prefix', '.')}
           onChange={p => updateSetting('prefix', !p ? '.' : p)}
         >
-          Command Prefix
+          {Messages.POWERCORD_COMMAND_PREFIX}
         </TextInput>
         <SwitchItem
-          note='Sync all of your Powercord settings across devices. Requires a Powercord account!'
+          note={Messages.POWERCORD_SETTINGS_SYNC_DESC}
           value={powercord.account && getSetting('settingsSync', false)}
           disabled={!powercord.account}
           onChange={() => {
@@ -46,75 +46,60 @@ module.exports = class GeneralSettings extends React.Component {
             }
           }}
         >
-          Settings Sync
+          {Messages.POWERCORD_SETTINGS_SYNC}
         </SwitchItem>
         <SwitchItem
-          note={
-            <>Replaces <a href="https://discordia.me/clyde" target="_blank">Clyde</a> in Powercord commands with a mixed
-              range of avatars and usernames selected by plug-in developers - fallbacks to "Powercord" by default.</>
-          }
+          note={Messages.POWERCORD_SETTINGS_NO_CLYDE_DESC.format({ discordiaUrl: 'https://discordia.me/clyde' })}
           value={getSetting('replaceClyde', true)}
           onChange={() => toggleSetting('replaceClyde', true)}
         >
-          Eradicate Clyde&ensp;<FontAwesome icon='robot'/>
+          {Messages.POWERCORD_SETTINGS_NO_CLYDE}&ensp;<FontAwesome icon='robot'/>
         </SwitchItem>
 
         <Category
           name={Messages.ADVANCED_SETTINGS}
-          description={'Don\'t touch stuff in here if you don\'t know what you\'re doing. Unexpected things can happen to your cat.'}
+          description={Messages.POWERCORD_SETTINGS_ADVANCED_DESC}
           opened={getSetting('advancedSettings', false)}
           onChange={() => toggleSetting('advancedSettings')}
         >
           <SwitchItem
-            note2='Should Powercord open overlay devtools when it gets injected? (useful for developing themes).'
+            note2={Messages.POWERCORD_SETTINGS_OVERLAY_DESC}
             note='Overlay support is for now broken.'
             value={getSetting('openOverlayDevTools', false)}
             onChange={() => toggleSetting('openOverlayDevTools')}
             disabled
           >
-            Overlay DevTools
+            {Messages.POWERCORD_SETTINGS_OVERLAY}
           </SwitchItem>
           <SwitchItem
-            note='Prevents Discord from removing your token from localStorage, reducing the numbers of unwanted logouts.'
+            note={Messages.POWERCORD_SETTINGS_KEEP_TOKEN_DESC}
             value={getSetting('hideToken', true)}
             onChange={() => toggleSetting('hideToken', true)}
           >
-            Keep token stored
+            {Messages.POWERCORD_SETTINGS_KEEP_TOKEN}
           </SwitchItem>
           <SwitchItem
-            note={
-              <>Makes any windows opened by Discord transparent, useful for themeing.<br/>
-                <b style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> This will break <b>window snapping</b> on Windows.
-                &nbsp;<b>Hardware acceleration</b> must be turned <b>off</b> on Linux. You may encounter issues and have black
-                background in some cases, like when the window is cut off at the top or the bottom due to monitor
-                resolution or when devtools are open and docked. <b>Requires restart</b>.</>
-            }
+            note={Messages.POWERCORD_SETTINGS_TRANSPARENT_DESC.format()}
             value={getSetting('transparentWindow', false)}
             onChange={() => {
               toggleSetting('transparentWindow');
               this.askRestart();
             }}
           >
-            Transparent Window
+            {Messages.POWERCORD_SETTINGS_TRANSPARENT}
           </SwitchItem>
           <SwitchItem
-            note={<>Enables Chromium's experimental Web Platform features that are in development, such as CSS
-              <code>backdrop-filter</code>. Since features are in development you may encounter issues and APIs may
-              change at any time. <b>Requires restart</b>.</>}
+            note={Messages.POWERCORD_SETTINGS_EXP_WEB_PLATFORM_DESC.format()}
             value={getSetting('experimentalWebPlatform', false)}
             onChange={() => {
               toggleSetting('experimentalWebPlatform');
               this.askRestart();
             }}
           >
-            Experimental Web Platform features
+            {Messages.POWERCORD_SETTINGS_EXP_WEB_PLATFORM}
           </SwitchItem>
           <SwitchItem
-            note={<><b style={{ color: 'rgb(240, 71, 71)' }}>WARNING:</b> Enabling this gives you access to features
-              that can be <b>detected by Discord</b> and may result in an <b style={{ color: 'rgb(240, 71, 71)' }}>
-                account termination</b>. Powercord is <b>not responsible</b> for what you do with this feature. Leave
-              it disabled if you are unsure. The Powercord Team will not provide any support regarding any
-              experiment.</>}
+            note={Messages.POWERCORD_SETTINGS_DISCORD_EXPERIMENTS_DESC.format()}
             value={getSetting('experiments', false)}
             onChange={async () => {
               toggleSetting('experiments');
@@ -123,31 +108,31 @@ module.exports = class GeneralSettings extends React.Component {
               experimentsModule._changeCallbacks.forEach(cb => cb());
             }}
           >
-            Enable Discord Experiments
+            {Messages.POWERCORD_SETTINGS_DISCORD_EXPERIMENTS}
           </SwitchItem>
           <TextInput
             value={getSetting('backendURL', WEBSITE)}
             onChange={p => updateSetting('backendURL', !p ? WEBSITE : p)}
-            note={'URL used to fetch some assets and to query Powercord\'s REST API.'}
+            note={Messages.POWERCORD_SETTINGS_BACKEND_DESC}
           >
-            Backend URL
+            {Messages.POWERCORD_SETTINGS_BACKEND}
           </TextInput>
         </Category>
         <ButtonItem
-          note={'Clears Powercord\'s cache. Next restart might feel slower as some files will have to be built again.'}
-          button={this.state.powercordCleared ? 'Cache cleared!' : 'Clear Powercord\'s cache'}
+          note={Messages.POWERCORD_SETTINGS_CACHE_POWERCORD_DESC}
+          button={this.state.powercordCleared ? Messages.POWERCORD_SETTINGS_CACHE_CLEARED : Messages.POWERCORD_SETTINGS_CACHE_POWERCORD}
           success={this.state.powercordCleared}
           onClick={() => this.clearPowercordCache()}
         >
-          Clear Powercord's Cache
+          {Messages.POWERCORD_SETTINGS_CACHE_POWERCORD}
         </ButtonItem>
         <ButtonItem
-          note={'Removes everything stored in Discord\'s cache folder. This will temporarily make Discord feel slower, as all resources will have to be fetched again.'}
-          button={this.state.discordCleared ? 'Cache cleared!' : 'Clear Discord\'s cache'}
+          note={Messages.POWERCORD_SETTINGS_CACHE_DISCORD_DESC}
+          button={this.state.discordCleared ? Messages.POWERCORD_SETTINGS_CACHE_CLEARED : Messages.POWERCORD_SETTINGS_CACHE_DISCORD}
           success={this.state.discordCleared}
           onClick={() => this.clearDiscordCache()}
         >
-          Clear Discord's Cache
+          {Messages.POWERCORD_SETTINGS_CACHE_DISCORD}
         </ButtonItem>
       </div>
     );
@@ -186,14 +171,14 @@ module.exports = class GeneralSettings extends React.Component {
   askRestart () {
     openModal(() => <Confirm
       red
-      header='Restart Discord'
-      confirmText='Restart'
-      cancelText='Postpone'
+      header={Messages.ERRORS_RESTART_APP}
+      confirmText={Messages.BUNDLE_READY_RESTART}
+      cancelText={Messages.BUNDLE_READY_LATER}
       onConfirm={() => window.reloadElectronApp()}
       onCancel={closeModal}
     >
       <div className='powercord-text'>
-        This setting requires you to restart Discord to take effect. Do you want to restart Discord now?
+        {Messages.POWERCORD_SETTINGS_RESTART}
       </div>
     </Confirm>);
   }

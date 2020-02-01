@@ -1,4 +1,4 @@
-const { React } = require('powercord/webpack');
+const { React, i18n: { Messages } } = require('powercord/webpack');
 const { Confirm } = require('powercord/components/modal');
 const { TextInput } = require('powercord/components/settings');
 
@@ -12,26 +12,24 @@ module.exports = class Passphrase extends React.Component {
   render () {
     return <Confirm
       red={false}
-      header='Update passphrase'
-      confirmText='Update'
-      cancelText='Cancel'
+      header={Messages.POWERCORD_UPDATE_PASSPHRASE}
+      confirmText={Messages.GAME_ACTION_BUTTON_UPDATE}
+      cancelText={Messages.CANCEL}
       onConfirm={() => this.props.onConfirm(this.state.passphrase)}
       onCancel={() => this.props.onCancel()}
     >
       <div className='powercord-passphrase-modal powercord-text'>
         <div className='powercord-passphrase-desc'>
-          This passphrase will be used to encrypt your data before sending it to Powercord's servers. It's recommended to
-          use it, but you can just leave this empty and your data will be sent unencrypted.
+          {Messages.POWERCORD_UPDATE_PASSPHRASE_MODAL1}
           <div className='space'/>
-          If you're already using sync on other machines, put the same passphrase you used.
-          <b>Using another passphrase will overwrite old data, so be careful</b>.
+          {Messages.POWERCORD_UPDATE_PASSPHRASE_MODAL2.format()}
         </div>
         <TextInput
           type='password'
           defaultValue={this.state.passphrase}
           onChange={passphrase => this.setState({ passphrase })}
         >
-          Passphrase
+          {Messages.POWERCORD_PASSPHRASE}
         </TextInput>
       </div>
     </Confirm>;

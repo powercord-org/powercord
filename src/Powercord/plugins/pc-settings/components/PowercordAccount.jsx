@@ -1,12 +1,12 @@
 const http = require('http');
 const { shell: { openExternal } } = require('electron');
-const { React, Flux, getModule } = require('powercord/webpack');
+const { React, Flux, getModule, i18n: { Messages } } = require('powercord/webpack');
 const { Spinner, Card, FormTitle } = require('powercord/components');
 const { WEBSITE } = require('powercord/constants');
 
 const LinkedAccounts = require('./LinkedAccounts.jsx');
 
-const PowercordAccount = class PowercordAccount extends React.Component {
+class PowercordAccount extends React.Component {
   constructor (props) {
     super(props);
 
@@ -19,11 +19,11 @@ const PowercordAccount = class PowercordAccount extends React.Component {
   }
 
   render () {
-    let Component = null;
+    let Component;
     if (this.props.streamerMode.enabled && this.props.streamerMode.hidePersonalInformation) {
-      Component = () => <div>Streamer mode enabled. Stay safe cutie!</div>;
+      Component = () => <div>{Messages.NOTICE_STREAMER_MODE_TEXT}</div>;
     } else if (this.state.linking) {
-      Component = () => <div className='linking'><Spinner type='pulsingEllipsis'/> Linking your account...</div>;
+      Component = () => <div className='linking'><Spinner type='pulsingEllipsis'/> {Messages.POWERCORD_LINKING_WAITING}</div>;
     } else if (powercord.account) {
       Component = () => <LinkedAccounts
         passphrase={this.props.passphrase.bind(this)}
@@ -32,13 +32,13 @@ const PowercordAccount = class PowercordAccount extends React.Component {
       />;
     } else {
       Component = () => <div>
-        {this.state.message || 'You haven\'t linked your account yet.'}
-        <a href='#' onClick={() => this.linkLegacy()}>Link it now</a>
+        {this.state.message || Messages.POWERCORD_LINKING_UNLINKED}
+        <a href='#' onClick={() => this.linkLegacy()}>{Messages.POWERCORD_LINK_NOW}</a>
       </div>;
     }
 
     return <Card className='powercord-account powercord-text'>
-      <FormTitle>Powercord Account</FormTitle>
+      <FormTitle>{Messages.POWERCORD_ACCOUNT}</FormTitle>
       <Component/>
     </Card>;
   }
@@ -93,7 +93,9 @@ const PowercordAccount = class PowercordAccount extends React.Component {
         this.setState({
           linking: false,
           server: null,
-          message: 'An error occurred. Check console for more details!'
+          message: Messages.POWERCORD_LINKING_ERRORED.format({
+            newIssueUrl: 'https://github.com/powercord-org/powercord/issues/new?labels=bug&template=bug_report.md&title=Error+while+linking+Powercord+account+to+Discord'
+          })
         });
         return console.error(err);
       }
@@ -106,7 +108,7 @@ const PowercordAccount = class PowercordAccount extends React.Component {
         this.setState({
           linking: false,
           server: null,
-          message: 'Linking flow timed out :( Maybe try again?'
+          message: Messages.POWERCORD_LINKING_TIMED_OUT
         });
       }, 30000);
       this.setState({ timeout });
@@ -117,7 +119,7 @@ const PowercordAccount = class PowercordAccount extends React.Component {
       server
     });
   }
-};
+}
 
 module.exports = Flux.connectStoresAsync(
   [ getModule([ 'enabled', 'hidePersonalInformation' ]) ],

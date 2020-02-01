@@ -1,4 +1,4 @@
-const { React, getModule, constants: { Routes } } = require('powercord/webpack');
+const { React, getModule, constants: { Routes }, i18n: { Messages, chosenLocale: currentLocale } } = require('powercord/webpack');
 const { Clickable, Button, FormNotice, FormTitle, Tooltip } = require('powercord/components');
 const { SwitchItem, TextInput, Category, ButtonItem } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
@@ -25,6 +25,7 @@ module.exports = class UpdaterSettings extends React.Component {
   render () {
     const isUnsupported = window.GLOBAL_ENV.RELEASE_CHANNEL !== 'canary';
     const moment = getModule([ 'momentProperties' ], false);
+    // @todo: Make this be in its own store
     const awaitingReload = this.props.getSetting('awaiting_reload', false);
     const updating = this.props.getSetting('updating', false);
     const checking = this.props.getSetting('checking', false);
@@ -41,25 +42,25 @@ module.exports = class UpdaterSettings extends React.Component {
       title;
     if (disabled) {
       icon = <Icons.Update color='#f04747'/>;
-      title = 'Updates are disabled.';
+      title = Messages.POWERCORD_UPDATES_DISABLED;
     } else if (paused) {
       icon = <Icons.Paused/>;
-      title = 'Updates are paused.';
+      title = Messages.POWERCORD_UPDATES_PAUSED;
     } else if (checking) {
       icon = <Icons.Update color='#7289da' animated/>;
-      title = 'Checking for updates...';
+      title = Messages.POWERCORD_UPDATES_CHECKING;
     } else if (updating) {
       icon = <Icons.Update color='#7289da' animated/>;
-      title = 'Updating Powercord...';
+      title = Messages.POWERCORD_UPDATES_UPDATING;
     } else if (failed) {
       icon = <Icons.Error/>;
-      title = 'Some updates failed';
+      title = Messages.POWERCORD_UPDATES_FAILED;
     } else if (updates.length > 0) {
       icon = <Icons.Update/>;
-      title = 'Updates are available.';
+      title = Messages.POWERCORD_UPDATES_AVAILABLE;
     } else {
       icon = <Icons.UpToDate/>;
-      title = 'Powercord is up to date.';
+      title = Messages.POWERCORD_UPDATES_UP_TO_DATE;
     }
 
     return <div className='powercord-updater powercord-text'>
@@ -72,23 +73,26 @@ module.exports = class UpdaterSettings extends React.Component {
           <h3>{title}</h3>
           {!disabled && !updating && (!checking || checkingProgress[1] > 0) && <div>
             {paused
-              ? 'They will resume on next reload.'
+              ? Messages.POWERCORD_UPDATES_PAUSED_RESUME
               : checking
-                ? `Checking ${checkingProgress[0]}/${checkingProgress[1]}`
-                : `Last checked: ${last}`}
+                ? Messages.POWERCORD_UPDATES_CHECKING_STATUS.format({
+                  checked: checkingProgress[0],
+                  total: checkingProgress[1]
+                })
+                : Messages.POWERCORD_UPDATES_LAST_CHECKED.format({ date: last })}
           </div>}
         </div>
         <div className="about">
           <div>
-            <span>Upstream:</span>
-            <span>{powercord.gitInfos.upstream.replace(REPO_URL, 'Official')}</span>
+            <span>{Messages.POWERCORD_UPDATES_UPSTREAM}</span>
+            <span>{powercord.gitInfos.upstream.replace(REPO_URL, Messages.POWERCORD_UPDATES_UPSTREAM_OFFICIAL)}</span>
           </div>
           <div>
-            <span>Revision:</span>
+            <span>{Messages.POWERCORD_UPDATES_REVISION}</span>
             <span>{powercord.gitInfos.revision.substring(0, 7)}</span>
           </div>
           <div>
-            <span>Branch:</span>
+            <span>{Messages.POWERCORD_UPDATES_BRANCH}</span>
             <span>{powercord.gitInfos.branch}</span>
           </div>
         </div>
@@ -103,7 +107,7 @@ module.exports = class UpdaterSettings extends React.Component {
               this.props.updateSetting('disabled', false);
             }}
           >
-            {disabled ? 'Enable' : 'Resume'} Updates
+            {disabled ? Messages.POWERCORD_UPDATES_ENABLE : Messages.POWERCORD_UPDATES_RESUME}
           </Button>
           : (!checking && !updating && <>
             {updates.length > 0 && <Button
@@ -111,27 +115,27 @@ module.exports = class UpdaterSettings extends React.Component {
               color={failed ? Button.Colors.RED : Button.Colors.GREEN}
               onClick={() => failed ? this.plugin.askForce() : this.plugin.doUpdate()}
             >
-              {failed ? 'Force Update' : 'Update Now'}
+              {failed ? Messages.POWERCORD_UPDATES_FORCE : Messages.POWERCORD_UPDATES_UPDATE}
             </Button>}
             <Button
               size={Button.Sizes.SMALL}
               onClick={() => this.plugin.checkForUpdates(true)}
             >
-              Check for Updates
+              {Messages.POWERCORD_UPDATES_CHECK}
             </Button>
             <Button
               size={Button.Sizes.SMALL}
               color={Button.Colors.YELLOW}
               onClick={() => this.askPauseUpdates()}
             >
-              Pause updates
+              {Messages.POWERCORD_UPDATES_PAUSE}
             </Button>
             <Button
               size={Button.Sizes.SMALL}
               color={Button.Colors.RED}
-              onClick={() => this.askDisableUpdates(null, () => this.props.updateSetting('disabled', true))}
+              onClick={() => this.askDisableUpdates(true, () => this.props.updateSetting('disabled', true))}
             >
-              Disable updates
+              {Messages.POWERCORD_UPDATES_DISABLE}
             </Button>
           </>)}
       </div>
@@ -140,13 +144,13 @@ module.exports = class UpdaterSettings extends React.Component {
           {...update}
           key={update.id}
           updating={updating}
-          onSkip={() => this.askSkipUpdate(update.name, () => this.plugin.skipUpdate(update.id, update.commits[0].id))}
-          onDisable={() => this.askDisableUpdates(update.name, () => this.plugin.disableUpdates(update))}
+          onSkip={() => this.askSkipUpdate(() => this.plugin.skipUpdate(update.id, update.commits[0].id))}
+          onDisable={() => this.askDisableUpdates(false, () => this.plugin.disableUpdates(update))}
         />)}
       </div>}
 
       {disabledEntities.length > 0 && <Category
-        name='Disabled updates'
+        name={Messages.POWERCORD_UPDATES_DISABLED_SECTION}
         opened={this.state.opened}
         onChange={() => this.setState({ opened: !this.state.opened })}
       >
@@ -160,58 +164,59 @@ module.exports = class UpdaterSettings extends React.Component {
             <div className='name'>{entity.name}</div>
             <div className='actions'>
               <Button color={Button.Colors.GREEN} onClick={() => this.plugin.enableUpdates(entity.id)}>
-                Enable Updates
+                {Messages.POWERCORD_UPDATES_ENABLE}
               </Button>
             </div>
           </div>
         </div>)}
       </Category>}
-      <FormTitle className='powercord-updater-ft'>Options</FormTitle>
+      <FormTitle className='powercord-updater-ft'>{Messages.OPTIONS}</FormTitle>
       {!disabled && <>
         <SwitchItem
           value={this.props.getSetting('automatic', false)}
           onChange={() => this.props.toggleSetting('automatic')}
-          note={'Powercord can download and install updates in background without annoying you too much. Note that updates will require user action if a reload is required, or if there is a conflict.'}
+          note={Messages.POWERCORD_UPDATES_OPTS_AUTO_DESC}
         >
-          Update automatically in background
+          {Messages.POWERCORD_UPDATES_OPTS_AUTO}
         </SwitchItem>
         <TextInput
-          note='How frequently Powercord will check for updates (in minutes). Minimum 10 minutes.'
+          note={Messages.POWERCORD_UPDATES_OPTS_INTERVAL_DESC}
           onChange={val => this.props.updateSetting('interval', (Number(val) && Number(val) >= 10) ? Math.ceil(Number(val)) : 10, 15)}
           defaultValue={this.props.getSetting('interval', 15)}
           required={true}
         >
-          Update Check Interval
+          {Messages.POWERCORD_UPDATES_OPTS_INTERVAL}
         </TextInput>
         <TextInput
-          note='How many concurrent tasks Powercord will run in background to check for updates. Minimum 1. If unsure, leave 2.'
+          note={Messages.POWERCORD_UPDATES_OPTS_CONCURRENCY_DESC}
           onChange={val => this.props.updateSetting('concurrency', (Number(val) && Number(val) >= 1) ? Math.ceil(Number(val)) : 1, 2)}
           defaultValue={this.props.getSetting('concurrency', 2)}
           required={true}
         >
-          Update Concurrency Limit
+          {Messages.POWERCORD_UPDATES_OPTS_CONCURRENCY}
         </TextInput>
         <ButtonItem
-          note={'Missed the changelog, or want to see it again?'}
-          button='Open Change Logs'
+          note={Messages.POWERCORD_UPDATES_OPTS_CHANGE_LOGS_DESC}
+          button={Messages.POWERCORD_UPDATES_OPTS_CHANGE_LOGS}
           onClick={() => this.plugin.openChangeLogs()}
         >
-          Open Change Logs
+          {Messages.POWERCORD_UPDATES_OPTS_CHANGE_LOGS}
         </ButtonItem>
         <ButtonItem
-          note='You can choose between the stable branch, or the development branch. Stable branch will only get major updates, security and critical updates. If unsure, stay on stable.'
-          button={powercord.gitInfos.branch === 'v2' ? 'Switch to development branch' : 'Switch to stable'}
+          note={Messages.POWERCORD_UPDATES_OPTS_RELEASE_DESC}
+          button={powercord.gitInfos.branch === 'v2'
+            ? Messages.POWERCORD_UPDATES_OPTS_RELEASE_DEVELOP_BTN
+            : Messages.POWERCORD_UPDATES_OPTS_RELEASE_STABLE_BTN}
           onClick={() => this.askChangeChannel(
-            powercord.gitInfos.branch === 'v2' ? 'development' : 'stable',
             () => this.plugin.changeBranch(powercord.gitInfos.branch === 'v2' ? 'v2-dev' : 'v2')
           )}
         >
-          Change Release Channel
+          {Messages.POWERCORD_UPDATES_OPTS_RELEASE}
         </ButtonItem>
 
         <Category
-          name='Debugging Information'
-          description='Things that you may find useful for troubleshooting or flexing on some stats.'
+          name={Messages.POWERCORD_UPDATES_OPTS_DEBUG}
+          description={Messages.POWERCORD_UPDATES_OPTS_DEBUG_DESC}
           opened={this.state.debugInfoOpened}
           onChange={() => this.setState({ debugInfoOpened: !this.state.debugInfoOpened })}
         >
@@ -224,23 +229,24 @@ module.exports = class UpdaterSettings extends React.Component {
   // --- PARTS
   renderReload () {
     const body = <>
-      <p>Some updates require a client reload to complete.</p>
+      <p>{Messages.POWERCORD_UPDATES_AWAITING_RELOAD_DESC}</p>
       <Button
         size={Button.Sizes.SMALL}
         color={Button.Colors.YELLOW}
         look={Button.Looks.INVERTED}
         onClick={() => location.reload()}
       >
-        Reload Discord
+        {Messages.ERRORS_RELOAD}
       </Button>
     </>;
-    return this._renderFormNotice('Reload Required', body);
+    return this._renderFormNotice(Messages.POWERCORD_UPDATES_AWAITING_RELOAD_TITLE, body);
   }
 
   renderUnsupported () {
-    const body = <p>You're using an unsupported build of Discord ({window.GLOBAL_ENV.RELEASE_CHANNEL}). Plugins and
-      themes might not fully work on this build, and you may experience crashes.</p>;
-    return this._renderFormNotice('Unsupported Discord version', body);
+    const body = <p>
+      {Messages.POWERCORD_UPDATES_UNSUPPORTED_DESC.format({ releaseChannel: window.GLOBAL_ENV.RELEASE_CHANNEL })}
+    </p>;
+    return this._renderFormNotice(Messages.POWERCORD_UPDATES_UNSUPPORTED_TITLE, body);
   }
 
   _renderFormNotice (title, body) {
@@ -256,6 +262,57 @@ module.exports = class UpdaterSettings extends React.Component {
     />;
   }
 
+  // --- PROMPTS
+  askSkipUpdate (callback) {
+    this._ask(
+      Messages.POWERCORD_UPDATES_SKIP_MODAL_TITLE,
+      Messages.POWERCORD_UPDATES_SKIP_MODAL,
+      Messages.POWERCORD_UPDATES_SKIP,
+      callback
+    );
+  }
+
+  askPauseUpdates () {
+    this._ask(
+      Messages.POWERCORD_UPDATES_PAUSE,
+      Messages.POWERCORD_UPDATES_PAUSE_MODAL,
+      Messages.POWERCORD_UPDATES_PAUSE,
+      () => this.props.updateSetting('paused', true)
+    );
+  }
+
+  askDisableUpdates (all, callback) {
+    this._ask(
+      Messages.POWERCORD_UPDATES_DISABLE,
+      all ? Messages.POWERCORD_UPDATES_DISABLE_MODAL_ALL : Messages.POWERCORD_UPDATES_DISABLE_MODAL,
+      Messages.POWERCORD_UPDATES_DISABLE,
+      callback
+    );
+  }
+
+  askChangeChannel (callback) {
+    this._ask(
+      Messages.POWERCORD_UPDATES_OPTS_RELEASE_MODAL_HEADER,
+      Messages.POWERCORD_UPDATES_OPTS_RELEASE_MODAL,
+      Messages.POWERCORD_UPDATES_OPTS_RELEASE_SWITCH,
+      callback
+    );
+  }
+
+  _ask (title, content, confirm, callback, red = true) {
+    openModal(() => <Confirm
+      red={red}
+      header={title}
+      confirmText={confirm}
+      cancelText={Messages.CANCEL}
+      onConfirm={callback}
+      onCancel={closeModal}
+    >
+      <div className='powercord-text'>{content}</div>
+    </Confirm>);
+  }
+
+  // --- DEBUG STUFF (Intentionally left english-only)
   renderDebugInfo (moment) {
     const { getRegisteredExperiments, getExperimentOverrides } = getModule([ 'initialize', 'getExperimentOverrides' ], false);
     // eslint-disable-next-line new-cap
@@ -306,6 +363,7 @@ module.exports = class UpdaterSettings extends React.Component {
         <code>
           <b>System / Discord:</b>
           <div className='row'>
+            <div className='column'>Locale:&#10;{currentLocale}</div>
             <div className='column'>OS:&#10;{window.platform.os.toString()}</div>
             <div className='column'>Platform:&#10;{process.platform}</div>
             <div className='column'>Release Channel:&#10;{window.GLOBAL_ENV.RELEASE_CHANNEL}</div>
@@ -388,57 +446,6 @@ module.exports = class UpdaterSettings extends React.Component {
     />;
   }
 
-  // --- PROMPTS
-  askSkipUpdate (entity, callback) {
-    this._ask(
-      'Skip an update',
-      `Are you sure you want to skip this ${entity} update? Powercord will wait for a newer version to get released before updating again.`,
-      'Skip update',
-      callback
-    );
-  }
-
-  askPauseUpdates () {
-    this._ask(
-      'Pause updates',
-      'Are you sure you want to pause updates? Powercord won\'t check for updates until next reload.',
-      'Pause updates',
-      () => this.props.updateSetting('paused', true)
-    );
-  }
-
-  askDisableUpdates (entity, callback) {
-    this._ask(
-      entity ? `Disable ${entity} updates` : 'Disable updates',
-      `Are you sure you want to disable updates${entity ? ` for ${entity}` : ''}? You will have to perform updates manually.`,
-      'Disable updates',
-      callback
-    );
-  }
-
-  askChangeChannel (channel, callback) {
-    this._ask(
-      `Change release channel to ${channel}`,
-      'Are you sure you want to change your release channel? Powercord will reload your Discord client.',
-      'Switch',
-      callback
-    );
-  }
-
-  _ask (title, content, confirm, callback, red = true) {
-    openModal(() => <Confirm
-      red={red}
-      header={title}
-      confirmText={confirm}
-      cancelText='Cancel'
-      onConfirm={callback}
-      onCancel={closeModal}
-    >
-      <div className='powercord-text'>{content}</div>
-    </Confirm>);
-  }
-
-  // --- HANDLERS
   handleDebugInfoCopy (moment) {
     const extract = document.querySelector('.debugInfo > code')
       .innerText.replace(/(.*?):(?=\s(?!C:\\).*?:)/g, '\n[$1]').replace(/(.*?):\s(.*.+)/g, '$1="$2"').replace(/[ -](\w*(?=.*=))/g, '$1');

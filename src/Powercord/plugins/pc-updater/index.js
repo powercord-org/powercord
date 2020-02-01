@@ -1,4 +1,4 @@
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
 const { Plugin } = require('powercord/entities');
@@ -106,16 +106,16 @@ module.exports = class Updater extends Plugin {
         this.doUpdate();
       } else if (!document.querySelector('#powercord-updater, .powercord-updater')) {
         this.sendToast('powercord-updater', {
-          header: 'Updates are available!',
-          content: 'Click "Update" to update now or "Open Updater" to find out more.',
+          header: Messages.POWERCORD_UPDATES_TOAST_AVAILABLE_HEADER,
+          content: Messages.POWERCORD_UPDATES_TOAST_AVAILABLE_DESC,
           icon: 'wrench',
           buttons: [ {
-            text: 'Update',
+            text: Messages.POWERCORD_UPDATES_UPDATE,
             color: 'green',
             look: 'outlined',
             onClick: () => this.doUpdate()
           }, {
-            text: 'Open Updater',
+            text: Messages.POWERCORD_UPDATES_OPEN_UPDATER,
             color: 'blue',
             look: 'ghost',
             onClick: async () => {
@@ -155,19 +155,19 @@ module.exports = class Updater extends Plugin {
       this.settings.set('updates', failed);
       if (!document.querySelector('#powercord-updater, .powercord-updater')) {
         this.sendToast('powercord-updater', {
-          header: 'Some updates failed to install...',
+          header: Messages.POWERCORD_UPDATES_TOAST_FAILED,
           type: 'danger',
           buttons: [ {
-            text: 'Force Update',
+            text: Messages.POWERCORD_UPDATES_FORCE,
             color: 'red',
             look: 'outlined',
             onClick: () => this.askForce()
           }, {
-            text: 'Ignore',
+            text: Messages.FRIEND_REQUEST_IGNORE,
             look: 'outlined',
             color: 'grey'
           }, {
-            text: 'Open Updater',
+            text: Messages.POWERCORD_UPDATES_OPEN_UPDATER,
             color: 'blue',
             look: 'ghost',
             onClick: async () => {
@@ -185,9 +185,9 @@ module.exports = class Updater extends Plugin {
     openModal(() =>
       React.createElement(Confirm, {
         red: true,
-        header: 'Force update?',
-        confirmText: 'Force update',
-        cancelText: 'Cancel',
+        header: Messages.SUPPRESS_EMBED_TITLE,
+        confirmText: Messages.POWERCORD_UPDATES_FORCE,
+        cancelText: Messages.CANCEL,
         onConfirm: () => {
           if (callback) {
             // eslint-disable-next-line callback-return
@@ -196,8 +196,7 @@ module.exports = class Updater extends Plugin {
           this.doUpdate(true);
         },
         onCancel: closeModal
-      }, React.createElement('div', { className: 'powercord-text' },
-        'Are you sure you want to force update? Any local edit will be overwritten!'))
+      }, React.createElement('div', { className: 'powercord-text' }, Messages.POWERCORD_UPDATES_FORCE_MODAL))
     );
   }
 
