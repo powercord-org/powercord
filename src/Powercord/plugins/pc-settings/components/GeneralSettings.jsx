@@ -35,7 +35,7 @@ module.exports = class GeneralSettings extends React.Component {
           {Messages.POWERCORD_COMMAND_PREFIX}
         </TextInput>
         <SwitchItem
-          note='Sync all of your Powercord settings across devices. Requires a Powercord account!'
+          note={Messages.POWERCORD_SETTINGS_SYNC_DESC}
           value={powercord.account && getSetting('settingsSync', false)}
           disabled={!powercord.account}
           onChange={() => {

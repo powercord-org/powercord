@@ -21,7 +21,7 @@ class PowercordAccount extends React.Component {
   render () {
     let Component;
     if (this.props.streamerMode.enabled && this.props.streamerMode.hidePersonalInformation) {
-      Component = () => <div>{Messages.POWERCORD_STREAMER_MODE}</div>;
+      Component = () => <div>{Messages.NOTICE_STREAMER_MODE_TEXT}</div>;
     } else if (this.state.linking) {
       Component = () => <div className='linking'><Spinner type='pulsingEllipsis'/> {Messages.POWERCORD_LINKING_WAITING}</div>;
     } else if (powercord.account) {
