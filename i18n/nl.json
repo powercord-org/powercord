@@ -1,1 +1,7 @@
-{}
+{
+  "POWERCORD_ACCOUNT": "Powercord Account",
+  "POWERCORD_GENERAL_SETTINGS": "Algemene kanker",
+  "POWERCORD_REFRESH_ACCOUNTS": "Account herladen",
+  "POWERCORD_PASSPHRASE": "Wachtwoord",
+  "POWERCORD_UPDATE_PASSPHRASE": "Wachtwoord wijzigen",
+}
