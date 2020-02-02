@@ -22,7 +22,7 @@ module.exports = class Plugins extends React.Component {
 
   toggle (pluginID, disable) {
     const func = disable ? 'disable' : 'enable';
-    const plugins = powercord.pluginManager.get(pluginID).dependencies.filter(p => powercord.pluginManager.isEnabled(p) === disable);
+    const plugins = powercord.pluginManager.get(pluginID).dependents.filter(p => powercord.pluginManager.isEnabled(p) === disable);
     if (plugins.length !== 0) {
       openModal(() => this._renderToggle(pluginID, plugins, disable));
     } else {

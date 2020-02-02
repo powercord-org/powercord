@@ -19,12 +19,15 @@
 const { getModule, i18n } = require('powercord/webpack');
 const { API } = require('powercord/entities');
 const strings = require('../../../i18n');
+const overrides = require('../../../i18n/overrides');
 
-module.exports = class I18N extends API {
+module.exports = class I18n extends API {
   constructor () {
     super();
-    this.messages = strings;
+    this.messages = {};
     this.locale = null;
+    this.loadAllStrings(strings);
+    this.loadAllStrings(overrides);
   }
 
   async startAPI () {

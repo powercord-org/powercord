@@ -42,7 +42,7 @@ module.exports = class ClickableEdits extends Plugin {
 
     const renderMessage = (args, res) => {
       const { childrenMessageContent: { props: { message } } } = args[0];
-      if (message.author.id === currentUser.id) {
+      if (message && message.author.id === currentUser.id) {
         res.props.onMouseUp = this.handleMessageEdit(message.channel_id, message.id, message.content);
       }
 

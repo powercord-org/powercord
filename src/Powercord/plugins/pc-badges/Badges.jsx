@@ -31,6 +31,7 @@ const badges = {
     }
   },
   contributor: () => openExternal(`${WEBSITE}/contributors`),
+  translator: () => openExternal('https://i18n.powercord.dev/projects/powercord'),
   hunter: () => openExternal(`https://github.com/${REPO_URL}/issues?q=label:bug`),
   early: () => void 0
 };
