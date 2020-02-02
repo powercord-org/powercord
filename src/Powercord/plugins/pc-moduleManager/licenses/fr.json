@@ -12,6 +12,21 @@
     "POWERCORD_PLUGINS_LICENSE_COMMERCIAL_USE_NAME": "Utilisation commerciale",
     "POWERCORD_PLUGINS_LICENSE_LIMITATIONS": "Restrictions",
     "POWERCORD_PLUGINS_LICENSE_CONDITIONS": "Conditions",
-    "POWERCORD_PLUGINS_LICENSE_PERMISSIONS": "Permissions",
-    "POWERCORD_PLUGINS_LICENSE_DISCLAIMER": "Ceci n'est pas un avis juridique. Données tirées de [choosealicense.com]({url})."
+    "POWERCORD_PLUGINS_LICENSE_PERMISSIONS": "Autorisations",
+    "POWERCORD_PLUGINS_LICENSE_DISCLAIMER": "Ceci n'est pas un avis juridique. Données tirées de [choosealicense.com]({url}).",
+    "POWERCORD_PLUGINS_LICENSE_DESC_0BSD": "La licence Zero-Clause BSD va plus loin que la licence 2-Clause BSD, pour vous permettre une liberté illimitée avec le logiciel sans avoir besoin d'inclure la notice de coypright, la licence ou la clause de non-responsabilité sous forme de source ou binaire.\n",
+    "POWERCORD_PLUGINS_LICENSE_WARRANTY_DESC": "La licence indique explicitement qu'elle ne fournit AUCUNE garantie.",
+    "POWERCORD_PLUGINS_LICENSE_WARRANTY_NAME": "Garantie",
+    "POWERCORD_PLUGINS_LICENSE_TRADEMARK_USE_DESC": "Cette licence indique explicitement qu'elle n'accorde PAS de droits de marque, même si les licences sans une telle déclaration n'accordent probablement aucun droit de marque implicite.",
+    "POWERCORD_PLUGINS_LICENSE_TRADEMARK_USE_NAME": "Utilisation de la marque",
+    "POWERCORD_PLUGINS_LICENSE_LIABILITY_DESC": "Cette licence comprend une limitation de responsabilité.",
+    "POWERCORD_PLUGINS_LICENSE_LIABILITY_NAME": "Responsabilité",
+    "POWERCORD_PLUGINS_LICENSE_SAME_LICENSE_DESC": "Les modifications doivent être distribuée sous la même licence que celle du logiciel d'origine. Dans certains cas, une licence similaire peut être utilisée.",
+    "POWERCORD_PLUGINS_LICENSE_SAME_LICENSE_NAME": "Même licence",
+    "POWERCORD_PLUGINS_LICENSE_DOCUMENT_CHANGES_DESC": "Les modifications apportées au code doivent être documentées.",
+    "POWERCORD_PLUGINS_LICENSE_DOCUMENT_CHANGES_NAME": "Changements",
+    "POWERCORD_PLUGINS_LICENSE_DISCLOSE_SOURCE_DESC": "Le code source doit être disponible une fois le logiciel distribué.",
+    "POWERCORD_PLUGINS_LICENSE_DISCLOSE_SOURCE_NAME": "Divulguer la source",
+    "POWERCORD_PLUGINS_LICENSE_INCLUDE_COPYRIGHT_DESC": "Une copie des droits d'auteurs et de licences doivent être inclus avec le logiciel.",
+    "POWERCORD_PLUGINS_LICENSE_INCLUDE_COPYRIGHT_NAME": "Notice de droit d'auteur et de licence"
 }
