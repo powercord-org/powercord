@@ -1,1 +1,17 @@
-{}
+{
+    "POWERCORD_PLUGINS_LICENSE_PRIVATE_USE_DESC": "Ce logiciel peut être utilisé et modifié en privé.",
+    "POWERCORD_PLUGINS_LICENSE_PRIVATE_USE_NAME": "Utilisation privée",
+    "POWERCORD_PLUGINS_LICENSE_PATENT_USE_DESC_FORBIDDEN": "Cette license indique explicitement qu'elle n'accorde AUCUN droits sur les brevets aux contributeurs.",
+    "POWERCORD_PLUGINS_LICENSE_PATENT_USE_DESC_ALLOWED": "Cette license fournit une autorisation explicite des droits de brevet aux contributeurs.",
+    "POWERCORD_PLUGINS_LICENSE_PATENT_USE_NAME": "Utilisation des brevets",
+    "POWERCORD_PLUGINS_LICENSE_DISTRIBUTION_DESC": "Ce logiciel peut être distribué.",
+    "POWERCORD_PLUGINS_LICENSE_DISTRIBUTION_NAME": "Distribution",
+    "POWERCORD_PLUGINS_LICENSE_MODIFICATIONS_DESC": "Ce logiciel peut être modifié.",
+    "POWERCORD_PLUGINS_LICENSE_MODIFICATIONS_NAME": "Modification",
+    "POWERCORD_PLUGINS_LICENSE_COMMERCIAL_USE_DESC": "Ce logiciel et ses dérivés peuvent être utilisés à des fins commerciales.",
+    "POWERCORD_PLUGINS_LICENSE_COMMERCIAL_USE_NAME": "Utilisation commerciale",
+    "POWERCORD_PLUGINS_LICENSE_LIMITATIONS": "Restrictions",
+    "POWERCORD_PLUGINS_LICENSE_CONDITIONS": "Conditions",
+    "POWERCORD_PLUGINS_LICENSE_PERMISSIONS": "Permissions",
+    "POWERCORD_PLUGINS_LICENSE_DISCLAIMER": "Ceci n'est pas un avis juridique. Données tirées de [choosealicense.com]({url})."
+}
