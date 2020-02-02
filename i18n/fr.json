@@ -101,7 +101,7 @@
     "POWERCORD_SETTINGS_EXP_WEB_PLATFORM": "Fonctionnalités expérimentales de la plateforme Web",
     "POWERCORD_SETTINGS_TRANSPARENT_DESC": "Rend transparentes toutes les fenêtres ouvertes par Discord, utile pour les thèmes.\n****ATTENTION:**** Cela cassera **l'ancrage des fenêtres** sous Windows. L'**accélération matérielle** doit être **désactivée** sous Linux. Vous pouvez rencontrer des problèmes et avoir un fond noir dans certains cas, comme quand la fenêtre est coupée en haut, ou en bas en raison de la résolution du moniteur ou lorsque les devtools sont ouverts et ancrés. **Nécessite un redémarrage**.",
     "POWERCORD_I18N_CONTRIBUTE": "Psst ! Tu souhaites aider à traduire Powercord ? Va sur notre [Weblate]({weblateUrl}) !",
-    "POWERCORD_I18N_TRANSLATED_PERCENTAGE": "Powercord: {translated,number}% traduit",
+    "POWERCORD_I18N_TRANSLATED_PERCENTAGE": "Powercord: traduit à {translated,number}%",
     "POWERCORD_I18N_TRANSLATED_OVERRIDES": "{overrides,number} remplacements dans les traductions de Discord",
     "POWERCORD_BADGES_DEVELOPER": "Développeur Powercord",
     "POWERCORD_BADGES_STAFF": "Équipe Powercord",
