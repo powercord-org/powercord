@@ -80,7 +80,7 @@
     "POWERCORD_UPDATES_OPTS_RELEASE_DEVELOP_BTN": "Cambiar a rama de desarrollo",
     "POWERCORD_UPDATES_OPTS_RELEASE_MODAL_HEADER": "Cambiar canal de lanzamiento",
     "POWERCORD_UPDATES_OPTS_RELEASE_MODAL": "¿Está seguro de que desea cambiar su canal de lanzamiento? Powercord volverá a cargar su cliente Discord.",
-    "POWERCORD_UPDATES_OPTS_RELEASE_SWITCH": "Switch",
+    "POWERCORD_UPDATES_OPTS_RELEASE_SWITCH": "Cambiar",
     "POWERCORD_UPDATES_OPTS_DEBUG": "Información de depuración",
     "POWERCORD_UPDATES_OPTS_DEBUG_DESC": "Cosas que t puede resultarle útil para solucionar problemas o flexionar algunas estadísticas.",
     "POWERCORD_UPDATES_UNSUPPORTED_TITLE": "Versión de Discord no compatible",
@@ -98,7 +98,7 @@
     "POWERCORD_PLUGINS_PERMISSIONS_USE_EUD": "Recopilar y usar sus datos",
     "POWERCORD_PLUGINS_PERMISSIONS_FS": "Leer y escribir archivos en su computadora",
     "POWERCORD_PLUGINS_PERMISSIONS_API": "Realizar solicitudes a servicios remotos",
-    "POWERCORD_THEMES": "Themes",
+    "POWERCORD_THEMES": "Temas",
     "POWERCORD_THEMES_WIP1": "Esta parte de Powercord aún no se ha terminado.",
     "POWERCORD_THEMES_WIP2": "Estamos trabajando en ello y lo lanzará antes de 2021."
 }
