@@ -1,4 +1,5 @@
 const { React } = require('powercord/webpack');
+const { shell } = require('electron');
 
 const Header = require('./Header');
 const Plugins = require('./Plugins');
@@ -23,7 +24,7 @@ module.exports = (type, experimental, fetch) =>
         fetching: false
       };
 
-      this.openFolder = () => DiscordNative.fileManager.showItemInFolder(`${things[type].folder}/.`);
+      this.openFolder = () => shell.openItem(things[type].folder);
 
       this.fetchEntities = () => {
         this.setState({ fetching: true });

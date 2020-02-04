@@ -7,10 +7,6 @@ const SettingsConnection = require('./components/SettingsConnection');
 const ProfileConnection = require('./components/ProfileConnection');
 
 module.exports = class Connections extends Plugin {
-  get currentUser () {
-    return getModule([ 'getCurrentUser' ], false).getCurrentUser();
-  }
-
   async startPlugin () {
     if (!powercord.account) {
       await powercord.fetchAccount();
@@ -38,8 +34,10 @@ module.exports = class Connections extends Plugin {
       },
       enabled: powercord.account && powercord.account.github,
       account: {
+        id: powercord.account.github,
         name: powercord.account.github,
-        id: 'powercord-org'
+        verified: true,
+        visibility: 1
       },
       getPlatformUserUrl: (username) => `https://github.com/${encodeURIComponent(username)}`
     });
@@ -53,11 +51,15 @@ module.exports = class Connections extends Plugin {
   async patchSettingsConnections () {
     const UserSettingsConnections = await getModule(m => m.default && m.default.displayName === 'UserSettingsConnections');
     inject('pc-connections-settings', UserSettingsConnections, 'default', (args, res) => {
+      if (!res.props.children) {
+        return res;
+      }
+
       const connectedAccounts = res.props.children[2].props.children;
       connectedAccounts.push(...powercord.api.connections.filter(c => c.enabled).map(c =>
         React.createElement(SettingsConnection, {
           account: {
-            name: c.account.name,
+            ...c.account,
             type: c.type
           },
           onDisconnect: () => ((this.log([ connectedAccounts ]), modal.pop()))
@@ -76,17 +78,18 @@ module.exports = class Connections extends Plugin {
       classes.modal, classes.connectedAccounts
     ].join(' '))).parentElement);
 
-    const _this = this;
     const UserInfoProfileSection = instance._reactInternalFiber.return.type;
     inject('pc-connections-profile', UserInfoProfileSection.prototype, 'renderConnectedAccounts', function (_, res) {
-      if (typeof res === 'object' && this.props.user.id === _this.currentUser.id) {
+      if (typeof res === 'object') {
         const { children: connectedAccounts } = res.props.children.props;
         connectedAccounts.push(...powercord.api.connections.filter(c => c.enabled).map(c =>
-          React.createElement(ProfileConnection, {
-            name: c.account.name,
-            id: c.account.id,
-            type: c.type
-          })
+          React.createElement(ProfileConnection, Object.assign({}, c, c.type !== 'github'
+            ? { ...c.account }
+            : {
+              id: this.props.user.id,
+              verified: c.account.verified
+            }
+          ))
         ));
       }
 
