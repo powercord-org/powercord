@@ -101,5 +101,7 @@
     "POWERCORD_PLUGINS_PERMISSIONS_API": "Executar solicitações para serviços remotos",
     "POWERCORD_THEMES": "Temas",
     "POWERCORD_THEMES_WIP1": "Esta parte do Powercord ainda não está completa.",
-    "POWERCORD_THEMES_WIP2": "Nós estamos trabalhando nela e ficará disponível antes de 2021."
+    "POWERCORD_THEMES_WIP2": "Nós estamos trabalhando nela e ficará disponível antes de 2021.",
+    "POWERCORD_I18N_TRANSLATED_PERCENTAGE": "Powercord: {translated,number}% traduzido",
+    "POWERCORD_I18N_CONTRIBUTE": "Psst! Quer ajudar a traduzir o Powercord? Venha ao nosso [Weblate]({weblateUrl})!"
 }
