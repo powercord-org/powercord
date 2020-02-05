@@ -4,16 +4,20 @@ const { Icon } = require('powercord/components');
 const { get } = require('powercord/http');
 
 const Verified = require('./Verified');
+const store = {};
+
+let components, classes;
+setImmediate(async () => {
+  components = { Flex: await getModuleByDisplayName('Flex') };
+  classes = { ...await getModule([ 'headerInfo' ]) };
+});
 
 module.exports = class ProfileConnection extends React.Component {
   constructor (props) {
     super(props);
 
     this.connection = powercord.api.connections.get(props.type);
-    this.state = {
-      components: null,
-      classes: null
-    };
+    this.state = store[props.id] || {};
   }
 
   async componentDidMount () {
@@ -22,24 +26,21 @@ module.exports = class ProfileConnection extends React.Component {
       try {
         const baseUrl = powercord.settings.get('backendURL', WEBSITE);
         const { connections } = await get(`${baseUrl}/api/v2/users/${this.props.id}`).then(res => res.body);
-        this.setState({ ...connections });
+        this.setState(connections);
+        store[this.props.id] = connections;
       } catch (e) {
         // Let it fail silently, probably just 404
       }
     }
-
-    this.setState({
-      components: { Flex: await getModuleByDisplayName('Flex') },
-      classes: { ...await getModule([ 'headerInfo' ]) }
-    });
   }
 
   render () {
-    if (!this.connection || !this.state.classes || (this.props.type === 'github' && !this.state.github)) {
+    if (!this.connection || (this.props.type === 'github' && !this.state.github)) {
       return null;
     }
 
-    const { connection, state: { components: { Flex }, classes } } = this;
+    const { Flex } = components;
+    const { connection } = this;
 
     return <Flex align={Flex.Align.CENTER} grow={0} className={classes.connectedAccount}>
       <img

@@ -1,4 +1,5 @@
 const { React, i18n: { Messages } } = require('powercord/webpack');
+const { shell } = require('electron');
 
 module.exports = class Soon extends React.PureComponent {
   render () {
@@ -13,7 +14,7 @@ module.exports = class Soon extends React.PureComponent {
           href='#'
           onClick={e => {
             e.preventDefault();
-            DiscordNative.fileManager.showItemInFolder(`${powercord.styleManager.themesDir}/.`);
+            shell.openItem(powercord.styleManager.themesDir);
           }}
         >Open Themes Folder</a>
       </div>
