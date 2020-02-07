@@ -19,7 +19,6 @@
     "POWERCORD_SETTINGS_NO_CLYDE_DESC": "[Clyde'i]({discordiaUrl}) eklenti geliştiricilerinin şeçtiği avatar ve isimlerle değiştirir - varsayılan olarak \"Powercord\" seçeneğine geri döner.",
     "POWERCORD_SETTINGS_ADVANCED_DESC": "Ne yaptığınızı bilmiyorsanız, buradaki şeylere dokunmayın. Kedinizin başına beklenmedik şeyler gelebilir.",
     "POWERCORD_SETTINGS_OVERLAY": "Overlay DevTools",
-    "POWERCORD_SETTINGS_OVERLAY_DESC": "@todo",
     "POWERCORD_SETTINGS_KEEP_TOKEN": "Token'i saklı tut",
     "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Discord'un token'inizi localStorage'den kaldırmasını engeller, istenmeyen çıkışların sayısını azaltır.",
     "POWERCORD_SETTINGS_TRANSPARENT": "Transparan Pencere",

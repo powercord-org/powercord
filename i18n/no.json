@@ -102,7 +102,6 @@
     "POWERCORD_SETTINGS_EXP_WEB_PLATFORM": "Eksperimentale Web Platform funksjoner",
     "POWERCORD_SETTINGS_TRANSPARENT": "Transparent Vindu",
     "POWERCORD_SETTINGS_KEEP_TOKEN": "Behold token lagret",
-    "POWERCORD_SETTINGS_OVERLAY_DESC": "@todo",
     "POWERCORD_SETTINGS_ADVANCED_DESC": "Ikke gjør endringer her hvis du ikke vet hva du driver med. Uventede ting kan skje med katten din.",
     "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Erstatter [Clyde]({discordiaUrl}) i Powercord kommandoer med forskjellige bilder og navn valgt av plug-in utviklere - tilbakestilles til \"Powercord\" automatisk.",
     "POWERCORD_SETTINGS_NO_CLYDE": "Utrydd Clyde",

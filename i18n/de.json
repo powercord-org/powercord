@@ -19,7 +19,6 @@
     "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Ersetzt [Clyde]({discordiaUrl}) in Powercord Befehlen mit einer Variation an Avataren und Nutzernamen, welche von Plugin-Entwicklern angegeben werden können - fällt standardmäßig auf \"Powercord\" zurück.",
     "POWERCORD_SETTINGS_ADVANCED_DESC": "Fass hier lieber nichts an, außer du weißt was du tust. Unerwartete Dinge könnten deiner Katze widerfahren.",
     "POWERCORD_SETTINGS_OVERLAY": "Overlay DevTools",
-    "POWERCORD_SETTINGS_OVERLAY_DESC": "@todo",
     "POWERCORD_SETTINGS_KEEP_TOKEN": "Speichere deinen Discord (Anmelde) Token",
     "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Hindert Discord daran, deinen (Anmelde) Token aus dem localStorage zu löschen. Dadurch wirst du selterner ungewollt abgemeldet.",
     "POWERCORD_SETTINGS_TRANSPARENT": "Transparentes Fenster",

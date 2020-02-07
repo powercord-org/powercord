@@ -20,7 +20,6 @@
     "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Substitui [Clyde]({discordiaUrl}) nos comandos do Powercord por uma variedade de avatares e nomes de usuários selecionados pelos desenvolvedores de plug-ins - \"Powercord\" por padrão.",
     "POWERCORD_SETTINGS_ADVANCED_DESC": "Não toque em coisas aqui se você não sabe o que está fazendo. Coisas inesperadas podem acontecer com seu gato.",
     "POWERCORD_SETTINGS_OVERLAY": "DevTools no Overlay",
-    "POWERCORD_SETTINGS_OVERLAY_DESC": "@todo",
     "POWERCORD_SETTINGS_KEEP_TOKEN": "Manter token armazenado",
     "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Impede que o Discord remova o seu token do localStorage, reduzindo o número de logouts indesejados.",
     "POWERCORD_SETTINGS_TRANSPARENT": "Janela Transparente",

@@ -19,7 +19,6 @@
     "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Zamienia [Clyde]({discordiaUrl}) w komendach Powercorda z mieszanym zakresem awatarów i nazw użykowników wybranych przez twórców pluginów - domyślnie jest to \"Powercord\".",
     "POWERCORD_SETTINGS_ADVANCED_DESC": "Nie zmieniaj tych ustawień jeśli nie wiesz co robisz. Mogą przytrafić się nieprzewidzane rzeczy.",
     "POWERCORD_SETTINGS_OVERLAY": "Narzędzia programistyczne nakładki",
-    "POWERCORD_SETTINGS_OVERLAY_DESC": "@todo",
     "POWERCORD_SETTINGS_KEEP_TOKEN": "Zatrzymaj token w pamięci",
     "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Zapobiega usuwaniu tokena przez Discorda z localStorage, zmniejszając liczbę niechcianych wylogowań.",
     "POWERCORD_SETTINGS_TRANSPARENT": "Przezroczyste okno",

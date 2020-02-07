@@ -72,7 +72,6 @@
     "POWERCORD_UPDATES_OPTS_CONCURRENCY": "Limite de Simultaneadade de Atualizações",
     "POWERCORD_UPDATES_OPTS_INTERVAL_DESC": "Quão frequentemente o Powercord irá procurar por atualizações (em minutos). Mínimo 10 minutos.",
     "POWERCORD_UPDATES_OPTS_INTERVAL": "Intervalo de Verificação de Atualização",
-    "POWERCORD_SETTINGS_OVERLAY_DESC": "@todo",
     "POWERCORD_UPDATES_OPTS_AUTO_DESC": "O Powercord pode baixar e instalar atualizações em segundo plano sem te chatear muito. Toma nota que atualizações requererão a tua ação se é preciso reiniciar, ou se houver um conflito.",
     "POWERCORD_UPDATES_OPTS_AUTO": "Atualizar automaticamente em segundo plano",
     "POWERCORD_UPDATES_DISABLED_SECTION": "Atualizações desativadas",

@@ -137,6 +137,12 @@ app.once('ready', () => {
 
 (async () => {
   if (process.argv[1] === '--squirrel-obsolete') {
+    /**
+     * @todo: Make this actually be working
+     * After further testing it looks like this is only called
+     * for versions that are way older (if new ver is 4, ver 2 will be
+     * called but not ver 3).
+     */
     const main = require('../injectors/main.js');
     const platform = require(`../injectors/${process.platform}.js`);
     await main.inject(platform);
