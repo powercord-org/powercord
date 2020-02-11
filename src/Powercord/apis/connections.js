@@ -11,11 +11,14 @@ module.exports = class Connections extends API {
   }
 
   registerConnection (connection) {
+    if (this.get(connection.type)) {
+      throw new Error('This type of connection already exists!');
+    }
     this.connections.push(connection);
   }
 
   unregisterConnection (type) {
-    this.connections = this.connections.filter(connection => connection.type !== type);
+    this.connections = this.connections.filter(c => c.type !== type);
   }
 
   get (type) {

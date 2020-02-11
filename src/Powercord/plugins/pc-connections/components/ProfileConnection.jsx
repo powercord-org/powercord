@@ -54,12 +54,12 @@ module.exports = class ProfileConnection extends React.Component {
           : this.props.name}
         </div>
         {this.props.verified &&
-          <Verified className={classes.connectedAccountVerifiedIcon}></Verified>
+          <Verified className={classes.connectedAccountVerifiedIcon}/>
         }
       </div>
       {typeof connection.getPlatformUserUrl === 'function' &&
         <a href={connection.getPlatformUserUrl(this.props.type === 'github' ? this.state.github.login : this.props.id)} target='_blank'>
-          <Icon name='Nova_Launch' className={classes.connectedAccountOpenIcon}></Icon>
+          <Icon name='Nova_Launch' className={classes.connectedAccountOpenIcon}/>
         </a>
       }
     </Flex>;
