@@ -28,8 +28,9 @@ module.exports = class Connections extends Plugin {
       },
       enabled: powercord.account && powercord.account.github,
       account: {
-        id: powercord.account.github,
-        name: powercord.account.github,
+        // @todo: Update if the account is updated
+        id: powercord.account && powercord.account.github,
+        name: powercord.account && powercord.account.github,
         verified: true,
         visibility: 1
       },
