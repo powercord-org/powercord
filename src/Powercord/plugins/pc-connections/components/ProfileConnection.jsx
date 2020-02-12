@@ -12,6 +12,7 @@ setImmediate(async () => {
   classes = { ...await getModule([ 'headerInfo' ]) };
 });
 
+// There's a lot of duplicated code with pc-badges, should we consider merging the rwo and opt for a more robust data handling (see: F L U X)
 module.exports = class ProfileConnection extends React.Component {
   constructor (props) {
     super(props);

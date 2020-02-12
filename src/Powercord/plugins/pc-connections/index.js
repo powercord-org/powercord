@@ -45,6 +45,7 @@ module.exports = class Connections extends Plugin {
   }
 
   async patchSettingsConnections () {
+    // Breaks on my end (can't find component even tho it should thanks discord) - do we really need to do this (dupe data w/ general settings tab)
     const UserSettingsConnections = await getModule(m => m.default && m.default.displayName === 'UserSettingsConnections');
     inject('pc-connections-settings', UserSettingsConnections, 'default', (args, res) => {
       if (!res.props.children) {
@@ -73,7 +74,15 @@ module.exports = class Connections extends Plugin {
   async patchUserConnections () {
     const _this = this;
     const UserInfoProfileSection = await this._fetchUserConnectionModule();
+    /*
+     * @todo: remove empty line when there aren't connections
+     * We should reconsider the logic used here, and self shouldn't be treated differently (useless complexity)
+     * Maybe use a similar method as Discord's for fetching connections (and to fetch badges in Powercord) and always
+     * poll (even for self). That'd require a new API endpoint though, but that's already the case given that
+     * connections now require a "hidden" field.
+     */
     inject('pc-connections-profile', UserInfoProfileSection.prototype, 'renderConnectedAccounts', function (_, res) {
+      // thonk?? display of *others* profile connection depends on self?
       const accounts = powercord.api.connections.filter(c => c.enabled);
       if (accounts.length === 0) {
         return res;
