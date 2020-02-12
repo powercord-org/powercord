@@ -67,8 +67,6 @@ class PatchedBrowserWindow extends BrowserWindow {
   }
 }
 
-Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
-
 app.once('ready', () => {
   const newElectron = Object.assign({}, electron, { BrowserWindow: PatchedBrowserWindow });
 
