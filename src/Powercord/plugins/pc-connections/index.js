@@ -1,74 +1,29 @@
 const { Plugin } = require('powercord/entities');
-const { React, getModule, getModuleByDisplayName, modal } = require('powercord/webpack');
+const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 
-const SettingsConnection = require('./components/SettingsConnection');
 const ProfileConnection = require('./components/ProfileConnection');
 
 module.exports = class Connections extends Plugin {
   async startPlugin () {
-    if (!powercord.account) {
-      await powercord.fetchAccount();
-    }
-
     this.classes = {
       ...await getModule([ 'headerInfo' ]),
       ...await getModule([ 'modal', 'inner' ])
     };
 
-    this.patchSettingsConnections();
     this.patchUserConnections();
     powercord.api.connections.registerConnection({
       type: 'github',
       name: 'GitHub',
       color: '#1b1f23',
-      icon: {
-        color: 'https://powercord.dev/assets/github_color.png',
-        white: 'https://powercord.dev/assets/github_white.png'
-      },
-      enabled: powercord.account && powercord.account.github,
-      account: {
-        // @todo: Update if the account is updated
-        id: powercord.account && powercord.account.github,
-        name: powercord.account && powercord.account.github,
-        verified: true,
-        visibility: 1
-      },
+      icon: { color: 'https://powercord.dev/assets/github_color.png' },
       getPlatformUserUrl: (username) => `https://github.com/${encodeURIComponent(username)}`
     });
   }
 
   pluginWillUnload () {
     powercord.api.connections.unregisterConnection('github');
-    uninject('pc-connections-settings');
     uninject('pc-connections-profile');
-  }
-
-  async patchSettingsConnections () {
-    // Breaks on my end (can't find component even tho it should thanks discord) - do we really need to do this (dupe data w/ general settings tab)
-    const UserSettingsConnections = await getModule(m => m.default && m.default.displayName === 'UserSettingsConnections');
-    inject('pc-connections-settings', UserSettingsConnections, 'default', (args, res) => {
-      if (!res.props.children) {
-        return res;
-      }
-
-      const connectedAccounts = res.props.children[2].props.children;
-      connectedAccounts.push(...powercord.api.connections.filter(c => c.enabled).map(c =>
-        React.createElement(SettingsConnection, {
-          account: {
-            ...c.account,
-            type: c.type
-          },
-          onDisconnect: () => {
-            this.log([ connectedAccounts ]);
-            modal.pop();
-          }
-        })
-      ));
-
-      UserSettingsConnections.default.displayName = 'UserSettingsConnections';
-      return res;
-    });
   }
 
   async patchUserConnections () {
@@ -82,8 +37,7 @@ module.exports = class Connections extends Plugin {
      * connections now require a "hidden" field.
      */
     inject('pc-connections-profile', UserInfoProfileSection.prototype, 'renderConnectedAccounts', function (_, res) {
-      // thonk?? display of *others* profile connection depends on self?
-      const accounts = powercord.api.connections.filter(c => c.enabled);
+      const accounts = powercord.api.connections;
       if (accounts.length === 0) {
         return res;
       }
@@ -95,7 +49,7 @@ module.exports = class Connections extends Plugin {
             ? { ...c.account }
             : {
               id: this.props.user.id,
-              verified: c.account.verified
+              verified: true
             }
           ))
         ));
@@ -106,7 +60,7 @@ module.exports = class Connections extends Plugin {
               ? { ...c.account }
               : {
                 id: this.props.user.id,
-                verified: c.account.verified
+                verified: true
               }
             ))
           ))

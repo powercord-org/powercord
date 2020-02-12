@@ -4,26 +4,13 @@ const { TooltipContainer } = getModule(m => m.TooltipContainer, false);
 
 const FlowerStarIcon = AsyncComponent.from(getModuleByDisplayName('FlowerStarIcon'));
 
+let classes;
+setImmediate(async () => {
+  classes = { ...await getModule([ 'flowerStarContainer', 'flowerStar' ]) };
+});
+
 class Verified extends React.Component {
-  constructor () {
-    super();
-
-    this.state = { classes: null };
-  }
-
-  async componentDidMount () {
-    this.setState({
-      classes: { ...await getModule([ 'flowerStarContainer', 'flowerStar' ]) }
-    });
-  }
-
   render () {
-    if (!this.state.classes) {
-      return null;
-    }
-
-    const { classes } = this.state;
-
     return <>
       <TooltipContainer element='span' text={Messages.CONNECTION_VERIFIED}>
         <div

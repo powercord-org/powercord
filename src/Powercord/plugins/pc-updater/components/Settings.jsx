@@ -1,4 +1,4 @@
-const { React, getModule, constants: { Routes }, i18n: { Messages, chosenLocale: currentLocale } } = require('powercord/webpack');
+const { React, getModule, i18n: { Messages, chosenLocale: currentLocale } } = require('powercord/webpack');
 const { Clickable, Button, FormNotice, FormTitle, Tooltip } = require('powercord/components');
 const { SwitchItem, TextInput, Category, ButtonItem } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
@@ -315,8 +315,6 @@ module.exports = class UpdaterSettings extends React.Component {
   // --- DEBUG STUFF (Intentionally left english-only)
   renderDebugInfo (moment) {
     const { getRegisteredExperiments, getExperimentOverrides } = getModule([ 'initialize', 'getExperimentOverrides' ], false);
-    // eslint-disable-next-line new-cap
-    const [ , buildId ] = Routes.OVERLAY().match(/build_id=([[a-f0-9]+)/);
     const sentry = window.__SENTRY__.hub;
     const plugins = powercord.pluginManager.getPlugins().filter(plugin =>
       !powercord.pluginManager.get(plugin).isInternal && powercord.pluginManager.isEnabled(plugin)
@@ -369,7 +367,7 @@ module.exports = class UpdaterSettings extends React.Component {
             <div className='column'>Release Channel:&#10;{window.GLOBAL_ENV.RELEASE_CHANNEL}</div>
             <div className='column'>App Version:&#10;{sentry.getScope()._extra.hostVersion}</div>
             <div className='column'>Build Number:&#10;{sentry.getClient()._options.release}</div>
-            <div className='column'>Build ID:&#10;{buildId}</div>
+            <div className='column'>Build ID:&#10;{window.GLOBAL_ENV.SENTRY_TAGS.buildId}</div>
             <div className='column'>Experiments:&#10;{experimentOverrides} / {totalExperiments}</div>
           </div>
 
