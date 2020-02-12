@@ -69,34 +69,12 @@ class PatchedBrowserWindow extends BrowserWindow {
 
 Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
 
-delete require.cache[electronPath].exports;
-require.cache[electronPath].exports = {
-  deprecate: electron.deprecate,
-  BrowserWindow: PatchedBrowserWindow
-};
-
-const failedExports = [];
-for (const prop in electron) {
-  if (prop === 'BrowserWindow') {
-    continue;
-  }
-
-  try {
-    // noinspection JSUnfilteredForInLoop
-    Object.defineProperty(require.cache[electronPath].exports, prop, {
-      get () {
-        // noinspection JSUnfilteredForInLoop
-        return electron[prop];
-      }
-    });
-  } catch (_) {
-    // noinspection JSUnfilteredForInLoop
-    failedExports.push(prop);
-  }
-}
-
 app.once('ready', () => {
-  require.cache[electronPath].exports.BrowserWindow = PatchedBrowserWindow;
+  const newElectron = Object.assign({}, electron, { BrowserWindow: PatchedBrowserWindow });
+
+  Object.defineProperty(require.cache[electronPath], 'exports', {
+    get: () => newElectron
+  });
 
   // headers must die
   session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
@@ -129,10 +107,6 @@ app.once('ready', () => {
       done({});
     }
   });
-
-  for (const prop of failedExports) {
-    require.cache[electronPath].exports[prop] = electron[prop];
-  }
 });
 
 (async () => {
