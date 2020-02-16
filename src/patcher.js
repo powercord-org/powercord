@@ -67,13 +67,21 @@ class PatchedBrowserWindow extends BrowserWindow {
   }
 }
 
+
+const electronExports = new Proxy(electron, {
+  get (target, prop) {
+    switch (prop) {
+      case 'BrowserWindow': return PatchedBrowserWindow;
+      default: return target[prop];
+    }
+  }
+});
+
+delete require.cache[electronPath].exports;
+require.cache[electronPath].exports = electronExports;
+
+
 app.once('ready', () => {
-  const newElectron = Object.assign({}, electron, { BrowserWindow: PatchedBrowserWindow });
-
-  Object.defineProperty(require.cache[electronPath], 'exports', {
-    get: () => newElectron
-  });
-
   // headers must die
   session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
     /*
