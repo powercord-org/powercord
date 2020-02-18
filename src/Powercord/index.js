@@ -173,23 +173,14 @@ module.exports = class Powercord extends Updatable {
 
       if (resp.statusCode === 401) {
         if (!resp.body.error && resp.body.error !== 'DISCORD_REVOKED') {
-          const announcements = powercord.pluginManager.get('pc-announcements');
-          if (announcements) {
-            // even if the plugin is not ready yet, we can perform actions
-            announcements.sendNotice({
-              id: 'pc-account-discord-unlinked',
-              type: announcements.Notice.TYPES.RED,
-              message: 'Your Powercord account is no longer linked to your Discord account! Some integration will be disabled.',
-              button: {
-                text: 'Link it back',
-                onClick: () => {
-                  announcements.closeNotice('pc-account-discord-unlinked');
-                  openExternal(`${WEBSITE}/oauth/discord`);
-                }
-              },
-              alwaysDisplay: true
-            });
-          }
+          powercord.api.notices.sendAnnouncement('pc-account-discord-unlinked', {
+            color: 'red',
+            message: 'Your Powercord account is no longer linked to your Discord account! Some integration will be disabled.',
+            button: {
+              text: 'Link it back',
+              onClick: () => openExternal(`${WEBSITE}/oauth/discord`)
+            }
+          });
 
           this.isLinking = false;
           return; // keep token stored

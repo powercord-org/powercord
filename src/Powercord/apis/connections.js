@@ -1,7 +1,7 @@
-const { getModule } = require('powercord/webpack');
 const { API } = require('powercord/entities');
-
-const Lodash = getModule([ 'keyBy' ], false);
+const { asyncArray } = require('powercord/util');
+const { WEBSITE } = require('powercord/constants');
+const { put } = require('powercord/http');
 
 module.exports = class Connections extends API {
   constructor () {
@@ -21,8 +21,29 @@ module.exports = class Connections extends API {
     this.connections = this.connections.filter(c => c.type !== type);
   }
 
+  fetchAccounts (id) {
+    return asyncArray.map(this.filter(c => c.enabled), c => c.fetchAccount(id));
+  }
+
+  async setVisibility (type, value) {
+    if (!powercord.account) {
+      return;
+    }
+
+    const baseUrl = powercord.settings.get('backendURL', WEBSITE);
+    await put(`${baseUrl}/api/v2/users/@me/accounts/${type}`)
+      .set('Authorization', powercord.account.token)
+      .set('Content-Type', 'application/json')
+      .send({ visibility: value });
+  }
+
   get (type) {
-    return Lodash.keyBy(this.connections, 'type')[type] || null;
+    const connections = {};
+    for (const element of this.connections) {
+      connections[element.type] = element;
+    }
+
+    return connections[type] || null;
   }
 
   map (callback) {

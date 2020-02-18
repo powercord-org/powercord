@@ -1,69 +1,97 @@
 const { Plugin } = require('powercord/entities');
 const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
+const { WEBSITE } = require('powercord/constants');
+const { get, del } = require('powercord/http');
 
-const ProfileConnection = require('./components/ProfileConnection');
+const SettingsConnections = require('./components/settings/ConnectedAccounts');
+const ProfileConnections = require('./components/profile/ConnectedAccounts');
 
 module.exports = class Connections extends Plugin {
+  constructor () {
+    super();
+
+    this.baseUrl = powercord.settings.get('backendURL', WEBSITE);
+  }
+
   async startPlugin () {
     this.classes = {
       ...await getModule([ 'headerInfo' ]),
       ...await getModule([ 'modal', 'inner' ])
     };
 
+    this.patchSettingsConnections();
     this.patchUserConnections();
+
     powercord.api.connections.registerConnection({
       type: 'github',
       name: 'GitHub',
       color: '#1b1f23',
-      icon: { color: 'https://powercord.dev/assets/github_color.png' },
-      getPlatformUserUrl: (username) => `https://github.com/${encodeURIComponent(username)}`
+      icon: {
+        color: 'https://powercord.dev/assets/github_color.png',
+        white: 'https://powercord.dev/assets/github_white.png'
+      },
+      enabled: true,
+      fetchAccount: async (id) => {
+        let accounts = [];
+        if (!id) {
+          if (powercord.account) {
+            accounts = await get(`${this.baseUrl}/api/v2/users/@me/accounts`)
+              .set('Authorization', powercord.account.token)
+              .then(r => r.body);
+          }
+        } else {
+          accounts = await get(`${this.baseUrl}/api/v2/users/${id}/accounts`)
+            .then(r => r.body);
+        }
+
+        return accounts.find(account => account.type === 'github');
+      },
+      getPlatformUserUrl: (account) => {
+        const username = account.id;
+        return `https://github.com/${encodeURIComponent(username)}`;
+      },
+      onDisconnect: async (account) => del(`${this.baseUrl}/api/v2/users/@me/accounts/${account.type}`)
+        .set('Authorization', powercord.account.token)
     });
   }
 
   pluginWillUnload () {
     powercord.api.connections.unregisterConnection('github');
+    uninject('pc-connections-settings');
     uninject('pc-connections-profile');
+  }
+
+  async patchSettingsConnections () {
+    const UserSettingsConnections = await getModule(m => m.default && m.default.displayName === 'UserSettingsConnections');
+    inject('pc-connections-settings', UserSettingsConnections, 'default', (args, res) => {
+      if (!res.props.children) {
+        return res;
+      }
+
+      const connectedAccounts = res.props.children[2].props.children;
+      connectedAccounts.push(React.createElement(SettingsConnections, {}));
+
+      UserSettingsConnections.default.displayName = 'UserSettingsConnections';
+      return res;
+    });
   }
 
   async patchUserConnections () {
     const _this = this;
     const UserInfoProfileSection = await this._fetchUserConnectionModule();
-    /*
-     * @todo: remove empty line when there aren't connections
-     * We should reconsider the logic used here, and self shouldn't be treated differently (useless complexity)
-     * Maybe use a similar method as Discord's for fetching connections (and to fetch badges in Powercord) and always
-     * poll (even for self). That'd require a new API endpoint though, but that's already the case given that
-     * connections now require a "hidden" field.
-     */
+    // @todo: remove empty line when there aren't connections
     inject('pc-connections-profile', UserInfoProfileSection.prototype, 'renderConnectedAccounts', function (_, res) {
-      const accounts = powercord.api.connections;
-      if (accounts.length === 0) {
-        return res;
-      }
-
       if (typeof res === 'object') {
         const { children: connectedAccounts } = res.props.children.props;
-        connectedAccounts.push(...accounts.map(c =>
-          React.createElement(ProfileConnection, Object.assign({}, c, c.type !== 'github'
-            ? { ...c.account }
-            : {
-              id: this.props.user.id,
-              verified: true
-            }
-          ))
-        ));
+        connectedAccounts.push(React.createElement(ProfileConnections, {
+          id: this.props.user.id
+        }));
       } else {
         return React.createElement('div', { className: _this.classes.userInfoSection },
-          React.createElement('div', { className: _this.classes.connectedAccounts }, accounts.map(c =>
-            React.createElement(ProfileConnection, Object.assign({}, c, c.type !== 'github'
-              ? { ...c.account }
-              : {
-                id: this.props.user.id,
-                verified: true
-              }
-            ))
-          ))
+          React.createElement('div', { className: _this.classes.connectedAccounts }, React.createElement(ProfileConnections, {
+            id: this.props.user.id
+          }))
         );
       }
 

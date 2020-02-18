@@ -3,7 +3,7 @@ const { Plugin } = require('powercord/entities');
 const { open: openModal } = require('powercord/modal');
 const { getOwnerInstance, waitFor } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule, getModuleByDisplayName, spotify } = require('powercord/webpack');
 const { resolve } = require('path');
 
 const Settings = require('./Settings');
@@ -107,14 +107,13 @@ module.exports = class Spotify extends Plugin {
     });
   }
 
-  async _patchAutoPause (revert) {
+  _patchAutoPause (revert) {
     if (this.settings.get('noAutoPause', true)) {
-      const mdl = await getModule([ 'SpotifyAPI' ]);
       if (revert) {
-        mdl.pause = mdl._pause;
+        spotify.pause = spotify._pause;
       } else {
-        mdl._pause = mdl.pause;
-        mdl.pause = () => void 0;
+        spotify._pause = spotify.pause;
+        spotify.pause = () => void 0;
       }
     }
   }

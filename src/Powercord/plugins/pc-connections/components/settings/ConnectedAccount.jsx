@@ -1,0 +1,83 @@
+const { React, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
+const { AsyncComponent, Clickable } = require('powercord/components');
+const { SwitchItem } = require('powercord/components/settings');
+
+const FormText = AsyncComponent.from(getModuleByDisplayName('FormText'));
+
+let classes;
+setImmediate(async () => {
+  classes = { ...await getModule([ 'connection', 'integration' ]) };
+});
+
+let lastState = null;
+
+module.exports = class ConnectedAccount extends React.PureComponent {
+  constructor (props) {
+    super(props);
+
+    this.connection = powercord.api.connections.get(props.account.type);
+    this.state = lastState || {
+      visibility: props.account.visibility
+    };
+  }
+
+  componentWillUnmount () {
+    lastState = this.state;
+  }
+
+  handleVisibilityChange (e) {
+    const { account } = this.props;
+    const value = e.currentTarget.checked ? 1 : 0;
+    this.setState({
+      visibility: value
+    });
+    powercord.api.connections.setVisibility(account.type, value);
+  }
+
+  renderHeader () {
+    const { props: { account }, connection } = this;
+    return <div className={classes.connectionHeader}>
+      <img alt={connection.name} className={classes.connectionIcon} src={connection.icon.white}/>
+      <div>
+        <FormText className={classes.connectionAccountValue}>{account.name}</FormText>
+        <FormText
+          className={classes.connectionAccountLabel}
+          style={{ color: '#fff' }}
+          type='description'
+        >
+          {Messages.ACCOUNT_NAME}
+        </FormText>
+        <Clickable className={classes.connectionDelete} onClick={this.props.onDisconnect}>
+          {Messages.SERVICE_CONNECTIONS_DISCONNECT}
+        </Clickable>
+      </div>
+    </div>;
+  }
+
+  renderConnectionOptions () {
+    return <div className={classes.connectionOptionsWrapper}>
+      <div className={classes.connectionOptions}>
+        <SwitchItem
+          className={classes.connectionOptionSwitch}
+          theme={SwitchItem.Themes.CLEAR}
+          hideBorder={true}
+          fill='rgba(255, 255, 255, .3)'
+          value={this.state.visibility === 1}
+          onChange={this.handleVisibilityChange.bind(this)}
+        >
+          <span className={classes.subEnabledTitle}>{Messages.DISPLAY_ON_PROFILE}</span>
+        </SwitchItem>
+      </div>
+    </div>;
+  }
+
+  render () {
+    const { connection } = this;
+    return <div className={classes.connection} style={{ borderColor: connection.color,
+      backgroundColor: connection.color
+    }}>
+      {this.renderHeader()}
+      {typeof this.state.visibility === 'number' && this.renderConnectionOptions()}
+    </div>;
+  }
+};
