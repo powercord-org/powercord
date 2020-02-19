@@ -24,7 +24,7 @@ module.exports = class ConnectedAccount extends React.Component {
       <img
         alt={Messages.IMG_ALT_LOGO.format({ name: connection.name })}
         className={classes.connectedAccountIcon}
-        src={connection.icon.color}
+        src={connection.icon.white}
       />
       <div className={classes.connectedAccountNameInner}>
         <div className={classes.connectedAccountName}>{account.name}
