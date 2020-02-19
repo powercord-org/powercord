@@ -6,6 +6,7 @@ const { get, del } = require('powercord/http');
 
 const SettingsConnections = require('./components/settings/ConnectedAccounts');
 const ProfileConnections = require('./components/profile/ConnectedAccounts');
+const Connection = require('./components/ConnectAccountButton');
 
 module.exports = class Connections extends Plugin {
   constructor () {
@@ -17,7 +18,8 @@ module.exports = class Connections extends Plugin {
   async startPlugin () {
     this.classes = {
       ...await getModule([ 'headerInfo' ]),
-      ...await getModule([ 'modal', 'inner' ])
+      ...await getModule([ 'modal', 'inner' ]),
+      ...await getModule([ 'connection', 'integration' ])
     };
 
     this.patchSettingsConnections();
@@ -68,6 +70,14 @@ module.exports = class Connections extends Plugin {
       if (!res.props.children) {
         return res;
       }
+
+      const availableConnections = res.props.children[0].props.children[2].props.children;
+      availableConnections.push(React.createElement(Connection, {
+        className: this.classes.accountBtn,
+        innerClassName: this.classes.accountBtnInner,
+        disabled: !powercord.account,
+        type: 'github'
+      }));
 
       const connectedAccounts = res.props.children[2].props.children;
       connectedAccounts.push(React.createElement(SettingsConnections, {}));
