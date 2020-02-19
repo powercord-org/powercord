@@ -20,8 +20,8 @@ module.exports = class ProfileConnections extends React.PureComponent {
   render () {
     return [
       Object.values(this.state).map(account => account && <ConnectedAccount
-        {...account}
         id={this.props.id}
+        account={account}
       />)
     ];
   }

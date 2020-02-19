@@ -13,12 +13,12 @@ module.exports = class ConnectedAccount extends React.Component {
   constructor (props) {
     super(props);
 
-    this.connection = powercord.api.connections.get(props.type);
+    this.connection = powercord.api.connections.get(props.account.type);
   }
 
   render () {
     const { Flex } = components;
-    const { connection } = this;
+    const { props: { account }, connection } = this;
 
     return <Flex align={Flex.Align.CENTER} grow={0} className={classes.connectedAccount}>
       <img
@@ -27,14 +27,14 @@ module.exports = class ConnectedAccount extends React.Component {
         src={connection.icon.color}
       />
       <div className={classes.connectedAccountNameInner}>
-        <div className={classes.connectedAccountName}>{this.props.name}
+        <div className={classes.connectedAccountName}>{account.name}
         </div>
-        {this.props.verified &&
+        {account.verified &&
           <Verified className={classes.connectedAccountVerifiedIcon}/>
         }
       </div>
       {typeof connection.getPlatformUserUrl === 'function' &&
-        <a href={connection.getPlatformUserUrl(this.props)} target='_blank'>
+        <a href={connection.getPlatformUserUrl(account)} target='_blank'>
           <Icon name='Nova_Launch' className={classes.connectedAccountOpenIcon}/>
         </a>
       }
