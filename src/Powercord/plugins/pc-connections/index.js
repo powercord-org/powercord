@@ -16,8 +16,8 @@ module.exports = class Connections extends Plugin {
     this.baseUrl = powercord.settings.get('backendURL', WEBSITE);
   }
 
-    this.loadCSS(resolve(__dirname, 'style.css'));
   async startPlugin () {
+    this.loadCSS(resolve(__dirname, 'style.css'));
     this.classes = {
       ...await getModule([ 'headerInfo' ]),
       ...await getModule([ 'modal', 'inner' ]),
