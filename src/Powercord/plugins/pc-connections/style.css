@@ -1,0 +1,7 @@
+.theme-dark div[class|='connectedAccounts'] button[aria-label='GitHub'] {
+  background-image: url('https://powercord.dev/assets/github_white.png') !important;
+}
+
+.theme-dark div[class|='connectedAccounts'] img[alt='GitHub Logo'] {
+  content: url('https://powercord.dev/assets/github_white.png');
+}

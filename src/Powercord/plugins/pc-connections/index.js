@@ -3,6 +3,7 @@ const { React, getModule, getModuleByDisplayName } = require('powercord/webpack'
 const { inject, uninject } = require('powercord/injector');
 const { WEBSITE } = require('powercord/constants');
 const { get, del } = require('powercord/http');
+const { resolve } = require('path');
 
 const SettingsConnections = require('./components/settings/ConnectedAccounts');
 const ProfileConnections = require('./components/profile/ConnectedAccounts');
@@ -15,6 +16,7 @@ module.exports = class Connections extends Plugin {
     this.baseUrl = powercord.settings.get('backendURL', WEBSITE);
   }
 
+    this.loadCSS(resolve(__dirname, 'style.css'));
   async startPlugin () {
     this.classes = {
       ...await getModule([ 'headerInfo' ]),

@@ -28,7 +28,7 @@ module.exports = class ConnectAccountButton extends React.Component {
           disabled={this.props.disabled}
           style={{ backgroundImage: `url(${this.connection.icon.color})` }}
           onClick={this.handleClick.bind(this)}
-          arial-label={this.connection.name}
+          aria-label={this.connection.name}
         >
         </button>
       </div>
