@@ -17,10 +17,10 @@
  */
 
 const { join } = require('path');
+const { promisify } = require('util');
 const ps = require('ps-node');
-const Promise = require('bluebird');
 
-const lookup = Promise.promisify(ps.lookup);
+const lookup = promisify(ps.lookup);
 
 exports.getAppDir = async () => {
   const lu = await lookup({
