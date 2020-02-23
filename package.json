@@ -22,8 +22,10 @@
   },
   "homepage": "https://github.com/powercord-org/powercord#readme",
   "dependencies": {
+    "bluebird": "^3.7.2",
     "less": "^3.10.3",
     "node-watch": "^0.6.3",
+    "ps-node": "^0.1.6",
     "sass": "^1.23.7",
     "stylus": "^0.54.7",
     "sucrase": "^3.10.1",

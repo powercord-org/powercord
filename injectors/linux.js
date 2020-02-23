@@ -16,23 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { existsSync } = require('fs');
 const { join } = require('path');
+const ps = require('ps-node');
+const Promise = require('bluebird');
 
-const paths = [
-  '/usr/share/discord-canary',
-  '/usr/lib64/discord-canary',
-  '/opt/discord-canary',
-  '/opt/DiscordCanary'
-];
+const lookup = Promise.promisify(ps.lookup);
 
 exports.getAppDir = async () => {
-  const discordPath = paths
-    .find(path => existsSync(path));
-
-  return join(
-    discordPath,
-    'resources',
-    'app'
-  );
+  const lu = await lookup({
+    command: 'DiscordCanary',
+    arguments: '--type=renderer'
+  });
+  const discordPath = lu[0].command.split('/');
+  discordPath.splice(discordPath.length - 1, 1);
+  return join('/', ...discordPath, 'resources', 'app');
 };
