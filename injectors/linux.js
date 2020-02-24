@@ -26,7 +26,7 @@ exports.getAppDir = async () => {
     .map(s => s.split(' ').filter(Boolean))
     .find(p => p[4] && p[4].endsWith('DiscordCanary') && p.includes('--type=renderer'));
 
-  if (!process) {
+  if (!discordProcess) {
     return;
   }
 
