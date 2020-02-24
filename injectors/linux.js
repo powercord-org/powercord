@@ -20,7 +20,7 @@ const { join } = require('path');
 const { execSync } = require('child_process');
 
 exports.getAppDir = async () => {
-  const process = execSync('ps x')
+  const discordProcess = execSync('ps x')
     .toString()
     .split('\n')
     .map(s => s.split(' ').filter(Boolean))
@@ -30,7 +30,7 @@ exports.getAppDir = async () => {
     return;
   }
 
-  const discordPath = process[4].split('/');
+  const discordPath = discordProcess[4].split('/');
   discordPath.splice(discordPath.length - 1, 1);
   return join('/', ...discordPath, 'resources', 'app');
 };
