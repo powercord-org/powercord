@@ -17,17 +17,20 @@
  */
 
 const { join } = require('path');
-const { promisify } = require('util');
-const ps = require('ps-node');
-
-const lookup = promisify(ps.lookup);
+const { execSync } = require('child_process');
 
 exports.getAppDir = async () => {
-  const lu = await lookup({
-    command: 'DiscordCanary',
-    arguments: '--type=renderer'
-  });
-  const discordPath = lu[0].command.split('/');
+  const process = execSync('ps x')
+    .toString()
+    .split('\n')
+    .map(s => s.split(' ').filter(Boolean))
+    .find(p => p[4] && p[4].endsWith('DiscordCanary') && p.includes('--type=renderer'));
+
+  if (!process) {
+    return;
+  }
+
+  const discordPath = process[4].split('/');
   discordPath.splice(discordPath.length - 1, 1);
   return join('/', ...discordPath, 'resources', 'app');
 };
