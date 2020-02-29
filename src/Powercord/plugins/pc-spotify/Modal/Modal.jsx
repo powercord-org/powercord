@@ -173,7 +173,7 @@ module.exports = class Modal extends React.Component {
 
   render () {
     const { currentItem, isPlaying, displayState } = this.state;
-    const artists = concat(currentItem.artists, ',');
+    const artists = concat(currentItem.artists, ', ');
     const { containerClasses } = this.props.main;
 
     const repeatIcon = this.state.repeatState === 'context' ? 'sync' : 'undo';
