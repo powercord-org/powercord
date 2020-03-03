@@ -25,7 +25,7 @@ exports.getAppDir = async () => {
     .toString()
     .split('\n')
     .map(s => s.split(' ').filter(Boolean))
-    .find(p => p[4] && p[4].endsWith('DiscordCanary') && p.includes('--type=renderer'));
+    .find(p => p[4] && (/discord-?canary$/i).test(p[4]) && p.includes('--type=renderer'));
 
   if (!discordProcess) {
     console.log('Cannot find Discord process, falling back to legacy path detection.');
