@@ -17,6 +17,7 @@
  */
 
 const { join } = require('path');
+const { existsSync } = require('fs');
 const { execSync } = require('child_process');
 
 exports.getAppDir = async () => {
@@ -27,7 +28,15 @@ exports.getAppDir = async () => {
     .find(p => p[4] && p[4].endsWith('DiscordCanary') && p.includes('--type=renderer'));
 
   if (!discordProcess) {
-    return;
+    console.log('Cannot find Discord process, falling back to legacy path detection.');
+    const paths = [
+      '/usr/share/discord-canary',
+      '/usr/lib64/discord-canary',
+      '/opt/discord-canary',
+      '/opt/DiscordCanary'
+    ];
+    const discordPath = paths.find(path => existsSync(path));
+    return join(discordPath, 'resources', 'app');
   }
 
   const discordPath = discordProcess[4].split('/');
