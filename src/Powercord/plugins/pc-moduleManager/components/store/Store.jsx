@@ -1,5 +1,5 @@
 const { React, Flux, getModule, getModuleByDisplayName } = require('powercord/webpack');
-const { Tooltip, Clickable, Icon, HeaderBar, AsyncComponent, Icons: { Plugin: PluginIcon, Theme, Certificate, Server } } = require('powercord/components');
+const { Tooltip, Clickable, HeaderBar, AsyncComponent, Icons: { Plugin: PluginIcon, Theme, CloudUpload, Certificate, Server } } = require('powercord/components');
 
 const Product = require('../items/Products/Product');
 const VerticalScroller = AsyncComponent.from(getModuleByDisplayName('VerticalScroller'));
@@ -93,7 +93,6 @@ class Store extends React.Component {
       </HeaderBar>
       <img className={classes.background} alt='background' src={this.props.images.background}/>
       <VerticalScroller outerClassName={[ store.container, 'powercord-store-container' ].join(' ')}>
-        {/**/ Object.values(Icon.Names).map(name => <Icon name={name}/>) /**/}
         <div className='powercord-store-body'>
           <SearchBox
             placeholder={`Search for ${this.state.word} ${this.state.type}...`}
@@ -125,7 +124,7 @@ class Store extends React.Component {
       <div className={topic}>Get in touch:</div>
       <Tooltip text={`Publish a ${this.state.type.slice(0, -1)}`} position='bottom'>
         <Clickable className={[ headerBar.iconWrapper, headerBar.clickable ].join(' ')}>
-          <Icon className={headerBar.icon} name='CloudUpload'/>
+          <CloudUpload className={headerBar.icon}/>
         </Clickable>
       </Tooltip>
       <Tooltip text='Verification' position='bottom'>

@@ -1,5 +1,5 @@
 const { React } = require('powercord/webpack');
-const { Tooltip, Icon, Clickable, Icons: { GitHub, CloudDownload } } = require('powercord/components');
+const { Tooltip, Clickable, Icons: { GitHub, Gear, CloudDownload, ReportFlag } } = require('powercord/components');
 
 module.exports = ({ github, owner, isLoggedIn, onSettings, onReport, onInstall }) =>
   <div className='powercord-product-footer'>
@@ -11,7 +11,7 @@ module.exports = ({ github, owner, isLoggedIn, onSettings, onReport, onInstall }
       </Tooltip>}
       {(owner || true) && <Tooltip text='Settings' placement='top'>
         <Clickable className='settings' onClick={() => onSettings}>
-          <Icon name='Gear' width={24} height={24}/>
+          <Gear width={24} height={24}/>
         </Clickable>
       </Tooltip>}
     </div>
@@ -23,7 +23,7 @@ module.exports = ({ github, owner, isLoggedIn, onSettings, onReport, onInstall }
       </Tooltip>
       {(isLoggedIn || true) && <Tooltip text='Report' placement='top'>
         <Clickable className='report' onClick={() => onReport}>
-          <Icon width={24} height={24} name='ReportFlag'/>
+          <ReportFlag width={24} height={24}/>
         </Clickable>
       </Tooltip>}
     </div>

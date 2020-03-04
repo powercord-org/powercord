@@ -16,9 +16,9 @@ module.exports = class ClickableEdits extends Plugin {
 
   async startPlugin () {
     const { textArea } = await getModule([ 'textArea', 'textAreaDisabled' ]);
-    const { containerCozy } = await getModule([ 'containerCozy' ]);
+    const { channelTextArea } = await getModule([ 'message', 'divider' ]);
 
-    this.state.textAreaEdit = `.${containerCozy.split(' ')[0]} .${textArea}`;
+    this.state.textAreaEdit = `.${channelTextArea} .${textArea}`;
     this.classes = {
       ...await getModule([ 'messages', 'scroller' ])
     };
@@ -86,7 +86,7 @@ module.exports = class ClickableEdits extends Plugin {
             const elem = document.querySelector(this.state.textAreaEdit);
             if (elem) {
               elem.focus();
-              elem.setSelectionRange(elem.value.length, elem.value.length);
+              elem.setSelectionRange(elem.textContent.length, elem.textContent.length);
             }
 
             contextMenu.closeContextMenu();

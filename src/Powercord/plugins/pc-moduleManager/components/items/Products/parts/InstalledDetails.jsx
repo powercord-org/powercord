@@ -1,6 +1,6 @@
 const { React, i18n: { Messages } } = require('powercord/webpack');
 const { open: openModal } = require('powercord/modal');
-const { Clickable, Tooltip, Icon, Icons: { Chemistry } } = require('powercord/components');
+const { Clickable, Tooltip, Icons: { Person, Tag, Chemistry, Scale, Info, Receipt } } = require('powercord/components');
 
 const LicenseModal = require('../../../License');
 const licenses = require('../../../../licenses');
@@ -11,13 +11,13 @@ module.exports = React.memo(
     <div className='powercord-plugin-container'>
       <div className='author'>
         <Tooltip text={Messages.APPLICATION_STORE_DETAILS_DEVELOPER} position='top'>
-          <Icon name='Person'/>
+          <Person/>
         </Tooltip>
         <span>{author}</span>
       </div>
       <div className='version'>
         <Tooltip text={Messages.POWERCORD_PLUGINS_VERSION} position='top'>
-          <Icon name='StoreTag'/>
+          <Tag/>
         </Tooltip>
         <span>v{version}</span>
         {version.startsWith('0') &&
@@ -27,19 +27,19 @@ module.exports = React.memo(
       </div>
       <div className='license'>
         <Tooltip text={Messages.POWERCORD_PLUGINS_LICENSE} position='top'>
-          <Icon name='Scale'/>
+          <Scale/>
         </Tooltip>
         <span>{license}</span>
         {licenses[license] &&
         <Clickable onClick={() => openModal(() => <LicenseModal spdx={license} license={licenses[license]}/>)}>
           <Tooltip text={Messages.LEARN_MORE} position='top'>
-            <Icon name='Info'/>
+            <Info/>
           </Tooltip>
         </Clickable>}
       </div>
       <div className='description'>
         <Tooltip text={Messages.DESCRIPTION} position='top'>
-          <Icon name='Receipt'/>
+          <Receipt/>
         </Tooltip>
         <span>{description}</span>
       </div>

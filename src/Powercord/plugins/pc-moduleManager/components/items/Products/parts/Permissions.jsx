@@ -1,7 +1,5 @@
 const { React, i18n: { Messages } } = require('powercord/webpack');
-const { FormTitle, Icon, Icons: { Keyboard, ImportExport } } = require('powercord/components');
-
-const easterEgg = Math.floor(Math.random() * 1337) === 69;
+const { FormTitle, Icons: { Keyboard, PersonShield, Copy, ImportExport } } = require('powercord/components');
 
 const perms = {
   keypresses: {
@@ -9,11 +7,11 @@ const perms = {
     text: () => Messages.POWERCORD_PLUGINS_PERMISSIONS_KEYPRESSES
   },
   use_eud: {
-    icon: ({ svgSize }) => <Icon width={svgSize} height={svgSize} name={easterEgg ? 'Facebook' : 'PersonShield'}/>,
+    icon: ({ svgSize }) => <PersonShield width={svgSize} height={svgSize}/>,
     text: () => Messages.POWERCORD_PLUGINS_PERMISSIONS_USE_EUD
   },
   filesystem: {
-    icon: ({ svgSize }) => <Icon width={svgSize} height={svgSize} name='Copy'/>,
+    icon: ({ svgSize }) => <Copy width={svgSize} height={svgSize}/>,
     text: () => Messages.POWERCORD_PLUGINS_PERMISSIONS_FS
   },
   ext_api: {

@@ -1,5 +1,5 @@
 const { React, Flux, getModule, getModuleByDisplayName, i18n: { Messages }, constants: { Colors } } = require('powercord/webpack');
-const { AsyncComponent, Icon } = require('powercord/components');
+const { AsyncComponent } = require('powercord/components');
 const { TooltipContainer } = getModule(m => m.TooltipContainer, false);
 
 const FlowerStarIcon = AsyncComponent.from(getModuleByDisplayName('FlowerStarIcon'));
@@ -16,18 +16,22 @@ class Verified extends React.Component {
         <div
           className={[ classes.flowerStarContainer, this.props.className ].filter(Boolean).join(' ')}
           style={{
-            width: this.props.width || 16,
-            height: this.props.height || 16
+            width: 16,
+            height: 16
           }}
         >
           <FlowerStarIcon
             className={classes.flowerStar}
             color={this.props.theme === 'light' ? Colors.STATUS_GREY_200 : Colors.PRIMARY_DARK}
-            size={this.props.size}
           />
 
           <div className={classes.childContainer}>
-            <Icon name='Verified' color={this.props.theme === 'light' ? Colors.STATUS_GREY_500 : Colors.WHITE}/>
+            <svg width={16} height={16} viewBox='0 0 16 15.2'>
+              <path
+                d='M7.4,11.17,4,8.62,5,7.26l2,1.53L10.64,4l1.36,1Z'
+                fill={this.props.theme === 'light' ? Colors.STATUS_GREY_500 : Colors.WHITE}
+              />
+            </svg>
           </div>
         </div>
       </TooltipContainer>

@@ -1,5 +1,5 @@
 const { React, i18n: { Messages } } = require('powercord/webpack');
-const { Icon, Icons: { Unlink } } = require('powercord/components');
+const { Icons: { Key, Sync, Unlink } } = require('powercord/components');
 
 const Account = require('./Account.jsx');
 
@@ -11,7 +11,7 @@ module.exports = (props) => {
       <Account type='spotify'/>
       <Account type='github'/>
       {syncEnabled && <div className='powercord-account-list-account'>
-        <Icon name='Key'/>
+        <Key/>
         <a className='powercord-account-item' href='#' onClick={() => props.passphrase()}>
           {Messages.POWERCORD_UPDATE_PASSPHRASE}
         </a>
@@ -19,7 +19,7 @@ module.exports = (props) => {
     </div>
     <div>
       <div className='powercord-account-list-account'>
-        <Icon name='Synced'/>
+        <Sync/>
         <a className='powercord-account-item' href='#' onClick={() => props.refresh()}>
           {Messages.POWERCORD_REFRESH_ACCOUNTS}
         </a>

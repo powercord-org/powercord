@@ -1,5 +1,5 @@
 const { React, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
-const { Icon } = require('powercord/components');
+const { Icons: { ExternalLink } } = require('powercord/components');
 
 const Verified = require('../Verified');
 
@@ -35,7 +35,7 @@ module.exports = class ConnectedAccount extends React.Component {
       </div>
       {typeof connection.getPlatformUserUrl === 'function' &&
         <a href={connection.getPlatformUserUrl(account)} target='_blank'>
-          <Icon name='Nova_Launch' className={classes.connectedAccountOpenIcon}/>
+          <ExternalLink className={classes.connectedAccountOpenIcon}/>
         </a>
       }
     </Flex>;
