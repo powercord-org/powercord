@@ -92,8 +92,14 @@ module.exports = class Codeblocks extends Plugin {
       target.classList.remove('copied');
     }, 1000);
 
+    const codeContent = target.parentElement.children[0];
+    const pcCopy = codeContent.querySelector('[data-powercord-codeblock-copy]');
+    if (pcCopy) {
+      return clipboard.writeText(pcCopy.textContent);
+    }
+
     const range = document.createRange();
-    range.selectNode(target.parentElement.children[0]);
+    range.selectNode(codeContent);
 
     const selection = window.getSelection();
     selection.removeAllRanges();
