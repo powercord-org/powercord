@@ -54,7 +54,7 @@ class PatchedBrowserWindow extends BrowserWindow {
 
       if (transparentWindow) {
         opts.transparent = true;
-        opts.frame = false;
+        opts.frame = process.platform !== 'win32';
         delete opts.backgroundColor;
       }
 
