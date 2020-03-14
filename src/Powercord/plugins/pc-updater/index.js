@@ -1,4 +1,4 @@
-const { React, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
+const { React, getModule, i18n: { Messages } } = require('powercord/webpack');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
 const { Plugin } = require('powercord/entities');
@@ -263,33 +263,18 @@ module.exports = class Updater extends Plugin {
   // Change Log
   async openChangeLogs () {
     const ChangeLog = await this._getChangeLogsComponent();
-    openModal(() => React.createElement(ChangeLog));
+    openModal(() => React.createElement(ChangeLog, {
+      changeLog: this.formatChangeLog(changelog)
+    }));
   }
 
   async _getChangeLogsComponent () {
     if (!this._ChangeLog) {
       const _this = this;
-      const changeLogModule = await getModule([ 'changeLog' ]);
       const { video } = await getModule([ 'video', 'added' ]);
-      const DiscordChangeLog = await getModuleByDisplayName('ChangeLog');
+      const DiscordChangeLog = await this._getMainChangeLogComponent();
 
       class ChangeLog extends DiscordChangeLog {
-        render () {
-          const originalGetter = Object.getOwnPropertyDescriptor(changeLogModule.__proto__, 'changeLog').get;
-          Object.defineProperty(changeLogModule, 'changeLog', {
-            get: () => _this.formatChangeLog(changelog),
-            configurable: true
-          });
-          const res = super.render();
-          setImmediate(() => {
-            Object.defineProperty(changeLogModule, 'changeLog', {
-              get: originalGetter,
-              configurable: true
-            });
-          });
-          return res;
-        }
-
         renderHeader () {
           const header = super.renderHeader();
           header.props.children[0].props.children = `Powercord - ${header.props.children[0].props.children}`;
@@ -357,5 +342,18 @@ module.exports = class Updater extends Plugin {
       revision: 1,
       body
     };
+  }
+
+  async _getMainChangeLogComponent () {
+    const mdl = await getModule([ 'useStateFromStoresObject' ]);
+    const ogFunction = mdl.useStateFromStoresObject;
+    mdl.useStateFromStoresObject = () => ({
+      changeLog: '',
+      isOpen: true
+    });
+    const Component = await getModule(m => m.type && m.type.displayName && m.type.displayName === 'ConnectedChangeLog');
+    const ChangeLog = Component.type().type;
+    mdl.useStateFromStoresObject = ogFunction;
+    return ChangeLog;
   }
 };

@@ -66,6 +66,7 @@ module.exports = class Powercord extends Updatable {
     if (isOverlay) { // eh
       // await sleep(250);
     }
+    await sleep(1e3);
 
     // Webpack & Modules
     await Webpack.init();
@@ -74,10 +75,7 @@ module.exports = class Powercord extends Updatable {
     // Start
     await this.startup();
     this.fetchAccount();
-
-    const { _options: { release: buildId } } = window.__SENTRY__.hub.getClient();
     this.gitInfos = await this.pluginManager.get('pc-updater').getGitInfos();
-    this.buildInfo = `Release Channel: ${window.GLOBAL_ENV.RELEASE_CHANNEL} - Discord's Build Number: ${buildId} - Powercord's git revision: ${this.gitInfos.revision}@${this.gitInfos.branch}`;
 
     // Token manipulation stuff
     if (this.settings.get('hideToken', true)) {
@@ -235,43 +233,5 @@ module.exports = class Powercord extends Updatable {
       updater.settings.set('awaiting_reload', true);
     }
     return success;
-  }
-
-  // idk i was bored and people need to know the truth
-  get isEmmaCute () {
-    return () => true;
-  }
-
-  get isEmmaNotCute () {
-    return () => false;
-  }
-
-  get emma () {
-    // no u ain't going to make it negative uwu
-    const cuteIncrement = Math.max(0, this.settings.get('_cute_inc', 0));
-    this.settings.set('_cute_inc', cuteIncrement + 0.1);
-    return {
-      cute: true,
-      percent: 100.0 + cuteIncrement,
-      uwu: '🌺'
-    };
-  }
-
-  // No emma u wont edit those UwU
-  set emma (_) {
-    throw new Error('TooCuteException: awooooo');
-  }
-
-  set isEmmaCute (_) {
-    throw new Error('TooCuteException: awooooo');
-  }
-
-  set isEmmaNotCute (_) {
-    throw new Error('TooCuteException: awooooo');
-  }
-
-  // i was still bored
-  get daddy () {
-    return 'aeth uwu';
   }
 };

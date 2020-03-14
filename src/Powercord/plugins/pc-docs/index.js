@@ -63,7 +63,7 @@ module.exports = class Documentation extends Plugin {
 
   async _loadModule (channel) {
     const module = await getModule([ 'createBotMessage' ]);
-    const message = module.createBotMessage(channel, '```truth\nemma is very cute\n```');
+    const message = module.createBotMessage(channel, '```js\nconsole.log("yeet")\n```');
     messages.receiveMessage(channel, message);
     messages.deleteMessage(channel, message.id, true);
   }

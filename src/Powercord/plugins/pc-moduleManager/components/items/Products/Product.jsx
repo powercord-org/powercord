@@ -29,7 +29,7 @@ module.exports = class Product extends React.Component {
         <div className='powercord-product-description'>{manifest.description}</div>
         {(manifest.permissions || []).length > 0 && <Permissions svgSize={18} permissions={manifest.permissions}/>}
         <Rating up={1337} down={69} self={null} onVote={(type) => console.log(type)}/>
-        {(manifest.tags || true) && <Tags tags={manifest.tags || [ 'emma', 'is', 'cute' ]}/>}
+        {(manifest.tags || true) && <Tags tags={manifest.tags || [ 'test', 'tags', 'yes' ]}/>}
         <Footer/>
       </div>
     </div>;
