@@ -20,7 +20,7 @@ module.exports = class ReactDevtools extends Plugin {
   }
 
   startPlugin () {
-    return;
+    // return;
 
     // eslint-disable-next-line no-unreachable
     this.listener = this.listener.bind(this);

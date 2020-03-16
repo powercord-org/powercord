@@ -11,6 +11,7 @@ module.exports = class UtilityClasses extends Plugin {
       }
     });
 
+    document.body.classList.add('powercord');
     if (window.__OVERLAY__) {
       document.body.classList.add('overlay');
     }

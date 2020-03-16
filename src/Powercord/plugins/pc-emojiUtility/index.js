@@ -230,8 +230,6 @@ module.exports = class EmojiUtility extends Plugin {
     this.settings.set('includeIdForSavedEmojis', this.settings.get('includeIdForSavedEmojis', true));
     this.settings.set('defaultCloneIdUseCurrent', this.settings.get('defaultCloneIdUseCurrent', false));
 
-    const _this = this;
-
     const getCloneableFeatures = (emoji) => {
       const onGuildClick = async (guild) => {
         if (!guild) {
@@ -445,61 +443,7 @@ module.exports = class EmojiUtility extends Plugin {
       return features;
     };
 
-    const MessageContextMenu = await getModuleByDisplayName('MessageContextMenu');
-    inject('pc-emojiUtility-emojiContext', MessageContextMenu.prototype, 'render', function (args, res) {
-      const { target } = this.props;
-      if (target.classList.contains('emoji')) {
-        const matcher = target.src.match(_this.getEmojiUrlRegex());
-        if (matcher) {
-          let emoji = _this.getEmojiById(matcher[1]);
-          if (emoji) {
-            emoji.fake = false;
-          } else {
-            emoji = _this.createFakeEmoji(matcher[1], target.alt.substring(1, target.alt.length - 1), target.src);
-          }
-
-          res.props.children.push(
-            React.createElement(Submenu, {
-              name: 'Emote',
-              seperate: true,
-              getItems: () => getCloneableFeatures(emoji)
-            })
-          );
-        }
-      }
-      return res;
-    });
-
-    const handleImageContext = function (args, res) {
-      const { target } = this.props;
-      const { imageWrapper } = getModule([ 'imageWrapper' ], false);
-
-      if (target.tagName.toLowerCase() === 'img' && target.parentElement.classList.contains(imageWrapper)) {
-        /* NativeContextMenu's children is a single object, turn it in to an array to be able to push */
-        if (typeof res.props.children === 'object') {
-          const children = [];
-          children.push(res.props.children);
-
-          res.props.children = children;
-        }
-
-        res.props.children.push(
-          React.createElement(Submenu, {
-            name: 'Emote',
-            seperate: true,
-            getItems: () => getCreateableFeatures(target)
-          })
-        );
-      }
-
-      return res;
-    };
-
-    inject('pc-emojiUtility-imageContext', MessageContextMenu.prototype, 'render', handleImageContext);
-
-    const NativeContextMenu = await getModuleByDisplayName('NativeContextMenu');
-    inject('pc-emojiUtility-nativeContext', NativeContextMenu.prototype, 'render', handleImageContext);
-
+    this._injectContextMenu(getCloneableFeatures, getCreateableFeatures);
     /*
      * Discord broke this in a recent update so TODO: Figure out a new way of adding the emote context to reactions
      *
@@ -819,12 +763,64 @@ module.exports = class EmojiUtility extends Plugin {
 
   pluginWillUnload () {
     uninject('pc-emojiUtility-emojiContext');
-    uninject('pc-emojiUtility-imageContext');
-    uninject('pc-emojiUtility-nativeContext');
     uninject('pc-emojiUtility-reactionContext');
     uninject('pc-emojiUtility-hideEmojisPicker');
     uninject('pc-emojiUtility-hideEmojisPickerRm');
     uninject('pc-emojiUtility-hideEmojisPickerMount');
     uninject('pc-emojiUtility-hideEmojisComplete');
+  }
+
+  async _injectContextMenu (cloneSubMenu, createSubMenu) {
+    const { contextMenu } = await getModule([ 'contextMenu' ]);
+    const { imageWrapper } = await getModule([ 'imageWrapper' ]);
+
+    const callback = () =>
+      setTimeout(async () => {
+        const element = document.querySelector(`.${contextMenu}`);
+        if (element) {
+          const instance = getOwnerInstance(element);
+          if (instance._reactInternalFiber.child.child.pendingProps.type === 'MESSAGE_MAIN') {
+            window.removeEventListener('contextmenu', callback, true);
+            const fn = instance._reactInternalFiber.child.child.type;
+            const mdl = await getModule(m => m.default === fn);
+
+            // FINALLY inject
+            inject('pc-emojiUtility-emojiContext', mdl, 'default', ([ { target } ], res) => {
+              console.log(res);
+              if (target.classList.contains('emoji')) {
+                const matcher = target.src.match(this.getEmojiUrlRegex());
+                if (matcher) {
+                  let emoji = this.getEmojiById(matcher[1]);
+                  if (emoji) {
+                    emoji.fake = false;
+                  } else {
+                    emoji = this.createFakeEmoji(matcher[1], target.alt.substring(1, target.alt.length - 1), target.src);
+                  }
+
+                  res.props.children.push(
+                    React.createElement(Submenu, {
+                      name: 'Emote',
+                      seperate: true,
+                      getItems: () => cloneSubMenu(emoji)
+                    })
+                  );
+                }
+              } else if (target.tagName.toLowerCase() === 'img' && target.parentElement.classList.contains(imageWrapper)) {
+                res.props.children.push(
+                  React.createElement(Submenu, {
+                    name: 'Emote',
+                    seperate: true,
+                    getItems: () => createSubMenu(target)
+                  })
+                );
+              }
+              return res;
+            });
+            instance.forceUpdate();
+          }
+        }
+      }, 5);
+
+    window.addEventListener('contextmenu', callback, true);
   }
 };

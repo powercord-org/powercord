@@ -38,15 +38,19 @@ module.exports = class Connections extends Plugin {
       enabled: true,
       fetchAccount: async (id) => {
         let accounts = [];
-        if (!id) {
-          if (powercord.account) {
-            accounts = await get(`${this.baseUrl}/api/v2/users/@me/accounts`)
-              .set('Authorization', powercord.account.token)
+        try {
+          if (!id) {
+            if (powercord.account) {
+              accounts = await get(`${this.baseUrl}/api/v2/users/@me/accounts`)
+                .set('Authorization', powercord.account.token)
+                .then(r => r.body);
+            }
+          } else {
+            accounts = await get(`${this.baseUrl}/api/v2/users/${id}/accounts`)
               .then(r => r.body);
           }
-        } else {
-          accounts = await get(`${this.baseUrl}/api/v2/users/${id}/accounts`)
-            .then(r => r.body);
+        } catch (e) {
+          // Let it fail silently
         }
 
         return accounts.find(account => account.type === 'github');
@@ -114,11 +118,13 @@ module.exports = class Connections extends Plugin {
   async _fetchUserConnectionModule () {
     // BEAUTIFUL, ABSOLUTELY BEAUTIFUL I LOVE INJECTING INTO DISCORD.
     const UserProfile = await getModuleByDisplayName('UserProfile');
+    // noinspection JSPotentiallyInvalidConstructorUsage
     const setp1 = React.createElement(UserProfile)
       .type.prototype.render()
       .type.prototype.render.call({ memoizedGetStateFromStores: () => ({}) })
       .type.render()
       .type.prototype.render.call({ props: {} }).type;
+    // noinspection JSPotentiallyInvalidConstructorUsage
     return setp1.prototype.render.call({
       ...setp1.prototype,
       props: {
