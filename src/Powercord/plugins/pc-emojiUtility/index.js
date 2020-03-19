@@ -786,7 +786,6 @@ module.exports = class EmojiUtility extends Plugin {
 
             // FINALLY inject
             inject('pc-emojiUtility-emojiContext', mdl, 'default', ([ { target } ], res) => {
-              console.log(res);
               if (target.classList.contains('emoji')) {
                 const matcher = target.src.match(this.getEmojiUrlRegex());
                 if (matcher) {
