@@ -16,7 +16,7 @@
     "POWERCORD_SETTINGS_SYNC": "Synchronizuj ustawienia",
     "POWERCORD_SETTINGS_SYNC_DESC": "Synchronizuj wszystkie twoje ustawienia Powercorda pomiędzy urządzeniami. Wymaga konta Powercord!",
     "POWERCORD_SETTINGS_NO_CLYDE": "Zastąp Clyde",
-    "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Zamienia [Clyde]({discordiaUrl}) w komendach Powercorda z mieszanym zakresem awatarów i nazw użykowników wybranych przez twórców pluginów - domyślnie jest to \"Powercord\".",
+    "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Zamienia [Clyde]({discordiaUrl}) w komendach Powercorda z mieszanym zakresem awatarów i nazw użytkowników wybranych przez twórców pluginów - domyślnie jest to \"Powercord\".",
     "POWERCORD_SETTINGS_ADVANCED_DESC": "Nie zmieniaj tych ustawień, jeśli nie wiesz co robisz. Mogą przytrafić się nieprzewidzane rzeczy.",
     "POWERCORD_SETTINGS_OVERLAY": "Narzędzia programistyczne nakładki",
     "POWERCORD_SETTINGS_KEEP_TOKEN": "Zatrzymaj token w pamięci",
