@@ -173,7 +173,7 @@ module.exports = class Powercord extends Updatable {
         if (!resp.body.error && resp.body.error !== 'DISCORD_REVOKED') {
           powercord.api.notices.sendAnnouncement('pc-account-discord-unlinked', {
             color: 'red',
-            message: 'Your Powercord account is no longer linked to your Discord account! Some integration will be disabled.',
+            message: 'Your Powercord account is no longer linked to your Discord account! Some integrations will be disabled.',
             button: {
               text: 'Link it back',
               onClick: () => openExternal(`${WEBSITE}/oauth/discord`)
