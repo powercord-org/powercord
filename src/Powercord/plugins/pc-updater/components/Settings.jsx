@@ -426,7 +426,7 @@ module.exports = class UpdaterSettings extends React.Component {
               className='full-column'>Experiments:&#10;{(getExperimentOverrides() && Object.keys(getExperimentOverrides()).join(', ')) || 'n/a'}</div>
             <div className='full-column'>
               Plugins:&#10;{(plugins.length > 1 && `${(this.state.pluginsRevealed ? plugins : plugins.slice(0, 6)).join(', ')}; `) || 'n/a'}
-              {plugins.length > 1 &&
+              {plugins.length > 6 &&
               <Clickable tag='a' onClick={() => this.setState({ pluginsRevealed: !this.state.pluginsRevealed })}>
                 {this.state.pluginsRevealed ? 'Show less' : 'Show more'}
               </Clickable>}
