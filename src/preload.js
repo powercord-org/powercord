@@ -20,26 +20,68 @@ require('../polyfills');
 
 const { remote } = require('electron');
 const { join } = require('path');
+const { existsSync, mkdirSync, open, write } = require('fs');
 
-require('module')
-  .Module
-  .globalPaths
-  .push(
-    join(__dirname, 'fake_node_modules')
-  );
+// Add Powercord's modules
+require('module').Module.globalPaths.push(join(__dirname, 'fake_node_modules'));
 
+// Initialize Powercord
 const Powercord = require('./Powercord');
 global.powercord = new Powercord();
 
 // https://github.com/electron/electron/issues/9047
-if (
-  process.platform === 'darwin' &&
-  !process.env.PATH.includes('/usr/local/bin')
-) {
+if (process.platform === 'darwin' && !process.env.PATH.includes('/usr/local/bin')) {
   process.env.PATH += ':/usr/local/bin';
 }
 
+// Discord's preload
 require(remote.getGlobal('originalPreload'));
+
+// Debug logging
+let debugLogs;
+try {
+  const settings = require('../settings/pc-general.json');
+  // eslint-disable-next-line prefer-destructuring
+  debugLogs = settings.debugLogs;
+} finally {
+  if (debugLogs) {
+    if (!existsSync(powercord.logsFolder)) {
+      mkdirSync(powercord.logsFolder, { recursive: true });
+    }
+    const getDate = () => new Date().toISOString().replace('T', ' ').split('.')[0];
+    const filename = `${window.__OVERLAY__ ? 'overlay' : 'discord'}-${new Date().toISOString().replace('T', '_').replace(/:/g, '-').split('.')[0]}.txt`;
+    open(join(powercord.logsFolder, filename), 'w', (_, fd) => {
+      // Patch console methods
+      for (const key of [ 'log', 'debug', 'info', 'warn', 'error' ]) {
+        console[`_powercord_${key}`] = console[key].bind(console);
+        console[key] = (...args) => {
+          const cleaned = [];
+          for (let i = 0; i < args.length; i++) {
+            const part = args[i];
+            if (typeof part === 'string' && part.includes('%c')) { // Remove console formatting
+              cleaned.push(part.replace(/%c/g, ''));
+              i++;
+            } else if (typeof part === 'object') { // Objects
+              cleaned.push(JSON.stringify(part));
+            } else {
+              cleaned.push(part);
+            }
+          }
+          write(fd, `[${getDate()}] [CONSOLE] [${key.toUpperCase()}] ${cleaned.join(' ')}\n`, 'utf8', () => void 0);
+          console[`_powercord_${key}`](...args);
+        };
+      }
+
+      // Add listeners
+      process.on('uncaughtException', ev => write(fd, `[${getDate()}] [PROCESS] [ERROR] Uncaught Exception: ${ev.error}\n`, 'utf8', () => void 0));
+      process.on('unhandledRejection', ev => write(fd, `[${getDate()}] [PROCESS] [ERROR] Unhandled Rejection: ${ev.reason}\n`, 'utf8', () => void 0));
+      window.addEventListener('error', ev => write(fd, `[${getDate()}] [WINDOW] [ERROR] ${ev.error}\n`, 'utf8', () => void 0));
+      window.addEventListener('unhandledRejection', ev => write(fd, `[${getDate()}] [WINDOW] [ERROR] Unhandled Rejection: ${ev.reason}\n`, 'utf8', () => void 0));
+    });
+  }
+}
+
+// Overlay devtools
 powercord.once('loaded', () => {
   if (window.__OVERLAY__ && powercord.api.settings.store.getSetting('pc-general', 'openOverlayDevTools', false)) {
     /**

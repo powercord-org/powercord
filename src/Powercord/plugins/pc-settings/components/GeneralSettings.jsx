@@ -63,6 +63,16 @@ module.exports = class GeneralSettings extends React.Component {
           onChange={() => toggleSetting('advancedSettings')}
         >
           <SwitchItem
+            note={Messages.POWERCORD_SETTINGS_DEBUG_LOGS_DESC}
+            value={getSetting('debugLogs', false)}
+            onChange={() => {
+              toggleSetting('debugLogs');
+              this.askRestart();
+            }}
+          >
+            {Messages.POWERCORD_SETTINGS_DEBUG_LOGS}
+          </SwitchItem>
+          <SwitchItem
             note2={Messages.POWERCORD_SETTINGS_OVERLAY_DESC}
             note='Overlay support is for now broken.'
             value={getSetting('openOverlayDevTools', false)}

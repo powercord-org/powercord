@@ -38,6 +38,7 @@ module.exports = class Powercord extends Updatable {
     super(join(__dirname, '..', '..'), '', 'powercord');
 
     this.cacheFolder = join(__dirname, '..', '..', '.cache');
+    this.logsFolder = join(__dirname, '..', '..', '.logs');
     this.api = {};
     this.gitInfos = {
       upstream: '???',
@@ -98,6 +99,7 @@ module.exports = class Powercord extends Updatable {
     // APIs
     await this.apiManager.startAPIs();
     this.settings = powercord.api.settings.buildCategoryObject('pc-general');
+    this.emit('settingsReady');
 
     // Style Manager
     this.styleManager.loadThemes();
