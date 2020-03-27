@@ -119,5 +119,8 @@
     "POWERCORD_BADGES_STAFF": "Personal de Powercord",
     "POWERCORD_BADGES_DEVELOPER": "Desarrollador Powercord",
     "POWERCORD_I18N_TRANSLATED_OVERRIDES": "{reemplaza, número} reemplaza a las traducciones de Discord",
-    "POWERCORD_I18N_TRANSLATED_PERCENTAGE": "Powercord: {traducido, número}% traducido"
+    "POWERCORD_I18N_TRANSLATED_PERCENTAGE": "Powercord: {traducido, número}% traducido",
+    "POWERCORD_SETTINGS_OVERLAY_DESC": "Abre una ventana de DevTools que te permite inspeccionar lo que sucede dentro de la superposición en el juego de Discord.",
+    "POWERCORD_SETTINGS_DEBUG_LOGS_DESC": "Guarda el contenido de la consola en un archivo. Útil para la depuración si Discord se bloquea inesperadamente.",
+    "POWERCORD_SETTINGS_DEBUG_LOGS": "Registros de depuración"
 }
