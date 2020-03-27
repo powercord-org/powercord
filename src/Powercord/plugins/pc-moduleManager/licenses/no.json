@@ -26,5 +26,6 @@
     "POWERCORD_PLUGINS_LICENSE_LIMITATIONS": "Begrensninger",
     "POWERCORD_PLUGINS_LICENSE_CONDITIONS": "Forhold",
     "POWERCORD_PLUGINS_LICENSE_PERMISSIONS": "Tillatelser",
-    "POWERCORD_PLUGINS_LICENSE_DISCLAIMER": "Dette er ikke juridisk råd. Data fra [choosealicense.com]({url})."
+    "POWERCORD_PLUGINS_LICENSE_DISCLAIMER": "Dette er ikke juridisk råd. Data fra [choosealicense.com]({url}).",
+    "POWERCORD_PLUGINS_LICENSE_WARRANTY_NAME": "Garanti"
 }

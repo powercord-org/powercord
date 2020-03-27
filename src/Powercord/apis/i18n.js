@@ -30,7 +30,11 @@ module.exports = class I18n extends API {
     this.loadAllStrings(overrides);
   }
 
-  async startAPI () {
+  startAPI () {
+    this._startAPI();
+  }
+
+  async _startAPI () {
     const module = await getModule([ 'locale', 'theme' ]);
     this.locale = module.locale;
     module.addChangeListener(() => {
