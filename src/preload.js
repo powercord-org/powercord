@@ -84,14 +84,17 @@ try {
 // Overlay devtools
 powercord.once('loaded', () => {
   if (window.__OVERLAY__ && powercord.api.settings.store.getSetting('pc-general', 'openOverlayDevTools', false)) {
-    /**
-     * @todo: figure out why they won't open
-     * Note: this is not an easy issue. I've spent a fucking lot hours
-     * on trying to debug this. If you attempt it, make sure to increment
-     * the counter here so others know how fucked up trying to debug this is.
-     *
-     * Number of hours wasted here: 8
-     */
-    setTimeout(() => remote.getCurrentWindow().openDevTools({ mode: 'detach' }), 2e3);
+    const overlayWindow = remote.getCurrentWindow();
+    overlayWindow.openDevTools({ mode: 'detach' });
+    let devToolsWindow = new remote.BrowserWindow({
+      webContents: overlayWindow.devToolsWebContents
+    });
+    devToolsWindow.on('ready-to-show', () => {
+      devToolsWindow.show();
+    });
+    devToolsWindow.on('close', () => {
+      overlayWindow.closeDevTools();
+      devToolsWindow = null;
+    });
   }
 });
