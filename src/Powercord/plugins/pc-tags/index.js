@@ -9,6 +9,10 @@ module.exports = class Tags extends Plugin {
     this.registerTags();
   }
 
+  pluginWillUnload () {
+    this.unregisterTags();
+  }
+
   registerMain () {
     this.registerCommand(
       'tag',
@@ -53,7 +57,7 @@ module.exports = class Tags extends Plugin {
   registerTag (name) {
     const content = this.settings.get(name);
 
-    this.registerCommand(
+    powercord.api.commands.registerCommand(
       name,
       [],
       `Tag: ${content}`,
@@ -69,7 +73,18 @@ module.exports = class Tags extends Plugin {
     );
   }
 
+  unregisterTags () {
+    for (const tag of this.settings.getKeys()) {
+      this.registerTag(tag);
+    }
+  }
+
   unregisterTag (name) {
     powercord.api.commands.unregisterCommand(name);
+  }
+
+  reloadTag (name) {
+    this.unregisterTag(name);
+    this.registerTag(name);
   }
 };

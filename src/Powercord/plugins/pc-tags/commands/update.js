@@ -27,8 +27,7 @@ module.exports = {
     }
 
     main.settings.set(name, args.join(' '));
-    main.unregisterTag(name);
-    main.registerTag(name);
+    main.reloadTag(name);
 
     return {
       send: false,

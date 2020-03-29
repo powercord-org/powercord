@@ -50,7 +50,9 @@ try {
     }
     const getDate = () => new Date().toISOString().replace('T', ' ').split('.')[0];
     const filename = `${window.__OVERLAY__ ? 'overlay' : 'discord'}-${new Date().toISOString().replace('T', '_').replace(/:/g, '-').split('.')[0]}.txt`;
-    open(join(powercord.logsFolder, filename), 'w', (_, fd) => {
+    const path = join(powercord.logsFolder, filename);
+    console.log('[Powercord] Debug logs enabled. Logs will be saved in', path);
+    open(path, 'w', (_, fd) => {
       // Patch console methods
       for (const key of [ 'log', 'debug', 'info', 'warn', 'error' ]) {
         console[`_powercord_${key}`] = console[key].bind(console);
@@ -70,7 +72,7 @@ try {
             }
           }
           write(fd, `[${getDate()}] [CONSOLE] [${key.toUpperCase()}] ${cleaned.join(' ')}\n`, 'utf8', () => void 0);
-          console[`_powercord_${key}`].apply(void 0, ...args);
+          console[`_powercord_${key}`].apply(console, ...args);
         };
       }
 

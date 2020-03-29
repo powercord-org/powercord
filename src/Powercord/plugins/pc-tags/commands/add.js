@@ -3,7 +3,7 @@ const getPrefix = () => powercord.api.commands.prefix;
 module.exports = {
   command: 'add',
   description: 'Create a tag',
-  func: (args, { settings }) => {
+  func: (args, main) => {
     if (args.length < 2) {
       return {
         send: false,
@@ -17,7 +17,7 @@ module.exports = {
 
     const name = args.shift();
     const value = args.join(' ').replace(/\\n/g, '\n');
-    if (settings.get(name)) {
+    if (main.settings.get(name)) {
       return {
         send: false,
         result: {
@@ -27,7 +27,8 @@ module.exports = {
       };
     }
 
-    settings.set(name, value);
+    main.settings.set(name, value);
+    main.registerTag(name);
 
     return {
       send: false,

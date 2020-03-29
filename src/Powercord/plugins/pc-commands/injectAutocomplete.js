@@ -171,10 +171,8 @@ module.exports = async function injectAutocomplete () {
             renderContent (...originalArgs) {
               const rendered = super.renderContent(...originalArgs);
               const { children } = rendered.props;
-
-              if (children[0].props.name === 'Slash') {
+              if (children[0].props.className.startsWith('icon-')) {
                 delete children[0].props;
-
                 children[0].type = children[2].type;
                 children[0].props = {
                   children: powercord.api.commands.prefix,
