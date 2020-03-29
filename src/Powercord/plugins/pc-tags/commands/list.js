@@ -8,7 +8,7 @@ module.exports = {
       send: false,
       result: {
         type: 'rich',
-        title: `You have ${keys.length} tags available:`,
+        title: `You have ${keys.length} {keys.length > 1 ? 'tags': 'tag'} available:`,
         description: keys.map(key => `- ${key}`).join('\n')
       }
     };
