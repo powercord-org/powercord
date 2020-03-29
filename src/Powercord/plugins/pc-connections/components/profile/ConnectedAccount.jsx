@@ -6,7 +6,7 @@ const Verified = require('../Verified');
 let components, classes;
 setImmediate(async () => {
   components = { Flex: await getModuleByDisplayName('Flex') };
-  classes = { ...await getModule([ 'headerInfo' ]) };
+  classes = { ...await getModule([ 'connectedAccount', 'headerInfo' ]) };
 });
 
 module.exports = class ConnectedAccount extends React.Component {
