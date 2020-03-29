@@ -3,14 +3,14 @@ const { existsSync } = require('fs');
 const { unlink } = require('fs').promises;
 const { Plugin } = require('powercord/entities');
 const { React, getModule, getModuleByDisplayName, constants: { Routes } } = require('powercord/webpack');
-const { getOwnerInstance, waitFor } = require('powercord/util');
+const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { GUILD_ID, DISCORD_INVITE } = require('powercord/constants');
 
 const ToastContainer = require('./components/ToastContainer');
 const AnnouncementContainer = require('./components/AnnouncementContainer');
 
-module.exports = class Toasts extends Plugin {
+module.exports = class Notices extends Plugin {
   startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.scss'));
     this._patchAnnouncements();
@@ -44,11 +44,13 @@ module.exports = class Toasts extends Plugin {
   }
 
   async _patchToasts () {
-    const Chat = await getModuleByDisplayName('Chat');
-    inject('pc-notices-toast', Chat.prototype, 'render', (_, res) => {
+    const { app } = getModule([ 'app', 'layers' ]);
+    const Shakeable = await getModuleByDisplayName('Shakeable');
+    inject('pc-notices-toast', Shakeable.prototype, 'render', (_, res) => {
       res.props.children.push(React.createElement(ToastContainer));
       return res;
     });
+    forceUpdateElement(`.${app}`);
   }
 
   _welcomeNewUser () {

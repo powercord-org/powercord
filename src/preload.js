@@ -61,6 +61,8 @@ try {
             if (typeof part === 'string' && part.includes('%c')) { // Remove console formatting
               cleaned.push(part.replace(/%c/g, ''));
               i++;
+            } else if (part instanceof Error) { // Objects
+              cleaned.push(part.message);
             } else if (typeof part === 'object') { // Objects
               cleaned.push(JSON.stringify(part));
             } else {
@@ -68,7 +70,7 @@ try {
             }
           }
           write(fd, `[${getDate()}] [CONSOLE] [${key.toUpperCase()}] ${cleaned.join(' ')}\n`, 'utf8', () => void 0);
-          console[`_powercord_${key}`](...args);
+          console[`_powercord_${key}`].apply(void 0, ...args);
         };
       }
 
