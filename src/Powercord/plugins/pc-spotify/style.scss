@@ -30,6 +30,7 @@ div[class*='listeningAlong'] + .powercord-spotify {
   &-songInfo {
     height: 28px;
     position: relative;
+    overflow: hidden;
   }
 
   &-playlist {
