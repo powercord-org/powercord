@@ -19,7 +19,7 @@ module.exports = class Connections extends Plugin {
   async startPlugin () {
     this.loadCSS(resolve(__dirname, 'style.css'));
     this.classes = {
-      ...await getModule([ 'headerInfo' ]),
+      ...await getModule([ 'headerInfo', 'nameTag' ]),
       ...await getModule([ 'modal', 'inner' ]),
       ...await getModule([ 'connection', 'integration' ])
     };

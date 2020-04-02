@@ -19,7 +19,7 @@ module.exports = class Badges extends Plugin {
 
   async startPlugin () {
     this.classes = {
-      ...await getModule([ 'headerInfo' ]),
+      ...await getModule([ 'headerInfo', 'nameTag' ]),
       ...await getAllModules([ 'modal', 'inner' ])[1],
       header: (await getModule([ 'iconBackgroundTierNone', 'container' ])).header
     };

@@ -47,25 +47,14 @@ module.exports = class DoNotTrack extends Plugin {
     Sentry.client._processEvent = () => void 0;
     Sentry.client._prepareEvent = () => void 0;
     Object.assign(window.console, [ 'debug', 'info', 'warn', 'error', 'log', 'assert' ].forEach(
-      (method) => window.console[method] = window.console[method].__sentry_original__)
+      (method) => {
+        if (window.console[method].__sentry_original__) {
+          window.console[method] = window.console[method].__sentry_original__;
+        } else if (window.console[method].__REACT_DEVTOOLS_ORIGINAL_METHOD__) {
+          window.console[method].__REACT_DEVTOOLS_ORIGINAL_METHOD__ = window.console[method].__REACT_DEVTOOLS_ORIGINAL_METHOD__.__sentry_original__;
+        }
+      })
     );
-
-    /*
-     * Discord calls removeEventListener with a single argument in their ConfettiCannon component. Sentry prevents it
-     * from crashing the client since it explicitly passes undefined as a side-effect, but since we remove it we add
-     * our own layer of protection to prevent execution of the native method in that case.
-     *
-     * If a Discord employee is lurking this commit, please specify the type of event you want to remove. You're calling
-     * removeEventListener with the function only (this.setSize), say thanks to Sentry for preventing crashes!
-     */
-    this.__rel = EventTarget.prototype.removeEventListener;
-    const _this = this;
-    EventTarget.prototype.removeEventListener = function (...args) {
-      if (args.length === 1) {
-        return console.warn('EventTarget.removeEventListener called with a single argument; execution prevented.');
-      }
-      _this.__rel.call(this, ...args);
-    };
   }
 
   async pluginWillUnload () {
