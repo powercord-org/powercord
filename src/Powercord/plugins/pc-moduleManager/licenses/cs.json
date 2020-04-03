@@ -1,8 +1,8 @@
 {
     "POWERCORD_PLUGINS_LICENSE_DESC_Zlib": "Krátká tolerantní licence kompatibilní s GPL. Vyžaduje, aby upravené zdrojové verze byly jako takové zdokumentovány.",
     "POWERCORD_PLUGINS_LICENSE_DESC_WTFPL": "Nejjednodušší licence. Dává uživateli právo dělat cokoli chtějí s vaším kódem.",
-    "POWERCORD_PLUGINS_LICENSE_DESC_GPL-2.0": "GNU GPL je nejrozšířenější licence pro svobodný software a má silné copyleftové požadvaky. Při šíření odvozenin softwaru, zdrojový kód odvozeniny musí být zveřejněn pod stejnou licencí. Existuje více variant GNU GPL, každá s jinými požadavky.",
-    "POWERCORD_PLUGINS_LICENSE_DESC_Artistic-2.0": "Silně oblíbená komunitou Perlu, licence Artistic vyžaduje, aby upravené verze softwaru nebránily uživateli spustit jeho standardní verzi.",
+    "POWERCORD_PLUGINS_LICENSE_DESC_GPL-2.0": "GNU GPL je nejrozšířenější licence pro svobodný software a má silné copyleftové požadavky. Při šíření odvozenin softwaru, zdrojový kód odvozeniny musí být zveřejněn pod stejnou licencí. Existuje více variant GNU GPL, každá s jinými požadavky.",
+    "POWERCORD_PLUGINS_LICENSE_DESC_Artistic-2.0": "Velmi oblíbená komunitou Perlu, licence Artistic vyžaduje, aby upravené verze softwaru nebránily uživateli spustit jeho standardní verzi.",
     "POWERCORD_PLUGINS_LICENSE_DISCLAIMER": "Tyto informace nejsou právně závazné. Data z [choosealicense.com]({url}).",
     "POWERCORD_PLUGINS_LICENSE_WARRANTY_DESC": "V této licenci je výslovně uvedeno, že NEPOSKYTUJE jakoukoli záruku.",
     "POWERCORD_PLUGINS_LICENSE_WARRANTY_NAME": "Záruka",
@@ -33,5 +33,8 @@
     "POWERCORD_PLUGINS_LICENSE_COMMERCIAL_USE_NAME": "Komerční užití",
     "POWERCORD_PLUGINS_LICENSE_LIMITATIONS": "Omezení",
     "POWERCORD_PLUGINS_LICENSE_CONDITIONS": "Podmínky",
-    "POWERCORD_PLUGINS_LICENSE_PERMISSIONS": "Oprávnění"
+    "POWERCORD_PLUGINS_LICENSE_PERMISSIONS": "Oprávnění",
+    "POWERCORD_PLUGINS_LICENSE_DESC_Unlicense": "Licence bez jakýchkoliv podmínek, která prohlašuje prace jako volné dílo. Nelicencované práce, úpravy a větší práce mohou být šířeny pod jinými podmínkami a bez zdrojového kódu.",
+    "POWERCORD_PLUGINS_LICENSE_DESC_PostgreSQL": "Velmi krátká licence ve stylu BSD, použita specificky pro PostgreSQL.",
+    "POWERCORD_PLUGINS_LICENSE_DESC_LPPL-1.3c": "Licence LaTeX Project Public License (LPPL) je hlavní licence, pod kterou je šířen kernel a základní balíčky LaTeXu."
 }
