@@ -19,6 +19,7 @@
 /* global appSettings */
 const Module = require('module');
 const { join, dirname, resolve } = require('path');
+const { existsSync, unlinkSync } = require('fs');
 const electron = require('electron');
 const { BrowserWindow, app, session } = electron;
 
@@ -151,6 +152,21 @@ app.once('ready', () => {
 
   electron.app.setAppPath(discordPath);
   electron.app.setName(discordPackage.name);
+
+  /**
+   * Fix DevTools extensions for wintards
+   * Keep in mind that this rather treats the symptom
+   * than fixing the root issue.
+   */
+  if (process.platform === 'win32') {
+    setImmediate(() => { // WTF: the app name doesn't get set instantly?
+      const devToolsExtensions = join(electron.app.getPath('userData'), 'DevTools Extensions');
+
+      if (existsSync(devToolsExtensions)) {
+        unlinkSync(devToolsExtensions);
+      }
+    });
+  }
 
   Module._load(
     join(discordPath, discordPackage.main),
