@@ -16,8 +16,8 @@
     "POWERCORD_SETTINGS_SYNC": "Настройки синхронизации",
     "POWERCORD_SETTINGS_SYNC_DESC": "Синхронизируйте все ваши настройки Powercord между устройствами. Нужен аккаунт Powercord!",
     "POWERCORD_SETTINGS_NO_CLYDE": "Заменить Clyde",
-    "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Заменяет [Clyde]({discordiaUrl}) в командах Powercord.",
-    "POWERCORD_SETTINGS_ADVANCED_DESC": "Не трогайте сдесь ничего, если вы не знаете, что оно делает. Неожиданные вещи могут случиться.",
+    "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Заменяет имя и аватар [Clyde]({discordiaUrl}) в командах Powercord на выбранные разработчиками плагинов (По умолчанию \"Powercord\").",
+    "POWERCORD_SETTINGS_ADVANCED_DESC": "Не трогайте здесь ничего, если вы не знаете, что вы делаете. С вашей кошкой может что-то произойти.",
     "POWERCORD_SETTINGS_OVERLAY": "Инструменты разработчика для оверлея",
     "POWERCORD_SETTINGS_KEEP_TOKEN": "Хранить токен",
     "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Предотвращает Discord от удаления вашего токена из localStorage, уменьшая количество нежелательных выходов.",
@@ -104,7 +104,7 @@
     "POWERCORD_CUTIE_TIER_2_PRICE": "**$5**/месяц",
     "POWERCORD_CUTIE_TIER_1_PRICE": "**$1**/месяц",
     "POWERCORD_CUTIE_TIER_3_PRICE": "**$10**/месяц",
-    "POWERCORD_CUTIE_TIER_EASTER_DESC": "**Разработчики Powercord** приедут к вам не в зависимсто где ты живешь, для того чтобы **обнять тебя**.",
+    "POWERCORD_CUTIE_TIER_EASTER_DESC": "**Разработчики Powercord** приедут к тебе вне зависимости от того, где ты живешь, чтобы **обнять тебя**.",
     "POWERCORD_I18N_TRANSLATED_OVERRIDES": "{overrides,number} изменений в переводе Discord",
     "POWERCORD_CUTIE_DONATE": "Пожертвовать",
     "POWERCORD_CUTIE_TIER_3_DESC": "Получи **полностью настраиваемый** значок для **одного** из своих серверов.",
@@ -119,5 +119,8 @@
     "POWERCORD_BADGES_STAFF": "Стафф Powercord",
     "POWERCORD_BADGES_DEVELOPER": "Разработчик Powercord",
     "POWERCORD_I18N_TRANSLATED_PERCENTAGE": "Powercord: {translated,number}% переведено",
-    "POWERCORD_I18N_CONTRIBUTE": "Пссс! Хочешь помочь перевести Powercord? Заходи на наш [Weblate]({weblateUrl})!"
+    "POWERCORD_I18N_CONTRIBUTE": "Пссс! Хочешь помочь перевести Powercord? Заходи на наш [Weblate]({weblateUrl})!",
+    "POWERCORD_SETTINGS_DEBUG_LOGS": "Отладочные логи",
+    "POWERCORD_SETTINGS_DEBUG_LOGS_DESC": "Сохраняет содержимое консоли в файл. Полезно для отладки, если Discord неожиданно вылетает.",
+    "POWERCORD_SETTINGS_OVERLAY_DESC": "Открывает окно с инструментами разработчика в игровом оверлее."
 }
