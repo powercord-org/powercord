@@ -119,5 +119,8 @@
     "POWERCORD_PASSPHRASE": "Кодове слово",
     "POWERCORD_REFRESH_ACCOUNTS": "Оновити акаунти",
     "POWERCORD_GENERAL_SETTINGS": "Основні налаштування",
-    "POWERCORD_ACCOUNT": "Аккаунт Powercord"
+    "POWERCORD_ACCOUNT": "Аккаунт Powercord",
+    "POWERCORD_SETTINGS_OVERLAY_DESC": "Відкриває вікно з інструментами розробника в ігровому оверлее.",
+    "POWERCORD_SETTINGS_DEBUG_LOGS_DESC": "Зберігає всі повідомлення з консолі розробника в файл. Дуже корисно, коли Discord вилітає.",
+    "POWERCORD_SETTINGS_DEBUG_LOGS": "Налагоджувальні логи"
 }
