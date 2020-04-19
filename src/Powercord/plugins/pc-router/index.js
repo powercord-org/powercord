@@ -19,7 +19,9 @@ module.exports = class Router extends Plugin {
   }
 
   async _injectRouter () {
-    const ViewsWithMainInterface = await getModuleByDisplayName('ViewsWithMainInterface');
+    const FluxViewsWithMainInterface = await getModuleByDisplayName('FluxContainer(ViewsWithMainInterface)');
+    const ViewsWithMainInterface = FluxViewsWithMainInterface
+      .prototype.render.call({ memoizedGetStateFromStores: () => ({}) }).type;
     const { container } = await getModule([ 'container', 'downloadProgressCircle' ]);
     const RouteRenderer = getOwnerInstance(await waitFor(`.${container.split(' ')[0]}`));
     inject('pc-router-route', RouteRenderer.__proto__, 'render', (args, res) => {
@@ -49,6 +51,8 @@ module.exports = class Router extends Plugin {
     }, true);
 
     inject('pc-router-router', ViewsWithMainInterface.prototype, 'render', (args, res) => {
+      this.log({ args, res });
+
       const routes = findInTree(res, n => (
         Array.isArray(n) && n[0] &&
         n[0].key &&

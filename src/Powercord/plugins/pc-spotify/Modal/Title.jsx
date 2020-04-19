@@ -22,7 +22,7 @@ module.exports = class Title extends React.Component {
 
     return (
       <span
-        onMouseEnter={() => this.setState({ hovered: titleWidth > 84 })}
+        onMouseEnter={() => this.setState({ hovered: titleWidth > titleElement.offsetWidth })}
         onMouseLeave={() => this.setState({ hovered: false })}
         className={className}
         style={{
