@@ -40,7 +40,7 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
             hint: hasIconsHidden ? device.type : '',
             highlight: isActiveDevice && '#1ed860',
             disabled: isActiveDevice,
-            seperate: isActiveDevice,
+            separate: isActiveDevice,
             onClick: () => onButtonClick('setActiveDevice', device.id)
           };
         }).sort(button => !button.highlight)

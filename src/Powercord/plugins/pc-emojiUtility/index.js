@@ -799,7 +799,7 @@ module.exports = class EmojiUtility extends Plugin {
                   res.props.children.push(
                     React.createElement(Submenu, {
                       name: 'Emote',
-                      seperate: true,
+                      separate: true,
                       getItems: () => cloneSubMenu(emoji)
                     })
                   );
@@ -808,7 +808,7 @@ module.exports = class EmojiUtility extends Plugin {
                 res.props.children.push(
                   React.createElement(Submenu, {
                     name: 'Emote',
-                    seperate: true,
+                    separate: true,
                     getItems: () => createSubMenu(target)
                   })
                 );

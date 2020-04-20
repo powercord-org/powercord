@@ -28,22 +28,17 @@ module.exports = async function monkeypatchMessages () {
       message.content = result.result;
     } else {
       const receivedMessage = createBotMessage(getChannelId(), '');
-      const appearance = result.appearance || {};
 
       if (powercord.settings.get('replaceClyde', true)) {
         // noinspection JSPrimitiveTypeWrapperUsage
-        receivedMessage.author.username = appearance.username || 'Powercord';
+        receivedMessage.author.username = result.username || 'Powercord';
         // noinspection JSPrimitiveTypeWrapperUsage
         receivedMessage.author.avatar = 'powercord';
 
-        if (typeof appearance.avatar === 'object') {
-          if (![ 'name', 'url' ].every(key => appearance.avatar.hasOwnProperty(key))) {
-            this.warn(`Command "${cmd}" is missing the <name> and/or <url> key which are/is mandatory for fetching and returning the result avatar; falling back to default.`);
-          } else {
-            BOT_AVATARS[appearance.avatar.name] = appearance.avatar.url;
-            // noinspection JSPrimitiveTypeWrapperUsage
-            receivedMessage.author.avatar = appearance.avatar.name;
-          }
+        if (result.avatar_url) {
+          BOT_AVATARS[result.username] = result.avatar_url;
+          // noinspection JSPrimitiveTypeWrapperUsage
+          receivedMessage.author.avatar = result.username;
         }
       }
 
@@ -54,7 +49,7 @@ module.exports = async function monkeypatchMessages () {
       }
 
       // noinspection CommaExpressionJS
-      return (receiveMessage(receivedMessage.channel_id, receivedMessage), delete BOT_AVATARS[(appearance.avatar && appearance.avatar.name)]);
+      return (receiveMessage(receivedMessage.channel_id, receivedMessage), delete BOT_AVATARS[result.avatar_url]);
     }
 
     return sendMessage(id, message, ...params);

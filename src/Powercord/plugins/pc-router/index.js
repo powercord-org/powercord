@@ -51,8 +51,6 @@ module.exports = class Router extends Plugin {
     }, true);
 
     inject('pc-router-router', ViewsWithMainInterface.prototype, 'render', (args, res) => {
-      this.log({ args, res });
-
       const routes = findInTree(res, n => (
         Array.isArray(n) && n[0] &&
         n[0].key &&

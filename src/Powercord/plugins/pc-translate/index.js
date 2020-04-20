@@ -368,7 +368,7 @@ module.exports = class Translate extends Plugin {
       React.createElement(Submenu, {
         name: 'Translate',
         hint: 'to',
-        seperate: true,
+        separate: true,
         onClick: () => setText({ to: 'en' }),
         getItems: () => languages
           .map(to => ({
