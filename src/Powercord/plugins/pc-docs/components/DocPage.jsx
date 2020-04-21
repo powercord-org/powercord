@@ -42,57 +42,85 @@ class DocPage extends React.Component {
           render.push(React.createElement(`h${element.depth}`, null, element.content));
           break;
         case 'TEXT':
-          const html = this._mdToHtml(element.content);
-          render.push(React.createElement('p', {
-            dangerouslySetInnerHTML: {
-              __html: html.slice(23, html.length - 6)
-            }
-          }));
+          render.push(React.createElement('p', null, this._mdToReact(element.content)));
           break;
         case 'LIST':
-          render.push(React.createElement(element.ordered ? 'ol' : 'ul', null, element.items.map(item => {
-            const html = this._mdToHtml(item);
-            return React.createElement('li', {
-              dangerouslySetInnerHTML: {
-                __html: html.slice(23, html.length - 6)
-              }
-            });
-          })));
+          render.push(React.createElement(element.ordered ? 'ol' : 'ul', null, element.items.map(item =>
+            React.createElement('li', null, this._mdToReact(item))
+          )));
           break;
         case 'NOTE':
           render.push(<FormNotice
             type={FormNotice.Types[element.color === 'INFO' ? 'PRIMARY' : element.color]}
-            body={<div dangerouslySetInnerHTML={{ __html: this._mdToHtml(element.content) }}/>}
+            body={this._mdToReact(element.content)}
           />);
           break;
         case 'CODEBLOCK':
-          const Hljs = () => React.createElement('div', {
-            dangerouslySetInnerHTML: {
-              __html: hljs.highlight(element.lang, element.code).value
-            }
-          });
+          let className,
+            Code;
+          if (element.lang) {
+            className = `hljs ${element.lang}`;
+            Code = () => React.createElement('div', {
+              dangerouslySetInnerHTML: {
+                __html: hljs.highlight(element.lang, element.code).value
+              }
+            });
+          } else {
+            className = 'hljs';
+            Code = () => React.createElement('div', null, element.code);
+          }
           render.push(<pre className={markup}>
-            <code className={`hljs ${element.lang}`}>
-              <Hljs/>
-              <div className="powercord-codeblock-lang">{element.lang}</div>
-              <div className="powercord-lines"/>
-              <button className="powercord-codeblock-copy-btn" onClick={this._handleCodeCopy}>copy</button>
+            <code className={className}>
+              <Code/>
+              {element.lang && <div className='powercord-codeblock-lang'>{element.lang}</div>}
+              <div className='powercord-lines'/>
+              <button className='powercord-codeblock-copy-btn' onClick={this._handleCodeCopy}>copy</button>
             </code>
           </pre>);
           break;
+        case 'TABLE':
+          render.push(<table cellSpacing='0'>
+            <tr>
+              {element.thead.map((th, i) =>
+                <th key={`th-${i}`}>{this._mdToReact(th)}</th>
+              )}
+            </tr>
+            {element.tbody.map((tr, i) => <tr key={`tr-${i}`}>
+              {tr.map((td, i) => <td key={`td-${i}`} style={element.center[i] ? { textAlign: 'center' } : null}>
+                {this._mdToReact(td)}
+              </td>)}
+            </tr>)}
+          </table>);
       }
     });
 
     // render
     return <div className='powercord-text'>
-      <FormTitle tag='h2'>{document.name}</FormTitle>
+      <FormTitle tag='h2' className='powercord-documentation-title'>{document.name}</FormTitle>
       <div className='powercord-documentation'>{render}</div>
     </div>;
   }
 
-  _mdToHtml (md) {
-    const html = this.props.modules.markdown.markdownToHtml(md);
-    return html.replace('<a ', '<a target="_blank" ');
+  _mdToReact (md) {
+    const react = this.props.modules.markdown.markdownToReact(md, { inline: true });
+    return this._transformReact(react[0].props.children);
+  }
+
+  _transformReact (react) {
+    return react.map(c => {
+      if (c.type === 'a') {
+        if (c.props.href.startsWith('#')) {
+          const { href } = c.props;
+          c.props.onClick = () => this.props.setSection(href.substr(1));
+          c.props.href = '#';
+        } else {
+          c.props.target = '_blank';
+        }
+      } else if (c.props && Array.isArray(c.props.children)) {
+        c.props.children = this._transformReact(c.props.children);
+      }
+      return c;
+    });
   }
 
   _handleCodeCopy (e) {

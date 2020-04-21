@@ -39,7 +39,7 @@ class DocsLayer extends React.Component {
           section: `${section.id}/${doc.id}`,
           label: doc.name,
           element: () => <ErrorBoundary>
-            <DocPage category={section.id} doc={doc.id}/>
+            <DocPage category={section.id} doc={doc.id} setSection={section => this.setState({ section })}/>
           </ErrorBoundary>
         }))
       );

@@ -20,11 +20,12 @@ const sucrase = require('sucrase');
 const { join } = require('path');
 const { readFileSync, existsSync, mkdirSync, writeFile } = require('fs');
 const { createHash } = require('crypto');
+const { CACHE_FOLDER } = require('powercord/constants');
 
 const checksum = (str) => createHash('sha1').update(str).digest('hex');
 
 module.exports = () => {
-  const cacheDir = join(powercord.cacheFolder, 'jsx');
+  const cacheDir = join(CACHE_FOLDER, 'jsx');
 
   const ensureFolder = () => {
     if (!existsSync(cacheDir)) {

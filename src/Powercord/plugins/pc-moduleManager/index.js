@@ -6,7 +6,7 @@ const { Plugin } = require('powercord/entities');
 const { MAGIC_CHANNELS: { STORE_PLUGINS, STORE_THEMES } } = require('powercord/constants');
 const { resolve } = require('path');
 
-const layout = require('./components/manage/Layout.jsx');
+const layout = require('./components/manage/LayoutLegacy.jsx');
 const Store = require('./components/store/Store');
 const Soon = require('./components/Soon.jsx');
 const commands = require('./commands');
@@ -24,15 +24,16 @@ module.exports = class ModuleManager extends Plugin {
       )
     );
 
-    this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, layout('plugins', false, this._fetchEntities));
     if (this.settings.get('__experimental_2019-10-25', false)) {
       this.log('Experimental Module Manager enabled.');
       this._injectCommunityContent();
-      this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, layout('themes', true, this._fetchEntities));
+      this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, () => 'cool');
+      this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, () => 'cool');
 
       this.registerRoute('/store/plugins', Store, true);
       this.registerRoute('/store/themes', Store, true);
     } else {
+      this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, layout('plugins', false, this._fetchEntities));
       this.registerSettings('pc-moduleManager-themes', Messages.POWERCORD_THEMES, Soon);
     }
   }
@@ -43,10 +44,7 @@ module.exports = class ModuleManager extends Plugin {
   }
 
   async _injectCommunityContent () {
-    const { transitionTo } = await getModule([ 'transitionTo' ]);
     const permissionsModule = await getModule([ 'can' ]);
-    const ChannelItem = await getModuleByDisplayName('ChannelItem');
-
     inject('pc-moduleManager-channelItem', permissionsModule, 'can', (args, res) => {
       const id = args[1].channelId || args[1].id;
       if (id === STORE_PLUGINS || id === STORE_THEMES) {
@@ -55,6 +53,8 @@ module.exports = class ModuleManager extends Plugin {
       return res;
     });
 
+    const { transitionTo } = await getModule([ 'transitionTo' ]);
+    const ChannelItem = await getModuleByDisplayName('ChannelItem');
     inject('pc-moduleManager-channelProps', ChannelItem.prototype, 'render', function (args, res) {
       const data = {
         [STORE_PLUGINS]: {

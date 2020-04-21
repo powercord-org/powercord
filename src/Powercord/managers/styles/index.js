@@ -16,12 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { resolve } = require('path');
-const { readdirSync } = require('fs');
+const { resolve, join } = require('path');
+const { readdirSync, existsSync } = require('fs');
 const { lstat } = require('fs').promises;
-const { shell: { openExternal } } = require('electron');
 
 const { Theme } = require('powercord/entities');
+
+const fileRegex = /\.((s?c|le)ss|styl)$/;
 
 module.exports = class StyleManager {
   constructor () {
@@ -77,52 +78,93 @@ module.exports = class StyleManager {
 
   async mount (themeID, filename) {
     const stat = await lstat(resolve(this.themesDir, filename));
-    let theme;
-
-    try {
-      if (stat.isFile()) {
-        theme = Theme.fromFile(themeID, filename);
-        console.warn('%c[Powercord]', 'color: #7289da', `Theme "${themeID}" loaded in development mode`);
-      } else {
-        const manifest = require(resolve(this.themesDir, filename, 'powercord_manifest.json'));
-        if (!this.manifestKeys.every(key => manifest.hasOwnProperty(key))) {
-          return powercord.api.notices.sendToast('invalid-theme-manifest', {
-            header: `Theme "${themeID}" doesn't have a valid manifest`,
-            type: 'danger',
-            buttons: [ {
-              text: 'Generate Manifest',
-              look: 'ghost',
-              onClick: () => openExternal('https://ghostlydilemma.github.io/powercord-manifest-generator')
-            } ]
-          });
-        }
-
-        if (!window.__OVERLAY__ && manifest.theme) {
-          manifest.effectiveTheme = manifest.theme;
-        } else if (window.__OVERLAY__ && manifest.overlayTheme) {
-          manifest.effectiveTheme = manifest.overlayTheme;
-        } else {
-          return console.warn('%c[Powercord]', 'color: #7289da', `Theme "${themeID}" is not meant to run on that environment - Skipping`);
-        }
-
-        theme = new Theme(themeID, {
-          ...manifest,
-          theme: resolve(resolve(this.themesDir, filename, manifest.effectiveTheme))
-        }, true);
-      }
-    } catch (e) {
-      return powercord.api.notices.sendToast('invalid-theme-manifest', {
-        header: `Theme "${themeID}" doesn't have a valid manifest or is not a valid file`,
+    if (stat.isFile()) {
+      powercord.api.notices.sendToast('sm-invalid-theme', {
+        header: `Invalid theme: "${themeID}" is a file`,
+        content: 'This is most likely a mistake. Make sure all your theme files are in a subfolder.',
         type: 'danger',
-        buttons: [ {
-          text: 'Generate Manifest',
-          look: 'ghost',
-          onClick: () => openExternal('https://ghostlydilemma.github.io/powercord-manifest-generator')
-        } ]
+        buttons: [
+          /*
+           * {
+           *   text: 'Documentation',
+           *   color: 'green',
+           *   look: 'ghost',
+           *   onClick: () => console.log('yes')
+           * },
+           */
+          {
+            text: 'Got it',
+            look: 'ghost'
+          }
+        ]
       });
+      return;
     }
 
-    this.themes.set(themeID, theme);
+    const manifestFile = join(this.themesDir, filename, 'powercord_manifest.json');
+    if (!existsSync(manifestFile)) {
+      // Should we warn here?
+      return;
+    }
+
+    let manifest;
+    try {
+      manifest = require(manifestFile);
+    } catch (e) {
+      powercord.api.notices.sendToast('sm-invalid-theme', {
+        header: `Failed to load manifest for "${themeID}"`,
+        content: 'This is probably due to a syntax error in the file. Check console for more details.',
+        type: 'danger',
+        buttons: [
+          {
+            text: 'Open DevTools',
+            color: 'green',
+            look: 'ghost',
+            onClick: () => require('electron').remote.BrowserWindow.getFocusedWindow().openDevTools()
+          },
+          {
+            text: 'Got it',
+            look: 'ghost'
+          }
+        ]
+      });
+      console.error('%c[Powercord:StyleManager]', 'color: #7289da', 'Failed to load manifest', e);
+      return;
+    }
+
+    const errors = this._validateManifest(manifest);
+    if (errors.length > 0) {
+      powercord.api.notices.sendToast('sm-invalid-theme', {
+        header: `Invalid manifest for "${themeID}"`,
+        content: 'Check the console for more details.',
+        type: 'danger',
+        buttons: [
+          {
+            text: 'Open DevTools',
+            color: 'green',
+            look: 'ghost',
+            onClick: () => require('electron').remote.BrowserWindow.getFocusedWindow().openDevTools()
+          },
+          {
+            text: 'Got it',
+            look: 'ghost'
+          }
+        ]
+      });
+      console.error('%c[Powercord:StyleManager]', 'color: #7289da', `Invalid manifest; Detected the following errors:\n\t${errors.join('\n\t')}`);
+      return;
+    }
+
+    if (!window.__OVERLAY__ && manifest.theme) {
+      manifest.effectiveTheme = manifest.theme;
+    } else if (window.__OVERLAY__ && manifest.overlayTheme) {
+      manifest.effectiveTheme = manifest.overlayTheme;
+    } else {
+      return console.warn('%c[Powercord:StyleManager]', 'color: #7289da', `Theme "${themeID}" is not meant to run on that environment - Skipping`);
+    }
+
+    manifest.effectiveTheme = join(this.themesDir, filename, manifest.effectiveTheme);
+    this.themes.set(themeID, new Theme(themeID, manifest));
   }
 
   unmount (themeID) {
@@ -135,28 +177,11 @@ module.exports = class StyleManager {
     this.themes.delete(themeID);
   }
 
-  /*
-   * @todo
-   * async install (pluginID) {
-   *   await exec(`git clone https://github.com/powercord-org/${pluginID}`, this.pluginDir);
-   *   this.mount(pluginID);
-   * }
-   *
-   * async uninstall (pluginID) {
-   *   if (pluginID.startsWith('pc-')) {
-   *     throw new Error(`You cannot uninstall an internal plugin. (Tried to uninstall ${pluginID})`);
-   *   }
-   *
-   *   await this.unmount(pluginID);
-   *   await rmdirRf(resolve(this.pluginDir, pluginID));
-   * }
-   */
-
   // Plugin CSS
   loadPluginCSS (themeID, file) {
     const theme = Theme.fromFile(themeID, file);
     this.themes.set(themeID, theme);
-    theme.apply();
+    return theme.apply();
   }
 
   // Start/Stop
@@ -166,7 +191,8 @@ module.exports = class StyleManager {
 
     const files = readdirSync(this.themesDir);
     for (const filename of files) {
-      if (filename === '.exists' || filename === '.DS_Store') {
+      if (filename.startsWith('.')) {
+        console.debug('[Powercord:StyleManager] Ignoring dotfile', filename);
         continue;
       }
 
@@ -197,5 +223,136 @@ module.exports = class StyleManager {
 
   unloadThemes () {
     [ ...this.themes.values() ].forEach(t => t.remove());
+  }
+
+  _validateManifest (manifest) {
+    const errors = [];
+    if (typeof manifest.name !== 'string') {
+      errors.push(`Invalid name: expected a string got ${typeof manifest.name}`);
+    }
+    if (typeof manifest.description !== 'string') {
+      errors.push(`Invalid description: expected a string got ${typeof manifest.description}`);
+    }
+    if (typeof manifest.version !== 'string') {
+      errors.push(`Invalid version: expected a string got ${typeof manifest.version}`);
+    }
+    if (typeof manifest.author !== 'string') {
+      errors.push(`Invalid author: expected a string got ${typeof manifest.author}`);
+    }
+    if (typeof manifest.license !== 'string') {
+      errors.push(`Invalid license: expected a string got ${typeof manifest.license}`);
+    }
+    if (typeof manifest.theme !== 'string') {
+      errors.push(`Invalid theme: expected a string got ${typeof manifest.theme}`);
+    } else if (!fileRegex.test(manifest.theme)) {
+      errors.push('Invalid theme: unsupported file extension');
+    }
+    if (manifest.overlayTheme) {
+      if (typeof manifest.overlayTheme !== 'string') {
+        errors.push(`Invalid theme: expected a string got ${typeof manifest.overlayTheme}`);
+      } else if (!fileRegex.test(manifest.overlayTheme)) {
+        errors.push('Invalid theme: unsupported file extension');
+      }
+    }
+    if (![ 'undefined', 'string' ].includes(typeof manifest.discord)) {
+      errors.push(`Invalid discord code: expected a string got ${typeof manifest.discord}`);
+    }
+    if (manifest.plugins !== void 0) {
+      if (!Array.isArray(manifest.plugins)) {
+        errors.push(`Invalid plugins: expected an array got ${typeof manifest.plugins}`);
+      } else {
+        manifest.plugins.forEach(p => errors.push(...this._validatePlugin(p)));
+      }
+    }
+    if (manifest.settings !== void 0) {
+      errors.push(...this._validateSettings(manifest.settings));
+    }
+    return errors;
+  }
+
+  _validatePlugin (plugin) {
+    const errors = [];
+    if (typeof plugin !== 'object') {
+      errors.push(`Invalid plugin: expected an object got ${typeof plugin}`);
+      return errors;
+    }
+    if (Array.isArray(plugin)) {
+      errors.push('Invalid plugin: expected an object got an array');
+      return errors;
+    }
+    if (typeof plugin.name !== 'string') {
+      errors.push(`Invalid plugin name: expected a string got ${typeof plugin.name}`);
+    }
+    if (typeof plugin.description !== 'string') {
+      errors.push(`Invalid plugin description: expected a string got ${typeof plugin.description}`);
+    }
+    if (![ 'undefined', 'string' ].includes(typeof plugin.author)) {
+      errors.push(`Invalid plugin author: expected a string got ${typeof plugin.author}`);
+    }
+    if (![ 'undefined', 'string' ].includes(typeof plugin.license)) {
+      errors.push(`Invalid plugin license: expected a string got ${typeof plugin.license}`);
+    }
+    if (typeof plugin.file !== 'string') {
+      errors.push(`Invalid plugin file: expected a string got ${typeof plugin.file}`);
+    } else if (!fileRegex.test(plugin.file)) {
+      errors.push('Invalid plugin file: unsupported file extension');
+    }
+    if (plugin.settings !== void 0) {
+      errors.push(...this._validateSettings(plugin.settings));
+    }
+    return errors;
+  }
+
+  _validateSettings (settings) {
+    const errors = [];
+    if (typeof settings !== 'object') {
+      errors.push(`Invalid settings: expected an object got ${typeof settings}`);
+      return errors;
+    }
+    if (Array.isArray(settings)) {
+      errors.push('Invalid settings: expected an object got an array');
+      return errors;
+    }
+    if (typeof settings.format !== 'string') {
+      errors.push(`Invalid settings format: expected a string got ${typeof settings.format}`);
+    } else if (![ 'css', 'scss' ].includes(settings.format)) {
+      errors.push(`Invalid settings format: "${settings.format}" is not a valid format. Please refer to the documentation.`);
+    }
+    if (!Array.isArray(settings.options)) {
+      errors.push(`Invalid options: expected an array got ${typeof settings.options}`);
+    } else {
+      settings.options.forEach(o => errors.push(...this._validateOption(o)));
+    }
+    return errors;
+  }
+
+  _validateOption (option) {
+    const errors = [];
+    if (typeof option !== 'object') {
+      errors.push(`Invalid option: expected an object got ${option}`);
+      return errors;
+    }
+    if (Array.isArray(option)) {
+      errors.push('Invalid option: expected an object got an array');
+      return errors;
+    }
+    if (typeof option.name !== 'string') {
+      errors.push(`Invalid option name: expected a string got ${typeof option.name}`);
+    }
+    if (typeof option.variable !== 'string') {
+      errors.push(`Invalid option variable: expected a string got ${typeof option.name}`);
+    }
+    if (option.variable.length === '') {
+      errors.push('Invalid option variable: got an empty string');
+    }
+    if (![ 'undefined', 'string' ].includes(typeof option.description)) {
+      errors.push(`Invalid option description: expected a string got ${typeof option.description}`);
+    }
+    if (typeof option.type !== 'string') {
+      errors.push(`Invalid option type: expected a string got ${typeof option.type}`);
+    } else if (![ 'string', 'number', 'color', 'color_alpha', 'url' ].includes(option.type)) {
+      errors.push(`Invalid option type: "${option.type}" is not a valid option type. Please refer to the documentation.`);
+    }
+    return errors;
   }
 };

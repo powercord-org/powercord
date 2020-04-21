@@ -37,8 +37,6 @@ module.exports = class Powercord extends Updatable {
   constructor () {
     super(join(__dirname, '..', '..'), '', 'powercord');
 
-    this.cacheFolder = join(__dirname, '..', '..', '.cache');
-    this.logsFolder = join(__dirname, '..', '..', '.logs');
     this.api = {};
     this.gitInfos = {
       upstream: '???',
@@ -82,7 +80,7 @@ module.exports = class Powercord extends Updatable {
     if (this.settings.get('hideToken', true)) {
       const tokenModule = await require('powercord/webpack').getModule([ 'hideToken' ]);
       tokenModule.hideToken = () => void 0;
-      tokenModule.showToken(); // just to be sure
+      setImmediate(() => tokenModule.showToken()); // just to be sure
     }
 
     window.addEventListener('beforeunload', () => {

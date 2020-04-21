@@ -3,6 +3,10 @@
 
   .formNotice-2_hHWR {
     margin-bottom: 20px;
+
+    .size14-e6ZScH {
+      font-size: 16px;
+    }
   }
 
   ol, ul {
@@ -21,33 +25,95 @@
     }
   }
 
+  a:hover {
+    text-decoration: underline;
+  }
+
   em {
     font-style: italic;
   }
 
-  code {
+  code:not(.hljs) {
     background: var(--background-secondary);
+    padding: .2em;
+    margin: -.2em 0;
+    border-radius: 3px;
   }
 
-  h2, h3, h4, h5, h6 {
-    font-weight: bold;
+  h2, h3, h4, h5 {
+    text-transform: uppercase;
+    font-weight: 600;
     margin-top: 35px;
     margin-bottom: 15px;
   }
 
   h2 {
-    font-size: 32px;
+    margin-top: 55px;
+    font-size: 22px;
   }
+
   h3 {
-    font-size: 28px;
+    font-size: 18px;
   }
+
   h4 {
-    font-size: 24px;
-  }
-  h5 {
-    font-size: 20px;
-  }
-  h6 {
     font-size: 16px;
   }
+
+  h5 {
+    font-size: 14px;
+  }
+
+  h6 {
+    padding: 6px 12px;
+    border: 1px solid var(--background-tertiary);
+    background-color: var(--interactive-muted);
+    font-weight: 600;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    + pre .hljs {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      border-top-width: 0;
+    }
+
+    + table {
+      border-top-width: 0;
+    }
+  }
+
+  table {
+    width: 100%;
+    border: 1px solid var(--background-tertiary);
+    margin-bottom: 25px;
+
+    th {
+      font-weight: bold;
+      background: var(--background-secondary);
+      padding: 5px;
+    }
+
+    tr {
+      &:nth-child(even) {
+        background: var(--background-secondary);
+      }
+
+      td {
+        border-top: 1px solid var(--background-tertiary);
+        padding: 8px;
+      }
+    }
+
+    th, td {
+      + th, + td {
+        border-left: 1px solid var(--background-tertiary);
+      }
+    }
+  }
+}
+
+.powercord-documentation-title {
+  font-size: 26px;
+  margin-bottom: 35px;
 }

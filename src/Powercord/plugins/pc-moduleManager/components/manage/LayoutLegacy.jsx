@@ -1,8 +1,8 @@
 const { React } = require('powercord/webpack');
 const { shell } = require('electron');
 
-const Header = require('./Header');
-const Plugins = require('./Plugins');
+const Header = require('./HeaderLegacy');
+const Plugins = require('./PluginsLegacy');
 
 const things = {
   plugins: {

@@ -21,6 +21,7 @@ require('../polyfills');
 const { remote } = require('electron');
 const { join } = require('path');
 const { existsSync, mkdirSync, open, write } = require('fs');
+const { LOGS_FOLDER } = require('./fake_node_modules/powercord/constants');
 
 // Add Powercord's modules
 require('module').Module.globalPaths.push(join(__dirname, 'fake_node_modules'));
@@ -45,17 +46,24 @@ try {
   debugLogs = settings.debugLogs;
 } finally {
   if (debugLogs) {
-    if (!existsSync(powercord.logsFolder)) {
-      mkdirSync(powercord.logsFolder, { recursive: true });
+    if (!existsSync(LOGS_FOLDER)) {
+      mkdirSync(LOGS_FOLDER, { recursive: true });
     }
     const getDate = () => new Date().toISOString().replace('T', ' ').split('.')[0];
     const filename = `${window.__OVERLAY__ ? 'overlay' : 'discord'}-${new Date().toISOString().replace('T', '_').replace(/:/g, '-').split('.')[0]}.txt`;
-    const path = join(powercord.logsFolder, filename);
+    const path = join(LOGS_FOLDER, filename);
     console.log('[Powercord] Debug logs enabled. Logs will be saved in', path);
     open(path, 'w', (_, fd) => {
       // Patch console methods
-      for (const key of [ 'log', 'debug', 'info', 'warn', 'error' ]) {
-        console[`_powercord_${key}`] = console[key].bind(console);
+      const levels = {
+        debug: 'DEBUG',
+        log: 'INFO',
+        info: 'INFO',
+        warn: 'WARN',
+        error: 'ERROR'
+      };
+      for (const key of Object.keys(levels)) {
+        const ogFunction = console[key].bind(console);
         console[key] = (...args) => {
           const cleaned = [];
           for (let i = 0; i < args.length; i++) {
@@ -71,8 +79,8 @@ try {
               cleaned.push(part);
             }
           }
-          write(fd, `[${getDate()}] [CONSOLE] [${key.toUpperCase()}] ${cleaned.join(' ')}\n`, 'utf8', () => void 0);
-          console[`_powercord_${key}`].apply(console, ...args);
+          write(fd, `[${getDate()}] [CONSOLE] [${levels[key]}] ${cleaned.join(' ')}\n`, 'utf8', () => void 0);
+          ogFunction.call(console, ...args);
         };
       }
 
