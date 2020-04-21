@@ -30,7 +30,7 @@ const ErrorBoundary = require('./ErrorBoundary');
 const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
 const FormSection = AsyncComponent.from(getModuleByDisplayName('FormSection'));
 
-module.exports = class Settings extends API {
+module.exports = class SettingsAPI extends API {
   constructor () {
     super();
 

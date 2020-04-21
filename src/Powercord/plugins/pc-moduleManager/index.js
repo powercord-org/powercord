@@ -24,14 +24,41 @@ module.exports = class ModuleManager extends Plugin {
       )
     );
 
-    if (this.settings.get('__experimental_2019-10-25', false)) {
-      this.log('Experimental Module Manager enabled.');
-      this._injectCommunityContent();
-      this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, () => 'cool');
-      this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, () => 'cool');
+    powercord.api.labs.registerExperiment({
+      id: 'pc-moduleManager-themes',
+      name: 'Plugin and Themes settings update',
+      date: 1587488341226,
+      description: 'Partial plugins UI redesign and new Theme management UI',
+      usable: false,
+      callback: () => {
+        // We're supposed to do it properly but reload > all
+        setImmediate(() => powercord.pluginManager.remount(this.entityID));
+        // And we wrap it in setImmediate to not break the labs UI
+      }
+    });
 
+    powercord.api.labs.registerExperiment({
+      id: 'pc-moduleManager-store',
+      name: 'Powercord Store',
+      date: 1571961600000,
+      description: 'Powercord Plugin and Theme store',
+      usable: false,
+      callback: () => {
+        // We're supposed to do it properly but reload > all
+        setImmediate(() => powercord.pluginManager.remount(this.entityID));
+        // And we wrap it in setImmediate to not break the labs UI
+      }
+    });
+
+    if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-store')) {
+      this._injectCommunityContent();
       this.registerRoute('/store/plugins', Store, true);
       this.registerRoute('/store/themes', Store, true);
+    }
+
+    if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-themes')) {
+      this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, () => 'cool');
+      this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, () => 'cool');
     } else {
       this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, layout('plugins', false, this._fetchEntities));
       this.registerSettings('pc-moduleManager-themes', Messages.POWERCORD_THEMES, Soon);
@@ -39,6 +66,8 @@ module.exports = class ModuleManager extends Plugin {
   }
 
   pluginWillUnload () {
+    powercord.api.labs.unregisterExperiment('pc-moduleManager-store');
+    powercord.api.labs.unregisterExperiment('pc-moduleManager-themes');
     uninject('pc-moduleManager-channelItem');
     uninject('pc-moduleManager-channelProps');
   }
@@ -121,18 +150,5 @@ module.exports = class ModuleManager extends Plugin {
     }
 
     powercord.api.notices.sendToast('missing-entities-notify', props);
-  }
-
-  __toggleExperimental () {
-    const current = this.settings.get('__experimental_2019-10-25', false);
-    if (!current) {
-      this.warn('WARNING: This will enable the experimental new module manager, that is NOT functional yet.');
-      this.warn('WARNING: Powercord Staff won\'t accept bug reports from this experimental version, nor provide support!');
-      this.warn('WARNING: Use it at your own risk! It\'s labeled experimental for a reason.');
-    } else {
-      this.log('Experimental Module Manager disabled.');
-    }
-    this.settings.set('__experimental_2019-10-25', !current);
-    powercord.pluginManager.remount(this.entityID);
   }
 };

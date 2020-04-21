@@ -20,7 +20,7 @@ const { remote: { globalShortcut } } = require('electron');
 const localShortcut = require('keybindutils/localShortcut');
 const { API } = require('powercord/entities');
 
-module.exports = class Keybinds extends API {
+module.exports = class KeybindsAPI extends API {
   constructor () {
     super();
 

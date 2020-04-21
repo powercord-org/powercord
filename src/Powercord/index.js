@@ -33,7 +33,39 @@ const StyleManager = require('./managers/styles');
 const APIManager = require('./managers/apis');
 const modules = require('./modules');
 
-module.exports = class Powercord extends Updatable {
+/**
+ * @typedef PowercordAPI
+ * @property {CommandsAPI} commands
+ * @property {SettingsAPI} settings
+ * @property {NoticesAPI} notices
+ * @property {KeybindsAPI} keybinds
+ * @property {RouterAPI} router
+ * @property {ConnectionsAPI} connections
+ * @property {I18nAPI} i18n
+ * @property {RPCAPI} rpc
+ * @property {LabsAPI} labs
+ */
+
+/**
+ * @typedef GitInfos
+ * @property {String} upstream
+ * @property {String} branch
+ * @property {String} revision
+ */
+
+/**
+ * Main Powercord class
+ * @type {Powercord}
+ * @property {PowercordAPI} api
+ * @property {StyleManager} styleManager
+ * @property {PluginManager} pluginManager
+ * @property {APIManager} apiManager
+ * @property {APIManager} account
+ * @property {GitInfos} gitInfos
+ * @property {Object|null} account
+ * @property {Boolean} initialized
+ */
+class Powercord extends Updatable {
   constructor () {
     super(join(__dirname, '..', '..'), '', 'powercord');
 
@@ -234,4 +266,6 @@ module.exports = class Powercord extends Updatable {
     }
     return success;
   }
-};
+}
+
+module.exports = Powercord;

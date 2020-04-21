@@ -18,7 +18,7 @@
 
 const { API } = require('powercord/entities');
 
-module.exports = class RPC extends API {
+module.exports = class RPCAPI extends API {
   constructor () {
     super();
 

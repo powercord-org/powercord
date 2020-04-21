@@ -1,7 +1,7 @@
 const { API } = require('powercord/entities');
 const { getModule } = require('powercord/webpack');
 
-module.exports = class Router extends API {
+module.exports = class RouterAPI extends API {
   constructor () {
     super();
     this.routes = [];

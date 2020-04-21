@@ -21,7 +21,7 @@ const { API } = require('powercord/entities');
 const strings = require('../../../i18n');
 const overrides = require('../../../i18n/overrides');
 
-module.exports = class I18n extends API {
+module.exports = class I18nAPI extends API {
   constructor () {
     super();
     this.messages = {};

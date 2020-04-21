@@ -18,7 +18,7 @@
 
 const { API } = require('powercord/entities');
 
-module.exports = class Commands extends API {
+module.exports = class CommandsAPI extends API {
   constructor () {
     super();
 
