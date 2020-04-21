@@ -7,7 +7,7 @@ module.exports = ({ name, enabled, onDisable, onEnable }) =>
     <h4>{name}</h4>
     <Tooltip text={enabled ? Messages.DISABLE : Messages.ENABLE} position='top'>
       <div>
-        <Switch value={enabled} onChange={() => enabled ? onDisable : onEnable}/>
+        <Switch value={enabled} onChange={enabled ? onDisable : onEnable}/>
       </div>
     </Tooltip>
   </div>;
