@@ -21,11 +21,11 @@ module.exports = class ClickableEdits extends Plugin {
   }
 
   get currentUser () {
-    return getModule([ 'getCurrentUser' ], false).getCurrentUser();
+    return window.__SENTRY__.hub.getScope()._user;
   }
 
   async startPlugin () {
-    while (!this.currentUser) {
+    while (!this.currentUser.id) {
       await sleep(1000);
     }
 
