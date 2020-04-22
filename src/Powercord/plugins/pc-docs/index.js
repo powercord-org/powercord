@@ -7,13 +7,30 @@ const DocsLayer = require('./components/DocsLayer');
 
 module.exports = class Documentation extends Plugin {
   startPlugin () {
-    if (this.settings.get('__experimental_2019-10-30', false)) {
+    powercord.api.labs.registerExperiment({
+      id: 'pc-docs',
+      name: 'Documentation',
+      date: 1571961600000,
+      description: 'Powercord documentation for making plugin and themes',
+      usable: true,
+      callback: enabled => {
+        if (enabled) {
+          this.loadCSS(resolve(__dirname, 'scss', 'style.scss'));
+          this.addDocsItems();
+        } else {
+          this.registered.styles = [];
+          uninject('pc-docs-tab');
+        }
+      }
+    });
+
+    if (powercord.api.labs.isExperimentEnabled('pc-docs')) {
       this.loadCSS(resolve(__dirname, 'scss', 'style.scss'));
       this.addDocsItems();
     }
   }
 
-  async pluginWillUnload () {
+  pluginWillUnload () {
     uninject('pc-docs-tab');
   }
 
@@ -66,18 +83,5 @@ module.exports = class Documentation extends Plugin {
     const message = module.createBotMessage(channel, '```js\nconsole.log("yeet")\n```');
     messages.receiveMessage(channel, message);
     messages.deleteMessage(channel, message.id, true);
-  }
-
-  __toggleExperimental () {
-    const current = this.settings.get('__experimental_2019-10-30', false);
-    if (!current) {
-      this.warn('WARNING: This will enable the experimental documentation, that is NOT functional yet.');
-      this.warn('WARNING: Powercord Staff won\'t accept bug reports from this experimental version, nor provide support!');
-      this.warn('WARNING: Use it at your own risk! It\'s labeled experimental for a reason.');
-    } else {
-      this.log('Experimental documentation disabled.');
-    }
-    this.settings.set('__experimental_2019-10-30', !current);
-    powercord.pluginManager.remount(this.entityID);
   }
 };

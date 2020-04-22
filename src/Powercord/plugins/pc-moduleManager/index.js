@@ -6,16 +6,18 @@ const { Plugin } = require('powercord/entities');
 const { MAGIC_CHANNELS: { STORE_PLUGINS, STORE_THEMES } } = require('powercord/constants');
 const { resolve } = require('path');
 
-const layout = require('./components/manage/LayoutLegacy.jsx');
-const Store = require('./components/store/Store');
-const Soon = require('./components/Soon.jsx');
 const commands = require('./commands');
 const i18n = require('./licenses/index');
+
+const layout = require('./components/manage/LayoutLegacy');
+const Store = require('./components/store/Store');
+const Soon = require('./components/Soon');
+const Plugins = require('./components/manage/Plugins');
+const Themes = require('./components/manage/Themes');
 
 module.exports = class ModuleManager extends Plugin {
   async startPlugin () {
     powercord.api.i18n.loadAllStrings(i18n);
-    this.loadCSS(resolve(__dirname, 'scss', 'style.scss'));
 
     Object.values(commands).forEach(cmd =>
       this.registerCommand(cmd.command, cmd.aliases || [],
@@ -57,9 +59,11 @@ module.exports = class ModuleManager extends Plugin {
     }
 
     if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-themes')) {
-      this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, () => 'cool');
-      this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, () => 'cool');
+      this.loadCSS(resolve(__dirname, 'scss', 'style.scss'));
+      this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, Plugins);
+      this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, Themes);
     } else {
+      this.loadCSS(resolve(__dirname, 'scss', 'brrrrr', 'style.scss'));
       this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, layout('plugins', false, this._fetchEntities));
       this.registerSettings('pc-moduleManager-themes', Messages.POWERCORD_THEMES, Soon);
     }

@@ -1,7 +1,7 @@
 const { React } = require('powercord/webpack');
 const { Confirm } = require('powercord/components/modal');
 const { open: openModal, close: closeModal } = require('powercord/modal');
-const Plugin = require('../items/Products/Installed');
+const Plugin = require('../brrrrr/items/Products/Installed');
 
 module.exports = class Plugins extends React.Component {
   render () {

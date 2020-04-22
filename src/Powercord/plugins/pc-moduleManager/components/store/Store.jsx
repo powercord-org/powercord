@@ -1,7 +1,7 @@
 const { React, Flux, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { Tooltip, Clickable, HeaderBar, AsyncComponent, Icons: { Plugin: PluginIcon, Theme, CloudUpload, Certificate, Server } } = require('powercord/components');
 
-const Product = require('../items/Products/Product');
+const Product = require('../brrrrr/items/Products/Product');
 const VerticalScroller = AsyncComponent.from(getModuleByDisplayName('VerticalScroller'));
 const SearchBox = AsyncComponent.from((async () => {
   const { searchHelpTextVisible } = await getModule([ 'searchHelpTextVisible' ]);

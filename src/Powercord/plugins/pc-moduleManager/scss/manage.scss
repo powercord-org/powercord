@@ -1,0 +1,57 @@
+.powercord-entities-manage {
+  &-header {
+    display: flex;
+    align-items: center;
+
+    span {
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .buttons {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    svg {
+      margin-left: 15px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+    }
+  }
+
+  &-search {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+
+    > div {
+      flex: 1;
+
+      + button {
+        margin-left: 15px;
+      }
+
+      > :last-child {
+        display: none;
+      }
+    }
+
+    input {
+      height: 32px;
+    }
+  }
+
+  &-entity {
+
+  }
+
+  &-tabs {
+    background-color: var(--background-secondary);
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+  }
+}
