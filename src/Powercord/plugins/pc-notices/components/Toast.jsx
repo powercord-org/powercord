@@ -31,14 +31,14 @@ class Toast extends React.PureComponent {
     return (
       <div
         id={this.props.id}
-        className={[ 'powercord-toast', this.props.leaving ? 'leaving' : '' ].filter(Boolean).join(' ')}
+        className={[ 'powercord-toast', this.props.leaving ? 'leaving' : '', this.props.className ].filter(Boolean).join(' ')}
         data-toast-type={this.props.type || 'info'}
         style={this.props.style}
       >
         {this.props.header && this.renderHeader()}
         {this.props.content && this.renderContent()}
         {this.props.buttons && Array.isArray(this.props.buttons) && this.renderButtons()}
-        {this.state.timeout && this.renderProgress()}
+        {this.state.timeout && !this.props.hideProgressBar && this.renderProgress()}
       </div>
     );
   }
