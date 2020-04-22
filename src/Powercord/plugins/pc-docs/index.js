@@ -7,25 +7,23 @@ const DocsLayer = require('./components/DocsLayer');
 
 module.exports = class Documentation extends Plugin {
   startPlugin () {
+    this.loadCSS(resolve(__dirname, 'scss', 'style.scss'));
     powercord.api.labs.registerExperiment({
       id: 'pc-docs',
       name: 'Documentation',
-      date: 1571961600000,
+      date: 1572393600000,
       description: 'Powercord documentation for making plugin and themes',
       usable: true,
       callback: enabled => {
         if (enabled) {
-          this.loadCSS(resolve(__dirname, 'scss', 'style.scss'));
           this.addDocsItems();
         } else {
-          this.registered.styles = [];
           uninject('pc-docs-tab');
         }
       }
     });
 
     if (powercord.api.labs.isExperimentEnabled('pc-docs')) {
-      this.loadCSS(resolve(__dirname, 'scss', 'style.scss'));
       this.addDocsItems();
     }
   }
