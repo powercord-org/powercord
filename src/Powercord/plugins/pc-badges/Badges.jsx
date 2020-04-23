@@ -4,7 +4,7 @@ const { WEBSITE, REPO_URL } = require('powercord/constants');
 const { open: openModal } = require('powercord/modal');
 const { Clickable, Tooltip } = require('powercord/components');
 const { React, getModule, constants: { Routes } } = require('powercord/webpack');
-const { GUILD_ID, DISCORD_INVITE } = require('powercord/constants');
+const { GUILD_ID, DISCORD_INVITE, I18N_WEBSITE } = require('powercord/constants');
 
 const DonateModal = require('./DonateModal');
 const Badge = require('./Badge');
@@ -31,7 +31,7 @@ const badges = {
     }
   },
   contributor: () => openExternal(`${WEBSITE}/contributors`),
-  translator: () => openExternal('https://i18n.powercord.dev/projects/powercord'),
+  translator: () => openExternal(I18N_WEBSITE),
   hunter: () => openExternal(`https://github.com/${REPO_URL}/issues?q=label:bug`),
   early: () => void 0
 };

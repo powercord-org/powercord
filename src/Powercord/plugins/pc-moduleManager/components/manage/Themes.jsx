@@ -1,5 +1,6 @@
 const { React, getModule } = require('powercord/webpack');
 const { TabBar } = require('powercord/components');
+const CodeMirror = require('./CodeMirror');
 const Base = require('./Base');
 
 class Themes extends Base {
@@ -28,16 +29,27 @@ class Themes extends Base {
   }
 
   renderQuickCSS () {
-    return 'yes';
+    return (
+      <div className='powercord-quickcss'>
+        <div className='powercord-quickcss-header'></div>
+        <CodeMirror onReady={this.setupCodeMirror.bind(this)}/>
+        <div className='powercord-quickcss-footer'></div>
+      </div>
+    );
   }
 
+  // eslint-disable-next-line no-unused-vars
   renderItem (item) {
-    console.log(item);
+    // console.log(item);
     return 'mhm';
   }
 
   getItems () {
     return this._sortItems([ ...powercord.styleManager.themes.values() ].filter(t => t.isTheme));
+  }
+
+  setupCodeMirror (cm) {
+    console.log(cm);
   }
 }
 

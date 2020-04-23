@@ -1,3 +1,9 @@
+// gross, but it works
+@import '../../../../../node_modules/codemirror/lib/codemirror';
+@import '../../../../../node_modules/codemirror/addon/fold/foldgutter';
+@import '../../../../../node_modules/codemirror/addon/lint/lint';
+@import '../../../../../node_modules/codemirror/addon/hint/show-hint';
+
 .powercord-entities-manage {
   &-header {
     display: flex;
@@ -51,7 +57,73 @@
   &-tabs {
     background-color: var(--background-secondary);
     padding: 10px 15px;
-    border-radius: 10px;
+    border-radius: 5px;
     margin-bottom: 25px;
+  }
+}
+
+.CodeMirror {
+  background-color: var(--background-secondary) !important;
+  color: var(--text-normal);
+
+  &-gutters {
+    background-color: var(--background-secondary) !important;
+    padding-right: 5px;
+    border-right: 1px var(--background-tertiary) solid;
+  }
+
+  &-hints {
+    z-index: 6969;
+    background-color: var(--background-tertiary);
+    border-width: 0;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .CodeMirror-hint {
+      color: var(--text-normal);
+      padding: 8px 12px;
+      margin: 5px 3px;
+    }
+
+    .CodeMirror-hint-active {
+      color: var(--header-primary);
+      background-color: var(--background-secondary);
+    }
+  }
+
+  // @formatter:off
+  .cm-tag { color: #ce9763; }
+  .cm-qualifier { color: #0fa0ce; }
+  .cm-property { color: #4cc558; }
+  .cm-number { color: #ffa427; };
+  .cm-atom, .cm-keyword { color: #ffcc37; };
+  .cm-string, .cm-comment { color: #a76200; }
+  .cm-callee { color: #f49898; }
+  .cm-variable-2 { color: #88adc5; }
+
+  &-foldmarker { color: #7289da; text-shadow: none; font-weight: bold; }
+  &-activeline-background { background: var(--background-message-hover); }
+  &-matchingbracket { outline: 1px solid grey; color:red !important; }
+  &-selected { background-color: var(--background-tertiary) !important; }
+  &-cursor { border-left: 1px solid var(--header-primary); }
+  // @formatter:on
+}
+
+.theme-light {
+  .CodeMirror {
+    font-weight: 500;
+
+    // @formatter:off
+    .cm-tag { color: #ce9a49; }
+    .cm-qualifier { color: #0fa0ce; }
+    .cm-property { color: #359546; }
+    .cm-number { color: #ff7813; };
+    .cm-atom, .cm-keyword { color: #a68721; };
+    .cm-string, .cm-comment { color: #a76200; }
+    .cm-callee { color: #bb6570; }
+    .cm-variable-2 { color: #7193a5; }
+    // @formatter:on
   }
 }

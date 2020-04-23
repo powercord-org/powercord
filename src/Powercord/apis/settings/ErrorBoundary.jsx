@@ -16,11 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*
- * Parts of this component are taken from
- * https://github.com/intrnl/harmony/blob/legacy-v2/src/modules/hm-components/GenericErrorBoundary.jsx
- */
-
 const { parse } = require('url');
 const { format } = require('util');
 const { resolve } = require('path');
