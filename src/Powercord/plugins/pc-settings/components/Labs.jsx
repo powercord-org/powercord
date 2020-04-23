@@ -21,7 +21,7 @@ class Labs extends React.Component {
           Staff will <b>NOT</b> provide any support, explain, or accept any bug report for those. <b>Use them at your
             own risk</b>.</>}
       />
-      {powercord.api.labs.experiments.map(e => this.renderItem(e))}
+      {powercord.api.labs.experiments.sort((a, b) => a.date > b.date ? -1 : a.date < b.date ? 1 : 0).map(e => this.renderItem(e))}
     </>;
   }
 
@@ -47,14 +47,9 @@ class Labs extends React.Component {
           <b style={{ fontSize: 20 }}>{experiment.name}</b>
           {!experiment.usable && <span style={{
             fontWeight: 600,
-            paddingTop: 3,
-            paddingBottom: 3,
-            paddingLeft: 5,
-            paddingRight: 5,
             marginLeft: 10,
-            borderRadius: 3,
             fontSize: 14,
-            backgroundColor: '#f04747'
+            color: '#f04747'
           }}>MARKED UNUSABLE</span>}
           <Switch
             style={{ marginLeft: 'auto' }}

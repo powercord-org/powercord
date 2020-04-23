@@ -3,7 +3,7 @@ const { Icons: { Plugin: PluginIcon, Theme } } = require('powercord/components')
 const { inject, uninject } = require('powercord/injector');
 const { forceUpdateElement } = require('powercord/util');
 const { Plugin } = require('powercord/entities');
-const { MAGIC_CHANNELS: { STORE_PLUGINS, STORE_THEMES } } = require('powercord/constants');
+const { MAGIC_CHANNELS: { CSS_SNIPPETS, STORE_PLUGINS, STORE_THEMES } } = require('powercord/constants');
 const { resolve } = require('path');
 
 const commands = require('./commands');
@@ -51,6 +51,23 @@ module.exports = class ModuleManager extends Plugin {
         // And we wrap it in setImmediate to not break the labs UI
       }
     });
+
+    powercord.api.labs.registerExperiment({
+      id: 'pc-moduleManager-snippets',
+      name: 'Snippet features',
+      date: 1587605896724,
+      description: 'Stuff for css snippets',
+      usable: false,
+      callback: () => {
+        // We're supposed to do it properly but reload > all
+        setImmediate(() => powercord.pluginManager.remount(this.entityID));
+        // And we wrap it in setImmediate to not break the labs UI
+      }
+    });
+
+    if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-snippets')) {
+      this._injectSnippets();
+    }
 
     if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-store')) {
       this._injectCommunityContent();
@@ -118,6 +135,10 @@ module.exports = class ModuleManager extends Plugin {
 
     const { containerDefault } = await getModule([ 'containerDefault' ]);
     forceUpdateElement(`.${containerDefault}`, true);
+  }
+
+  async _injectSnippets () {
+    console.log(CSS_SNIPPETS);
   }
 
   async _fetchEntities (type) {
