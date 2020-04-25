@@ -1,10 +1,12 @@
+const { existsSync } = require('fs');
+const { writeFile, readFile } = require('fs').promises;
 const { React, constants: { Permissions }, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
 const { Icons: { Plugin: PluginIcon, Theme } } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
 const { forceUpdateElement } = require('powercord/util');
 const { Plugin } = require('powercord/entities');
 const { MAGIC_CHANNELS: { CSS_SNIPPETS, STORE_PLUGINS, STORE_THEMES } } = require('powercord/constants');
-const { resolve } = require('path');
+const { join } = require('path');
 
 const commands = require('./commands');
 const i18n = require('./licenses/index');
@@ -14,6 +16,7 @@ const Store = require('./components/store/Store');
 const Soon = require('./components/Soon');
 const Plugins = require('./components/manage/Plugins');
 const Themes = require('./components/manage/Themes');
+const SnippetButton = require('./components/SnippetButton');
 
 module.exports = class ModuleManager extends Plugin {
   async startPlugin () {
@@ -52,21 +55,19 @@ module.exports = class ModuleManager extends Plugin {
       }
     });
 
-    powercord.api.labs.registerExperiment({
-      id: 'pc-moduleManager-snippets',
-      name: 'Snippet features',
-      date: 1587605896724,
-      description: 'Stuff for css snippets',
-      usable: false,
-      callback: () => {
-        // We're supposed to do it properly but reload > all
-        setImmediate(() => powercord.pluginManager.remount(this.entityID));
-        // And we wrap it in setImmediate to not break the labs UI
-      }
-    });
+    if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-themes')) {
+      this.loadCSS(join(__dirname, 'scss', 'style.scss'));
 
-    if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-snippets')) {
+      this._quickCSS = '';
+      this._quickCSSFile = join(__dirname, 'quickcss.css');
+      this._loadQuickCSS();
       this._injectSnippets();
+      this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, Plugins);
+      this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, Themes);
+    } else {
+      this.loadCSS(join(__dirname, 'scss', 'brrrrr', 'style.scss'));
+      this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, layout('plugins', false, this._fetchEntities));
+      this.registerSettings('pc-moduleManager-themes', Messages.POWERCORD_THEMES, Soon);
     }
 
     if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-store')) {
@@ -74,23 +75,18 @@ module.exports = class ModuleManager extends Plugin {
       this.registerRoute('/store/plugins', Store, true);
       this.registerRoute('/store/themes', Store, true);
     }
-
-    if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-themes')) {
-      this.loadCSS(resolve(__dirname, 'scss', 'style.scss'));
-      this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, Plugins);
-      this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, Themes);
-    } else {
-      this.loadCSS(resolve(__dirname, 'scss', 'brrrrr', 'style.scss'));
-      this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, layout('plugins', false, this._fetchEntities));
-      this.registerSettings('pc-moduleManager-themes', Messages.POWERCORD_THEMES, Soon);
-    }
   }
 
   pluginWillUnload () {
+    if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-themes')) {
+      document.querySelector('#powercord-quickcss').remove();
+    }
     powercord.api.labs.unregisterExperiment('pc-moduleManager-store');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-themes');
+    powercord.api.labs.unregisterExperiment('pc-moduleManager-snippets');
     uninject('pc-moduleManager-channelItem');
     uninject('pc-moduleManager-channelProps');
+    uninject('pc-moduleManager-snippets');
   }
 
   async _injectCommunityContent () {
@@ -138,7 +134,62 @@ module.exports = class ModuleManager extends Plugin {
   }
 
   async _injectSnippets () {
-    console.log(CSS_SNIPPETS);
+    const Message = await getModule(m => m.default && m.default.displayName === 'Message');
+    inject('pc-moduleManager-snippets', Message, 'default', (args, res) => {
+      if (!res.props.children[2] || !res.props.children[2].props.children || res.props.children[2].props.children.type.__powercord_modm === 'owo') {
+        return res;
+      }
+
+      res.props.children[2].props.children.type.__powercord_modm = 'owo';
+      const renderer = res.props.children[2].props.children.type.type;
+      res.props.children[2].props.children.type.type = (props) => {
+        const res = renderer(props);
+        const actions = res && res.props.children && res.props.children.props.children && res.props.children.props.children[1];
+        if (actions) {
+          const renderer = actions.type;
+          actions.type = (props) => {
+            const res = renderer(props);
+            if (props.channel.id === CSS_SNIPPETS && (/```(?:(?:s?css)|(?:styl(?:us)?)|less)/).test(props.message.content)) {
+              res.props.children.unshift(
+                React.createElement(SnippetButton, {
+                  message: props.message,
+                  main: this
+                })
+              );
+            }
+            return res;
+          };
+        }
+        return res;
+      };
+      return res;
+    });
+    Message.default.displayName = 'Message';
+  }
+
+  async _applySnippet (message) {
+    let css = '\n\n/**\n';
+    css += ` * Snippet from #css-snippets applied the ${new Date().toDateString()} at ${new Date().toTimeString()}\n`;
+    css += ` * Created by ${message.author.tag} (${message.author.id})\n`;
+    css += ` * Snippet ID: ${message.id}\n`;
+    css += ' */\n';
+    for (const m of message.content.matchAll(/```((?:s?css)|(?:styl(?:us)?)|less)\n?([\s\S]*)`{3}/g)) {
+      let snippet = m[2].trim();
+      switch (m[1]) {
+        case 'scss':
+          snippet = '/* lol can\'t do scss for now */';
+          break;
+        case 'styl':
+        case 'stylus':
+          snippet = '/* lol can\'t do stylus for now */';
+          break;
+        case 'less':
+          snippet = '/* lol can\'t do less for now */';
+          break;
+      }
+      css += `${snippet}\n`;
+    }
+    this._saveQuickCSS(this._quickCSS + css);
   }
 
   async _fetchEntities (type) {
@@ -175,5 +226,21 @@ module.exports = class ModuleManager extends Plugin {
     }
 
     powercord.api.notices.sendToast('missing-entities-notify', props);
+  }
+
+  async _loadQuickCSS () {
+    this._quickCSSElement = document.createElement('style');
+    this._quickCSSElement.id = 'powercord-quickcss';
+    document.head.appendChild(this._quickCSSElement);
+    if (existsSync(this._quickCSSFile)) {
+      this._quickCSS = await readFile(this._quickCSSFile, 'utf8');
+      this._quickCSSElement.innerHTML = this._quickCSS;
+    }
+  }
+
+  async _saveQuickCSS (css) {
+    this._quickCSS = css.trim();
+    this._quickCSSElement.innerHTML = this._quickCSS;
+    await writeFile(this._quickCSSFile, this._quickCSS);
   }
 };

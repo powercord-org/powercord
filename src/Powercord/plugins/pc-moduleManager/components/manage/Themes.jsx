@@ -1,16 +1,19 @@
 const { React, getModule } = require('powercord/webpack');
 const { TabBar } = require('powercord/components');
-const CodeMirror = require('./CodeMirror');
+const QuickCSS = require('./QuickCSS');
 const Base = require('./Base');
 
 class Themes extends Base {
   constructor () {
     super();
     this.state.tab = 'INSTALLED';
+    this.ConnectedQuickCSS = powercord.pluginManager.get('pc-moduleManager').settings.connectStore(QuickCSS);
   }
 
   render () {
     const { topPill, item } = getModule([ 'topPill' ], false);
+    const { ConnectedQuickCSS } = this;
+
     return (
       <>
         <div className='powercord-entities-manage-tabs'>
@@ -23,18 +26,8 @@ class Themes extends Base {
             <TabBar.Item className={item} selectedItem={this.state.tab} id='QUICK_CSS'>Quick CSS</TabBar.Item>
           </TabBar>
         </div>
-        {this.state.tab === 'INSTALLED' ? super.render() : this.renderQuickCSS()}
+        {this.state.tab === 'INSTALLED' ? super.render() : <ConnectedQuickCSS/>}
       </>
-    );
-  }
-
-  renderQuickCSS () {
-    return (
-      <div className='powercord-quickcss'>
-        <div className='powercord-quickcss-header'></div>
-        <CodeMirror onReady={this.setupCodeMirror.bind(this)}/>
-        <div className='powercord-quickcss-footer'></div>
-      </div>
     );
   }
 
@@ -46,10 +39,6 @@ class Themes extends Base {
 
   getItems () {
     return this._sortItems([ ...powercord.styleManager.themes.values() ].filter(t => t.isTheme));
-  }
-
-  setupCodeMirror (cm) {
-    console.log(cm);
   }
 }
 
