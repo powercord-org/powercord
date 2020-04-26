@@ -43,6 +43,8 @@
   "POWERCORD_PLUGINS_PERMISSIONS_KEYPRESSES": "Считывать нажатия клавиш",
   "POWERCORD_PLUGINS_PERMISSIONS_USE_EUD": "Собирать и использовать ваши данные",
   "POWERCORD_PLUGINS_SEARCH": "Найти плагины…",
+  "POWERCORD_PLUGINS_UNINSTALL": "Удалить {pluginCount, plural, =1 {плагин} other {плагины}}",
+  "POWERCORD_PLUGINS_UNINSTALL_SURE": "Вы точно хотите удалить {pluginCount, plural, =1 {этот плагин} other {эти плагины}}?",
   "POWERCORD_PLUGINS_VERSION": "Версия",
   "POWERCORD_PRODUCT_LOOKING": "Что ты ищешь?",
   "POWERCORD_QUICKCSS": "Быстрая настройка CSS",
