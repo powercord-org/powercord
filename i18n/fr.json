@@ -119,5 +119,8 @@
     "POWERCORD_CUTIE_TIER_3_DESC": "Obtiens un badge **entièrement personnalisable** pour **l'un** de tes serveurs.",
     "POWERCORD_CUTIE_TIER_EASTER_PRICE": "**$1,337,420.69**",
     "POWERCORD_CUTIE_TIER_EASTER_DESC": "Les **Développeurs de Powercord** te rendront visite où que tu vives pour **te faire un câlin**.",
-    "POWERCORD_CUTIE_DONATE": "Soutenir"
+    "POWERCORD_CUTIE_DONATE": "Soutenir",
+    "POWERCORD_SETTINGS_DEBUG_LOGS_DESC": "Enregistre le contenu de la console dans un fichier. Utile pour le débogage si Discord plante de manière inattendue.",
+    "POWERCORD_SETTINGS_DEBUG_LOGS": "Journaux de débogage",
+    "POWERCORD_SETTINGS_OVERLAY_DESC": "Ouvre une fenêtre DevTools qui vous permet d'inspecter ce qui se passe dans l'overlay Discord."
 }
