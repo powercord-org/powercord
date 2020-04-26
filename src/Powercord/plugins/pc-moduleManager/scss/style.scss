@@ -11,15 +11,18 @@
     white-space: nowrap;
     font-size: 14px;
     padding: 3px 5px;
-    cursor: pointer;
     transition: background-color .1s;
   }
 
   &:not(.applied) {
     color: var(--text-normal);
 
-    div:hover {
-    background-color: var(--interactive-muted);
+    div {
+      cursor: pointer;
+
+      :hover {
+        background-color: var(--interactive-muted);
+      }
     }
   }
 }

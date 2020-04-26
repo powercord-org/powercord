@@ -1,70 +1,52 @@
 {
-  "id": "pluginManager-17-11-19",
+  "id": "updates-26-04-20",
   "date": "2019-11-17",
   "contents": [
     {
       "type": "HEADER",
       "color": "GREEN",
-      "text": "It's back!!!1!1!",
+      "text": "Update time!",
       "noMargin": true
     },
     {
       "type": "CONTENTS",
-      "text": "Powercord Plugin Manager is **back**! You can now enable, disable and uninstall plugin from Powercord's UI.",
+      "text": "It's been months since last time, so here we go with updates: Themes tab in settings is no longer useless. It's not the complete theme UI yet, this is still under construction, but you can at least apply some CSS more easily!",
       "list": [
-        "**Dependencies are (properly) handled**, so you shouldn't encounter much problems.",
-        "**No installer yet**, as this still under development. We're making progress though. Soon:tm:",
-        "**Theme manager is also coming soon!** With some very cool features, including letting themes have a settings panel, without a single line of JS. Can't wait tbh"
+        "**Quick CSS** is now a thing, in a \"Themes\" tab near you. Powered by good old CodeMirror and a bit of CSS. Yes CSS powers CSS, this is 2038 technology!!",
+        "You can **apply snippets** in Powercord's #css-snippets channels easily with a button. It'll appear in Quick CSS if you want to edit it a bit.",
+        "Quick CSS editor can be **popped out** if you want to have a handy editor to quickly test things and see changes appear live on screen."
       ]
     },
     {
       "type": "HEADER",
       "color": "GREEN",
-      "text": "No more Powercord unplugs"
+      "text": "Powercord now speaks your language"
     },
     {
       "type": "CONTENTS",
-      "text": "We've implemented something that should completely prevent Powercord from no longer being injected after a Canary version change. We haven't fully tested it, but it should be working fine. Let us know if you encounter unexpected unplugs!"
-    },
-    {
-      "type": "HEADER",
-      "color": "RED",
-      "text": "Core cleanup"
-    },
-    {
-      "type": "CONTENTS",
-      "text": "We removed deprecated methods and features from Powercord's core, including old injection methods and normalized `.pc-` classes. We also got rid of some bugs, because we don't like them."
+      "text": "We did put some effort to make Powercord support i18n, also known as internationalization. Most of Powercord UIs should now be shown in the language you have Discord in, if translations are available. If they are not, you can [contribute](https://i18n.powercord.dev/projects/powercord) and get a sweet Translator badge on your profile!"
     },
     {
       "type": "HEADER",
       "color": "BLURPLE",
-      "text": "About listing websites"
-    },
-    {
-      "type": "CONTENTS",
-      "text": "Back in april, we've made an announcement about BetterDocs and other listing websites. Long story short, we want to avoid what happened in the past, with malicious plugins being listed and developers not being asked for authorization before listing. We're in the process of writing some guidelines for those websites, and we're implementing some features for them, including:",
-      "list": [
-        "**New RPC events**, to interact with Powercord, to open install window from their website for example. We'll provide documentation soon.",
-        "**An API endpoint** to fetch plugins that **explicitly mentionned** they agree with being listed externally. We'll also provide documentation soon."
-      ]
-    },
-    {
-      "type": "HEADER",
-      "color": "ORANGE",
-      "text": "Have more changes"
+      "text": "Other changes and fixes"
     },
     {
       "type": "CONTENTS",
       "list": [
-        "**Clyde's avatar and name** can now be **customized** in commands. If you want to keep Clyde, you can disable this in General Settings.",
-        "**Powercord's April Fools** can be disabled in General Settings, if you're against fun. :^)",
-        "**Fixed a security vulnerability** because that's not a good thing. Thanks to amy#0001 for bringing this to our attention <3",
-        "**.hastebin command** now uses a **self-hosted haste** at https://haste.powercord.dev. Thanks to AlexFlipnote#0001 for the sweet theme!",
-        "**Custom RPC events** will probably be part of the plugin API, stay tuned :eyes:",
-        "**Changed label colors** in console to blurple. Very important change!",
-        "Fixed a bug where emma wasn't cute enough."
+        "You can now **save console logs** in a file located in the `.logs` folder.",
+        "Added a top-level css class \"powercord\" if themes wants to target element only on Powercord.",
+        "Improved injection process on Linux: Powercord will now attempt to find where Discord instead of checking against a hardcoded list of paths.",
+        "Fixed **emoji utility** plugin being broke due to Discord updates.",
+        "Improved Discord's **British locale** to remove those american z. Enjoy the lang of tea even though Discord still doesn't authorise client mods. :^)",
+        "Added a few internal APIs for plugin devs. Documentation is still in the works, coming soon:tm:.",
+        "Improved ability of editors to understand how Powercord works with some JSDocs. IntelliSense ftw.",
+        "Added some **error checking** to prevent some meaningless errors from showing up in DevTools console.",
+        "**Optimized some plugins** to make them feel even more responsive and not make Discord as slow as an Electron app. Wait...",
+        "Probably a few extra things I forgot to mention.",
+        "Tuned light theme a bit so emma's cuteness is even more visible."
       ]
     }
   ],
-  "footer": "Btw have I told you I use arch?"
+  "footer": "Stay at home! Don't let Cowona-chan spwead out!!"
 }

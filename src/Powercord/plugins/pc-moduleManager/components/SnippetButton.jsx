@@ -8,7 +8,9 @@ class SnippetButton extends React.Component {
     return (
       <div className={[ 'powercord-snippet-apply', applied && 'applied' ].filter(Boolean).join(' ')}>
         <Clickable onClick={() => {
-          this.props.main._applySnippet(this.props.message).then(() => this.forceUpdate()); // yes ik its ew
+          if (!applied) {
+            this.props.main._applySnippet(this.props.message).then(() => this.forceUpdate()); // yes ik its ew
+          }
         }}>
           {applied ? Messages.POWERCORD_SNIPPET_APPLIED : Messages.POWERCORD_SNIPPET_APPLY}
         </Clickable>

@@ -345,15 +345,25 @@ module.exports = class Updater extends Plugin {
   }
 
   async _getMainChangeLogComponent () {
-    const mdl = await getModule([ 'useStateFromStoresObject' ]);
-    const ogFunction = mdl.useStateFromStoresObject;
-    mdl.useStateFromStoresObject = () => ({
-      changeLog: '',
-      isOpen: true
-    });
+    const mdl = await getModule([ 'changeLog', 'isOpen' ]);
+    const ogFunction = mdl.isOpen;
+    mdl.isOpen = () => {
+      mdl.isOpen = ogFunction;
+      return true;
+    };
+    // Fire me harder daddy facebook
+    const owo = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentDispatcher.current;
+    const ogUseRef = owo.useRef;
+    const ogUseState = owo.useState;
+    const ogUseLayoutEffect = owo.useLayoutEffect;
+    owo.useRef = () => ({ current: null });
+    owo.useState = () => [ null, () => void 0 ];
+    owo.useLayoutEffect = () => void 0;
     const Component = await getModule(m => m.type && m.type.displayName && m.type.displayName === 'ConnectedChangeLog');
     const ChangeLog = Component.type().type;
-    mdl.useStateFromStoresObject = ogFunction;
+    owo.useRef = ogUseRef;
+    owo.useState = ogUseState;
+    owo.useLayoutEffect = ogUseLayoutEffect;
     return ChangeLog;
   }
 };
