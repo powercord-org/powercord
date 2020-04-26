@@ -1,3 +1,10 @@
+// gross, but it works
+@import '../../../../../node_modules/codemirror/lib/codemirror';
+@import '../../../../../node_modules/codemirror/addon/dialog/dialog';
+@import '../../../../../node_modules/codemirror/addon/fold/foldgutter';
+@import '../../../../../node_modules/codemirror/addon/lint/lint';
+@import '../../../../../node_modules/codemirror/addon/hint/show-hint';
+
 .powercord-quickcss {
   --editor-height: 350px;
   color: var(--text-normal);

@@ -11,9 +11,7 @@ const { join } = require('path');
 const commands = require('./commands');
 const i18n = require('./licenses/index');
 
-const layout = require('./components/manage/LayoutLegacy');
 const Store = require('./components/store/Store');
-const Soon = require('./components/Soon');
 const Plugins = require('./components/manage/Plugins');
 const Themes = require('./components/manage/Themes');
 const SnippetButton = require('./components/SnippetButton');
@@ -30,10 +28,10 @@ module.exports = class ModuleManager extends Plugin {
     );
 
     powercord.api.labs.registerExperiment({
-      id: 'pc-moduleManager-themes',
-      name: 'Plugin and Themes settings update',
-      date: 1587488341226,
-      description: 'Partial plugins UI redesign and new Theme management UI',
+      id: 'pc-moduleManager-themes2',
+      name: 'New themes features',
+      date: 1587857509321,
+      description: 'New Theme management UI & settings',
       usable: false,
       callback: () => {
         // We're supposed to do it properly but reload > all
@@ -55,20 +53,13 @@ module.exports = class ModuleManager extends Plugin {
       }
     });
 
-    if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-themes')) {
-      this.loadCSS(join(__dirname, 'scss', 'style.scss'));
-
-      this._quickCSS = '';
-      this._quickCSSFile = join(__dirname, 'quickcss.css');
-      this._loadQuickCSS();
-      this._injectSnippets();
-      this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, Plugins);
-      this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, Themes);
-    } else {
-      this.loadCSS(join(__dirname, 'scss', 'brrrrr', 'style.scss'));
-      this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, layout('plugins', false, this._fetchEntities));
-      this.registerSettings('pc-moduleManager-themes', Messages.POWERCORD_THEMES, Soon);
-    }
+    this._quickCSS = '';
+    this._quickCSSFile = join(__dirname, 'quickcss.css');
+    this._loadQuickCSS();
+    this._injectSnippets();
+    this.loadCSS(join(__dirname, 'scss', 'style.scss'));
+    this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, Plugins);
+    this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, Themes);
 
     if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-store')) {
       this._injectCommunityContent();
@@ -78,9 +69,7 @@ module.exports = class ModuleManager extends Plugin {
   }
 
   pluginWillUnload () {
-    if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-themes')) {
-      document.querySelector('#powercord-quickcss').remove();
-    }
+    document.querySelector('#powercord-quickcss').remove();
     powercord.api.labs.unregisterExperiment('pc-moduleManager-store');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-themes');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-snippets');
@@ -169,8 +158,13 @@ module.exports = class ModuleManager extends Plugin {
 
   async _applySnippet (message) {
     let css = '\n\n/**\n';
-    css += ` * Snippet from #css-snippets applied the ${new Date().toDateString()} at ${new Date().toTimeString()}\n`;
-    css += ` * Created by ${message.author.tag} (${message.author.id})\n`;
+    const line1 = Messages.POWERCORD_SNIPPET_LINE1.format({ date: new Date() });
+    const line2 = Messages.POWERCORD_SNIPPET_LINE2.format({
+      authorTag: message.author.tag,
+      authorId: message.author.id
+    });
+    css += ` * ${line1}\n`;
+    css += ` * ${line2}\n`;
     css += ` * Snippet ID: ${message.id}\n`;
     css += ' */\n';
     for (const m of message.content.matchAll(/```((?:s?css)|(?:styl(?:us)?)|less)\n?([\s\S]*)`{3}/g)) {

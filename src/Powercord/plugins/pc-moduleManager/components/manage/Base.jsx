@@ -1,13 +1,14 @@
 const { join } = require('path');
 const { shell } = require('electron');
-const { React, getModule, contextMenu } = require('powercord/webpack');
-const { Button, ContextMenu, Divider, Icons: { Overflow } } = require('powercord/components');
+const { React, contextMenu, i18n: { Messages } } = require('powercord/webpack');
+const { Button, Tooltip, ContextMenu, Divider, Icons: { Overflow } } = require('powercord/components');
 const { TextInput } = require('powercord/components/settings');
 
 class Base extends React.Component {
   constructor () {
     super();
     this.state = {
+      key: `${this.constructor.name.toUpperCase()}`,
       search: ''
     };
   }
@@ -27,14 +28,16 @@ class Base extends React.Component {
 
   renderHeader () {
     return (
-      <span>Installed {this.constructor.name}</span>
+      <span>{Messages[`POWERCORD_${this.state.key}_INSTALLED`]}</span>
     );
   }
 
   renderButtons () {
     return (
       <div className='buttons'>
-        <Button onClick={() => this.goToStore()}>Explore {this.constructor.name.slice(0, -1)} Store</Button>
+        <Tooltip text={Messages.COMING_SOON}>
+          <Button disabled onClick={() => this.goToStore()}>{Messages[`POWERCORD_${this.state.key}_EXPLORE`]}</Button>
+        </Tooltip>
         <Overflow onClick={e => this.openOverflowMenu(e)} onContextMenu={e => this.openOverflowMenu(e)}/>
       </div>
     );
@@ -55,9 +58,9 @@ class Base extends React.Component {
         <TextInput
           value={this.state.search}
           onChange={search => this.setState({ search })}
-          placeholder='What are you looking for?'
+          placeholder={Messages.POWERCORD_PRODUCT_LOOKING}
         >
-          Search {this.constructor.name.toLowerCase()}...
+          {Messages[`POWERCORD_${this.state.key}_SEARCH`]}
         </TextInput>
       </div>
     );
@@ -78,12 +81,12 @@ class Base extends React.Component {
         itemGroups: [ [
           {
             type: 'button',
-            name: `Open ${this.constructor.name.toLowerCase()} folder`,
+            name: Messages[`POWERCORD_${this.state.key}_OPEN_FOLDER`],
             onClick: () => shell.openItem(join(__dirname, '..', '..', '..', '..', this.constructor.name.toLowerCase()))
           },
           {
             type: 'button',
-            name: `Find missing ${this.constructor.name.toLowerCase()}`,
+            name: Messages[`POWERCORD_${this.state.key}_LOAD_MISSING`],
             onClick: () => this.fetchMissing()
           }
         ] ]
@@ -92,10 +95,12 @@ class Base extends React.Component {
   }
 
   async goToStore () {
-    const { popLayer } = await getModule([ 'popLayer' ]);
-    const { transitionTo } = await getModule([ 'transitionTo' ]);
-    popLayer();
-    transitionTo(`/_powercord/store/${this.constructor.name.toLowerCase()}`);
+    /*
+     * const { popLayer } = await getModule([ 'popLayer' ]);
+     * const { transitionTo } = await getModule([ 'transitionTo' ]);
+     * popLayer();
+     * transitionTo(`/_powercord/store/${this.constructor.name.toLowerCase()}`);
+     */
   }
 
   fetchMissing () {

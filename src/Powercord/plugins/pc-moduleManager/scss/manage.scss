@@ -1,11 +1,9 @@
-// gross, but it works
-@import '../../../../../node_modules/codemirror/lib/codemirror';
-@import '../../../../../node_modules/codemirror/addon/dialog/dialog';
-@import '../../../../../node_modules/codemirror/addon/fold/foldgutter';
-@import '../../../../../node_modules/codemirror/addon/lint/lint';
-@import '../../../../../node_modules/codemirror/addon/hint/show-hint';
-
 .powercord-entities-manage {
+  // https://github.com/facebook/react/issues/4251
+  input[disabled], button[disabled] {
+    pointer-events: none;
+  }
+
   &-header {
     display: flex;
     align-items: center;
@@ -51,14 +49,20 @@
     }
   }
 
-  &-entity {
-
-  }
-
   &-tabs {
     background-color: var(--background-secondary);
     padding: 10px 15px;
     border-radius: 5px;
     margin-bottom: 25px;
+  }
+
+  .powercord-product {
+    .metadata {
+      display: flex;
+
+      > div {
+        width: 33%;
+      }
+    }
   }
 }

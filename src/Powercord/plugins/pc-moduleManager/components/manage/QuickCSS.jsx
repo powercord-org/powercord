@@ -1,4 +1,4 @@
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
 const { SwitchItem, SliderInput } = require('powercord/components/settings');
 const { AsyncComponent, PopoutWindow, Clickable, FormTitle, Tooltip, Icons: { Gear, Close, ExternalLink } } = require('powercord/components');
 const CodeMirror = require('./CodeMirror');
@@ -55,15 +55,15 @@ class QuickCSS extends React.PureComponent {
         ref={this.ref}
       >
         {this.state.poppedOut
-          ? <div className='powercord-quickcss-popped'>Editor popped out</div>
+          ? <div className='powercord-quickcss-popped'>{Messages.POWERCORD_QUICKCSS_POPPED_OUT}</div>
           : <>
             <div className='powercord-quickcss-header'>
-              <Tooltip text='Settings' position='right'>
+              <Tooltip text={Messages.SETTINGS} position='right'>
                 <Clickable onClick={() => this.setState({ cmSettings: true })} className='button'>
                   <Gear/>
                 </Clickable>
               </Tooltip>
-              <Tooltip text={this.props.popout ? 'Close popout' : 'Popout'} position='left'>
+              <Tooltip text={this.props.popout ? Messages.CLOSE_WINDOW : Messages.POPOUT_PLAYER} position='left'>
                 <Clickable
                   onClick={() => this.props.popout ? this.state.win.close() : this._openPopout()}
                   className='button'
@@ -81,7 +81,7 @@ class QuickCSS extends React.PureComponent {
               />
             </div>
             <div className='powercord-quickcss-footer'>
-              <span>Ctrl+Space for autocomplete</span>
+              <span>{Messages.POWERCORD_QUICKCSS_AUTOCOMPLETE}</span>
               <span>CodeMirror v{require('codemirror').version}</span>
             </div>
             {!this.props.popout && <div className='powercord-quickcss-resizer' onMouseDown={this._handleResizeBegin}/>}
@@ -91,13 +91,13 @@ class QuickCSS extends React.PureComponent {
   }
 
   renderSettings () {
-    const { getSetting, setSetting, toggleSetting } = this.props;
+    const { getSetting, updateSetting, toggleSetting } = this.props;
 
     return (
       <VerticalScroller outerClassName='powercord-quickcss-editor-settings' theme='themeGhostHairline-DBD-2d' fade>
-        <FormTitle tag='h2'>CodeMirror Settings</FormTitle>
+        <FormTitle tag='h2'>{Messages.POWERCORD_QUICKCSS_SETTINGS}</FormTitle>
         <div className='close-wrapper'>
-          <Tooltip text='Close' position='left'>
+          <Tooltip text={Messages.CLOSE} position='left'>
             <Clickable onClick={() => this.setState({ cmSettings: false })} className='close'>
               <Close/>
             </Clickable>
@@ -111,7 +111,7 @@ class QuickCSS extends React.PureComponent {
               this.state.cm.setOption('lineNumbers', v.target.checked);
             }}
           >
-            Show line numbers
+            {Messages.POWERCORD_QUICKCSS_SETTINGS_LINES}
           </SwitchItem>
           <SwitchItem
             value={getSetting('cm-codeFolding', true)}
@@ -123,27 +123,27 @@ class QuickCSS extends React.PureComponent {
               this.state.cm.setOption('foldGutter', v.target.checked);
             }}
           >
-            Enable code folding
+            {Messages.POWERCORD_QUICKCSS_SETTINGS_FOLDING}
           </SwitchItem>
           <SwitchItem
             value={getSetting('cm-matchBrackets', true)}
-            note='Will highlight matching brackets whenever the cursor is next to them.'
+            note={Messages.POWERCORD_QUICKCSS_SETTINGS_MATCH_BRACKETS_DESC}
             onChange={v => {
               toggleSetting('cm-matchBrackets', true);
               this.state.cm.setOption('matchBrackets', v.target.checked);
             }}
           >
-            Match brackets
+            {Messages.POWERCORD_QUICKCSS_SETTINGS_MATCH_BRACKETS}
           </SwitchItem>
           <SwitchItem
             value={getSetting('cm-closeBrackets', true)}
-            note='Will auto-close brackets and quotes when typed.'
+            note={Messages.POWERCORD_QUICKCSS_SETTINGS_CLOSE_BRACKETS_DESC}
             onChange={v => {
               toggleSetting('cm-closeBrackets', true);
               this.state.cm.setOption('autoCloseBrackets', v.target.checked);
             }}
           >
-            Auto-close brackets
+            {Messages.POWERCORD_QUICKCSS_SETTINGS_CLOSE_BRACKETS}
           </SwitchItem>
           <SwitchItem
             value={getSetting('cm-wrap', false)}
@@ -152,7 +152,7 @@ class QuickCSS extends React.PureComponent {
               this.state.cm.setOption('lineWrapping', v.target.checked);
             }}
           >
-            Wrap long lines
+            {Messages.POWERCORD_QUICKCSS_SETTINGS_WRAP}
           </SwitchItem>
           <SwitchItem
             value={getSetting('cm-tabs', false)}
@@ -161,7 +161,7 @@ class QuickCSS extends React.PureComponent {
               this.state.cm.setOption('indentWithTabs', v.target.checked);
             }}
           >
-            Use tabs for indentation
+            {Messages.POWERCORD_QUICKCSS_SETTINGS_TABS}
           </SwitchItem>
           <SliderInput
             stickToMarkers
@@ -170,12 +170,12 @@ class QuickCSS extends React.PureComponent {
             onMarkerRender={s => `${s} spaces`}
             defaultValue={getSetting('cm-indentSize', 2)}
             onChange={v => {
-              setSetting('cm-indentSize', v);
+              updateSetting('cm-indentSize', v);
               this.state.cm.setOption('tabSize', v);
               this.state.cm.setOption('indentUnit', v);
             }}
           >
-            Indentation size
+            {Messages.POWERCORD_QUICKCSS_SETTINGS_INDENT}
           </SliderInput>
         </div>
       </VerticalScroller>
@@ -232,7 +232,7 @@ class QuickCSS extends React.PureComponent {
   }
 
   _saveResizeHeight (height) {
-    this.props.setSetting('cm-height', height);
+    this.props.updateSetting('cm-height', height);
   }
 }
 
