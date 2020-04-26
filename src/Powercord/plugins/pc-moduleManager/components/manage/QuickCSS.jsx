@@ -1,6 +1,6 @@
-const { React, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
+const { React, Flux, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
 const { SwitchItem, SliderInput } = require('powercord/components/settings');
-const { AsyncComponent, PopoutWindow, Clickable, FormTitle, Tooltip, Icons: { Gear, Close, ExternalLink } } = require('powercord/components');
+const { AsyncComponent, PopoutWindow, Clickable, FormTitle, Tooltip, Icons: { Pin, Unpin, Gear, Close, ExternalLink } } = require('powercord/components');
 const CodeMirror = require('./CodeMirror');
 
 const VerticalScroller = AsyncComponent.from(getModuleByDisplayName('VerticalScroller'));
@@ -22,22 +22,20 @@ class QuickCSS extends React.PureComponent {
     this._handleResizeMove = this._handleResizeMove.bind(this);
   }
 
-  async componentDidMount () {
-    const windowManager = await getModule([ 'getWindow' ]);
-    const guestWindow = windowManager.getWindow('DISCORD_POWERCORD_QUICKCSS');
-    if (guestWindow) {
+  componentDidMount () {
+    if (this.props.guestWindow) {
       if (!this.props.popout) {
         this.setState({ poppedOut: true });
-        guestWindow.addEventListener('beforeunload', () => {
+        this.props.guestWindow.addEventListener('beforeunload', () => {
           this.setState({ poppedOut: false });
         });
       } else {
-        this.setState({ win: guestWindow });
+        this.setState({ win: this.props.guestWindow });
         setTimeout(() => this.state.cm.refresh(), 100);
 
         // Pass CSS to child window
         const style = document.querySelector('#powercord-css-pc-moduleManager').outerHTML;
-        guestWindow.document.head.innerHTML += style;
+        this.props.guestWindow.document.head.innerHTML += style;
       }
     }
   }
@@ -63,14 +61,31 @@ class QuickCSS extends React.PureComponent {
                   <Gear/>
                 </Clickable>
               </Tooltip>
-              <Tooltip text={this.props.popout ? Messages.CLOSE_WINDOW : Messages.POPOUT_PLAYER} position='left'>
-                <Clickable
-                  onClick={() => this.props.popout ? this.state.win.close() : this._openPopout()}
-                  className='button'
+              <div>
+                {this.props.popout &&
+                <Tooltip
+                  text={this.props.windowOnTop ? Messages.POPOUT_REMOVE_FROM_TOP : Messages.POPOUT_STAY_ON_TOP}
+                  position='left'
                 >
-                  {this.props.popout ? <Close/> : <ExternalLink/>}
-                </Clickable>
-              </Tooltip>
+                  <Clickable
+                    onClick={async () => {
+                      const popoutModule = await getModule([ 'setAlwaysOnTop', 'open' ]);
+                      popoutModule.setAlwaysOnTop('DISCORD_POWERCORD_QUICKCSS', !this.props.windowOnTop);
+                    }}
+                    className='button'
+                  >
+                    {this.props.windowOnTop ? <Unpin/> : <Pin/>}
+                  </Clickable>
+                </Tooltip>}
+                <Tooltip text={this.props.popout ? Messages.CLOSE_WINDOW : Messages.POPOUT_PLAYER} position='left'>
+                  <Clickable
+                    onClick={() => this.props.popout ? this.state.win.close() : this._openPopout()}
+                    className='button'
+                  >
+                    {this.props.popout ? <Close/> : <ExternalLink/>}
+                  </Clickable>
+                </Tooltip>
+              </div>
             </div>
             <div className='powercord-quickcss-editor'>
               {this.state.cmSettings && this.renderSettings()}
@@ -164,6 +179,8 @@ class QuickCSS extends React.PureComponent {
             {Messages.POWERCORD_QUICKCSS_SETTINGS_TABS}
           </SwitchItem>
           <SliderInput
+            disabled={this.props.popout}
+            note={this.props.popout && Messages.POWERCORD_QUICKCSS_SETTINGS_INDENT_WARNING}
             stickToMarkers
             initialValue={4}
             markers={[ 2, 4, 8 ]}
@@ -192,13 +209,9 @@ class QuickCSS extends React.PureComponent {
     const popoutModule = await getModule([ 'setAlwaysOnTop', 'open' ]);
     popoutModule.open('DISCORD_POWERCORD_QUICKCSS', () =>
       React.createElement(PopoutWindow, { windowId: 'DISCORD_POWERCORD_QUICKCSS' },
-        React.createElement(QuickCSS, {
-          ...this.props,
-          popout: true
-        })
+        React.createElement(this.props.popoutComponent, { popout: true })
       )
     );
-    popoutModule.setAlwaysOnTop('DISCORD_POWERCORD_QUICKCSS', true);
     setImmediate(async () => {
       const windowManager = await getModule([ 'getWindow' ]);
       const guestWindow = windowManager.getWindow('DISCORD_POWERCORD_QUICKCSS');
@@ -213,7 +226,6 @@ class QuickCSS extends React.PureComponent {
     // noinspection JSIgnoredPromiseFromCall
     powercord.pluginManager.get('pc-moduleManager')._saveQuickCSS(cm.getValue());
   }
-
 
   _handleResizeBegin () {
     window.addEventListener('mousemove', this._handleResizeMove);
@@ -236,4 +248,10 @@ class QuickCSS extends React.PureComponent {
   }
 }
 
-module.exports = QuickCSS;
+module.exports = Flux.connectStoresAsync(
+  [ getModule([ 'getWindow' ]) ],
+  ([ windowManager ]) => ({
+    guestWindow: windowManager.getWindow('DISCORD_POWERCORD_QUICKCSS'),
+    windowOnTop: windowManager.getIsAlwaysOnTop('DISCORD_POWERCORD_QUICKCSS')
+  })
+)(QuickCSS);

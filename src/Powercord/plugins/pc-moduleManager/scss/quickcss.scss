@@ -34,6 +34,7 @@
       width: 24px;
       height: 24px;
       cursor: pointer;
+      -webkit-app-region: no-drag;
 
       svg {
         width: 100%;
@@ -245,6 +246,10 @@
 
   .button, .close {
     box-sizing: border-box;
+  }
+
+  .powercord-quickcss-header {
+    -webkit-app-region: drag;
   }
 
   .powercord-quickcss-editor {

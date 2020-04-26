@@ -155,6 +155,7 @@
     "POWERCORD_QUICKCSS_SETTINGS_WRAP": "Wrap long lines",
     "POWERCORD_QUICKCSS_SETTINGS_TABS": "Use tabs for indentation",
     "POWERCORD_QUICKCSS_SETTINGS_INDENT": "Indentation size",
+    "POWERCORD_QUICKCSS_SETTINGS_INDENT_WARNING": "Indentation size cannot be changed in a popped out window due to technical restrictions.",
     "POWERCORD_SNIPPET_APPLY": "Apply Snippet",
     "POWERCORD_SNIPPET_APPLIED": "Snippet Applied",
     "POWERCORD_SNIPPET_LINE1": "Snippet from #css-snippets applied the {date, date, medium} at {date, time, medium}",

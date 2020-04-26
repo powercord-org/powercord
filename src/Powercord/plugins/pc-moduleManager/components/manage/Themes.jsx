@@ -30,7 +30,7 @@ class Themes extends Base {
             </TabBar.Item>
           </TabBar>
         </div>
-        {this.state.tab === 'INSTALLED' ? super.render() : <ConnectedQuickCSS/>}
+        {this.state.tab === 'INSTALLED' ? super.render() : <ConnectedQuickCSS popoutComponent={ConnectedQuickCSS}/>}
       </>
     );
   }
