@@ -59,7 +59,7 @@
   "POWERCORD_QUICKCSS_SETTINGS_MATCH_BRACKETS": "Парные скобки",
   "POWERCORD_QUICKCSS_SETTINGS_MATCH_BRACKETS_DESC": "Будут выделены парные скобки, когда курсор находится рядом с ними.",
   "POWERCORD_QUICKCSS_SETTINGS_TABS": "Использовать tab для отступа",
-  "POWERCORD_QUICKCSS_SETTINGS_WRAP": "Переносить длинные линии",
+  "POWERCORD_QUICKCSS_SETTINGS_WRAP": "Переносить длинные строки",
   "POWERCORD_REFRESH_ACCOUNTS": "Обновить аккануты",
   "POWERCORD_SETTINGS_ADVANCED_DESC": "Не трогайте здесь ничего, если вы не знаете, что вы делаете. Неожиданные вещи могут случиться.",
   "POWERCORD_SETTINGS_BACKEND": "Бэкэнд URL",
