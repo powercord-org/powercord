@@ -36,7 +36,7 @@ module.exports = {
           description: command.description,
           fields: [ {
             name: 'Usage',
-            value: `\`\n${command.usage.replace('{c}', powercord.api.commands.prefix + command.command)}\n\``,
+            value: `\`${command.usage.replace('{c}', powercord.api.commands.prefix + command.command)}\n\``,
             inline: false
           } ]
         };
