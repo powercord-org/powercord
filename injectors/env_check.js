@@ -35,18 +35,20 @@ module.exports = () => {
   }
 
   // Verify if deps have been installed. If not, install them automatically
-  const { dependencies } = require('../package.json');
-
-  try {
-    for (const dependency in dependencies) {
-      // noinspection JSUnfilteredForInLoop
-      require(dependency);
-    }
-  } catch (_) {
-    console.log('Some dependencies are not installed. Let\'s fix that...');
-    execSync('npm install --only=prod', {
-      cwd: resolve(__dirname, '..'),
-      stdio: [ null, null, null ]
-    });
-  }
+  /*
+   * const { dependencies } = require('../package.json');
+   *
+   * try {
+   *   for (const dependency in dependencies) {
+   *     // noinspection JSUnfilteredForInLoop
+   *     require(dependency);
+   *   }
+   * } catch (_) {
+   *   console.log('Some dependencies are not installed. Let\'s fix that...');
+   *   execSync('npm install --only=prod', {
+   *     cwd: resolve(__dirname, '..'),
+   *     stdio: [ null, null, null ]
+   *   });
+   * }
+   */
 };
