@@ -20,7 +20,7 @@
     div {
       cursor: pointer;
 
-      :hover {
+      &:hover {
         background-color: var(--interactive-muted);
       }
     }

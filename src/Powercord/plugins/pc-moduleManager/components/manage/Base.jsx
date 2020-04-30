@@ -1,6 +1,6 @@
 const { join } = require('path');
 const { shell } = require('electron');
-const { React, contextMenu, i18n: { Messages } } = require('powercord/webpack');
+const { React, getModule, contextMenu, i18n: { Messages } } = require('powercord/webpack');
 const { Button, Tooltip, ContextMenu, Divider, Icons: { Overflow } } = require('powercord/components');
 const { TextInput } = require('powercord/components/settings');
 
@@ -35,19 +35,28 @@ class Base extends React.Component {
   renderButtons () {
     return (
       <div className='buttons'>
-        <Tooltip text={Messages.COMING_SOON}>
-          <Button disabled onClick={() => this.goToStore()}>{Messages[`POWERCORD_${this.state.key}_EXPLORE`]}</Button>
-        </Tooltip>
+        {powercord.api.labs.isExperimentEnabled('pc-moduleManager-store')
+          ? <Button onClick={() => this.goToStore()}>{Messages[`POWERCORD_${this.state.key}_EXPLORE`]}</Button>
+          : <Tooltip text={Messages.COMING_SOON}>
+            <Button disabled>{Messages[`POWERCORD_${this.state.key}_EXPLORE`]}</Button>
+          </Tooltip>}
         <Overflow onClick={e => this.openOverflowMenu(e)} onContextMenu={e => this.openOverflowMenu(e)}/>
       </div>
     );
   }
 
   renderBody () {
+    const items = this.getItems();
     return (
       <div className='powercord-entities-manage-items'>
         {this.renderSearch()}
-        {this.getItems().map(item => this.renderItem(item))}
+        {items.length === 0
+          ? <div className='empty'>
+            <div className={getModule([ 'emptySearchImage' ], false).emptySearchImage}/>
+            <p>{Messages.GIFT_CONFIRMATION_HEADER_FAIL}</p>
+            <p>{Messages.SEARCH_NO_RESULTS}</p>
+          </div>
+          : items.map(item => this.renderItem(item))}
       </div>
     );
   }
@@ -95,12 +104,10 @@ class Base extends React.Component {
   }
 
   async goToStore () {
-    /*
-     * const { popLayer } = await getModule([ 'popLayer' ]);
-     * const { transitionTo } = await getModule([ 'transitionTo' ]);
-     * popLayer();
-     * transitionTo(`/_powercord/store/${this.constructor.name.toLowerCase()}`);
-     */
+    const { popLayer } = await getModule([ 'popLayer' ]);
+    const { transitionTo } = await getModule([ 'transitionTo' ]);
+    popLayer();
+    transitionTo(`/_powercord/store/${this.constructor.name.toLowerCase()}`);
   }
 
   fetchMissing () {

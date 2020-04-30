@@ -90,12 +90,16 @@ module.exports = class SettingsAPI extends API {
 
   // React + Flux
   _connectStores (category) {
-    return Flux.connectStores([ this.store ], () => ({
+    return Flux.connectStores([ this.store ], this._fluxProps.bind(this, category));
+  }
+
+  _fluxProps (category) {
+    return {
       settings: this.store.getSettings(category),
       getSetting: (setting, defaultValue) => this.store.getSetting(category, setting, defaultValue),
       updateSetting: (setting, value) => this.actions.updateSetting(category, setting, value),
       toggleSetting: (setting, defaultValue) => this.actions.toggleSetting(category, setting, defaultValue)
-    }));
+    };
   }
 
   _renderSettingsPanel (title, contents) {
@@ -111,7 +115,7 @@ module.exports = class SettingsAPI extends API {
     return React.createElement(ErrorBoundary, null, React.createElement(FormSection, {}, h2, panelContents));
   }
 
-  // @todo: Discord settings sync
+  // @todo: Rewrite this pile of garbage
   async upload () {
     if (!powercord.account || !this.store.getSetting('pc-general', 'settingsSync', false)) {
       return;

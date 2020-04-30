@@ -71,8 +71,7 @@ module.exports = class ModuleManager extends Plugin {
   pluginWillUnload () {
     document.querySelector('#powercord-quickcss').remove();
     powercord.api.labs.unregisterExperiment('pc-moduleManager-store');
-    powercord.api.labs.unregisterExperiment('pc-moduleManager-themes');
-    powercord.api.labs.unregisterExperiment('pc-moduleManager-snippets');
+    powercord.api.labs.unregisterExperiment('pc-moduleManager-themes2');
     uninject('pc-moduleManager-channelItem');
     uninject('pc-moduleManager-channelProps');
     uninject('pc-moduleManager-snippets');

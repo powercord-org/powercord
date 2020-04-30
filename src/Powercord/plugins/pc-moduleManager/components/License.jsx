@@ -12,10 +12,7 @@ module.exports = ({ spdx, license: { name, url, permissions, conditions, limitat
   };
 
   return (
-    <Modal
-      className='powercord-product-license-modal'
-      _pass={{ ref: s => setImmediate(() => s && s.getScroller() && s.getScroller().scrollTo(0)) }}
-    >
+    <Modal className='powercord-product-license-modal'>
       <Modal.Header>
         <FormTitle tag='h4'>{name}</FormTitle>
       </Modal.Header>
@@ -25,7 +22,7 @@ module.exports = ({ spdx, license: { name, url, permissions, conditions, limitat
           {Messages.POWERCORD_PLUGINS_LICENSE_DISCLAIMER.format({ url })}
         </Card>
         {[ 'permissions', 'limitations', 'conditions' ].map(type =>
-          <div className={`powercord-product-license-modal-data ${type}`}>
+          <div key={type} className={`powercord-product-license-modal-data ${type}`}>
             <FormTitle tag='h4'>{Messages[`POWERCORD_PLUGINS_LICENSE_${type.toUpperCase()}`]}</FormTitle>
             {data[type].map(perm => <div key={perm} className='powercord-product-license-modal-entry'>
               <span>{Messages[`POWERCORD_PLUGINS_LICENSE_${perm}_NAME`]}</span>
