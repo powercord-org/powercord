@@ -43,7 +43,7 @@ class QuickCSS extends React.PureComponent {
   render () {
     return (
       <div
-        className={[ 'powercord-quickcss', this.props.popout && 'popout' ].filter(Boolean).join(' ')}
+        className={[ 'powercord-quickcss', this.props.popout && 'popout', !this.props.popout && this.props.guestWindow && 'popped-out' ].filter(Boolean).join(' ')}
         style={{ '--editor-height': `${this.props.getSetting('cm-height', 350)}px` }}
         ref={this.ref}
       >
