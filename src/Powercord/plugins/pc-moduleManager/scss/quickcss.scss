@@ -12,9 +12,12 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  &:not(.popped-out) {
+    background-color: var(--background-secondary);
+  }
 
   &-header, &-footer {
-    background-color: var(--background-secondary) !important;
+    
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -131,7 +134,7 @@
   }
 
   .CodeMirror {
-    background-color: var(--background-secondary);
+    background-color: transparent;
     color: inherit;
     height: 0;
     flex: 1;
@@ -159,7 +162,7 @@
     }
 
     &-gutters {
-      background-color: var(--background-secondary);
+      background-color: transparent;
       border-right: 1px var(--background-tertiary) solid;
       padding-right: 5px;
     }
