@@ -87,7 +87,10 @@ module.exports = class GeneralSettings extends React.Component {
             {Messages.POWERCORD_SETTINGS_KEEP_TOKEN}
           </SwitchItem>
           <SwitchItem
-            note={Messages.POWERCORD_SETTINGS_TRANSPARENT_DESC.format()}
+            disabled={!!window.GlasscordApi}
+            note={window.GlasscordApi
+              ? Messages.POWERCORD_SETTINGS_TRANSPARENT_GLASSCORD.format({ glasscordCfgUrl: 'https://github.com/AryToNeX/Glasscord#how-do-i-use-it' })
+              : Messages.POWERCORD_SETTINGS_TRANSPARENT_DESC.format()}
             value={getSetting('transparentWindow', false)}
             onChange={() => {
               toggleSetting('transparentWindow');

@@ -26,6 +26,7 @@
     "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Prevents Discord from removing your token from localStorage, reducing the numbers of unwanted logouts.",
     "POWERCORD_SETTINGS_TRANSPARENT": "Transparent Window",
     "POWERCORD_SETTINGS_TRANSPARENT_DESC": "Makes any windows opened by Discord transparent, useful for theming.\n****WARNING:**** This will break **window snapping** on Windows. **Hardware acceleration** must be turned **off** on Linux. You may encounter issues and have black background in some cases, like when the window is cut off at the top, or the bottom due to monitor resolution or when devtools are open and docked. **Requires restart**.",
+    "POWERCORD_SETTINGS_TRANSPARENT_GLASSCORD": "It looks like you have Glasscord installed, which means you can't update this setting directly within Powercord. Learn more about configuring Glasscord [here]({glasscordCfgUrl})",
     "POWERCORD_SETTINGS_EXP_WEB_PLATFORM": "Experimental Web Platform features",
     "POWERCORD_SETTINGS_EXP_WEB_PLATFORM_DESC": "Enables Chromium's experimental Web Platform features that are in development, such as CSS \"backdrop-filter\". Since features are in development you may encounter issues and APIs may change at any time. **Requires restart**.",
     "POWERCORD_SETTINGS_DISCORD_EXPERIMENTS": "Enable Discord Experiments",

@@ -2,6 +2,7 @@
 .vscode
 /.cache
 /.logs
+/.glasscord
 node_modules
 package-lock.json
 yarn.lock
