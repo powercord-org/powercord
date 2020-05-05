@@ -1,7 +1,7 @@
 {
   "name": "powercord",
   "version": "1.0.0",
-  "description": "A lightweight @discordapp client mod focused on simplicity and performance",
+  "description": "A lightweight @discord client mod focused on simplicity and performance",
   "main": "index.js",
   "scripts": {
     "lint": "eslint --ext js --ext jsx src",

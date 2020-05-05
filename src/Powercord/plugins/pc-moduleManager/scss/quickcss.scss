@@ -12,12 +12,12 @@
   display: flex;
   flex-direction: column;
   position: relative;
+
   &:not(.popped-out) {
     background-color: var(--background-secondary);
   }
 
   &-header, &-footer {
-    
     display: flex;
     align-items: center;
     justify-content: space-between;

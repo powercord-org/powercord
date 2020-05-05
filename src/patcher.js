@@ -1,5 +1,5 @@
 /**
- * Powercord, a lightweight @discordapp client mod focused on simplicity and performance
+ * Powercord, a lightweight @discord client mod focused on simplicity and performance
  * Copyright (C) 2018-2020  aetheryx & Bowser65
  *
  * This program is free software: you can redistribute it and/or modify
@@ -120,7 +120,7 @@ app.once('ready', () => {
     if (details.url.endsWith('.js.map')) {
       // source maps must die
       done({ cancel: true });
-    } else if (details.url.startsWith('https://canary.discordapp.com/_powercord')) {
+    } else if (details.url.startsWith('https://canary.discordapp.com/_powercord')) { // @todo: discord.com
       appSettings.set('_POWERCORD_ROUTE', details.url.replace('https://canary.discordapp.com', ''));
       appSettings.save();
       // It should get restored to _powercord url later

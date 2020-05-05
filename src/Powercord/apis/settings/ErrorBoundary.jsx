@@ -1,5 +1,5 @@
 /**
- * Powercord, a lightweight @discordapp client mod focused on simplicity and performance
+ * Powercord, a lightweight @discord client mod focused on simplicity and performance
  * Copyright (C) 2018-2020  aetheryx & Bowser65
  *
  * This program is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ class ErrorBoundary extends React.Component {
 
       errorStack = (error.stack || '')
         .split('\n')
-        .filter(l => !l.includes('discordapp.com/assets/'))
+        .filter(l => !l.includes('discordapp.com/assets/') && !l.includes('discord.com/assets/'))
         .join('\n')
         .split(basePath)
         .join('');

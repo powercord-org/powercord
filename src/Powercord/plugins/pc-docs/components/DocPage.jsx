@@ -45,9 +45,7 @@ class DocPage extends React.Component {
           render.push(React.createElement('p', null, this._mdToReact(element.content)));
           break;
         case 'LIST':
-          render.push(React.createElement(element.ordered ? 'ol' : 'ul', null, element.items.map(item =>
-            React.createElement('li', null, this._mdToReact(item))
-          )));
+          render.push(React.createElement(element.ordered ? 'ol' : 'ul', null, element.items.map(this._renderList.bind(this, element.ordered))));
           break;
         case 'NOTE':
           render.push(<FormNotice
@@ -95,10 +93,19 @@ class DocPage extends React.Component {
     });
 
     // render
-    return <div className='powercord-text'>
+    return <div>
       <FormTitle tag='h2' className='powercord-documentation-title'>{document.name}</FormTitle>
       <div className='powercord-documentation'>{render}</div>
     </div>;
+  }
+
+  _renderList (ordered, item) {
+    if (typeof item === 'string') {
+      return React.createElement('li', null, this._mdToReact(item));
+    } else if (Array.isArray(item)) {
+      return React.createElement(ordered ? 'ol' : 'ul', null, item.map(this._renderList.bind(this, ordered)));
+    }
+    return null;
   }
 
   _mdToReact (md) {
