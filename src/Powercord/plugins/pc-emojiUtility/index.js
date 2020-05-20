@@ -771,7 +771,6 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   async _injectContextMenu (cloneSubMenu, createSubMenu) {
-    const { contextMenu } = await getModule([ 'contextMenu' ]);
     const { imageWrapper } = await getModule([ 'imageWrapper' ]);
     const { MenuSeparator } = await getModule([ 'MenuGroup' ]);
     const mdl = await getModule(m => m.default && m.default.displayName === 'MessageContextMenu');

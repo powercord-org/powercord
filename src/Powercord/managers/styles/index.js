@@ -350,8 +350,72 @@ module.exports = class StyleManager {
     }
     if (typeof option.type !== 'string') {
       errors.push(`Invalid option type: expected a string got ${typeof option.type}`);
-    } else if (![ 'string', 'number', 'color', 'color_alpha', 'url' ].includes(option.type)) {
+    } else if (![ 'string', 'select', 'number', 'color', 'color_alpha', 'url', 'background', 'font' ].includes(option.type)) {
       errors.push(`Invalid option type: "${option.type}" is not a valid option type. Please refer to the documentation.`);
+    }
+    if (option.type === 'string' && typeof option.limit !== 'undefined') {
+      errors.push(...this._validateLimits(option.limit));
+    }
+    if (option.type === 'select') {
+      errors.push(...this._validateSettingsSelect(option));
+    }
+    if (option.type === 'number') {
+      errors.push(...this._validateSettingsNumber(option));
+    }
+    return errors;
+  }
+
+  _validateSettingsSelect (option) {
+    const errors = [];
+    if (!Array.isArray(option.options)) {
+      errors.push(`Invalid select options: expected an array got ${typeof option.options}`);
+    } else {
+      option.options.forEach(opt => {
+        if (typeof opt !== 'object') {
+          errors.push(`Invalid select option: expected an object got ${typeof option.name}`);
+        } else {
+          if (typeof opt.name !== 'string') {
+            errors.push(`Invalid select option name: expected a string got ${typeof option.name}`);
+          }
+          if (typeof opt.value !== 'string') {
+            errors.push(`Invalid select option value: expected a string got ${typeof option.name}`);
+          }
+        }
+      });
+    }
+    return errors;
+  }
+
+  _validateSettingsNumber (option) {
+    const errors = [];
+    if (typeof option.limit !== 'undefined') {
+      errors.push('Invalid option: limit is required for numeric fields! Please refer to the documentation.');
+    } else {
+      errors.push(...this._validateLimits(option.limit));
+    }
+    if (typeof option.markers !== 'undefined') {
+      if (!Array.isArray(option.markers)) {
+        errors.push(`Invalid option markers: expected an array got ${typeof option.markers}`);
+      } else if (option.markers.some(m => typeof m !== 'number')) {
+        errors.push('Invalid option markers: some entries aren\'t numbers!');
+      }
+    }
+    if (![ 'undefined', 'boolean' ].includes(typeof option.sticky)) {
+      errors.push(`Invalid option stickyness: expected a boolean got ${typeof option.sticky}`);
+    }
+    return errors;
+  }
+
+  _validateLimits (limits) {
+    const errors = [];
+    if (!Array.isArray(limits)) {
+      errors.push(`Invalid limit value: expected an array got ${typeof limits}`);
+    } else if (limits.length !== 2) {
+      errors.push(`Invalid limit value: expected two values, got ${limits.length}`);
+    } else if (typeof limits[0] !== 'number' || typeof limits[1] !== 'number') {
+      errors.push(`Invalid limit value: expected the values to be numbers, got [${typeof limits[0]}, ${typeof limits[1]}]`);
+    } else if (limits[0] > limits[1]) {
+      errors.push('Invalid limit value: minimum is greater than maximum');
     }
     return errors;
   }
