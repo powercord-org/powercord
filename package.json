@@ -9,7 +9,7 @@
     "unplug": "node injectors/index.js uninject",
     "inject": "node injectors/index.js inject",
     "uninject": "node injectors/index.js uninject",
-    "glasscord": "node injectors/glasscord.js"
+    "glasscord": "node injectors/glasscord.js install"
   },
   "repository": {
     "type": "git",
