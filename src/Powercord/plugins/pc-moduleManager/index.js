@@ -137,7 +137,7 @@ module.exports = class ModuleManager extends Plugin {
           const renderer = actions.type;
           actions.type = (props) => {
             const res = renderer(props);
-            if (props.channel.id === CSS_SNIPPETS && (/```(?:(?:s?css)|(?:styl(?:us)?)|less)/).test(props.message.content)) {
+            if (props.channel.id === CSS_SNIPPETS && (/```(?:(?:s?css)|(?:styl(?:us)?)|less)/i).test(props.message.content)) {
               res.props.children.unshift(
                 React.createElement(SnippetButton, {
                   message: props.message,
@@ -166,9 +166,9 @@ module.exports = class ModuleManager extends Plugin {
     css += ` * ${line2}\n`;
     css += ` * Snippet ID: ${message.id}\n`;
     css += ' */\n';
-    for (const m of message.content.matchAll(/```((?:s?css)|(?:styl(?:us)?)|less)\n?([\s\S]*)`{3}/g)) {
+    for (const m of message.content.matchAll(/```((?:s?css)|(?:styl(?:us)?)|less)\n?([\s\S]*)`{3}/ig)) {
       let snippet = m[2].trim();
-      switch (m[1]) {
+      switch (m[1].toLowerCase()) {
         case 'scss':
           snippet = '/* lol can\'t do scss for now */';
           break;

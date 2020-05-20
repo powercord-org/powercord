@@ -146,12 +146,11 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
   [ {
     type: 'slider',
     name: 'Volume',
-    color: '#1ed860',
-    initialValue: state.volume,
-    onValueChange: (val) =>
+    value: state.volume,
+    onChange: (val) =>
       SpotifyPlayer.setVolume(Math.round(val))
         .then(() => true)
-  }, ...(hasCustomAuth && hasControlsHidden
+  } ], (hasCustomAuth && hasControlsHidden
     ? [ {
       type: 'button',
       name: 'Save to Liked Songs',
@@ -165,7 +164,7 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
       onClick: () =>
         powercord.pluginManager.get('pc-spotify').openPlaylistModal(state.currentItem.id)
     } ]
-    : []) ],
+    : []),
 
   [ {
     type: 'button',

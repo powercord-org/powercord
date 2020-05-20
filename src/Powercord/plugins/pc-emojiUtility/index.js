@@ -16,7 +16,7 @@ const {
 
 /* const { CDN_HOST } = window.GLOBAL_ENV; */
 
-const { /* ContextMenu, */ ContextMenu: { Submenu } } = require('powercord/components');
+const { ContextMenu } = require('powercord/components');
 const { getOwnerInstance } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { open: openModal } = require('powercord/modal');
@@ -347,7 +347,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       features.push({
         type: 'button',
-        name: 'Copy ID',
+        name: 'Copy Emote ID',
         onClick: () => clipboard.writeText(emoji.id)
       });
 
@@ -773,6 +773,34 @@ module.exports = class EmojiUtility extends Plugin {
   async _injectContextMenu (cloneSubMenu, createSubMenu) {
     const { contextMenu } = await getModule([ 'contextMenu' ]);
     const { imageWrapper } = await getModule([ 'imageWrapper' ]);
+    const { MenuSeparator } = await getModule([ 'MenuGroup' ]);
+    const mdl = await getModule(m => m.default && m.default.displayName === 'MessageContextMenu');
+    inject('pc-emojiUtility-emojiContext', mdl, 'default', ([ { target } ], res) => {
+      if (target.classList.contains('emoji')) {
+        const matcher = target.src.match(this.getEmojiUrlRegex());
+        if (matcher) {
+          let emoji = this.getEmojiById(matcher[1]);
+          if (emoji) {
+            emoji.fake = false;
+          } else {
+            emoji = this.createFakeEmoji(matcher[1], target.alt.substring(1, target.alt.length - 1), target.src);
+          }
+
+          res.props.children.push(
+            React.createElement(MenuSeparator),
+            ...ContextMenu.renderRawItems(cloneSubMenu(emoji))
+          );
+        }
+      } else if (target.tagName.toLowerCase() === 'img' && target.parentElement.classList.contains(imageWrapper)) {
+        res.props.children.push(
+          React.createElement(MenuSeparator),
+          ...ContextMenu.renderRawItems(createSubMenu(target))
+        );
+      }
+      return res;
+    });
+    mdl.default.displayName = 'MessageContextMenu';
+    return;
 
     const callback = () =>
       setTimeout(async () => {
@@ -784,6 +812,32 @@ module.exports = class EmojiUtility extends Plugin {
             const fn = instance._reactInternalFiber.child.child.type;
             const mdl = await getModule(m => m.default === fn);
 
+            /*
+             *
+             *const { MenuItem } = getModule([ 'MenuGroup' ], false);
+             *    const elementKey = `items-${ctx.group}-${ctx.depth}-${ctx.i}`;
+             *    const items = this.state[elementKey];
+             *    if (items === void 0) {
+             *      this.setState({ [elementKey]: null }); // Prevent fetching over and over
+             *      (async () => {
+             *        const fetchedItems = await item.getItems();
+             *        this.setState({ [elementKey]: fetchedItems || null });
+             *      })();
+             *    }
+             *    return (
+             *      <MenuItem
+             *        id={item.id || `item-${ctx.group}-${ctx.depth}-${ctx.i}`}
+             *        disabled={!items || items.length === 0 || item.disabled}
+             *        label={item.name}
+             *      >
+             *        {items && this.renderItems(items, {
+             *          depth: ctx.depth + 1,
+             *          group: 0,
+             *          i: 0
+             *        })}
+             *      </MenuItem>
+             *    );
+             */
             // FINALLY inject
             inject('pc-emojiUtility-emojiContext', mdl, 'default', ([ { target } ], res) => {
               if (target.classList.contains('emoji')) {
@@ -796,22 +850,26 @@ module.exports = class EmojiUtility extends Plugin {
                     emoji = this.createFakeEmoji(matcher[1], target.alt.substring(1, target.alt.length - 1), target.src);
                   }
 
-                  res.props.children.push(
-                    React.createElement(Submenu, {
-                      name: 'Emote',
-                      separate: true,
-                      getItems: () => cloneSubMenu(emoji)
-                    })
-                  );
+                  /*
+                   * res.props.children.push(
+                   *   React.createElement(Submenu, {
+                   *     name: 'Emote',
+                   *     separate: true,
+                   *     getItems: () => cloneSubMenu(emoji)
+                   *   })
+                   * );
+                   */
                 }
               } else if (target.tagName.toLowerCase() === 'img' && target.parentElement.classList.contains(imageWrapper)) {
-                res.props.children.push(
-                  React.createElement(Submenu, {
-                    name: 'Emote',
-                    separate: true,
-                    getItems: () => createSubMenu(target)
-                  })
-                );
+                /*
+                 * res.props.children.push(
+                 *   React.createElement(Submenu, {
+                 *     name: 'Emote',
+                 *     separate: true,
+                 *     getItems: () => createSubMenu(target)
+                 *   })
+                 * );
+                 */
               }
               return res;
             });

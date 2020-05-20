@@ -18,27 +18,14 @@
 
 /* global appSettings */
 const Module = require('module');
-const { existsSync } = require('fs');
 const { join, dirname, resolve } = require('path');
 const electron = require('electron');
-let { BrowserWindow, app, session } = electron;
+const { BrowserWindow, app, session } = electron;
 
 const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
 console.log('Hello from Powercord!');
-
-/*
- * Coming Soon:tm: - Release 0.0.7.1 (latest) contains broken code that has been fixed but not released yet.
- * v0.1 is waiting for bugfixes, so we'll do further testing once that's released.
- */
-const isGlasscord = false && existsSync(join(__dirname, '..', '.glasscord', 'glasscord.asar'));
-if (isGlasscord) {
-  console.log('Detected Glasscord');
-  require('../.glasscord/glasscord.asar');
-  // eslint-disable-next-line prefer-destructuring
-  BrowserWindow = require.cache[electronPath].exports.BrowserWindow; // Update our BrowserWindow ref
-}
 
 let settings;
 try {
@@ -52,7 +39,7 @@ class PatchedBrowserWindow extends BrowserWindow {
   // noinspection JSAnnotator - Make JetBrains happy
   constructor (opts) {
     if (opts.webContents) {
-      // Go Live (general purpose?) popout. Might be interesting to investigate how it works as it has very low startup latency.
+      // General purpose popouts used by Discord
     } else if (opts.webPreferences && opts.webPreferences.nodeIntegration) {
       // Splash Screen
     } else if (opts.webPreferences && opts.webPreferences.offscreen) {
@@ -66,7 +53,7 @@ class PatchedBrowserWindow extends BrowserWindow {
       opts.webPreferences.preload = join(__dirname, 'preload.js');
       opts.webPreferences.nodeIntegration = true;
 
-      if (!isGlasscord && transparentWindow) {
+      if (transparentWindow) {
         opts.transparent = true;
         opts.frame = false;
         delete opts.backgroundColor;

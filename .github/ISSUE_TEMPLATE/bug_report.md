@@ -18,7 +18,7 @@ A clear and concise description of what you expected to happen.
 
 **Desktop (please complete the following information):**
  - OS: [e.g. Windows]
- - Discord and Powercord version: [You can find it by opening DevTools (Ctrl + Shift + I) and running `powercord.buildInfo`]
+ - Powercord version: [You can find it in the Updater tab, available in your settings]
 
 **Additional context**
  - [ ] I checked if Discord and/or Powercord are up to date
