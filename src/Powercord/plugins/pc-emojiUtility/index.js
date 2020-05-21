@@ -597,7 +597,7 @@ module.exports = class EmojiUtility extends Plugin {
 
         const foundEmojis = emojis.filter(emoji => emoji.name.toLowerCase().includes(argument));
         if (foundEmojis.length > 0) {
-          const emojisAsString = foundEmojis.map(emoji => this.getFullEmoji(emoji)).join('');
+          const emojisAsString = foundEmojis.map(emoji => this.getFullEmoji(emoji)).join(' ');
           if (emojisAsString.length > 2000) {
             return {
               send: false,
