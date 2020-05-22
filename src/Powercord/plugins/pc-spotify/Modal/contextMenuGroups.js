@@ -174,22 +174,7 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
       shell.openExternal(state.currentItem.uri)
   }, {
     type: 'button',
-    name: 'Send URL to Channel',
-    icon: hasIconsHidden ? '' : 'share-square-duotone',
-    onClick: () =>
-      messages.sendMessage(
-        channels.getChannelId(),
-        { content: state.currentItem.url }
-      )
-  }, {
-    type: 'button',
-    name: 'Copy URL',
-    icon: hasIconsHidden ? '' : 'copy-duotone',
-    onClick: () =>
-      clipboard.writeText(state.currentItem.url)
-  }, {
-    type: 'button',
-    name: 'Send album URL to Channel',
+    name: 'Send Album URL to Channel',
     icon: hasIconsHidden ? '' : 'share-square-duotone',
     onClick: () =>
       messages.sendMessage(
@@ -198,9 +183,24 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
       )
   }, {
     type: 'button',
-    name: 'Copy album URL',
+    name: 'Send Song URL to Channel',
+    icon: hasIconsHidden ? '' : 'share-square-duotone',
+    onClick: () =>
+      messages.sendMessage(
+        channels.getChannelId(),
+        { content: state.currentItem.url }
+      )
+  }, {
+    type: 'button',
+    name: 'Copy Album URL',
     icon: hasIconsHidden ? '' : 'copy-duotone',
     onClick: () =>
       clipboard.writeText(SpotifyPlayer.player.item.album.external_urls.spotify)
+  }, {
+    type: 'button',
+    name: 'Copy Song URL',
+    icon: hasIconsHidden ? '' : 'copy-duotone',
+    onClick: () =>
+      clipboard.writeText(state.currentItem.url)
   } ]
 ];
