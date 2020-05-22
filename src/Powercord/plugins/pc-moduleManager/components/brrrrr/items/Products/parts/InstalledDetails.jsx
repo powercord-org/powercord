@@ -2,8 +2,8 @@ const { React, i18n: { Messages } } = require('powercord/webpack');
 const { open: openModal } = require('powercord/modal');
 const { Clickable, Tooltip, Icons: { Person, Tag, Chemistry, Scale, Info, Receipt } } = require('powercord/components');
 
-const LicenseModal = require('../../../License');
-const licenses = require('../../../../licenses');
+const LicenseModal = require('../../../../License');
+const licenses = require('../../../../../licenses');
 
 // @todo: merge with Product/
 module.exports = React.memo(

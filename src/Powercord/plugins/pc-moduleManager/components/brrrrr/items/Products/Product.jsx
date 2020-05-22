@@ -18,11 +18,11 @@ module.exports = class Product extends React.Component {
       <div className={classes.card}>
         <div className='powercord-product-abandonware'>Discontinued</div>
         {(1 !== 2) && <Preview previews={[
-          'https://i.bowser65.xyz/e3c67734c8.jpg',
-          'https://i.bowser65.xyz/3356e6506c.jpg',
-          'https://i.bowser65.xyz/520ea675ae.jpg',
-          'https://i.bowser65.xyz/915a2b6995.jpg',
-          'https://i.bowser65.xyz/128904cc6a.jpg'
+          'https://i.serux.pro/e3c67734c8.jpg',
+          'https://i.serux.pro/3356e6506c.jpg',
+          'https://i.serux.pro/520ea675ae.jpg',
+          'https://i.serux.pro/915a2b6995.jpg',
+          'https://i.serux.pro/128904cc6a.jpg'
         ]}/>}
         <Header name={manifest.name} verified={true}/>
         {/* @todo metadata */}

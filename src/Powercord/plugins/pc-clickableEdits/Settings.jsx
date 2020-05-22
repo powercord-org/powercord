@@ -8,8 +8,10 @@ module.exports = class Settings extends React.Component {
     return (
       <div>
         <SwitchItem
-          note={'Provides the ability to use the ‘shift’ key and primary button to perform cleared message edits while also ' +
-            'being able to double-click the primary button to edit messages normally (without the removable of content).'}
+          note={[
+            'Use the ‘⇧ Shift’ key and primary mouse button to perform cleared message edits, while still ' +
+            'being able to double-click to edit messages normally (i.e. without the removable of content).'
+          ]}
           value={getSetting('dualControlEdits', false)}
           onChange={() => toggleSetting('dualControlEdits')}
         >
@@ -17,7 +19,7 @@ module.exports = class Settings extends React.Component {
         </SwitchItem>
 
         <SwitchItem
-          note={'Sets the right mouse button (RMB) as the primary control for performing message edits.'}
+          note={'Set the right mouse button (RMB) as the primary control for performing message edits.'}
           value={getSetting('rightClickEdits', false)}
           onChange={() => toggleSetting('rightClickEdits')}
         >
@@ -25,7 +27,7 @@ module.exports = class Settings extends React.Component {
         </SwitchItem>
 
         <SwitchItem
-          note={'Removes the message content upon editing (not sure why you\'d have this enabled, but it\'s there if you ever need it).'}
+          note={'Remove message content during edits (not sure why you\'d have this enabled, but it\'s there if you ever need it).'}
           disabled={getSetting('dualControlEdits', false)}
           value={getSetting('clearContent', false)}
           onChange={() => toggleSetting('clearContent')}
@@ -35,7 +37,7 @@ module.exports = class Settings extends React.Component {
 
         <SwitchItem
           note={
-            <span>Makes it so that the ‘shift’ key must be held down before clicking the left or right mouse button to initiate an edit.&nbsp;
+            <span>Require the ‘⇧ Shift’ key to be held down prior to clicking the left or right mouse button to initiate an edit.&nbsp;
               <b style={{ color: 'rgb(240, 71, 71)' }}>HEADS UP:</b> Having this setting disabled will result in double-click edits by default. Don't say I didn't tell you.</span>
           }
           disabled={getSetting('dualControlEdits', false)}

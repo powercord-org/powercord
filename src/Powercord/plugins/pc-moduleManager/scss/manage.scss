@@ -1,0 +1,85 @@
+.powercord-entities-manage {
+  // https://github.com/facebook/react/issues/4251
+  input[disabled], button[disabled] {
+    pointer-events: none;
+  }
+
+  &-header {
+    display: flex;
+    align-items: center;
+
+    span {
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .buttons {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    svg {
+      margin-left: 15px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+    }
+  }
+
+  &-search {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+
+    > div {
+      flex: 1;
+
+      + button {
+        margin-left: 15px;
+      }
+
+      > :last-child {
+        display: none;
+      }
+    }
+
+    input {
+      height: 32px;
+    }
+  }
+
+  &-tabs {
+    background-color: var(--background-secondary);
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 25px;
+  }
+
+  .powercord-product {
+    .metadata {
+      display: flex;
+
+      > div {
+        width: 33%;
+      }
+    }
+  }
+
+  .empty {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    div {
+      margin-top: 25px;
+      margin-bottom: 25px;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 0;
+      opacity: .7;
+    }
+  }
+}

@@ -1,0 +1,168 @@
+.powercord-product {
+  display: flex;
+  flex-direction: column;
+
+  &-abandonware {
+    color: #fff;
+    padding: 5px 10px;
+    font-weight: bold;
+    background-color: #f04747;
+    text-transform: uppercase;
+  }
+
+  &-preview {
+    img {
+      width: 308px;
+    }
+
+    > div > div + div {
+      margin-top: -64px;
+
+      div {
+        opacity: 0;
+        transition: opacity .2s;
+      }
+    }
+
+    &:hover > div > div + div div {
+      opacity: .6;
+    }
+  }
+
+  &-header {
+    display: flex;
+    align-items: center;
+    margin: 10px 15px;
+
+    .name {
+      margin: 0 10px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .kinky {
+      font-size: 14px;
+      font-weight: 600;
+      background-color: #f04747;
+      color: #fff;
+      padding: 3px;
+      border-radius: 2px;
+    }
+  }
+
+  &-permissions, &-rating, &-tags, &-footer {
+    margin: 15px 15px 0;
+    padding-top: 15px;
+    border-top: 1px var(--background-modifier-accent) solid;
+  }
+
+  &-permissions .item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+
+    svg {
+      margin-right: 5px;
+    }
+  }
+
+  &-rating .voting {
+    display: flex;
+    align-items: center;
+
+    .upvote, .downvote {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      svg {
+        margin-right: 5px;
+      }
+
+      &.self {
+        font-weight: bold;
+      }
+    }
+
+    .upvote svg {
+      color: #43b581;
+    }
+
+    .downvote svg {
+      color: #f04747;
+    }
+
+    .separator {
+      margin: 0 7px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: #fff;
+    }
+  }
+
+  &-tags {
+    .items {
+      display: flex;
+    }
+
+    .tag {
+      color: #fff;
+      font-size: 14px;
+      background-color: var(--interactive-muted);
+      margin-right: 5px;
+      border-radius: 2px;
+      padding: 3px 7px;
+    }
+  }
+
+  &-footer {
+    display: flex;
+    margin-bottom: 15px;
+    justify-content: space-between;
+
+    .buttons {
+      display: flex;
+
+      a, div {
+        cursor: pointer;
+      }
+
+      a + div, div + div {
+        margin-left: 10px;
+      }
+
+      .github, .settings {
+        color: var(--text-muted);
+      }
+
+      .download {
+        color: #43b581;
+      }
+
+      .uninstall, .report {
+        color: #f04747;
+      }
+    }
+  }
+}
+
+.powercord-store {
+  .powercord-product {
+    > div {
+      width: 308px;
+      cursor: initial;
+    }
+
+    &-description {
+      margin: 10px 15px 5px;
+      flex: 1;
+    }
+  }
+}
+
+.powercord-entities-manage {
+  .powercord-product-permissions {
+    margin: 10px 0 20px;
+  }
+}

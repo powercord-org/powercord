@@ -111,7 +111,7 @@
     "POWERCORD_CUTIE_SUBTITLE": "E ganhe benefícios legais",
     "POWERCORD_CUTIE_TITLE": "Ajude o Desenvolvimento do Powercord",
     "POWERCORD_I18N_TRANSLATED_OVERRIDES": "{overrides,number} substituições nas traduções do Discord",
-    "POWERCORD_BADGES_EARLY": "Usuário inicial do Powercord",
+    "POWERCORD_BADGES_EARLY": "Usuário antigo do Powercord",
     "POWERCORD_CUTIE_TIER_EASTER_PRICE": "**$1,337,420.69**",
     "POWERCORD_CUTIE_TIER_3_PRICE": "**$10**/mês",
     "POWERCORD_CUTIE_TIER_2_PRICE": "**$5**/mês",
@@ -120,5 +120,8 @@
     "POWERCORD_BADGES_TRANSLATOR": "Tradutor do Powercord",
     "POWERCORD_BADGES_CONTRIBUTOR": "Contribuidor do Powercord",
     "POWERCORD_BADGES_STAFF": "Staff do Powercord",
-    "POWERCORD_BADGES_DEVELOPER": "Desenvolvedor do Powercord"
+    "POWERCORD_BADGES_DEVELOPER": "Desenvolvedor do Powercord",
+    "POWERCORD_SETTINGS_OVERLAY_DESC": "Abre uma janela DevTools que deixa você inspecionar o que está acontecendo dentro do overlay in-game do Discord.",
+    "POWERCORD_SETTINGS_DEBUG_LOGS_DESC": "Salva o conteúdo do console em um arquivo. Útil para depuração se o Discord está crashando inesperadamente.",
+    "POWERCORD_SETTINGS_DEBUG_LOGS": "Logs de Depuração"
 }

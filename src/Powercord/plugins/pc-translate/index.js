@@ -10,6 +10,11 @@ const { resolve } = require('path');
 
 module.exports = class Translate extends Plugin {
   async startPlugin () {
+    // @todo: restore to its former glory (i.e. rewrite codebase as it's nothing but an absolute shitfest)
+    return;
+
+    /* eslint-disable no-unreachable */
+    // noinspection UnreachableCodeJS
     this.state = {};
     this.translations = {};
     this.messageClasses = {
@@ -363,7 +368,7 @@ module.exports = class Translate extends Plugin {
       React.createElement(Submenu, {
         name: 'Translate',
         hint: 'to',
-        seperate: true,
+        separate: true,
         onClick: () => setText({ to: 'en' }),
         getItems: () => languages
           .map(to => ({

@@ -338,6 +338,7 @@ module.exports = class Modal extends React.Component {
     );
     contextMenu.openContextMenu(e, () =>
       React.createElement(ContextMenu, {
+        navId: 'ctx-powercord-spotify',
         pageX,
         pageY,
         itemGroups

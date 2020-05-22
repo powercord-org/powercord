@@ -1,30 +1,32 @@
 const { Plugin } = require('powercord/entities');
+const { getModule, messages } = require('powercord/webpack');
 const { forceUpdateElement, sleep } = require('powercord/util');
-const { contextMenu, getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 
 const Settings = require('./Settings');
 
 module.exports = class ClickableEdits extends Plugin {
-  constructor (props) {
-    super(props);
+  constructor () {
+    super();
 
-    this.state = {
-      messageQuery: ''
+    this.classes = {
+      textArea: getModule([ 'textArea', 'textAreaDisabled' ], false),
+      channelTextArea: getModule([ 'message', 'divider' ], false),
+      messages: getModule([ 'messages', 'scroller' ], false)
     };
+
+    Object.keys(this.classes).forEach(key =>
+      this.classes[key] = `.${this.classes[key][key]}`
+    );
+  }
+
+  get currentUser () {
+    return window.__SENTRY__.hub.getScope()._user;
   }
 
   async startPlugin () {
-    const { textArea } = await getModule([ 'textArea', 'textAreaDisabled' ]);
-    const { channelTextArea } = await getModule([ 'message', 'divider' ]);
-
-    this.state.textAreaEdit = `.${channelTextArea} .${textArea}`;
-    this.classes = {
-      ...await getModule([ 'messages', 'scroller' ])
-    };
-
-    while (!getModule([ 'getCurrentUser' ], false).getCurrentUser()) {
-      await sleep(100);
+    while (!this.currentUser.id) {
+      await sleep(1000);
     }
 
     this.registerSettings('pc-clickableEdits', 'Clickable Edits', Settings);
@@ -32,65 +34,47 @@ module.exports = class ClickableEdits extends Plugin {
   }
 
   pluginWillUnload () {
-    uninject('pc-clickableEdits-MessageContent');
-    forceUpdateElement(this.state.messageQuery, true);
+    uninject('clickableEdits-message');
+    forceUpdateElement(this.classes.messages, true);
   }
 
   async patchMessageContent () {
-    const messages = `.${this.classes.messages}`;
-    const currentUser = (await getModule([ 'getCurrentUser' ])).getCurrentUser();
-
     const renderMessage = (args, res) => {
       const { childrenMessageContent: { props: { message } } } = args[0];
-      if (message && message.author.id === currentUser.id) {
+      if (message && message.author.id === this.currentUser.id) {
         res.props.onMouseUp = this.handleMessageEdit(message.channel_id, message.id, message.content);
       }
 
       return res;
     };
 
-    this.state.messageQuery = messages;
-
     const Message = await getModule(m => m.default && m.default.displayName === 'Message');
-    inject('pc-clickableEdits-MessageContent', Message, 'default', renderMessage);
+    inject('clickableEdits-message', Message, 'default', renderMessage);
 
     Message.default.displayName = 'Message';
 
-    forceUpdateElement(this.state.messageQuery, true);
+    forceUpdateElement(this.classes.messages, true);
   }
 
-  handleMessageEdit (channelId, messageId, content) {
-    return async (e) => {
-      const shiftKey = e.shiftKey &&
-        e.button === (this.settings.get('rightClickEdits', false)
-          ? 2
-          : 0) && e.detail === 1;
-      const doubleClick = e.button === (this.settings.get('rightClickEdits', false)
-        ? 2
-        : 0) && e.detail > 1;
+  get (key) {
+    return this.settings.get(key, false);
+  }
 
-      let args = [ channelId, messageId, this.settings.get('clearContent', false) ? '' : content ];
+  handleMessageEdit (channel_id, message_id, content) {
+    const shiftKey = (e) => e.shiftKey && e.button === (this.get('rightClickEdits') ? 2 : 0) && e.detail === 1;
+    const doubleClick = (e) => e.button === (this.get('rightClickEdits') ? 2 : 0) && e.detail > 1;
 
-      const dualControl = (this.settings.get('dualControlEdits', false) && shiftKey
-        ? args = [ channelId, messageId, '' ]
-        : doubleClick
-          ? args = [ channelId, messageId, content ]
-          : false);
+    let args = [ channel_id, message_id, !this.get('clearContent') ? content : '' ];
+    const dualControl = (e) => this.get('dualControlEdits') && shiftKey(e)
+      ? args = [ channel_id, message_id, '' ]
+      : doubleClick(e)
+        ? args = [ channel_id, message_id, content ]
+        : false;
 
-      if (this.settings.get('dualControlEdits', false) ? dualControl : this.settings.get('useShiftKey', false) ? shiftKey : doubleClick) {
+    return (e) => {
+      if (this.get('dualControlEdits') ? dualControl(e) : this.get('useShiftKey') ? shiftKey(e) : doubleClick(e)) {
         if (e.target.className && (e.target.className.includes('markup') || e.target.className.includes('container'))) {
-          const { startEditMessage } = await getModule([ 'editMessage' ]);
-          startEditMessage(args[0], args[1], args[2]);
-
-          setTimeout(() => {
-            const elem = document.querySelector(this.state.textAreaEdit);
-            if (elem) {
-              elem.focus();
-              elem.setSelectionRange(elem.textContent.length, elem.textContent.length);
-            }
-
-            contextMenu.closeContextMenu();
-          }, 100);
+          messages.startEditMessage(...args);
         }
       }
     };

@@ -3,7 +3,7 @@ const { Clickable, Button, FormNotice, FormTitle, Tooltip } = require('powercord
 const { SwitchItem, TextInput, Category, ButtonItem } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
-const { REPO_URL } = require('powercord/constants');
+const { REPO_URL, CACHE_FOLDER } = require('powercord/constants');
 const { clipboard, shell } = require('electron');
 
 const Icons = require('./Icons');
@@ -397,18 +397,14 @@ module.exports = class UpdaterSettings extends React.Component {
               .filter(experiment => experiments[experiment]).length} / ${Object.keys(experiments).length}`) || 'n/a'}
             </div>
             <div className='column'>{`Settings Sync:\n${powercord.settings.get('settingsSync', false)}`}</div>
-            {powercord.cacheFolder &&
-            <div className='column'>Cached Files:&#10;{require('fs')
-              .readdirSync(`${powercord.cacheFolder}/jsx`, (_, files) => files).length}
-            </div>
-            }
+            <div className='column'>Cached Files:&#10;{require('fs').readdirSync(`${CACHE_FOLDER}/jsx`).length}</div>
             <div className='column'>{`Account:\n${!!powercord.account}`}</div>
             <div className='column'>APIs:&#10;{apis.length}</div>
           </div>
 
           <b>Git:</b>
           <div className='row'>
-            <div className='column'>Upstream:&#10;{powercord.gitInfos.upstream.replace(REPO_URL, Messages.POWERCORD_UPDATES_UPSTREAM_OFFICIAL)}</div>
+            <div className='column'>Upstream:&#10;{powercord.gitInfos.upstream.replace(REPO_URL, 'Official')}</div>
             <div className='column'>Revision:&#10;
               <a
                 href={`https://github.com/${powercord.gitInfos.upstream}/commit/${powercord.gitInfos.revision}`}

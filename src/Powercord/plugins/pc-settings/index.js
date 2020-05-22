@@ -5,6 +5,7 @@ const { inject, uninject } = require('powercord/injector');
 const { React, getModuleByDisplayName, getModule, i18n: { Messages } } = require('powercord/webpack');
 
 const GeneralSettings = require('./components/GeneralSettings.jsx');
+const Labs = require('./components/Labs.jsx');
 
 module.exports = class Settings extends Plugin {
   startPlugin () {
@@ -45,6 +46,16 @@ module.exports = class Settings extends Plugin {
     inject('pc-settings-items', SettingsView.prototype, 'getPredicateSections', (args, sections) => {
       const changelog = sections.find(c => c.section === 'changelog');
       if (changelog) {
+        if (powercord.settings.get('experiments', false)) {
+          sections.splice(
+            sections.indexOf(changelog) + 1, 0,
+            {
+              section: 'pc-labs',
+              label: 'Powercord Labs',
+              element: powercord.api.settings._renderSettingsPanel.bind(powercord.api.settings, 'Powercord Labs', Labs)
+            }
+          );
+        }
         sections.splice(
           sections.indexOf(changelog), 0,
           {

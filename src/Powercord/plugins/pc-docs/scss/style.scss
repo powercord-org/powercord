@@ -1,8 +1,17 @@
 .powercord-documentation {
+  color: var(--text-normal);
   line-height: 20px;
 
   .formNotice-2_hHWR {
     margin-bottom: 20px;
+
+    .size14-e6ZScH {
+      font-size: 16px;
+    }
+  }
+
+  ol > ol, ul > ul {
+    margin-left: 20px;
   }
 
   ol, ul {
@@ -21,33 +30,144 @@
     }
   }
 
+  a:hover {
+    text-decoration: underline;
+  }
+
   em {
     font-style: italic;
   }
 
-  code {
+  code:not(.hljs) {
     background: var(--background-secondary);
+    padding: .2em;
+    margin: -.2em 0;
+    border-radius: 3px;
   }
 
-  h2, h3, h4, h5, h6 {
-    font-weight: bold;
+  h2, h3, h4, h5 {
+    text-transform: uppercase;
+    font-weight: 600;
     margin-top: 35px;
     margin-bottom: 15px;
   }
 
   h2 {
-    font-size: 32px;
+    margin-top: 55px;
+    font-size: 22px;
   }
+
   h3 {
-    font-size: 28px;
+    font-size: 18px;
   }
+
   h4 {
-    font-size: 24px;
-  }
-  h5 {
-    font-size: 20px;
-  }
-  h6 {
     font-size: 16px;
+  }
+
+  h5 {
+    font-size: 14px;
+  }
+
+  h6 {
+    padding: 6px 12px;
+    border: 1px solid var(--background-tertiary);
+    background-color: var(--interactive-muted);
+    font-weight: 600;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    + pre .hljs {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      border-top-width: 0;
+    }
+
+    + table {
+      border-top-width: 0;
+    }
+  }
+
+  table {
+    width: 100%;
+    border: 1px solid var(--background-tertiary);
+    margin-bottom: 25px;
+
+    th {
+      font-weight: bold;
+      background: var(--background-secondary);
+      padding: 5px;
+    }
+
+    tr {
+      &:nth-child(even) {
+        background: var(--background-secondary);
+      }
+
+      td {
+        border-top: 1px solid var(--background-tertiary);
+        padding: 8px;
+      }
+    }
+
+    th, td {
+      + th, + td {
+        border-left: 1px solid var(--background-tertiary);
+      }
+    }
+  }
+
+  &-titlebar {
+    background-color: var(--background-secondary);
+    border-bottom: 1px solid var(--background-tertiary);
+    color: var(--text-normal);
+    display: flex;
+    padding: 2px 8px;
+    align-items: center;
+    justify-content: flex-end;
+    -webkit-app-region: drag;
+
+    > div > div {
+      padding: 3px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      -webkit-app-region: no-drag;
+      box-sizing: border-box;
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    + .standardSidebarView-3F1I7i {
+      top: 29px;
+
+      + .layerContainer-yqaFcK .tooltip-2QfLtc {
+        padding: 4px 8px;
+      }
+    }
+  }
+
+  &-title {
+    font-size: 26px;
+    margin-bottom: 35px;
+  }
+}
+
+.powercord-docs-button {
+  width: 36px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-normal);
+  opacity: .6;
+  margin-top: 15px;
+  cursor: pointer;
+
+  svg {
+    height: 100%;
   }
 }

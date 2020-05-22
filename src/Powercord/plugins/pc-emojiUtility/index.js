@@ -16,7 +16,7 @@ const {
 
 /* const { CDN_HOST } = window.GLOBAL_ENV; */
 
-const { /* ContextMenu, */ ContextMenu: { Submenu } } = require('powercord/components');
+const { ContextMenu } = require('powercord/components');
 const { getOwnerInstance } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { open: openModal } = require('powercord/modal');
@@ -347,7 +347,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       features.push({
         type: 'button',
-        name: 'Copy ID',
+        name: 'Copy Emote ID',
         onClick: () => clipboard.writeText(emoji.id)
       });
 
@@ -597,7 +597,7 @@ module.exports = class EmojiUtility extends Plugin {
 
         const foundEmojis = emojis.filter(emoji => emoji.name.toLowerCase().includes(argument));
         if (foundEmojis.length > 0) {
-          const emojisAsString = foundEmojis.map(emoji => this.getFullEmoji(emoji)).join('');
+          const emojisAsString = foundEmojis.map(emoji => this.getFullEmoji(emoji)).join(' ');
           if (emojisAsString.length > 2000) {
             return {
               send: false,
@@ -771,55 +771,33 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   async _injectContextMenu (cloneSubMenu, createSubMenu) {
-    const { contextMenu } = await getModule([ 'contextMenu' ]);
     const { imageWrapper } = await getModule([ 'imageWrapper' ]);
-
-    const callback = () =>
-      setTimeout(async () => {
-        const element = document.querySelector(`.${contextMenu}`);
-        if (element) {
-          const instance = getOwnerInstance(element);
-          if (instance._reactInternalFiber.child.child.pendingProps.type === 'MESSAGE_MAIN') {
-            window.removeEventListener('contextmenu', callback, true);
-            const fn = instance._reactInternalFiber.child.child.type;
-            const mdl = await getModule(m => m.default === fn);
-
-            // FINALLY inject
-            inject('pc-emojiUtility-emojiContext', mdl, 'default', ([ { target } ], res) => {
-              if (target.classList.contains('emoji')) {
-                const matcher = target.src.match(this.getEmojiUrlRegex());
-                if (matcher) {
-                  let emoji = this.getEmojiById(matcher[1]);
-                  if (emoji) {
-                    emoji.fake = false;
-                  } else {
-                    emoji = this.createFakeEmoji(matcher[1], target.alt.substring(1, target.alt.length - 1), target.src);
-                  }
-
-                  res.props.children.push(
-                    React.createElement(Submenu, {
-                      name: 'Emote',
-                      seperate: true,
-                      getItems: () => cloneSubMenu(emoji)
-                    })
-                  );
-                }
-              } else if (target.tagName.toLowerCase() === 'img' && target.parentElement.classList.contains(imageWrapper)) {
-                res.props.children.push(
-                  React.createElement(Submenu, {
-                    name: 'Emote',
-                    seperate: true,
-                    getItems: () => createSubMenu(target)
-                  })
-                );
-              }
-              return res;
-            });
-            instance.forceUpdate();
+    const { MenuSeparator } = await getModule([ 'MenuGroup' ]);
+    const mdl = await getModule(m => m.default && m.default.displayName === 'MessageContextMenu');
+    inject('pc-emojiUtility-emojiContext', mdl, 'default', ([ { target } ], res) => {
+      if (target.classList.contains('emoji')) {
+        const matcher = target.src.match(this.getEmojiUrlRegex());
+        if (matcher) {
+          let emoji = this.getEmojiById(matcher[1]);
+          if (emoji) {
+            emoji.fake = false;
+          } else {
+            emoji = this.createFakeEmoji(matcher[1], target.alt.substring(1, target.alt.length - 1), target.src);
           }
-        }
-      }, 5);
 
-    window.addEventListener('contextmenu', callback, true);
+          res.props.children.push(
+            React.createElement(MenuSeparator),
+            ...ContextMenu.renderRawItems(cloneSubMenu(emoji))
+          );
+        }
+      } else if (target.tagName.toLowerCase() === 'img' && target.parentElement.classList.contains(imageWrapper)) {
+        res.props.children.push(
+          React.createElement(MenuSeparator),
+          ...ContextMenu.renderRawItems(createSubMenu(target))
+        );
+      }
+      return res;
+    });
+    mdl.default.displayName = 'MessageContextMenu';
   }
 };

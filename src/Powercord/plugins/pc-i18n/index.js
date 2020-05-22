@@ -2,6 +2,7 @@ const { React, getModule, getModuleByDisplayName, i18n: { Messages } } = require
 const { Card } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
 const { Plugin } = require('powercord/entities');
+const { I18N_WEBSITE } = require('powercord/constants');
 
 const strings = require('../../../../i18n');
 const strOverrides = require('../../../../i18n/overrides');
@@ -11,10 +12,15 @@ const totalStrCount = Object.keys(strings['en-US']).length;
 module.exports = class I18n extends Plugin {
   async startPlugin () {
     const FluxSettingsLocale = await getModuleByDisplayName('FluxContainer(UserSettingsLocale)');
+    // noinspection JSPotentiallyInvalidConstructorUsage
     const SettingsLocale = React.createElement(FluxSettingsLocale)
       .type.prototype.render.call({ memoizedGetStateFromStores: () => ({}) });
     const { codeRedemptionRedirect } = await getModule([ 'codeRedemptionRedirect' ]);
     inject('pc-i18n-psst', SettingsLocale.type.prototype, 'render', (_, res) => {
+      if (!Messages.POWERCORD_I18N_CONTRIBUTE) {
+        return res;
+      }
+
       res.props.children.props.children.unshift(
         React.createElement(Card, {
           className: codeRedemptionRedirect,
@@ -22,9 +28,7 @@ module.exports = class I18n extends Plugin {
             marginTop: 0,
             marginBottom: 30
           }
-        }, Messages.POWERCORD_I18N_CONTRIBUTE.format({
-          weblateUrl: 'https://i18n.powercord.dev/projects/powercord'
-        }))
+        }, Messages.POWERCORD_I18N_CONTRIBUTE.format({ weblateUrl: I18N_WEBSITE }))
       );
 
       const OgList = res.props.children.props.children[2].type;

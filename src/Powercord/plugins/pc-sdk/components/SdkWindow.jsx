@@ -1,4 +1,4 @@
-const { Flux, React, getModule } = require('powercord/webpack');
+const { Flux, React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { Icons: { SdkWordmark }, AsyncComponent } = require('powercord/components');
 
 const TitleBar = AsyncComponent.from((async () => {
@@ -11,27 +11,22 @@ const TitleBar = AsyncComponent.from((async () => {
   };
 })());
 
-class SdkWindow extends React.Component {
-  componentDidMount () {
-    this.htmlProps();
-  }
+const PopoutWindow = AsyncComponent.from(getModuleByDisplayName('FluxContainer(PopoutWindow)'));
 
-  componentDidUpdate () {
-    this.htmlProps();
-  }
-
-  async htmlProps () {
-    const windowManager = await getModule([ 'getWindow' ]);
-    const guestWindow = windowManager.getWindow('DISCORD_POWERCORD_SANDBOX');
-    guestWindow.document.head.parentElement.className = [ `theme-${this.props.theme}`, this.props.fontScaleClass ].join(' ');
-    guestWindow.document.head.parentElement.style = `font-size: ${this.props.fontScale}%`;
-    guestWindow.document.head.parentElement.lang = this.props.locale;
+class SdkWindow extends React.PureComponent {
+  constructor (props) {
+    super(props);
+    this.state = {
+      winId: this.props.winId || 'DISCORD_POWERCORD_SANDBOX'
+    };
   }
 
   render () {
-    return <>
-      <TitleBar type='WINDOWS' windowKey='DISCORD_POWERCORD_SANDBOX' themeOverride={this.props.theme}/>
-    </>;
+    return <PopoutWindow>
+      {process.platform !== 'linux' &&
+      <TitleBar type='WINDOWS' windowKey={'DISCORD_POWERCORD_SANDBOX'} themeOverride={this.props.theme}/>}
+      {this.props.children || null}
+    </PopoutWindow>;
   }
 }
 

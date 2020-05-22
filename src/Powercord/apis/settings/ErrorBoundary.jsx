@@ -1,5 +1,5 @@
 /**
- * Powercord, a lightweight @discordapp client mod focused on simplicity and performance
+ * Powercord, a lightweight @discord client mod focused on simplicity and performance
  * Copyright (C) 2018-2020  aetheryx & Bowser65
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,11 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
-/*
- * Parts of this component are taken from
- * https://github.com/intrnl/harmony/blob/legacy-v2/src/modules/hm-components/GenericErrorBoundary.jsx
  */
 
 const { parse } = require('url');
@@ -85,7 +80,7 @@ class ErrorBoundary extends React.Component {
 
       errorStack = (error.stack || '')
         .split('\n')
-        .filter(l => !l.includes('discordapp.com/assets/'))
+        .filter(l => !l.includes('discordapp.com/assets/') && !l.includes('discord.com/assets/'))
         .join('\n')
         .split(basePath)
         .join('');

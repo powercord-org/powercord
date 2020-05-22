@@ -1,5 +1,5 @@
 /**
- * Powercord, a lightweight @discordapp client mod focused on simplicity and performance
+ * Powercord, a lightweight @discord client mod focused on simplicity and performance
  * Copyright (C) 2018-2020  aetheryx & Bowser65
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,20 +26,21 @@ const { BrowserWindow, app, session } = electron;
 const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
+console.log('Hello from Powercord!');
+
 let settings;
 try {
   settings = require(resolve(__dirname, '..', 'settings', 'pc-general.json'));
 } catch (err) {
   settings = {};
 }
-
 const { transparentWindow, experimentalWebPlatform } = settings;
 
 class PatchedBrowserWindow extends BrowserWindow {
   // noinspection JSAnnotator - Make JetBrains happy
   constructor (opts) {
     if (opts.webContents) {
-      // Go Live (general purpose?) popout. Might be interesting to investigate how it works as it has very low startup latency.
+      // General purpose popouts used by Discord
     } else if (opts.webPreferences && opts.webPreferences.nodeIntegration) {
       // Splash Screen
     } else if (opts.webPreferences && opts.webPreferences.offscreen) {
@@ -121,7 +122,7 @@ app.once('ready', () => {
     if (details.url.endsWith('.js.map')) {
       // source maps must die
       done({ cancel: true });
-    } else if (details.url.startsWith('https://canary.discordapp.com/_powercord')) {
+    } else if (details.url.startsWith('https://canary.discordapp.com/_powercord')) { // @todo: discord.com
       appSettings.set('_POWERCORD_ROUTE', details.url.replace('https://canary.discordapp.com', ''));
       appSettings.save();
       // It should get restored to _powercord url later
@@ -151,7 +152,7 @@ app.once('ready', () => {
   const discordPackage = require(join(discordPath, 'package.json'));
 
   electron.app.setAppPath(discordPath);
-  electron.app.setName(discordPackage.name);
+  electron.app.name = discordPackage.name;
 
   /**
    * Fix DevTools extensions for wintards
@@ -168,6 +169,7 @@ app.once('ready', () => {
     });
   }
 
+  console.log('Loading Discord');
   Module._load(
     join(discordPath, discordPackage.main),
     null,

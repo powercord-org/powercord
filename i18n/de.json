@@ -119,5 +119,8 @@
     "POWERCORD_BADGES_STAFF": "Powercord-Mitarbeiter",
     "POWERCORD_I18N_TRANSLATED_OVERRIDES": "Überschreibt {overrides,number} von Discords Übersetzungen",
     "POWERCORD_I18N_TRANSLATED_PERCENTAGE": "Powercord: {translated,number}% übersetzt",
-    "POWERCORD_I18N_CONTRIBUTE": "Psst! Willst du uns helfen Powercord zu übersetzen? Geh zu unserem [Weblate]({weblateUrl})!"
+    "POWERCORD_I18N_CONTRIBUTE": "Psst! Willst du uns helfen Powercord zu übersetzen? Geh zu unserem [Weblate]({weblateUrl})!",
+    "POWERCORD_SETTINGS_OVERLAY_DESC": "Öffnet ein DevTools-Fenster, in dem du untersuchen kannst, was innerhalb des In-Game-Overlays von Discord geschieht.",
+    "POWERCORD_SETTINGS_DEBUG_LOGS_DESC": "Speichert den Inhalt der Konsole in eine Datei. Nützlich für die Fehlersuche, wenn Discord unerwartet abstürzt.",
+    "POWERCORD_SETTINGS_DEBUG_LOGS": "Debug-Protokolle"
 }

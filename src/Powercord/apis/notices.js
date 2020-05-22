@@ -1,5 +1,5 @@
 /**
- * Powercord, a lightweight @discordapp client mod focused on simplicity and performance
+ * Powercord, a lightweight @discord client mod focused on simplicity and performance
  * Copyright (C) 2018-2020  aetheryx & Bowser65
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,40 @@
 
 const { API } = require('powercord/entities');
 
-module.exports = class Notices extends API {
+/**
+ * @typedef PowercordToast
+ * @property {String} header
+ * @property {String} content
+ * @property {ToastButton[]|void} buttons
+ * @property {Number|void} timeout
+ * @property {String|void} className
+ * @property {Boolean|void} hideProgressBar
+ */
+
+/**
+ * @typedef ToastButton
+ * @property {String|void} size
+ * @property {String|void} look
+ * @property {String|void} color
+ * @property {function} onClick
+ * @property {String} text
+ */
+
+/**
+ * @typedef PowercordAnnouncement
+ * @property message {String}
+ * @property color {String|void}
+ * @property onClose {function|void}
+ * @property button {Object|void}
+ * @property button.onClick {function}
+ * @property button.text {String}
+ */
+
+/**
+ * @property {Object.<String, PowercordToast>} toasts
+ * @property {Object.<String, PowercordAnnouncement>} announcements
+ */
+module.exports = class NoticesAPI extends API {
   constructor () {
     super();
 
@@ -26,6 +59,12 @@ module.exports = class Notices extends API {
     this.toasts = {};
   }
 
+  /**
+   * Sends an announcement to the user (banner at the top of the client)
+   * @param {String} id Announcement ID
+   * @param {PowercordAnnouncement} props Announcement
+   * @emits NoticesAPI#announcementAdded
+   */
   sendAnnouncement (id, props) {
     if (this.announcements[id]) {
       return this.error(`ID ${id} is already used by another plugin!`);
@@ -35,6 +74,11 @@ module.exports = class Notices extends API {
     this.emit('announcementAdded', id);
   }
 
+  /**
+   * Closes an announcement
+   * @param {String} id Announcement ID
+   * @emits NoticesAPI#announcementClosed
+   */
   closeAnnouncement (id) {
     if (!this.announcements[id]) {
       return;
@@ -44,6 +88,12 @@ module.exports = class Notices extends API {
     this.emit('announcementClosed', id);
   }
 
+  /**
+   * Sends a toast to the user
+   * @param {String} id Toast ID
+   * @param {PowercordToast} props Toast
+   * @emits NoticesAPI#toastAdded
+   */
   sendToast (id, props) {
     if (this.toasts[id]) {
       return this.error(`ID ${id} is already used by another plugin!`);
@@ -53,6 +103,11 @@ module.exports = class Notices extends API {
     this.emit('toastAdded', id);
   }
 
+  /**
+   * Closes a toast
+   * @param {String} id Toast ID
+   * @emits NoticesAPI#toastLeaving
+   */
   closeToast (id) {
     const toast = this.toasts[id];
     if (!toast) {

@@ -1,5 +1,5 @@
 /**
- * Powercord, a lightweight @discordapp client mod focused on simplicity and performance
+ * Powercord, a lightweight @discord client mod focused on simplicity and performance
  * Copyright (C) 2018-2020  aetheryx & Bowser65
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 const { API } = require('powercord/entities');
 
-module.exports = class RPC extends API {
+module.exports = class RPCAPI extends API {
   constructor () {
     super();
 

@@ -1,5 +1,5 @@
 /**
- * Powercord, a lightweight @discordapp client mod focused on simplicity and performance
+ * Powercord, a lightweight @discord client mod focused on simplicity and performance
  * Copyright (C) 2018-2020  aetheryx & Bowser65
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ const { remote: { globalShortcut } } = require('electron');
 const localShortcut = require('keybindutils/localShortcut');
 const { API } = require('powercord/entities');
 
-module.exports = class Keybinds extends API {
+module.exports = class KeybindsAPI extends API {
   constructor () {
     super();
 

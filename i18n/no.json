@@ -119,5 +119,8 @@
     "POWERCORD_UPDATE_PASSPHRASE": "Oppdater passord",
     "POWERCORD_PASSPHRASE": "Passord",
     "POWERCORD_REFRESH_ACCOUNTS": "Oppdater kontoer",
-    "POWERCORD_ACCOUNT": "Powercord Konto"
+    "POWERCORD_ACCOUNT": "Powercord Konto",
+    "POWERCORD_SETTINGS_OVERLAY_DESC": "Åpner et DevTools vindu som lar deg inspisere hva som skjer inne i Discord sin in–game overlay.",
+    "POWERCORD_SETTINGS_DEBUG_LOGS_DESC": "Lagrer konsoll innholdet til en fil. Nyttig for debugging hvis Discord krasjer uforventet.",
+    "POWERCORD_SETTINGS_DEBUG_LOGS": "Debug Logger"
 }

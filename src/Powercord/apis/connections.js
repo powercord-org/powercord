@@ -3,7 +3,7 @@ const { asyncArray } = require('powercord/util');
 const { WEBSITE } = require('powercord/constants');
 const { put } = require('powercord/http');
 
-module.exports = class Connections extends API {
+module.exports = class ConnectionsAPI extends API {
   constructor () {
     super();
 
