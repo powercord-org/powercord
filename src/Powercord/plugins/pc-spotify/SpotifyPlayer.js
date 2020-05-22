@@ -87,7 +87,7 @@ module.exports = {
         .query('uris', songURI)
     ).then(r => r.body);
   },
-  
+
   getAlbums () {
     return this.genericRequest(
       get(`${this.BASE_URL}/me/albums`)
@@ -121,7 +121,7 @@ module.exports = {
   play (data) {
     return this.genericRequest(
       put(`${this.BASE_PLAYER_URL}/play`)
-      .send(data)
+        .send(data)
     );
   },
 

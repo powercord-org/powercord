@@ -1,7 +1,3 @@
-const { open: openModal } = require('powercord/modal');
-const { React } = require('powercord/webpack');
-const ShareModal = require('../ShareModal');
-
 module.exports = {
   command: 'album',
   description: 'Send currently playing song album to current channel',
