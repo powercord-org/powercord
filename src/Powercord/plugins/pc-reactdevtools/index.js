@@ -20,10 +20,6 @@ module.exports = class ReactDevtools extends Plugin {
   }
 
   startPlugin () {
-    if (process.platform === 'win32') { // @TODO: Fix this for wintards
-      return;
-    }
-
     // eslint-disable-next-line no-unreachable
     this.listener = this.listener.bind(this);
     if (!this.isInstalledLocally) {
