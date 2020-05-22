@@ -88,6 +88,12 @@ module.exports = {
     ).then(r => r.body);
   },
 
+  getSongAlbum() {
+    return this.genericRequest(
+      get(`${this.BASE_PLAYER_URL}`)
+    ).then(r => r.body);
+  },
+
   getAlbums () {
     return this.genericRequest(
       get(`${this.BASE_URL}/me/albums`)

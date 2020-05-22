@@ -187,5 +187,20 @@ module.exports = (state, onButtonClick, hasCustomAuth, hasControlsHidden, hasIco
     icon: hasIconsHidden ? '' : 'copy-duotone',
     onClick: () =>
       clipboard.writeText(state.currentItem.url)
+  }, {
+    type: 'button',
+    name: 'Send album URL to Channel',
+    icon: hasIconsHidden ? '' : 'share-square-duotone',
+    onClick: () =>
+      messages.sendMessage(
+        channels.getChannelId(),
+        { content: SpotifyPlayer.player.item.album.external_urls.spotify }
+      )
+  }, {
+    type: 'button',
+    name: 'Copy album URL',
+    icon: hasIconsHidden ? '' : 'copy-duotone',
+    onClick: () =>
+      clipboard.writeText(SpotifyPlayer.player.item.album.external_urls.spotify)
   } ]
 ];
