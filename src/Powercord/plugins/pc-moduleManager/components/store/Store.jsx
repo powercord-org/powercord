@@ -4,30 +4,34 @@ const { Tooltip, Clickable, HeaderBar, AsyncComponent, Icons: { Plugin: PluginIc
 const Product = require('../brrrrr/items/Products/Product');
 const VerticalScroller = AsyncComponent.from(getModuleByDisplayName('VerticalScroller'));
 const SearchBox = AsyncComponent.from((async () => {
-  const { searchHelpTextVisible } = await getModule([ 'searchHelpTextVisible' ]);
-  const GuildDiscoverySearch = await getModuleByDisplayName('GuildDiscoverySearchWithResults');
-  const instance = new GuildDiscoverySearch({});
-  return (props) => {
-    const res = instance.renderSearch().props.children({});
-    res.props.className += ' powercord-store-search';
-    [ res.props.children.props.children ] = res.props.children.props.children;
-    Object.assign(res.props.children.props.children.props.children[0].props, props);
-    if (props.focused && props.searchTerm.length > 0) {
-      res.props.children.props.children.props.children[1].props.className += ` ${searchHelpTextVisible}`;
-    }
-    return res;
-  };
+  /*
+   * const { searchHelpTextVisible } = await getModule([ 'searchHelpTextVisible' ]);
+   * const GuildDiscoverySearch = await getModuleByDisplayName('GuildDiscoverySearchWithResults');
+   * const instance = new GuildDiscoverySearch({});
+   * return (props) => {
+   *   const res = instance.renderSearch().props.children({});
+   *   res.props.className += ' powercord-store-search';
+   *   [ res.props.children.props.children ] = res.props.children.props.children;
+   *   Object.assign(res.props.children.props.children.props.children[0].props, props);
+   *   if (props.focused && props.searchTerm.length > 0) {
+   *     res.props.children.props.children.props.children[1].props.className += ` ${searchHelpTextVisible}`;
+   *   }
+   *   return res;
+   * };
+   */
 })());
 
-let classes = null;
+const classes = null;
 setImmediate(async () => {
-  classes = {
-    background: (await getModule([ 'bg', 'body' ])).bg,
-    quickSelectArrow: (await getModule([ 'quickSelectArrow' ])).quickSelectArrow,
-    topic: (await getModule([ 'topic', 'expandable' ])).topic,
-    headerBar: await getModule([ 'iconWrapper', 'clickable' ]),
-    store: await getModule([ 'storeHomeWidth', 'container' ])
-  };
+  /*
+   * classes = {
+   *   background: (await getModule([ 'bg', 'body' ])).bg,
+   *   quickSelectArrow: (await getModule([ 'quickSelectArrow' ])).quickSelectArrow,
+   *   topic: (await getModule([ 'topic', 'expandable' ])).topic,
+   *   headerBar: await getModule([ 'iconWrapper', 'clickable' ]),
+   *   store: await getModule([ 'storeHomeWidth', 'container' ])
+   * };
+   */
 });
 
 class Store extends React.Component {

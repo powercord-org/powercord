@@ -320,19 +320,8 @@ module.exports = class UpdaterSettings extends React.Component {
     const plugins = powercord.pluginManager.getPlugins().filter(plugin =>
       !powercord.pluginManager.get(plugin).isInternal && powercord.pluginManager.isEnabled(plugin)
     );
-    let experiments = [].concat(...[ ...powercord.pluginManager.plugins.values() ]
-      .filter(plugin => plugin.experiments && plugin.experiments.length > 0)
-      .map(plugin => plugin.experiments.map(experiment => ({
-        [experiment]: powercord.api.settings.store.getSetting(plugin.entityID, experiment, false)
-      })))
-    );
 
-    if (experiments.length > 0) {
-      experiments = Object.assign(...experiments);
-    } else {
-      experiments = null;
-    }
-
+    const enabledLabs = powercord.api.labs.experiments.filter(e => powercord.api.labs.isExperimentEnabled(e.id));
     const experimentOverrides = Object.keys(getExperimentOverrides()).length;
     const totalExperiments = Object.keys(getRegisteredExperiments()).length;
 
@@ -393,8 +382,7 @@ module.exports = class UpdaterSettings extends React.Component {
             <div className='column'>Themes:&#10;{powercord.styleManager.getThemes()
               .filter(theme => powercord.styleManager.isEnabled(theme)).length} / {powercord.styleManager.themes.size}
             </div>
-            <div className='column'>Experiments:&#10;{(experiments && `${Object.keys(experiments)
-              .filter(experiment => experiments[experiment]).length} / ${Object.keys(experiments).length}`) || 'n/a'}
+            <div className='column'>Labs:&#10;{enabledLabs.length} / {powercord.api.labs.experiments.length}
             </div>
             <div className='column'>{`Settings Sync:\n${powercord.settings.get('settingsSync', false)}`}</div>
             <div className='column'>Cached Files:&#10;{require('fs').readdirSync(`${CACHE_FOLDER}/jsx`).length}</div>
@@ -421,7 +409,10 @@ module.exports = class UpdaterSettings extends React.Component {
           <div className='row'>
             {createPathReveal('Powercord Path', powercord.basePath)}
             {createPathReveal('Discord Path', discordPath)}
-            <div className='full-column'>Experiments:&#10;{(getExperimentOverrides() && Object.keys(getExperimentOverrides()).join(', ')) || 'n/a'}</div>
+            <div className='full-column'>Experiments:&#10;{getExperimentOverrides() ? Object.keys(getExperimentOverrides()).join(', ') : 'n/a'}</div>
+            <div className='full-column'>Labs:&#10;
+              {enabledLabs.length ? enabledLabs.map(e => e.name).join(', ') : 'n/a'}
+            </div>
             <div className='full-column'>
               Plugins:&#10;{(plugins.length > 1 && `${(this.state.pluginsRevealed ? plugins : plugins.slice(0, 6)).join(', ')}; `) || 'n/a'}
               {plugins.length > 6 &&

@@ -57,6 +57,14 @@
     }
   }
 
+  &-footer {
+    display: flex;
+
+    .buttons {
+      margin-left: auto;
+    }
+  }
+
   .description, .metadata, &-permissions, &-footer {
     margin-top: 20px;
   }

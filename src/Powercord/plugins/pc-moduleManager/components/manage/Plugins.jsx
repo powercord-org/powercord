@@ -1,52 +1,19 @@
 const { React, i18n: { Messages } } = require('powercord/webpack');
 const { open: openModal, close: closeModal } = require('powercord/modal');
-const { Card, Tooltip, Switch, Button, Divider } = require('powercord/components');
 const { Confirm } = require('powercord/components/modal');
 
-const Permissions = require('../parts/Permissions');
-const Details = require('../parts/Details');
+const InstalledProduct = require('../parts/InstalledProduct');
 const Base = require('./Base');
 
 class Plugins extends Base {
   renderItem (item) {
-    const enabled = powercord.pluginManager.isEnabled(item.entityID);
-    const hasPermissions = item.manifest.permissions && item.manifest.permissions.length > 0;
     return (
-      <Card className='powercord-product'>
-        <div className='powercord-product-header'>
-          <h4>{item.manifest.name}</h4>
-          <Tooltip text={enabled ? Messages.DISABLE : Messages.ENABLE} position='top'>
-            <div>
-              <Switch value={enabled} onChange={v => this._toggle(item.entityID, v.target.checked)}/>
-            </div>
-          </Tooltip>
-        </div>
-        <Divider/>
-        <Details
-          svgSize={24}
-          author={item.manifest.author}
-          version={item.manifest.version}
-          description={item.manifest.description}
-          license={item.manifest.license}
-        />
-        {hasPermissions && <>
-          <Divider/>
-          <Permissions svgSize={22} permissions={item.manifest.permissions}/>
-        </>}
-        {!item.entityID.startsWith('pc-') && <>
-          <Divider/>
-          <div className='powercord-product-footer'>
-            <Button
-              onClick={() => this._uninstall(item.entityID)}
-              color={Button.Colors.RED}
-              look={Button.Looks.FILLED}
-              size={Button.Sizes.SMALL}
-            >
-              {Messages.APPLICATION_CONTEXT_MENU_UNINSTALL}
-            </Button>
-          </div>
-        </>}
-      </Card>
+      <InstalledProduct
+        product={item.manifest}
+        isEnabled={powercord.pluginManager.isEnabled(item.productID)}
+        onToggle={v => this._toggle(item.entityID, v.target.checked)}
+        onUninstall={() => this._uninstall(item.entityID)}
+      />
     );
   }
 

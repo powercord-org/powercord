@@ -1,36 +1,44 @@
 const { React, Flux, getModule, i18n: { Messages } } = require('powercord/webpack');
-const { TabBar } = require('powercord/components');
+const { TabBar, Divider, Button } = require('powercord/components');
+
+const InstalledProduct = require('../parts/InstalledProduct');
 
 class ThemeSettings extends React.PureComponent {
-  constructor () {
-    super();
+  constructor (props) {
+    super(props);
     this.state = {
-      theme: powercord.styleManager.get(this.props.theme),
+      theme: powercord.styleManager.get(props.theme),
       tab: 'SETTINGS'
     };
   }
 
   render () {
-    const hasSettings = this.state.theme && this.state.theme.settings && this.state.theme.settings.options.length !== 0; // @todo: Take plugin settings into account
-    const hasPlugins = this.state.theme && this.state.theme.plugins && this.state.theme.plugins.length !== 0;
+    const { theme } = this.state;
+    if (!theme) {
+      return this.renderWtf();
+    }
+    const { manifest: { name, plugins } } = theme;
+    const settings = this.getApplicableSettings();
+    const hasSettings = settings && settings.length !== 0;
+    const hasPlugins = plugins && plugins.length !== 0;
     const hasBoth = hasSettings && hasPlugins;
-    if (!this.state.theme || (!hasSettings && !hasPlugins)) {
-      return (
-        <div style={{
-          fontSize: 69,
-          marginTop: 69,
-          textAlign: 'center',
-          fontFamily: '"Comic Sans MS", "Comic Sans", cursive'
-        }}>{Messages.SETTINGS_GAMES_NOT_PLAYING}</div>
-      );
+    if (!hasSettings && !hasPlugins) {
+      return this.renderWtf();
     }
 
     return (
-      <>
+      <div className='powercord-entities-manage powercord-text'>
+        <div className='powercord-entities-manage-header'>
+          <span>{name}</span>
+          <div className='buttons'>
+            <Button onClick={() => this.props.onClose()}>Save & Quit</Button>
+          </div>
+        </div>
+        <Divider/>
         {hasSettings && hasPlugins && this.renderTopPills()}
         {((hasBoth && this.state.tab === 'SETTINGS') || (!hasBoth && hasSettings)) && this.renderSettings()}
         {((hasBoth && this.state.tab === 'PLUGINS') || (!hasBoth && hasPlugins)) && this.renderPlugins()}
-      </>
+      </div>
     );
   }
 
@@ -44,7 +52,7 @@ class ThemeSettings extends React.PureComponent {
           type={topPill}
         >
           <TabBar.Item className={item} selectedItem={this.state.tab} id='SETTINGS'>
-            Settings
+            Theme Settings
           </TabBar.Item>
           <TabBar.Item className={item} selectedItem={this.state.tab} id='PLUGINS'>
             CSS Plugins
@@ -78,12 +86,38 @@ class ThemeSettings extends React.PureComponent {
   }
 
   renderPlugins () {
-    return 'plugins';
+    const { manifest: { author, version, license, plugins } } = this.state.theme;
+    if (plugins.length === 0) {
+      return this.renderWtf();
+    }
+    return plugins.map(plugin => (
+      <InstalledProduct
+        product={{
+          name: plugin.name,
+          description: plugin.description,
+          author: plugin.author || author,
+          version: plugin.version || version,
+          license: plugin.license || license
+        }}
+        onToggle={v => console.log('yes', v)}
+      />
+    ));
   }
 
-  getApplicableSettings () {
+  renderWtf () {
+    return (
+      <div style={{
+        fontSize: 69,
+        marginTop: 69,
+        textAlign: 'center',
+        fontFamily: '"Comic Sans MS", "Comic Sans", cursive'
+      }}>{Messages.SETTINGS_GAMES_NOT_PLAYING}</div>
+    );
+  }
+
+  getApplicableSettings () { // @todo: Take plugin settings into account
     const settings = [];
-    if (this.state.theme && this.state.theme.settings) {
+    if (this.state.theme.settings) {
       settings.push({
         name: 'Theme Settings',
         options: this.state.theme.settings.options

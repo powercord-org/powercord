@@ -24,7 +24,6 @@ const { API } = require('powercord/entities');
  * @property {String} name
  * @property {Number} date
  * @property {String} description
- * @property {Boolean} usable
  * @property {function({Boolean} enabled)|function()|null} callback
  */
 

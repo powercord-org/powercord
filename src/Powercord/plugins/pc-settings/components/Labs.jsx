@@ -45,12 +45,6 @@ class Labs extends React.Component {
           marginBottom: 15
         }}>
           <b style={{ fontSize: 20 }}>{experiment.name}</b>
-          {!experiment.usable && <span style={{
-            fontWeight: 600,
-            marginLeft: 10,
-            fontSize: 14,
-            color: '#f04747'
-          }}>MARKED UNUSABLE</span>}
           <Switch
             style={{ marginLeft: 'auto' }}
             value={enabled}
