@@ -10,8 +10,11 @@ class Plugins extends Base {
     return (
       <InstalledProduct
         product={item.manifest}
-        isEnabled={powercord.pluginManager.isEnabled(item.productID)}
-        onToggle={v => this._toggle(item.entityID, v.target.checked)}
+        isEnabled={powercord.pluginManager.isEnabled(item.entityID)}
+        onToggle={async v => {
+          await this._toggle(item.entityID, v);
+          this.forceUpdate();
+        }}
         onUninstall={() => this._uninstall(item.entityID)}
       />
     );

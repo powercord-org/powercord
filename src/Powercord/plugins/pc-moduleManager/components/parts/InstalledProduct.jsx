@@ -19,9 +19,9 @@ class InstalledProduct extends BaseProduct {
     return (
       <div className='powercord-product-header'>
         <h4>{this.props.product.name}</h4>
-        <Tooltip text={this.props.enabled ? Messages.DISABLE : Messages.ENABLE} position='top'>
+        <Tooltip text={this.props.isEnabled ? Messages.DISABLE : Messages.ENABLE} position='top'>
           <div>
-            <Switch value={this.props.enabled} onChange={v => this.props.onToggle(v.target.checked)}/>
+            <Switch value={this.props.isEnabled} onChange={v => this.props.onToggle(v.target.checked)}/>
           </div>
         </Tooltip>
       </div>
