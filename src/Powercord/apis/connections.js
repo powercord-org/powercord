@@ -1,5 +1,4 @@
 const { API } = require('powercord/entities');
-const { asyncArray } = require('powercord/util');
 const { WEBSITE } = require('powercord/constants');
 const { put } = require('powercord/http');
 
@@ -22,7 +21,9 @@ module.exports = class ConnectionsAPI extends API {
   }
 
   fetchAccounts (id) {
-    return asyncArray.map(this.filter(c => c.enabled), c => c.fetchAccount(id));
+    return Promise.all(
+      this.filter(c => c.enabled).map(c => c.fetchAccount(id))
+    );
   }
 
   async setVisibility (type, value) {

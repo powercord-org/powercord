@@ -1,6 +1,5 @@
 const { React, contextMenu, i18n: { Messages } } = require('powercord/webpack');
 const { ContextMenu, Tooltip } = require('powercord/components');
-const { concat } = require('powercord/util');
 const { shell } = require('electron');
 
 const SpotifyPlayer = require('../SpotifyPlayer.js');
@@ -173,7 +172,7 @@ module.exports = class Modal extends React.Component {
 
   render () {
     const { currentItem, isPlaying, displayState } = this.state;
-    const artists = concat(currentItem.artists, ', ');
+    const artists = currentItem.artists.join(', ');
     const { containerClasses } = this.props.main;
 
     const repeatIcon = this.state.repeatState === 'context' ? 'sync' : 'undo';
