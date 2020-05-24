@@ -162,7 +162,7 @@
     }
 
     &-gutters {
-      background-color: transparent;
+      background-color: var(--background-secondary);
       border-right: 1px var(--background-tertiary) solid;
       padding-right: 5px;
     }

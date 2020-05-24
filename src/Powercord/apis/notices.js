@@ -39,12 +39,12 @@ const { API } = require('powercord/entities');
 
 /**
  * @typedef PowercordAnnouncement
- * @property message {String}
- * @property color {String|void}
- * @property onClose {function|void}
- * @property button {Object|void}
- * @property button.onClick {function}
- * @property button.text {String}
+ * @property {String} message
+ * @property {String|void} color
+ * @property {function|void} onClose
+ * @property {Object|void} button
+ * @property {function} button.onClick
+ * @property {String} button.text
  */
 
 /**
