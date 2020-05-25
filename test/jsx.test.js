@@ -1,3 +1,4 @@
+/* eslint-env jest */
 /**
  * Powercord, a lightweight @discord client mod focused on simplicity and performance
  * Copyright (C) 2018-2020  aetheryx & Bowser65
@@ -16,26 +17,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { readFileSync } = require('fs');
-const sucrase = require('sucrase');
-const Compiler = require('./compiler');
+const { join } = require('path');
+const JsxCompiler = require('../src/fake_node_modules/powercord/compilers/jsx');
+const rmdir = require('../src/fake_node_modules/powercord/util/rmdirRf');
+const cachePath = join(__dirname, '..', '.cache', 'jsx');
 
-/**
- * JSX compiler
- * @extends {Compiler}
- */
-class JSX extends Compiler {
-  _compile () {
-    const jsx = readFileSync(this.file, 'utf8');
-    return sucrase.transform(jsx, {
-      transforms: [ 'jsx' ],
-      filePath: this.file
-    }).code;
-  }
+describe('JSX Compilation', () => {
+  beforeEach(() => rmdir(cachePath));
 
-  get _metadata () {
-    return `sucrase ${sucrase.getVersion()}`;
-  }
-}
-
-module.exports = JSX;
+  it('makes use of cache', async () => {
+    expect.assertions(1);
+    const compiler = new JsxCompiler(join(__dirname, 'test-data/jsx/Test.jsx'));
+    const fakeCompile = jest.fn(() => Promise.resolve('btw have i told you i use arch?'));
+    compiler._compile = fakeCompile;
+    await compiler.compile();
+    await compiler.compile();
+    await compiler.compile();
+    expect(fakeCompile.mock.calls.length).toBe(1);
+  });
+});

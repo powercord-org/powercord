@@ -4,6 +4,7 @@
   "description": "A lightweight @discord client mod focused on simplicity and performance",
   "main": "index.js",
   "scripts": {
+    "test": "jest",
     "lint": "eslint --ext js --ext jsx src",
     "plug": "node injectors/index.js inject",
     "unplug": "node injectors/index.js uninject",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "eslint": "^6.8.0",
-    "eslint-plugin-react": "^7.19.0"
+    "eslint-plugin-react": "^7.19.0",
+    "jest": "^26.0.1"
   }
 }
