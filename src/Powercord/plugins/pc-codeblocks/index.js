@@ -3,11 +3,10 @@ const { React, getModule, hljs } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 const { findInReactTree } = require('powercord/util');
 const { clipboard } = require('electron');
-const { resolve } = require('path');
 
 module.exports = class Codeblocks extends Plugin {
   async startPlugin () {
-    this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.loadStylesheet('style.scss');
     this.patchCodeblocks();
   }
 

@@ -221,8 +221,7 @@ module.exports = class EmojiUtility extends Plugin {
 
   async startPlugin () {
     await this.doImport();
-
-    this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.loadStylesheet('style.scss');
 
     /* Default settings */
     this.settings.set('useEmbeds', this.settings.get('useEmbeds', false));

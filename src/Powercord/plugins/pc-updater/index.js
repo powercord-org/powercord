@@ -3,7 +3,7 @@ const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
 const { Plugin } = require('powercord/entities');
 
-const { resolve, join } = require('path');
+const { join } = require('path');
 const { promisify } = require('util');
 const cp = require('child_process');
 const exec = promisify(cp.exec);
@@ -25,8 +25,8 @@ module.exports = class Updater extends Plugin {
     this.settings.set('failed', false);
     this.settings.set('updating', false);
     this.settings.set('awaiting_reload', false);
-    this.loadCSS(resolve(__dirname, 'style.scss'));
     this.registerSettings('pc-updater', 'Updater', Settings);
+    this.loadStylesheet('style.scss');
 
     let minutes = Number(this.settings.get('interval', 15));
     if (minutes < 1) {

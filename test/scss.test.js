@@ -44,7 +44,7 @@ describe('SCSS Compilation', () => {
   });
 
   describe('File imports', () => {
-    it('imports files imported', () => {
+    it('imports files', () => {
       expect.assertions(1);
       const compiler = new ScssCompiler(getPath('imports'));
       return expect(compiler.compile()).resolves.toEqual(expected);
@@ -78,6 +78,18 @@ describe('SCSS Compilation', () => {
       expect.assertions(1);
       const compiler = new ScssCompiler(getPath('imports_collision'));
       return expect(compiler.compile()).rejects.toThrow('Colliding names detected: multiple references to "folder/style"');
+    });
+
+    it('imports css files', () => {
+      expect.assertions(1);
+      const compiler = new ScssCompiler(getPath('imports_css'));
+      return expect(compiler.compile()).resolves.toEqual(expected);
+    });
+
+    it('imports css files without extensions', () => {
+      expect.assertions(1);
+      const compiler = new ScssCompiler(getPath('imports_css_noext'));
+      return expect(compiler.compile()).resolves.toEqual(expected);
     });
   });
 

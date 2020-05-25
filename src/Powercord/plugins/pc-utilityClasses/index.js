@@ -16,9 +16,6 @@ module.exports = class UtilityClasses extends Plugin {
     if (window.__OVERLAY__) {
       document.body.classList.add('overlay');
     }
-    if (window.GlasscordApi) {
-      document.body.classList.add('glasscord');
-    }
     const webPrefs = remote.getCurrentWebContents().getWebPreferences();
     if (webPrefs.transparent) {
       document.body.classList.add('transparent');

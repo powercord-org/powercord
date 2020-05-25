@@ -68,7 +68,7 @@ module.exports = class ModuleManager extends Plugin {
     this._quickCSSFile = join(__dirname, 'quickcss.css');
     this._loadQuickCSS();
     this._injectSnippets();
-    this.loadCSS(join(__dirname, 'scss', 'style.scss'));
+    this.loadStylesheet('scss/style.scss');
     this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, Plugins);
     this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, Themes);
 

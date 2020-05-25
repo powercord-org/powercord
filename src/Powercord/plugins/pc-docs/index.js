@@ -1,13 +1,12 @@
 const { getModule, getModuleByDisplayName, messages, constants: discordConsts } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 const { Plugin } = require('powercord/entities');
-const { resolve } = require('path');
 
 const DocsLayer = require('./components/DocsLayer');
 
 module.exports = class Documentation extends Plugin {
   startPlugin () {
-    this.loadCSS(resolve(__dirname, 'scss', 'style.scss'));
+    this.loadStylesheet('scss/style.scss');
     powercord.api.labs.registerExperiment({
       id: 'pc-docs',
       name: 'Documentation',

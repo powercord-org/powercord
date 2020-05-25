@@ -30,6 +30,16 @@ const ErrorBoundary = require('./ErrorBoundary');
 const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
 const FormSection = AsyncComponent.from(getModuleByDisplayName('FormSection'));
 
+/**
+ * @typedef SettingsCategory
+ * @property {Function} connectStore
+ * @property {Function} get
+ * @property {Function} getKeys
+ * @property {Function} delete
+ * @property {Function} set
+ */
+
+
 module.exports = class SettingsAPI extends API {
   constructor () {
     super();
@@ -73,6 +83,11 @@ module.exports = class SettingsAPI extends API {
     this.tabs = this.tabs.filter(s => s.section !== section);
   }
 
+  /**
+   * Builds a SettingsCategory
+   * @param {String} category Settings category name
+   * @returns {SettingsCategory}
+   */
   buildCategoryObject (category) {
     return {
       connectStore: (component) => this._connectStores(category)(component),

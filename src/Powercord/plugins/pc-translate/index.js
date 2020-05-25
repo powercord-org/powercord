@@ -6,7 +6,6 @@ const { ContextMenu: { Submenu } } = require('powercord/components');
 
 const Settings = require('./components/Settings');
 const translate = require('google-translate-api');
-const { resolve } = require('path');
 
 module.exports = class Translate extends Plugin {
   async startPlugin () {
@@ -25,7 +24,7 @@ module.exports = class Translate extends Plugin {
     Object.keys(this.messageClasses)
       .forEach(key => this.messageClasses[key] = `.${this.messageClasses[key].split(' ')[0]}`);
 
-    this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.loadStylesheet('style.scss');
     this.registerSettings('pc-translate', 'Translate', props => React.createElement(Settings, {
       ...props,
       main: this

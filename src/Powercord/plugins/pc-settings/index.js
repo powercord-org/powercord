@@ -1,4 +1,3 @@
-const { resolve } = require('path');
 const { Plugin } = require('powercord/entities');
 const { WEBSITE } = require('powercord/constants');
 const { inject, uninject } = require('powercord/injector');
@@ -10,8 +9,7 @@ const Labs = require('./components/Labs.jsx');
 module.exports = class Settings extends Plugin {
   startPlugin () {
     this.registerSettings('pc-general', () => Messages.POWERCORD_GENERAL_SETTINGS, powercord.settings.connectStore(GeneralSettings), false);
-
-    this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.loadStylesheet('style.scss');
     this.patchSettingsComponent();
     this.patchExperiments();
 

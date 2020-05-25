@@ -12,7 +12,7 @@ const AnnouncementContainer = require('./components/AnnouncementContainer');
 
 module.exports = class Notices extends Plugin {
   startPlugin () {
-    this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.loadStylesheet('style.scss');
     this._patchAnnouncements();
     this._patchToasts();
 

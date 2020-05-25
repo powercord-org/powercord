@@ -4,7 +4,6 @@ const { open: openModal } = require('powercord/modal');
 const { getOwnerInstance, waitFor } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { React, getModule, getModuleByDisplayName, spotify } = require('powercord/webpack');
-const { resolve } = require('path');
 
 const Settings = require('./Settings');
 
@@ -19,7 +18,7 @@ module.exports = class Spotify extends Plugin {
   }
 
   async startPlugin () {
-    this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.loadStylesheet('style.scss');
     this.containerClasses = {
       ...await getModule([ 'colorStandard' ]),
       ...await getModule([ 'button', 'lookFilled' ]),
