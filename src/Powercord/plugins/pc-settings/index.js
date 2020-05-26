@@ -9,7 +9,7 @@ const Labs = require('./components/Labs.jsx');
 module.exports = class Settings extends Plugin {
   startPlugin () {
     this.registerSettings('pc-general', () => Messages.POWERCORD_GENERAL_SETTINGS, powercord.settings.connectStore(GeneralSettings), false);
-    this.loadStylesheet('style.scss');
+    this.loadStylesheet('scss/style.scss');
     this.patchSettingsComponent();
     this.patchExperiments();
 

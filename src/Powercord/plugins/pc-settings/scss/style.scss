@@ -1,20 +1,80 @@
-/**
- * Powercord, a lightweight @discord client mod focused on simplicity and performance
- * Copyright (C) 2018-2020  aetheryx & Bowser65
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+@use 'keybinds';
+
+.powercord-account {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  > div {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &.linking {
+      justify-content: initial;
+
+      span > span > span {
+        background-color: var(--header-secondary);
+      }
+    }
+  }
+
+  &-list {
+    justify-content: space-between;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &-account {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+
+      img, svg {
+        width: 22px;
+        height: 22px;
+        margin-right: 10px;
+      }
+
+      &:first-child {
+        margin-top: 5px;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &-item {
+    margin-right: 25px;
+  }
+
+  span[class^='spinner-'] {
+    margin-right: 10px;
+  }
+}
+
+.powercord-passphrase {
+  &-modal div[class^='divider-'] {
+    display: none;
+  }
+
+  &-desc {
+    margin-top: 10px;
+    margin-bottom: 20px;
+
+    .space {
+      margin-top: 10px;
+    }
+  }
+}
+
 
 // Icon in user settings
 .powercord-pc-icon {
@@ -46,79 +106,83 @@
   }
 }
 
-div[class*='switchItem-'] label button {
-  display: inline;
-  margin-left: 10px;
-  min-height: 25px;
-  height: 25px;
-}
+.powercord-settings{
+  &-item {
+    &-title {
+      display: flex;
+      cursor: pointer;
+      align-items: center;
 
-.powercord-settings-item {
-  &-title {
-    display: flex;
-    cursor: pointer;
-    align-items: center;
+      svg {
+        width: 28px;
+        height: 28px;
+        transition: transform .3s;
+        margin-right: 15px;
 
-    svg {
-      width: 28px;
-      height: 28px;
-      transition: transform .3s;
-      margin-right: 15px;
+        + div > div[class*='modeDefault-'] {
+          cursor: pointer;
+        }
 
-      + div > div[class*='modeDefault-'] {
-        cursor: pointer;
+        &.opened {
+          transform: rotate(90deg);
+        }
       }
 
-      &.opened {
-        transform: rotate(90deg);
+      > div {
+        flex: 1;
       }
     }
 
-    > div {
-      flex: 1;
+    &-inner {
+      margin-top: 20px;
+    }
+
+    &.powercord-category &-inner {
+      margin-left: 12px;
+      border-left: 1px var(--background-modifier-accent) solid;
+      padding-left: 33px;
+    }
+
+    .description-3_Ncsb {
+      white-space: pre-line;
+      strong strong {
+        color: #f04747;
+      }
     }
   }
 
-  &-inner {
-    margin-top: 20px;
-  }
+  &-error {
+    h2 {
+      color: var(--header-primary);
+      margin-bottom: 20px;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
 
-  &.powercord-category &-inner {
-    margin-left: 12px;
-    border-left: 1px var(--background-modifier-accent) solid;
-    padding-left: 33px;
-  }
+    div {
+      margin-bottom: 10px;
+    }
 
-  .description-3_Ncsb {
-    white-space: pre-line;
-    strong strong {
-      color: #f04747;
+    code {
+      white-space: pre-wrap;
+      margin-bottom: 25px;
+      display: block;
+      padding: 0 20px;
     }
   }
 }
 
-.theme-light .powercord-pc-icon {
-  filter: brightness(0.6);
-}
-
-.powercord-settings-error {
-  h2 {
-    color: var(--header-primary);
-    margin-bottom: 20px;
-    font-size: 16px;
-    line-height: 20px;
-    font-weight: 600;
-    text-transform: uppercase;
+// Colors
+.theme-light {
+  .powercord-account {
+    img {
+      filter: brightness(0);
+    }
   }
 
-  div {
-    margin-bottom: 10px;
-  }
-
-  code {
-    white-space: pre-wrap;
-    margin-bottom: 25px;
-    display: block;
-    padding: 0 20px;
+  .powercord-pc-icon {
+    filter: brightness(0.6);
   }
 }

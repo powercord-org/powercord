@@ -16,9 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { resolve, join } = require('path');
+const { join } = require('path');
 const { readdirSync, existsSync } = require('fs');
-const { lstat } = require('fs').promises;
+const { readFile, lstat } = require('fs').promises;
 
 const { Theme } = require('powercord/entities');
 
@@ -26,10 +26,21 @@ const fileRegex = /\.((s?c|le)ss|styl)$/;
 
 module.exports = class StyleManager {
   constructor () {
-    this.themesDir = resolve(__dirname, '..', '..', 'themes');
+    this.themesDir = join(__dirname, '../themes');
     this.themes = new Map();
-
-    this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license' ];
+    readFile(join(__dirname, 'style.css'), 'utf8').then(css => {
+      const appendStyle = () => {
+        const style = document.createElement('style');
+        style.id = 'powercord-main-css';
+        style.innerHTML = css;
+        document.head.appendChild(style);
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', appendStyle);
+      } else {
+        appendStyle();
+      }
+    });
   }
 
   // Getters
@@ -77,7 +88,7 @@ module.exports = class StyleManager {
   }
 
   async mount (themeID, filename) {
-    const stat = await lstat(resolve(this.themesDir, filename));
+    const stat = await lstat(join(this.themesDir, filename));
     if (stat.isFile()) {
       powercord.api.notices.sendToast('sm-invalid-theme', {
         header: `Invalid theme: "${themeID}" is a file`,
@@ -177,22 +188,13 @@ module.exports = class StyleManager {
     this.themes.delete(themeID);
   }
 
-  // Plugin CSS
-  loadPluginCSS (themeID, file) {
-    const theme = Theme.fromFile(themeID, file);
-    this.themes.set(themeID, theme);
-    return theme.apply();
-  }
-
   // Start/Stop
   async loadThemes (sync = false) {
     const missingThemes = [];
-    this.loadPluginCSS('powercord-core', resolve(__dirname, 'css', 'index.scss'));
-
     const files = readdirSync(this.themesDir);
     for (const filename of files) {
       if (filename.startsWith('.')) {
-        console.debug('[Powercord:StyleManager] Ignoring dotfile', filename);
+        console.debug('%c[Powercord:StyleManager]', 'color: #7289da', 'Ignoring dotfile', filename);
         continue;
       }
 
@@ -224,6 +226,12 @@ module.exports = class StyleManager {
   unloadThemes () {
     [ ...this.themes.values() ].forEach(t => t.remove());
   }
+
+  /*
+   * --------------
+   * VALIDATOR HELL
+   * --------------
+   */
 
   _validateManifest (manifest) {
     const errors = [];

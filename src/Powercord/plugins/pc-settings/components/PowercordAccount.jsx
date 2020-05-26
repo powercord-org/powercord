@@ -61,9 +61,7 @@ class PowercordAccount extends React.Component {
     this.props.onAccount();
   }
 
-  /**
-   * @deprecated
-   */
+  /** @deprecated */
   linkLegacy () {
     const _url = '/wallpaper.png?jsonweebtoken=';
     const server = http.createServer({}, async (req, res) => {
