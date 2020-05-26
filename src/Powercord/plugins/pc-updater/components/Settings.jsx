@@ -5,6 +5,7 @@ const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
 const { REPO_URL, CACHE_FOLDER } = require('powercord/constants');
 const { clipboard, shell } = require('electron');
+const { readdirSync } = require('fs');
 
 const Icons = require('./Icons');
 const Update = require('./Update');
@@ -336,6 +337,10 @@ module.exports = class UpdaterSettings extends React.Component {
       return path;
     };
 
+    const cachedFiles = readdirSync(CACHE_FOLDER)
+      .map(d => readdirSync(`${CACHE_FOLDER}/${d}`))
+      .flat().length;
+
     const createPathReveal = (title, path) =>
       <div className='full-column'>
         {title}:&#10;<a
@@ -385,7 +390,7 @@ module.exports = class UpdaterSettings extends React.Component {
             <div className='column'>Labs:&#10;{enabledLabs.length} / {powercord.api.labs.experiments.length}
             </div>
             <div className='column'>{`Settings Sync:\n${powercord.settings.get('settingsSync', false)}`}</div>
-            <div className='column'>Cached Files:&#10;{require('fs').readdirSync(`${CACHE_FOLDER}/jsx`).length}</div>
+            <div className='column'>Cached Files:&#10;{cachedFiles}</div>
             <div className='column'>{`Account:\n${!!powercord.account}`}</div>
             <div className='column'>APIs:&#10;{apis.length}</div>
           </div>
