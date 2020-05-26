@@ -69,37 +69,21 @@ class PatchedBrowserWindow extends BrowserWindow {
   }
 }
 
-Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
+
+const electronExports = new Proxy(electron, {
+  get (target, prop) {
+    switch (prop) {
+      case 'BrowserWindow': return PatchedBrowserWindow;
+      default: return target[prop];
+    }
+  }
+});
 
 delete require.cache[electronPath].exports;
-require.cache[electronPath].exports = {
-  deprecate: electron.deprecate,
-  BrowserWindow: PatchedBrowserWindow
-};
+require.cache[electronPath].exports = electronExports;
 
-const failedExports = [];
-for (const prop in electron) {
-  if (prop === 'BrowserWindow') {
-    continue;
-  }
-
-  try {
-    // noinspection JSUnfilteredForInLoop
-    Object.defineProperty(require.cache[electronPath].exports, prop, {
-      get () {
-        // noinspection JSUnfilteredForInLoop
-        return electron[prop];
-      }
-    });
-  } catch (_) {
-    // noinspection JSUnfilteredForInLoop
-    failedExports.push(prop);
-  }
-}
 
 app.once('ready', () => {
-  require.cache[electronPath].exports.BrowserWindow = PatchedBrowserWindow;
-
   // headers must die
   session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
     /*
@@ -131,10 +115,6 @@ app.once('ready', () => {
       done({});
     }
   });
-
-  for (const prop of failedExports) {
-    require.cache[electronPath].exports[prop] = electron[prop];
-  }
 });
 
 (async () => {
