@@ -91,6 +91,18 @@ describe('SCSS Compilation', () => {
       const compiler = new ScssCompiler(getPath('imports_css_noext'));
       return expect(compiler.compile()).resolves.toEqual(expected);
     });
+
+    it('imports _index.scss when importing directory', () => {
+      expect.assertions(1);
+      const compiler = new ScssCompiler(getPath('imports_index'));
+      return expect(compiler.compile()).resolves.toEqual(expected);
+    });
+
+    it('does not import index.scss', () => {
+      expect.assertions(1);
+      const compiler = new ScssCompiler(getPath('imports_index_invalid'));
+      return expect(compiler.compile()).rejects.toThrow('Unresolved import: failed to locate "folder"');
+    });
   });
 
   it('makes use of cache', async () => {
