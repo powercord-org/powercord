@@ -19,7 +19,7 @@
 /* global appSettings */
 const Module = require('module');
 const { join, dirname, resolve } = require('path');
-const { existsSync, unlinkSync } = require('fs');
+const { existsSync, unlinkSync, writeFileSync } = require('fs');
 const electron = require('electron');
 const { BrowserWindow, app, session } = electron;
 
@@ -27,6 +27,25 @@ const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
 console.log('Hello from Powercord!');
+
+/**
+ * Glasscord compatibility fix for legacy installs
+ * This is a temporary fix and will be removed on July 1st, 2020.
+ * Some cases might require just re-plugging Powercord, this isn't a perfect solution
+ * @see https://github.com/powercord-org/powercord/issues/316
+ */
+const _pkgFile = join(dirname(require.main.filename), 'package.json');
+const _pkg = require(_pkgFile);
+if (!_pkg.name) {
+  try {
+    writeFileSync(_pkgFile, {
+      ..._pkg,
+      name: 'discord'
+    });
+  } catch (e) {
+    // Most likely a perm issue. Let's fail silently on that one
+  }
+}
 
 let settings;
 try {
