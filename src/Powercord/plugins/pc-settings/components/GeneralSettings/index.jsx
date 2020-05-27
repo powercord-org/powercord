@@ -172,8 +172,7 @@ module.exports = class GeneralSettings extends React.Component {
 
   clearPowercordCache () {
     this.setState({ powercordCleared: true });
-    // noinspection JSDeprecatedSymbols
-    rmdirRf(CACHE_FOLDER).then(() => require.extensions['.jsx'].ensureFolder());
+    rmdirRf(CACHE_FOLDER);
     setTimeout(() => {
       this.setState({ powercordCleared: false });
     }, 2500);

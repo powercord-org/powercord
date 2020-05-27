@@ -316,7 +316,7 @@ module.exports = class UpdaterSettings extends React.Component {
   // --- DEBUG STUFF (Intentionally left english-only)
   renderDebugInfo (moment) {
     const { getRegisteredExperiments, getExperimentOverrides } = getModule([ 'initialize', 'getExperimentOverrides' ], false);
-    const { apiManager: { apis }, api: { commands: { commands }, settings: { store: { settings } } } } = powercord;
+    const { apiManager: { apis }, api: { commands: { commands }, settings: { store: settingsStore } } } = powercord;
     const superProperties = getModule([ 'getSuperPropertiesBase64' ], false).getSuperProperties();
     const plugins = powercord.pluginManager.getPlugins().filter(plugin =>
       !powercord.pluginManager.get(plugin).isInternal && powercord.pluginManager.isEnabled(plugin)
@@ -380,7 +380,7 @@ module.exports = class UpdaterSettings extends React.Component {
           <b>Powercord:</b>
           <div className='row'>
             <div className='column'>Commands:&#10;{commands.length}</div>
-            <div className='column'>Settings:&#10;{Object.keys(settings).length}</div>
+            <div className='column'>Settings:&#10;{Object.keys(settingsStore.getAllSettings()).length}</div>
             <div className='column'>Plugins:&#10;{powercord.pluginManager.getPlugins()
               .filter(plugin => powercord.pluginManager.isEnabled(plugin)).length} / {powercord.pluginManager.plugins.size}
             </div>

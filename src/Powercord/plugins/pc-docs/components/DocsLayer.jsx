@@ -1,76 +1,9 @@
-const { React, Flux, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
-const { AsyncComponent, PopoutWindow, Spinner, Clickable, Tooltip, Icons: { ExternalLink, Pin, Unpin, Close } } = require('powercord/components');
+const { React, Flux, getModule } = require('powercord/webpack');
+const { PopoutWindow, Spinner } = require('powercord/components');
 const { WEBSITE } = require('powercord/constants');
 const { get } = require('powercord/http');
-
-const { ErrorBoundary } = powercord.api.settings;
-const SettingsView = AsyncComponent.from((async () => {
-  const StandardSidebarView = await getModuleByDisplayName('StandardSidebarView');
-  const SettingsView = await getModuleByDisplayName('SettingsView');
-
-  class DocsSidebarView extends StandardSidebarView {
-    renderTools () {
-      if (this.props.popout) {
-        return null;
-      }
-      const res = super.renderTools();
-      res.props.children.props.children = [
-        res.props.children.props.children,
-        <Tooltip text={Messages.POPOUT_PLAYER} position='bottom'>
-          <Clickable
-            onClick={this.props.onPopout}
-            className='powercord-docs-button'
-          >
-            <ExternalLink/>
-          </Clickable>
-        </Tooltip>
-      ];
-      return res;
-    }
-  }
-
-  class DocsSettingsView extends SettingsView {
-    render () {
-      const res = super.render();
-      if (!res) {
-        return null;
-      }
-      res.props.popout = this.props.popout;
-      res.props.onPopout = this.props.onPopout;
-      res.type = DocsSidebarView;
-      if (this.props.popout) {
-        return (
-          <>
-            <div className='powercord-documentation-titlebar'>
-              <Tooltip
-                text={this.props.windowOnTop ? Messages.POPOUT_REMOVE_FROM_TOP : Messages.POPOUT_STAY_ON_TOP}
-                position='left'
-              >
-                <Clickable
-                  onClick={() => getModule([ 'setAlwaysOnTop', 'open' ], false)
-                    .setAlwaysOnTop('DISCORD_POWERCORD_DOCUMENTATION', !this.props.windowOnTop)}
-                  className='button'
-                >
-                  {this.props.windowOnTop ? <Unpin/> : <Pin/>}
-                </Clickable>
-              </Tooltip>
-              <Tooltip text={Messages.CLOSE_WINDOW} position='left'>
-                <Clickable onClick={() => this.props.guestWindow.close()} className='button'>
-                  <Close/>
-                </Clickable>
-              </Tooltip>
-            </div>
-            {res}
-          </>
-        );
-      }
-      return res;
-    }
-  }
-
-  return DocsSettingsView;
-})());
 const DocPage = require('./DocPage');
+const SettingsView = require('./SettingsView');
 
 let sectionsCache = [
   {
@@ -103,9 +36,9 @@ class DocsLayer extends React.Component {
         ...section.docs.map(doc => ({
           section: `${section.id}/${doc.id}`,
           label: doc.name,
-          element: () => <ErrorBoundary>
+          element: () => (
             <DocPage category={section.id} doc={doc.id} setSection={section => this.setState({ section })}/>
-          </ErrorBoundary>
+          )
         }))
       );
     });
@@ -116,8 +49,8 @@ class DocsLayer extends React.Component {
     });
 
     if (this.props.popout) {
-      const styleMain = document.querySelector('#powercord-css-pc-docs').outerHTML;
-      const styleCode = document.querySelector('#powercord-css-pc-codeblocks').outerHTML;
+      const styleMain = document.querySelector('style[id^=style-pc-docs').outerHTML;
+      const styleCode = document.querySelector('style[id^=style-pc-codeblocks').outerHTML;
       this.props.guestWindow.document.head.innerHTML += styleMain;
       this.props.guestWindow.document.head.innerHTML += styleCode;
     }

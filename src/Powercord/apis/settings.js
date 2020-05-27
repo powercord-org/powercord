@@ -17,40 +17,109 @@
  */
 
 const { randomBytes, scryptSync, createCipheriv, createDecipheriv } = require('crypto');
-const { React, Flux, getModuleByDisplayName } = require('powercord/webpack');
-const { AsyncComponent } = require('powercord/components');
+const { React, Flux } = require('powercord/webpack');
 const { WEBSITE } = require('powercord/constants');
 const { get, put } = require('powercord/http');
 const { API } = require('powercord/entities');
 
-const store = require('./store');
-const actions = require('./store/actions');
-
-const ErrorBoundary = require('./ErrorBoundary');
-const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
-const FormSection = AsyncComponent.from(getModuleByDisplayName('FormSection'));
+const store = require('./settingsStore/store');
+const actions = require('./settingsStore/actions');
 
 /**
  * @typedef SettingsCategory
- * @property {Function} connectStore
- * @property {Function} get
- * @property {Function} getKeys
- * @property {Function} delete
- * @property {Function} set
+ * @property {Function} connectStore Connects a component to the settings store
+ * @property {Function(String, String): String} get Gets a setting, or fallbacks to default value
+ * @property {Function(): String[]} getKeys Get all settings key
+ * @property {Function(String): void} delete Deletes a setting
+ * @property {Function(String, String): void} set Sets a setting
  */
 
+/**
+ * @typedef SettingsTab
+ * @property {String} category Settings category. Most of the time, you want this to be the entity ID
+ * @property {String|function(): String} label Settings tab label
+ * @property {function(): React.ReactNode} render Render method
+ * @property {undefined} settings Use it and you'll be fined 69 cookies
+ */
 
-module.exports = class SettingsAPI extends API {
+/**
+ * Powercord Settings API
+ * @property {Flux.Store} store Flux store
+ * @property {Object.<String, SettingsTab>} tabs Settings tab
+ */
+class SettingsAPI extends API {
   constructor () {
     super();
 
-    this.ErrorBoundary = ErrorBoundary;
-    this.actions = actions;
     this.store = store;
-    this.tabs = [];
+    this.tabs = {};
   }
 
-  // Classic stuff
+  /**
+   * Registers a settings tab
+   * @param {String} tabId Settings tab ID
+   * @param {SettingsTab} props Props of your settings tab
+   */
+  registerSettings (tabId, props) {
+    if (this.tabs[tabId]) {
+      throw new Error(`Settings tab ${tabId} is already registered!`);
+    }
+    this.tabs[tabId] = props;
+    this.tabs[tabId].render = this.connectStores(props.category)(props.render);
+  }
+
+  /**
+   * Unregisters a settings tab
+   * @param {String} tabId Settings tab ID to unregister
+   */
+  unregisterSettings (tabId) {
+    if (this.tabs[tabId]) {
+      delete this.tabs[tabId];
+    }
+  }
+
+  /**
+   * Builds a settings category that can be used by a plugin
+   * @param {String} category Settings category name
+   * @returns {SettingsCategory}
+   */
+  buildCategoryObject (category) {
+    return {
+      connectStore: (component) => this.connectStores(category)(component),
+      getKeys: () => store.getSettingsKeys(category),
+      get: (setting, defaultValue) => store.getSetting(category, setting, defaultValue),
+      set: (setting, newValue) => {
+        if (newValue === void 0) {
+          return actions.toggleSetting(category, setting);
+        }
+        actions.updateSetting(category, setting, newValue);
+      },
+      delete: (setting) => {
+        actions.deleteSetting(category, setting);
+      }
+    };
+  }
+
+  /**
+   * Creates a flux decorator for a given settings category
+   * @param {String} category Settings category
+   * @returns {Function}
+   */
+  connectStores (category) {
+    return Flux.connectStores([ this.store ], () => this._fluxProps(category));
+  }
+
+  /** @private */
+  _fluxProps (category) {
+    return {
+      settings: store.getSettings(category),
+      getSetting: (setting, defaultValue) => store.getSetting(category, setting, defaultValue),
+      updateSetting: (setting, value) => actions.updateSetting(category, setting, value),
+      toggleSetting: (setting, defaultValue) => actions.toggleSetting(category, setting, defaultValue)
+    };
+  }
+
+  // Stuff to rewrite
   async startAPI () {
     // defer download a bit
     setTimeout(this.download.bind(this), 1500);
@@ -62,87 +131,19 @@ module.exports = class SettingsAPI extends API {
     await this.upload();
   }
 
-  // Categories
-  registerTab (pluginID, section, displayName, render, connectStore = true) {
-    if (!section.match(/^[a-z0-9_-]+$/i)) {
-      return this.error(`Tried to register a settings panel with an invalid ID! You can only use letters, numbers, dashes and underscores. (ID: ${section})`);
-    }
-
-    if (this.tabs.find(s => s.section === section)) {
-      return this.error(`Key ${section} is already used by another plugin!`);
-    }
-
-    this.tabs.push({
-      section,
-      label: displayName,
-      element: this._renderSettingsPanel.bind(this, displayName, connectStore ? this._connectStores(pluginID)(render) : render)
-    });
-  }
-
-  unregisterTab (section) {
-    this.tabs = this.tabs.filter(s => s.section !== section);
-  }
-
-  /**
-   * Builds a SettingsCategory
-   * @param {String} category Settings category name
-   * @returns {SettingsCategory}
-   */
-  buildCategoryObject (category) {
-    return {
-      connectStore: (component) => this._connectStores(category)(component),
-      get: (setting, defaultValue) => powercord.api.settings.store.getSetting(category, setting, defaultValue),
-      getKeys: () => powercord.api.settings.store.getSettingsKeys(category),
-      delete: (setting) => powercord.api.settings.actions.deleteSetting(category, setting),
-      set: (setting, newValue) => {
-        if (newValue === void 0) {
-          return powercord.api.settings.actions.toggleSetting(category, setting);
-        }
-        powercord.api.settings.actions.updateSetting(category, setting, newValue);
-      }
-    };
-  }
-
-  // React + Flux
-  _connectStores (category) {
-    return Flux.connectStores([ this.store ], this._fluxProps.bind(this, category));
-  }
-
-  _fluxProps (category) {
-    return {
-      settings: this.store.getSettings(category),
-      getSetting: (setting, defaultValue) => this.store.getSetting(category, setting, defaultValue),
-      updateSetting: (setting, value) => this.actions.updateSetting(category, setting, value),
-      toggleSetting: (setting, defaultValue) => this.actions.toggleSetting(category, setting, defaultValue)
-    };
-  }
-
-  _renderSettingsPanel (title, contents) {
-    let panelContents;
-    try {
-      panelContents = React.createElement(contents);
-    } catch (e) {
-      this.error('Failed to render settings panel, check if your function returns a valid React component!');
-      panelContents = null;
-    }
-
-    const h2 = React.createElement(FormTitle, { tag: 'h2' }, typeof title === 'function' ? title() : title);
-    return React.createElement(ErrorBoundary, null, React.createElement(FormSection, {}, h2, panelContents));
-  }
-
-  // @todo: Rewrite this pile of garbage
+  /** @deprecated */
   async upload () {
     if (!powercord.account || !this.store.getSetting('pc-general', 'settingsSync', false)) {
       return;
     }
 
-    const passphrase = this.store.getSetting('pc-general', 'passphrase', '');
-    const token = this.store.getSetting('pc-general', 'powercordToken');
-    const baseUrl = this.store.getSetting('pc-general', 'backendURL', WEBSITE);
+    const passphrase = store.getSetting('pc-general', 'passphrase', '');
+    const token = store.getSetting('pc-general', 'powercordToken');
+    const baseUrl = store.getSetting('pc-general', 'backendURL', WEBSITE);
 
     let isEncrypted = false;
     const payloads = {
-      powercord: JSON.stringify(this.store.settings),
+      powercord: JSON.stringify(store.getAllSettings()),
       discord: JSON.stringify(this.localStorage.items)
     };
 
@@ -173,14 +174,15 @@ module.exports = class SettingsAPI extends API {
       });
   }
 
+  /** @deprecated */
   async download () {
-    if (!powercord.account || !this.store.getSetting('pc-general', 'settingsSync', false)) {
+    if (!powercord.account || !store.getSetting('pc-general', 'settingsSync', false)) {
       return;
     }
 
-    const passphrase = this.store.getSetting('pc-general', 'passphrase', '');
-    const token = this.store.getSetting('pc-general', 'powercordToken');
-    const baseUrl = this.store.getSetting('pc-general', 'backendURL', WEBSITE);
+    const passphrase = store.getSetting('pc-general', 'passphrase', '');
+    const token = store.getSetting('pc-general', 'powercordToken');
+    const baseUrl = store.getSetting('pc-general', 'backendURL', WEBSITE);
     const response = (await get(`${baseUrl}/api/v2/users/@me/settings`)
       .set('Authorization', token)
       .then(r => r.body));
@@ -217,6 +219,7 @@ module.exports = class SettingsAPI extends API {
     }
   }
 
+  /** @deprecated */
   get localStorage () {
     const { localStorage } = window;
     const blacklist = [
@@ -234,4 +237,6 @@ module.exports = class SettingsAPI extends API {
 
     return { items };
   }
-};
+}
+
+module.exports = SettingsAPI;

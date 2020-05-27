@@ -1,15 +1,26 @@
-const { Plugin } = require('powercord/entities');
-const { WEBSITE } = require('powercord/constants');
-const { inject, uninject } = require('powercord/injector');
 const { React, getModuleByDisplayName, getModule, i18n: { Messages } } = require('powercord/webpack');
+const { AsyncComponent } = require('powercord/components');
+const { inject, uninject } = require('powercord/injector');
+const { WEBSITE } = require('powercord/constants');
+const { Plugin } = require('powercord/entities');
 
-const GeneralSettings = require('./components/GeneralSettings.jsx');
-const Labs = require('./components/Labs.jsx');
+const ErrorBoundary = require('./components/ErrorBoundary');
+const GeneralSettings = require('./components/GeneralSettings');
+const Labs = require('./components/Labs');
+
+const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
+const FormSection = AsyncComponent.from(getModuleByDisplayName('FormSection'));
 
 module.exports = class Settings extends Plugin {
   startPlugin () {
-    this.registerSettings('pc-general', () => Messages.POWERCORD_GENERAL_SETTINGS, powercord.settings.connectStore(GeneralSettings), false);
     this.loadStylesheet('scss/style.scss');
+
+    powercord.api.settings.registerSettings('pc-general', {
+      category: 'pc-general',
+      label: () => Messages.POWERCORD_GENERAL_SETTINGS,
+      render: GeneralSettings
+    });
+
     this.patchSettingsComponent();
     this.patchExperiments();
 
@@ -20,6 +31,7 @@ module.exports = class Settings extends Plugin {
   }
 
   async pluginWillUnload () {
+    powercord.api.settings.unregisterSettings('pc-general');
     uninject('pc-settings-items');
     uninject('pc-settings-actions');
     uninject('pc-settings-errorHandler');
@@ -50,20 +62,19 @@ module.exports = class Settings extends Plugin {
             {
               section: 'pc-labs',
               label: 'Powercord Labs',
-              element: powercord.api.settings._renderSettingsPanel.bind(powercord.api.settings, 'Powercord Labs', Labs)
+              element: () => this._renderWrapper('Powercord Labs', Labs)
             }
           );
         }
+
+        const settingsSections = Object.keys(powercord.api.settings.tabs).map(s => this._makeSection(s));
         sections.splice(
           sections.indexOf(changelog), 0,
           {
             section: 'HEADER',
             label: 'Powercord'
           },
-          ...powercord.api.settings.tabs.map(t => ({
-            ...t,
-            label: typeof t.label === 'function' ? t.label() : t.label
-          })),
+          ...settingsSections,
           { section: 'DIVIDER' }
         );
       }
@@ -109,6 +120,25 @@ module.exports = class Settings extends Plugin {
 
       return sections;
     });
+  }
+
+  _makeSection (tabId) {
+    const props = powercord.api.settings.tabs[tabId];
+    const label = typeof props.label === 'function' ? props.label() : props.label;
+    return {
+      label,
+      section: tabId,
+      element: () => this._renderWrapper(label, props.render)
+    };
+  }
+
+  _renderWrapper (label, Component) {
+    return React.createElement(ErrorBoundary, null,
+      React.createElement(FormSection, {},
+        React.createElement(FormTitle, { tag: 'h2' }, label),
+        React.createElement(Component)
+      )
+    );
   }
 
   async patchSettingsContextMenu () {
