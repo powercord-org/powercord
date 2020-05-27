@@ -17,7 +17,7 @@
  */
 
 const { randomBytes, scryptSync, createCipheriv, createDecipheriv } = require('crypto');
-const { React, Flux } = require('powercord/webpack');
+const { Flux } = require('powercord/webpack');
 const { WEBSITE } = require('powercord/constants');
 const { get, put } = require('powercord/http');
 const { API } = require('powercord/entities');
