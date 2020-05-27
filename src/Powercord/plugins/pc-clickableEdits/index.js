@@ -29,11 +29,17 @@ module.exports = class ClickableEdits extends Plugin {
       await sleep(1000);
     }
 
-    this.registerSettings('pc-clickableEdits', 'Clickable Edits', Settings);
+    powercord.api.settings.registerSettings('pc-clickableEdits', {
+      category: this.entityID,
+      label: 'Clickable Edits',
+      render: Settings
+    });
+
     this.patchMessageContent();
   }
 
   pluginWillUnload () {
+    powercord.api.settings.unregisterSettings('pc-clickableEdits');
     uninject('clickableEdits-message');
     forceUpdateElement(this.classes.messages, true);
   }

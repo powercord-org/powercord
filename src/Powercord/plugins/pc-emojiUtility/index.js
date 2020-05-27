@@ -538,7 +538,11 @@ module.exports = class EmojiUtility extends Plugin {
       return args;
     });
 
-    this.registerSettings('pc-emojiUtility', 'Emote Utility', Settings);
+    powercord.api.settings.registerSettings('pc-emojiUtility', {
+      category: this.entityID,
+      label: 'Emote Utility',
+      render: Settings
+    });
 
     this.registerCommand(
       'findemote',
@@ -761,6 +765,7 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   pluginWillUnload () {
+    powercord.api.settings.unregisterSettings('pc-emojiUtility');
     uninject('pc-emojiUtility-emojiContext');
     uninject('pc-emojiUtility-reactionContext');
     uninject('pc-emojiUtility-hideEmojisPicker');

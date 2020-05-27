@@ -69,8 +69,16 @@ module.exports = class ModuleManager extends Plugin {
     this._loadQuickCSS();
     this._injectSnippets();
     this.loadStylesheet('scss/style.scss');
-    this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, Plugins);
-    this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, Themes);
+    powercord.api.settings.registerSettings('pc-moduleManager-plugins', {
+      category: this.entityID,
+      label: () => Messages.POWERCORD_PLUGINS,
+      render: Plugins
+    });
+    powercord.api.settings.registerSettings('pc-moduleManager-themes', {
+      category: this.entityID,
+      label: () => Messages.POWERCORD_THEMES,
+      render: Themes
+    });
 
     if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-deeplinks')) {
       deeplinks();
@@ -85,6 +93,8 @@ module.exports = class ModuleManager extends Plugin {
 
   pluginWillUnload () {
     document.querySelector('#powercord-quickcss').remove();
+    powercord.api.settings.unregisterSettings('pc-moduleManager-plugins');
+    powercord.api.settings.unregisterSettings('pc-moduleManager-themes');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-store');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-themes2');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-deeplinks');

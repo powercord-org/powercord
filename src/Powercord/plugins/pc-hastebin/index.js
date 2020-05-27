@@ -6,7 +6,11 @@ const Settings = require('./Settings.jsx');
 
 module.exports = class Hastebin extends Plugin {
   startPlugin () {
-    this.registerSettings('pc-hastebin', 'Hastebin', Settings);
+    powercord.api.settings.registerSettings('pc-hastebin', {
+      category: this.entityID,
+      label: 'Hastebin',
+      render: Settings
+    });
 
     const domain = this.settings.get('domain', 'https://haste.powercord.dev');
     this.registerCommand(
@@ -45,6 +49,10 @@ module.exports = class Hastebin extends Plugin {
         }
       }
     );
+  }
+
+  pluginWillUnload () {
+    powercord.api.settings.unregisterSettings('pc-hastebin');
   }
 
   parseArguments (args) {

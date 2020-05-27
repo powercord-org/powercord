@@ -41,12 +41,15 @@ module.exports = class Spotify extends Plugin {
       }
     });
 
-    this.registerSettings('pc-spotify', 'Spotify', (props) =>
-      React.createElement(Settings, {
-        patch: this._patchAutoPause.bind(this),
-        ...props
-      })
-    );
+    powercord.api.settings.registerSettings('pc-spotify', {
+      category: this.entityID,
+      label: 'Spotify',
+      render: (props) =>
+        React.createElement(Settings, {
+          patch: this._patchAutoPause.bind(this),
+          ...props
+        })
+    });
 
     Object.values(commands).forEach(command =>
       this.registerCommand(command.command, command.aliases || [], command.description, command.usage, command.func.bind(null, this.SpotifyPlayer))
@@ -55,6 +58,7 @@ module.exports = class Spotify extends Plugin {
 
   pluginWillUnload () {
     this._patchAutoPause(true);
+    powercord.api.settings.unregisterSettings('pc-spotify');
     uninject('pc-spotify-modal');
     uninject('pc-spotify-listeningAlong');
     uninject('pc-spotify-update');
