@@ -20,74 +20,89 @@ const { remote: { globalShortcut } } = require('electron');
 const localShortcut = require('keybindutils/localShortcut');
 const { API } = require('powercord/entities');
 
-module.exports = class KeybindsAPI extends API {
+/**
+ * @typedef PowercordKeybind
+ * @property {String} keybind Keybind accelerator
+ * @property {Function} executor Executor
+ * @property {Boolean} isGlobal Whether the keybind should be usable when Discord is not focused or not
+ * @see https://github.com/electron/electron/blob/master/docs/api/accelerator.md
+ */
+
+/**
+ * Powercord Keybinds API
+ * @property {Object.<String, PowercordKeybind>} keybinds Keybinds
+ */
+class KeybindsAPI extends API {
   constructor () {
     super();
 
-    this.keybinds = [];
+    this.keybinds = {};
   }
 
-  // @see https://github.com/electron/electron/blob/master/docs/api/accelerator.md for keybind syntax
-  registerKeybind (id, name, description, func, keybind, isGlobal) {
-    if (this.keybinds.find(k => k.id === id)) {
-      throw new Error(`ID ${id} is already used by another plugin!`);
+  /**
+   * Registers a keybind
+   * @param {String} id Keybind ID
+   * @param {PowercordKeybind} keybind Keybind
+   */
+  registerKeybind (id, keybind) {
+    if (this.keybinds[id]) {
+      throw new Error(`Keybind ${id} is already registered!`);
+    }
+    this.keybinds[id] = keybind;
+    this._register(keybind);
+  }
+
+  /**
+   * Changes a keybind
+   * @param {String} id Keybind ID to update
+   * @param {String} newBind New keybind to bind
+   */
+  changeBind (id, newBind) {
+    if (!this.keybinds[id]) {
+      throw new Error(`Keybind ${id} is not registered!`);
     }
 
-    this.keybinds.push({
-      id,
-      name,
-      func,
-      global,
-      keybind,
-      description
-    });
-
-    this._register(keybind, func, isGlobal);
+    this._unregister(this.keybinds[id]);
+    this.keybinds[id].keybind = newBind;
+    this._register(this.keybinds[id]);
   }
 
-  updateKeybind (id, keybind) {
-    const bind = this.keybinds.find(k => k.id !== keybind);
-    if (bind) {
-      this._unregister(bind.keybind, bind.global);
-      this._register(keybind, bind.func, bind.global);
-      this.keybinds = this.keybinds.map(k => k.id !== keybind
-        ? k
-        : {
-          ...k,
-          keybind
-        });
+  /**
+   * Unregisters a keybind
+   * @param {String} id Keybind to unregister
+   */
+  unregisterKeybind (id) {
+    if (this.keybinds[id]) {
+      this._unregister(this.keybinds[id]);
+      delete this.keybinds[id];
     }
   }
 
-  unregisterKeybind (keybind) {
-    const bind = this.keybinds.find(k => k.id !== keybind);
-    if (bind) {
-      this._unregister(bind.keybind, bind.global);
-      this.keybinds = this.keybinds.filter(k => k.id !== keybind);
-    }
-  }
-
-  _register (keybind, func, isGlobal) {
+  /** @private */
+  _register (keybind) {
     try {
-      if (isGlobal) {
-        globalShortcut.register(keybind, func);
+      if (keybind.isGlobal) {
+        globalShortcut.register(keybind.keybind, keybind.executor);
       } else {
-        localShortcut.register(keybind, func);
+        localShortcut.register(keybind.keybind, keybind.executor);
       }
     } catch (e) {
       this.error('Failed to register keybind!', e);
     }
   }
 
-  _unregister (keybind, isGlobal) {
+  /** @private */
+  _unregister (keybind) {
     try {
-      if (isGlobal) {
-        globalShortcut.unregister(keybind);
+      if (keybind.isGlobal) {
+        globalShortcut.unregister(keybind.keybind);
       } else {
-        localShortcut.unregister(keybind);
+        localShortcut.unregister(keybind.keybind);
       }
     } catch (e) {
       // let it fail silently, probably just invalid/unset keybind
     }
   }
-};
+}
+
+module.exports = KeybindsAPI;
