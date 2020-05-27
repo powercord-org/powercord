@@ -1,18 +1,20 @@
 const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
 const { React, getModule, getAllModules, getModuleByDisplayName } = require('powercord/webpack');
-const { findInTree, getOwnerInstance, waitFor } = require('powercord/util');
+const { findInTree, findInReactTree, getOwnerInstance, waitFor } = require('powercord/util');
 
 module.exports = class Router extends Plugin {
   async startPlugin () {
     await this._injectRouter();
     this._listener = this._rerender.bind(this);
-    powercord.api.router.addChangeListener(this._listener);
+    powercord.api.router.on('routeAdded', this._listener);
+    powercord.api.router.on('routeRemoved', this._listener);
     setImmediate(() => powercord.api.router.restorePrevious());
   }
 
   pluginWillUnload () {
-    powercord.api.router.removeChangeListener(this._listener);
+    powercord.api.router.off('routeAdded', this._listener);
+    powercord.api.router.off('routeRemoved', this._listener);
     uninject('pc-router-route-side');
     uninject('pc-router-route');
     uninject('pc-router-router');
@@ -25,11 +27,12 @@ module.exports = class Router extends Plugin {
     const { container } = await getModule([ 'container', 'downloadProgressCircle' ]);
     const RouteRenderer = getOwnerInstance(await waitFor(`.${container.split(' ')[0]}`));
     inject('pc-router-route', RouteRenderer.__proto__, 'render', (args, res) => {
-      res.props.children[1].props.children[2].props.children[1].props.children.push(
+      const { children: routes } = findInReactTree(res, m => Array.isArray(m.children) && m.children.length > 5);
+      routes.push(
         ...powercord.api.router.routes.map(route => ({
-          ...res.props.children[1].props.children[2].props.children[1].props.children[0],
+          ...routes[0],
           props: {
-            // @todo: Error boundary
+            // @todo: Error boundary (?)
             render: () => React.createElement(route.render),
             path: `/_powercord${route.path}`
           }

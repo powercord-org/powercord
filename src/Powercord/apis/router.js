@@ -1,13 +1,27 @@
 const { API } = require('powercord/entities');
 const { getModule } = require('powercord/webpack');
 
-module.exports = class RouterAPI extends API {
+/**
+ * @typedef PowercordRoute
+ * @property {String} path Route path
+ * @property {Boolean} noSidebar Whether the sidebar should be removed or not
+ * @property {function(): React.ReactNode} render Route renderer
+ */
+
+/**
+ * Powercord custom router API
+ * @property {PowercordRoute[]} routes Registered routes
+ */
+class RouterAPI extends API {
   constructor () {
     super();
+
     this.routes = [];
-    this.changeListeners = [];
   }
 
+  /**
+   * Restores previous navigation if necessary
+   */
   async restorePrevious () {
     const oldRoute = DiscordNative.globals.appSettings.get('_POWERCORD_ROUTE');
     if (oldRoute && this.routes.find(c => c.path === oldRoute.split('/_powercord')[1])) {
@@ -18,34 +32,30 @@ module.exports = class RouterAPI extends API {
     DiscordNative.globals.appSettings.save();
   }
 
-  registerRoute (path, render, noSidebar = false) {
-    if (this.routes.find(c => c.path === path)) {
-      return this.error(`Path ${path} is already registered by another plugin!`);
+  /**
+   * Registers a route
+   * @param {PowercordRoute} route Route to register
+   * @emits RouterAPI#routeAdded
+   */
+  registerRoute (route) {
+    if (this.routes.find(r => r.path === route.path)) {
+      throw new Error(`Route ${route.path} is already registered!`);
     }
-
-    this.routes.push({
-      path,
-      render,
-      noSidebar
-    });
-    this._change();
+    this.routes.push(route);
+    this.emit('routeAdded', route);
   }
 
-  unregisterRoute (path) {
-    this.routes = this.routes.filter(c => c.path !== path);
-    this._change();
+  /**
+   * Unregisters a route
+   * @param {String} path Route to unregister
+   * @emits RouterAPI#routeRemoved
+   */
+  unregisterScope (path) {
+    if (this.routes.find(r => r.path === path)) {
+      this.routes = this.routes.filter(r => r.path !== path);
+      this.emit('routeRemoved', path);
+    }
   }
+}
 
-  // @todo: eventify
-  addChangeListener (listener) {
-    this.changeListeners.push(listener);
-  }
-
-  removeChangeListener (listener) {
-    this.changeListeners = this.changeListeners.filter(l => l !== listener);
-  }
-
-  _change () {
-    this.changeListeners.forEach(fn => fn());
-  }
-};
+module.exports = RouterAPI;

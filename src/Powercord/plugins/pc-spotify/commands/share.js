@@ -6,8 +6,7 @@ module.exports = {
   command: 'share',
   description: 'Send specified or currently playing song to current channel',
   usage: '{c} {song name/artist}',
-
-  async func (SpotifyPlayer, query) {
+  async executor (SpotifyPlayer, query) {
     query = query.join(' ');
 
     if (query.length > 0) {

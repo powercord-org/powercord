@@ -8,7 +8,7 @@ module.exports = async function injectAutocomplete () {
   const ChannelAutocomplete = await getModuleByDisplayName('ChannelAutocomplete');
   inject('pc-commands-autocomplete', ChannelAutocomplete.prototype, 'render', function (_, res) {
     const { textValue } = this.props;
-    const currentCommandFilter = (command) => [ command.command, ...command.aliases ].some(commandName =>
+    const currentCommandFilter = (command) => [ command.command, ...(command.aliases || []) ].some(commandName =>
       textValue.startsWith(powercord.api.commands.prefix) &&
       (textValue.slice(powercord.api.commands.prefix.length).toLowerCase()).startsWith(commandName)
     );

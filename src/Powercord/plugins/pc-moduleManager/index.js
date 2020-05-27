@@ -80,13 +80,23 @@ module.exports = class ModuleManager extends Plugin {
 
     if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-store')) {
       this._injectCommunityContent();
-      this.registerRoute('/store/plugins', Store, true);
-      this.registerRoute('/store/themes', Store, true);
+      powercord.api.router.registerRoute({
+        path: '/store/plugins',
+        render: Store,
+        noSidebar: true
+      });
+      powercord.api.router.registerRoute({
+        path: '/store/themes',
+        render: Store,
+        noSidebar: true
+      });
     }
   }
 
   pluginWillUnload () {
     document.querySelector('#powercord-quickcss').remove();
+    powercord.api.router.unregisterRoute('/store/plugins');
+    powercord.api.router.unregisterRoute('/store/themes');
     powercord.api.settings.unregisterSettings('pc-moduleManager-plugins');
     powercord.api.settings.unregisterSettings('pc-moduleManager-themes');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-store');

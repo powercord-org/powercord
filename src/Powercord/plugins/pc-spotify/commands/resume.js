@@ -2,8 +2,7 @@ module.exports = {
   command: 'resume',
   description: 'Resume Spotify playback',
   usage: '{c}',
-
-  func (SpotifyPlayer) {
+  executor (SpotifyPlayer) {
     return SpotifyPlayer.play();
   }
 };

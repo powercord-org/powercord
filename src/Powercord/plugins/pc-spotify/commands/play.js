@@ -4,8 +4,7 @@ module.exports = {
   command: 'play',
   description: 'Play a Spotify URL',
   usage: '{c} <URL>',
-
-  async func (SpotifyPlayer, [ url ]) {
+  async executor (SpotifyPlayer, [ url ]) {
     if (!url) {
       const spotifyModals = document.querySelectorAll('.embedSpotify-tvxDCr');
       const spotifyModal = spotifyModals[spotifyModals.length - 1];

@@ -3,8 +3,7 @@ module.exports = {
   aliases: [ 'skip' ],
   description: 'Skip Spotify song',
   usage: '{c}',
-
-  func (SpotifyPlayer) {
+  executor (SpotifyPlayer) {
     return SpotifyPlayer.next();
   }
 };

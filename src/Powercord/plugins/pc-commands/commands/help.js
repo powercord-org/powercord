@@ -26,7 +26,7 @@ module.exports = {
         }
       };
     } else {
-      const command = powercord.api.commands.find(c => [ c.command, ...c.aliases ].includes(commandName));
+      const command = powercord.api.commands.find(c => [ c.command, ...(c.aliases || []) ].includes(commandName));
       if (!command) {
         result = `Command \`${commandName}\` not found.`;
       } else {

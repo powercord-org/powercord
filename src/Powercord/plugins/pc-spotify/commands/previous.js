@@ -3,8 +3,7 @@ module.exports = {
   aliases: [ 'prev' ],
   description: 'Go back one Spotify song',
   usage: '{c}',
-
-  func (SpotifyPlayer) {
+  executor (SpotifyPlayer) {
     return SpotifyPlayer.prev();
   }
 };
