@@ -20,21 +20,6 @@ class QuickCSS extends React.PureComponent {
     this._handleResizeMove = this._handleResizeMove.bind(this);
   }
 
-  componentDidMount () {
-    if (this.props.popout) {
-      /*
-       * Move required CSS to the child window
-       *
-       * WhY tHeMeS aRe NoT aPpLieD
-       * Because it is unnecessary code required (We'd need to move all the css, enable hot-reloading, ...)
-       * which would cause performance decrease and useless complexity of the source code for something that I'd
-       * not even qualify as a QoL feature.
-       */
-      const style = document.querySelector('#powercord-css-pc-moduleManager').outerHTML;
-      this.props.guestWindow.document.head.innerHTML += style;
-    }
-  }
-
   componentWillUnmount () { // Just to be sure
     window.removeEventListener('mousemove', this._handleResizeMove);
     window.removeEventListener('mouseup', this._handleResizeEnd);
@@ -74,7 +59,9 @@ class QuickCSS extends React.PureComponent {
                 </Tooltip>}
                 <Tooltip text={this.props.popout ? Messages.CLOSE_WINDOW : Messages.POPOUT_PLAYER} position='left'>
                   <Clickable
-                    onClick={() => this.props.popout ? this.props.guestWindow.close() : this.props.openPopout()}
+                    onClick={() => this.props.popout
+                      ? getModule([ 'setAlwaysOnTop', 'open' ], false).close('DISCORD_POWERCORD_QUICKCSS')
+                      : this.props.openPopout()}
                     className='button'
                   >
                     {this.props.popout ? <Close/> : <ExternalLink/>}

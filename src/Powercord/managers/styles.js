@@ -32,6 +32,7 @@ module.exports = class StyleManager {
       const appendStyle = () => {
         const style = document.createElement('style');
         style.id = 'powercord-main-css';
+        style.dataset.powercord = true;
         style.innerHTML = css;
         document.head.appendChild(style);
       };

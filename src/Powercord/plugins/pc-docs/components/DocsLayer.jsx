@@ -47,13 +47,6 @@ class DocsLayer extends React.Component {
       sections: sectionsCache,
       section: sectionsCache[1].section
     });
-
-    if (this.props.popout) {
-      const styleMain = document.querySelector('style[id^=style-pc-docs').outerHTML;
-      const styleCode = document.querySelector('style[id^=style-pc-codeblocks').outerHTML;
-      this.props.guestWindow.document.head.innerHTML += styleMain;
-      this.props.guestWindow.document.head.innerHTML += styleCode;
-    }
   }
 
   render () {

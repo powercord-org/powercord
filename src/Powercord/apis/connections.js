@@ -9,6 +9,14 @@ module.exports = class ConnectionsAPI extends API {
     this.connections = [];
   }
 
+  get map () {
+    return this.connections.map.bind(this.connections);
+  }
+
+  get filter () {
+    return this.connections.filter.bind(this.connections);
+  }
+
   registerConnection (connection) {
     if (this.get(connection.type)) {
       throw new Error('This type of connection already exists!');
@@ -26,6 +34,7 @@ module.exports = class ConnectionsAPI extends API {
     );
   }
 
+  // @todo: Move this to the plugin?
   async setVisibility (type, value) {
     if (!powercord.account) {
       return;
@@ -45,13 +54,5 @@ module.exports = class ConnectionsAPI extends API {
     }
 
     return connections[type] || null;
-  }
-
-  map (callback) {
-    return this.connections.map(callback);
-  }
-
-  filter (callback) {
-    return this.connections.filter(callback);
   }
 };

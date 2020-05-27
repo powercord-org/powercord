@@ -52,7 +52,10 @@ module.exports = AsyncComponent.from((async () => {
                 </Clickable>
               </Tooltip>
               <Tooltip text={Messages.CLOSE_WINDOW} position='left'>
-                <Clickable onClick={() => this.props.guestWindow.close()} className='button'>
+                <Clickable
+                  className='button'
+                  onClick={() => getModule([ 'setAlwaysOnTop', 'open' ], false).close('DISCORD_POWERCORD_DOCUMENTATION')}
+                >
                   <Close/>
                 </Clickable>
               </Tooltip>
