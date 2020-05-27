@@ -1,1 +1,27 @@
-{}
+{
+  "POWERCORD_ACCOUNT": "Account Powercord",
+  "POWERCORD_COMMAND_PREFIX": "Prefisso dei Comandi",
+  "POWERCORD_GENERAL_SETTINGS": "Settaggi Generali",
+  "POWERCORD_LINKING_ERRORED": "S'è verificato un errore. Controlla la console per vedere più dettagli, e [crea un report]({newIssueUrl}) nel caso accada di nuovo.",
+  "POWERCORD_LINKING_TIMED_OUT": "Flusso di collegamento fuori tempo :( Prova di nuovo a collegare...?",
+  "POWERCORD_LINKING_UNLINKED": "Non hai ancora collegato il tuo account.",
+  "POWERCORD_LINKING_WAITING": "Collegamento del tuo account in corso…",
+  "POWERCORD_LINK_NOW": "Collegalo ora",
+  "POWERCORD_PASSPHRASE": "Frase d'accesso",
+  "POWERCORD_REFRESH_ACCOUNTS": "Aggiorna Account",
+  "POWERCORD_SETTINGS_ADVANCED_DESC": "Non toccare impostazioni qui se non sai cosa stai facendo. Cose inaspettate possono accadere al tuo gatto.",
+  "POWERCORD_SETTINGS_DEBUG_LOGS": "Log di Debug",
+  "POWERCORD_SETTINGS_DEBUG_LOGS_DESC": "Salva i contenuti della console in un file. Utile per fare debug se Discord sta crashando inaspettatamente.",
+  "POWERCORD_SETTINGS_KEEP_TOKEN": "Mantieni il token memorizzato",
+  "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Impedisce a Discord di rimuovere il tuo token dal localStorage, riducendo i numeri di logout non voluti.",
+  "POWERCORD_SETTINGS_NO_CLYDE": "Eradica Clyde",
+  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Rimpiazza [Clyde]({discordiaUrl}) nei comandi Powercord con una gamma di avatar e nomi utente misti selezionati dagli sviluppatori di plug-in - ricade a \"Powercord\" come predefinito.",
+  "POWERCORD_SETTINGS_OVERLAY": "DevTools Overlay",
+  "POWERCORD_SETTINGS_OVERLAY_DESC": "Apre una finestra DevTools che permette di ispezionare cosa sta succedendo nel in-game overlay di Discord.",
+  "POWERCORD_SETTINGS_SYNC": "Sincronizzazione dei Settaggi",
+  "POWERCORD_SETTINGS_SYNC_DESC": "Sincronizza tutti i tuoi settaggi Powercord tra i dispositivi. Necessita di un account Powercord!",
+  "POWERCORD_UNLINK": "Scollega",
+  "POWERCORD_UPDATE_PASSPHRASE": "Aggiorna Frase d'accesso",
+  "POWERCORD_UPDATE_PASSPHRASE_MODAL1": "Questa Frase d'accesso sarà usata per criptare i tuoi dati prima di mandarli ai server Powercord. E' raccomandato impostarne una, ma puoi anche lasciare vuoto per mandare i tuoi dati senza criptarli.",
+  "POWERCORD_UPDATE_PASSPHRASE_MODAL2": "Se stai già usando la sincronizzazione su altri dispositivi, metti la stessa frase d'accesso che hai usato. **Usare un altra Frase di Accesso sovrascriverò i vecchi dati**."
+}
