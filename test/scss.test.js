@@ -77,7 +77,7 @@ describe('SCSS Compilation', () => {
     it('handles colliding import urls', () => {
       expect.assertions(1);
       const compiler = new ScssCompiler(getPath('imports_collision'));
-      return expect(compiler.compile()).rejects.toThrow('Colliding names detected: multiple references to "folder/style"');
+      return expect(compiler.compile()).resolves.toEqual(expectedLong);
     });
 
     it('imports css files', () => {
