@@ -19,13 +19,16 @@ module.exports = class HeyGirl extends Plugin {
   }
 
   startPlugin () {
-    this.registerCommand(
-      'heygirl',
-      [],
-      'Replaces every image with a random image of Ryan Gosling',
-      '{c}',
-      this.heygirl.bind(this)
-    );
+    powercord.api.commands.registerCommand({
+      command: 'heygirl',
+      description: 'Replaces every image with a random image of Ryan Gosling',
+      usage: '{c}',
+      executor: this.heygirl.bind(this)
+    });
+  }
+
+  pluginWillUnload () {
+    powercord.api.commands.unregisterCommand('heygirl');
   }
 
   getRandomURL () {

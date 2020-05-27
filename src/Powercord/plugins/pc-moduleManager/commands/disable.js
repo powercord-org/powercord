@@ -2,8 +2,7 @@ module.exports = {
   command: 'disable',
   description: 'Allows you to disable a selected plugin from the given list.',
   usage: '{c} [ plugin ID ]',
-
-  func (args) {
+  executor (args) {
     let result;
 
     if (powercord.pluginManager.plugins.has(args[0])) {
@@ -29,7 +28,7 @@ module.exports = {
     };
   },
 
-  autocompleteFunc (args) {
+  autocomplete (args) {
     const plugins = powercord.pluginManager.getPlugins()
       .sort((a, b) => a - b)
       .map(plugin => powercord.pluginManager.plugins.get(plugin));

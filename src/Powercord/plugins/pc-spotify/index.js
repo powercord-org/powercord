@@ -51,14 +51,16 @@ module.exports = class Spotify extends Plugin {
         })
     });
 
-    Object.values(commands).forEach(command =>
-      this.registerCommand(command.command, command.aliases || [], command.description, command.usage, command.func.bind(null, this.SpotifyPlayer))
-    );
+    Object.values(commands).forEach(cmd => powercord.api.commands.registerCommand({
+      ...cmd,
+      executor: cmd.executor.bind(null, this.SpotifyPlayer)
+    }));
   }
 
   pluginWillUnload () {
     this._patchAutoPause(true);
     powercord.api.settings.unregisterSettings('pc-spotify');
+    Object.values(commands).forEach(cmd => powercord.api.commands.unregisterCommand(cmd));
     uninject('pc-spotify-modal');
     uninject('pc-spotify-listeningAlong');
     uninject('pc-spotify-update');

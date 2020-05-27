@@ -14,12 +14,12 @@ module.exports = async function monkeypatchMessages () {
     }
 
     const [ cmd, ...args ] = message.content.slice(powercord.api.commands.prefix.length).split(' ');
-    const command = powercord.api.commands.commands.find(c => [ c.command, ...c.aliases ].includes(cmd.toLowerCase()));
+    const command = powercord.api.commands.find(c => [ c.command, ...c.aliases ].includes(cmd.toLowerCase()));
     if (!command) {
       return sendMessage(id, message, ...params);
     }
 
-    const result = await command.func(args, this);
+    const result = await command.executor(args, this);
     if (!result) {
       return;
     }

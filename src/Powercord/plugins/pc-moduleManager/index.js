@@ -20,13 +20,7 @@ const SnippetButton = require('./components/SnippetButton');
 module.exports = class ModuleManager extends Plugin {
   async startPlugin () {
     powercord.api.i18n.loadAllStrings(i18n);
-
-    Object.values(commands).forEach(cmd =>
-      this.registerCommand(cmd.command, cmd.aliases || [],
-        cmd.description, cmd.usage,
-        cmd.func, cmd.autocompleteFunc
-      )
-    );
+    Object.values(commands).forEach(cmd => powercord.api.commands.registerCommand(cmd));
 
     powercord.api.labs.registerExperiment({
       id: 'pc-moduleManager-themes2',
@@ -98,6 +92,7 @@ module.exports = class ModuleManager extends Plugin {
     powercord.api.labs.unregisterExperiment('pc-moduleManager-store');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-themes2');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-deeplinks');
+    Object.values(commands).forEach(cmd => powercord.api.commands.unregisterCommand(cmd.command));
     uninject('pc-moduleManager-channelItem');
     uninject('pc-moduleManager-channelProps');
     uninject('pc-moduleManager-snippets');

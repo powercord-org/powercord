@@ -11,15 +11,15 @@ module.exports = class Tags extends Plugin {
 
   pluginWillUnload () {
     this.unregisterTags();
+    powercord.api.commands.unregisterCommand('tag');
   }
 
   registerMain () {
-    this.registerCommand(
-      'tag',
-      [],
-      'Send, preview and manage your tags',
-      '{c} <view|list|add|edit|delete> <tagName> [tagContent]',
-      (args) => {
+    powercord.api.commands.registerCommand({
+      command: 'tag',
+      description: 'Send, preview and manage your tags',
+      usage: '{c} <view|list|add|edit|delete> <tagName> [tagContent]',
+      executor: (args) => {
         const subcommand = commands[args[0]];
         if (!subcommand) {
           return {
@@ -28,9 +28,9 @@ module.exports = class Tags extends Plugin {
           };
         }
 
-        return subcommand.func(args.slice(1), this);
+        return subcommand.executor(args.slice(1), this);
       },
-      (args) => {
+      autocomplete: (args) => {
         if (args[0] !== void 0 && args.length === 1) {
           return {
             commands: Object.values(commands).filter(({ command }) => command.includes(args[0].toLowerCase())),
@@ -45,7 +45,7 @@ module.exports = class Tags extends Plugin {
 
         return subcommand.autocomplete(args.slice(1), this.settings);
       }
-    );
+    });
   }
 
   registerTags () {
@@ -57,12 +57,11 @@ module.exports = class Tags extends Plugin {
   registerTag (name) {
     const content = this.settings.get(name);
 
-    powercord.api.commands.registerCommand(
-      name,
-      [],
-      `Tag: ${content}`,
-      `Tag: ${content}`,
-      (args) => ({
+    powercord.api.commands.registerCommand({
+      command: name,
+      description: `Tag: ${content}`,
+      usage: '{c}',
+      executor: (args) => ({
         send: true,
         result: content.replace(TAG_ARGUMENT_REGEX, (match, idx) => (
           match === '$$@'
@@ -70,7 +69,7 @@ module.exports = class Tags extends Plugin {
             : args[idx - 1]
         ))
       })
-    );
+    });
   }
 
   unregisterTags () {

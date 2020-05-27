@@ -3,8 +3,7 @@ module.exports = {
   aliases: [ 'plist' ],
   description: 'Prints out a list of currently installed plugins.',
   usage: '{c}',
-
-  func () {
+  executor () {
     const plugins = powercord.pluginManager.getPlugins();
     const result = {
       type: 'rich',

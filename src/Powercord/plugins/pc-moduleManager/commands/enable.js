@@ -2,8 +2,7 @@ module.exports = {
   command: 'enable',
   description: 'Allows you to re-/enable a selected plugin from the given list.',
   usage: '{c} [ plugin ID ]',
-
-  func (args) {
+  executor (args) {
     let result;
 
     if (powercord.pluginManager.plugins.has(args[0])) {
@@ -25,8 +24,7 @@ module.exports = {
       result: `\`\`\`diff\n${result}\`\`\``
     };
   },
-
-  autocompleteFunc (args) {
+  autocomplete (args) {
     const plugins = powercord.pluginManager.getPlugins()
       .sort((a, b) => a - b)
       .map(plugin => powercord.pluginManager.plugins.get(plugin));

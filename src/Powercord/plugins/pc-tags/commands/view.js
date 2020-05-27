@@ -1,7 +1,7 @@
 module.exports = {
   command: 'view',
   description: 'View a tag',
-  func: (args, main) => {
+  executor: (args, main) => {
     if (!main.settings.get(args[0])) {
       return {
         send: false,
