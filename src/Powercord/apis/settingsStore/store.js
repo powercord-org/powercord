@@ -22,12 +22,14 @@ const { SETTINGS_FOLDER, FluxActions: { Settings: ActionTypes } } = require('pow
 const { Flux, FluxDispatcher } = require('powercord/webpack');
 
 const settings = Object.fromEntries(
-  readdirSync(SETTINGS_FOLDER).map(file => [
-    file.split('.')[0],
-    JSON.parse(
-      readFileSync(join(SETTINGS_FOLDER, file), 'utf8')
-    )
-  ])
+  readdirSync(SETTINGS_FOLDER)
+    .filter(f => !f.startsWith('.') && f.endsWith('.json'))
+    .map(file => [
+      file.split('.')[0],
+      JSON.parse(
+        readFileSync(join(SETTINGS_FOLDER, file), 'utf8')
+      )
+    ])
 );
 
 function updateSettings (category, newSettings) {
