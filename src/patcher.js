@@ -38,10 +38,10 @@ const _pkgFile = join(dirname(require.main.filename), 'package.json');
 const _pkg = require(_pkgFile);
 if (!_pkg.name) {
   try {
-    writeFileSync(_pkgFile, {
+    writeFileSync(_pkgFile, JSON.stringify({
       ..._pkg,
       name: 'discord'
-    });
+    }));
   } catch (e) {
     // Most likely a perm issue. Let's fail silently on that one
   }
