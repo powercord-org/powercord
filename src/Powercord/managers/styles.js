@@ -21,27 +21,51 @@ const { readdirSync, existsSync } = require('fs');
 const { readFile, lstat } = require('fs').promises;
 
 const { Theme } = require('powercord/entities');
+const { SETTINGS_FOLDER } = require('powercord/constants');
 
 const fileRegex = /\.((s?c|le)ss|styl)$/;
+
+const ErrorTypes = Object.freeze({
+  NOT_A_DIRECTORY: 'NOT_A_DIRECTORY',
+  MANIFEST_LOAD_FAILED: 'MANIFEST_LOAD_FAILED',
+  INVALID_MANIFEST: 'INVALID_MANIFEST'
+});
 
 module.exports = class StyleManager {
   constructor () {
     this.themesDir = join(__dirname, '../themes');
     this.themes = new Map();
-    readFile(join(__dirname, 'style.css'), 'utf8').then(css => {
-      const appendStyle = () => {
-        const style = document.createElement('style');
-        style.id = 'powercord-main-css';
-        style.dataset.powercord = true;
-        style.innerHTML = css;
-        document.head.appendChild(style);
-      };
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', appendStyle);
-      } else {
-        appendStyle();
+
+    if (!window.__SPLASH__) {
+      readFile(join(__dirname, 'style.css'), 'utf8').then(css => {
+        const appendStyle = () => {
+          const style = document.createElement('style');
+          style.id = 'powercord-main-css';
+          style.dataset.powercord = true;
+          style.innerHTML = css;
+          document.head.appendChild(style);
+        };
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', appendStyle);
+        } else {
+          appendStyle();
+        }
+      });
+    }
+  }
+
+  get disabledThemes () {
+    if (window.__SPLASH__) {
+      if (!this.__settings) {
+        this.__settings = {};
+        try {
+          this.__settings = require(join(SETTINGS_FOLDER, 'pc-general.json'));
+        } finally {
+          return this.__settings.disabledThemes || [];
+        }
       }
-    });
+    }
+    return powercord.settings.get('disabledThemes', []);
   }
 
   // Getters
@@ -58,7 +82,7 @@ module.exports = class StyleManager {
   }
 
   isEnabled (theme) {
-    return !powercord.settings.get('disabledThemes', []).includes(theme);
+    return !this.disabledThemes.includes(theme);
   }
 
   enable (themeID) {
@@ -66,11 +90,7 @@ module.exports = class StyleManager {
       throw new Error(`Tried to enable a non installed theme (${themeID})`);
     }
 
-    powercord.settings.set(
-      'disabledThemes',
-      powercord.settings.get('disabledThemes', []).filter(p => p !== themeID)
-    );
-
+    powercord.settings.set('disabledThemes', this.disabledThemes.filter(p => p !== themeID));
     this.themes.get(themeID).apply();
   }
 
@@ -80,36 +100,14 @@ module.exports = class StyleManager {
       throw new Error(`Tried to disable a non installed theme (${themeID})`);
     }
 
-    powercord.settings.set('disabledThemes', [
-      ...powercord.settings.get('disabledThemes', []),
-      themeID
-    ]);
-
+    powercord.settings.set('disabledThemes', [ ...this.disabledThemes, themeID ]);
     this.themes.get(themeID).remove();
   }
 
   async mount (themeID, filename) {
     const stat = await lstat(join(this.themesDir, filename));
     if (stat.isFile()) {
-      powercord.api.notices.sendToast('sm-invalid-theme', {
-        header: `Invalid theme: "${themeID}" is a file`,
-        content: 'This is most likely a mistake. Make sure all your theme files are in a subfolder.',
-        type: 'danger',
-        buttons: [
-          /*
-           * {
-           *   text: 'Documentation',
-           *   color: 'green',
-           *   look: 'ghost',
-           *   onClick: () => console.log('yes')
-           * },
-           */
-          {
-            text: 'Got it',
-            look: 'ghost'
-          }
-        ]
-      });
+      this._logError(ErrorTypes.NOT_A_DIRECTORY, [ themeID ]);
       return;
     }
 
@@ -123,54 +121,24 @@ module.exports = class StyleManager {
     try {
       manifest = require(manifestFile);
     } catch (e) {
-      powercord.api.notices.sendToast('sm-invalid-theme', {
-        header: `Failed to load manifest for "${themeID}"`,
-        content: 'This is probably due to a syntax error in the file. Check console for more details.',
-        type: 'danger',
-        buttons: [
-          {
-            text: 'Open DevTools',
-            color: 'green',
-            look: 'ghost',
-            onClick: () => require('electron').remote.BrowserWindow.getFocusedWindow().openDevTools()
-          },
-          {
-            text: 'Got it',
-            look: 'ghost'
-          }
-        ]
-      });
+      this._logError(ErrorTypes.MANIFEST_LOAD_FAILED, [ themeID ]);
       console.error('%c[Powercord:StyleManager]', 'color: #7289da', 'Failed to load manifest', e);
       return;
     }
 
     const errors = this._validateManifest(manifest);
     if (errors.length > 0) {
-      powercord.api.notices.sendToast('sm-invalid-theme', {
-        header: `Invalid manifest for "${themeID}"`,
-        content: 'Check the console for more details.',
-        type: 'danger',
-        buttons: [
-          {
-            text: 'Open DevTools',
-            color: 'green',
-            look: 'ghost',
-            onClick: () => require('electron').remote.BrowserWindow.getFocusedWindow().openDevTools()
-          },
-          {
-            text: 'Got it',
-            look: 'ghost'
-          }
-        ]
-      });
+      this._logError(ErrorTypes.INVALID_MANIFEST, [ themeID ]);
       console.error('%c[Powercord:StyleManager]', 'color: #7289da', `Invalid manifest; Detected the following errors:\n\t${errors.join('\n\t')}`);
       return;
     }
 
-    if (!window.__OVERLAY__ && manifest.theme) {
-      manifest.effectiveTheme = manifest.theme;
+    if (window.__SPLASH__ && manifest.splashTheme) {
+      manifest.effectiveTheme = manifest.splashTheme;
     } else if (window.__OVERLAY__ && manifest.overlayTheme) {
       manifest.effectiveTheme = manifest.overlayTheme;
+    } else if (!window.__OVERLAY__ && !window.__SPLASH__ && manifest.theme) {
+      manifest.effectiveTheme = manifest.theme;
     } else {
       return console.warn('%c[Powercord:StyleManager]', 'color: #7289da', `Theme "${themeID}" is not meant to run on that environment - Skipping`);
     }
@@ -209,7 +177,7 @@ module.exports = class StyleManager {
         }
       }
 
-      if (!powercord.settings.get('disabledThemes', []).includes(themeID)) {
+      if (!this.disabledThemes.includes(themeID)) {
         if (sync && !this.isInstalled(themeID)) {
           await this.mount(themeID, filename);
           missingThemes.push(themeID);
@@ -226,6 +194,74 @@ module.exports = class StyleManager {
 
   unloadThemes () {
     [ ...this.themes.values() ].forEach(t => t.remove());
+  }
+
+  _logError (errorType, args) {
+    if (window.__SPLASH__ || window.__OVERLAY__) {
+      return; // Consider an alternative logging method?
+    }
+
+    switch (errorType) {
+      case ErrorTypes.NOT_A_DIRECTORY:
+        powercord.api.notices.sendToast('sm-invalid-theme', {
+          header: `Invalid theme: "${args[0]}" is a file`,
+          content: 'This is most likely a mistake. Make sure all your theme files are in a subfolder.',
+          type: 'danger',
+          buttons: [
+            /*
+             * {
+             *   text: 'Documentation',
+             *   color: 'green',
+             *   look: 'ghost',
+             *   onClick: () => console.log('yes')
+             * },
+             */
+            {
+              text: 'Got it',
+              look: 'ghost'
+            }
+          ]
+        });
+        break;
+      case ErrorTypes.MANIFEST_LOAD_FAILED:
+        powercord.api.notices.sendToast('sm-invalid-theme', {
+          header: `Failed to load manifest for "${args[0]}"`,
+          content: 'This is probably due to a syntax error in the file. Check console for more details.',
+          type: 'danger',
+          buttons: [
+            {
+              text: 'Open DevTools',
+              color: 'green',
+              look: 'ghost',
+              onClick: () => require('electron').remote.BrowserWindow.getFocusedWindow().openDevTools()
+            },
+            {
+              text: 'Got it',
+              look: 'ghost'
+            }
+          ]
+        });
+        break;
+      case ErrorTypes.INVALID_MANIFEST:
+        powercord.api.notices.sendToast('sm-invalid-theme', {
+          header: `Invalid manifest for "${args[0]}"`,
+          content: 'Check the console for more details.',
+          type: 'danger',
+          buttons: [
+            {
+              text: 'Open DevTools',
+              color: 'green',
+              look: 'ghost',
+              onClick: () => require('electron').remote.BrowserWindow.getFocusedWindow().openDevTools()
+            },
+            {
+              text: 'Got it',
+              look: 'ghost'
+            }
+          ]
+        });
+        break;
+    }
   }
 
   /*

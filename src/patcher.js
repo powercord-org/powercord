@@ -62,6 +62,8 @@ class PatchedBrowserWindow extends BrowserWindow {
       // General purpose popouts used by Discord
     } else if (opts.webPreferences && opts.webPreferences.nodeIntegration) {
       // Splash Screen
+      console.log(opts);
+      opts.webPreferences.preload = join(__dirname, 'preloadSplash.js');
     } else if (opts.webPreferences && opts.webPreferences.offscreen) {
       // Overlay
       global.originalPreload = opts.webPreferences.preload;
