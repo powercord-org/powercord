@@ -39,8 +39,11 @@ class Themes extends Base {
           ? super.render()
           : <QuickCSS openPopout={async () => {
             const popoutModule = await getModule([ 'setAlwaysOnTop', 'open' ]);
-            popoutModule.open('DISCORD_POWERCORD_QUICKCSS', () => (
-              <PopoutWindow windowId='DISCORD_POWERCORD_QUICKCSS'>
+            popoutModule.open('DISCORD_POWERCORD_QUICKCSS', (key) => (
+              <PopoutWindow
+                windowKey={key}
+                title='QuickCSS'
+              >
                 <QuickCSS popout={true}/>
               </PopoutWindow>
             ));

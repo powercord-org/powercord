@@ -8,9 +8,7 @@ const injectAutocomplete = require('./injectAutocomplete.js');
 
 module.exports = class Commands extends Plugin {
   startPlugin () {
-    Object.values(commands).forEach(command =>
-      this.registerCommand(command.command, command.aliases || [], command.description, command.usage, command.func, command.autocompleteFunc)
-    );
+    Object.values(commands).forEach(command => powercord.api.commands.registerCommand(command));
 
     monkeypatchMessages.call(this);
     injectAutocomplete.call(this);
@@ -18,6 +16,7 @@ module.exports = class Commands extends Plugin {
   }
 
   pluginWillUnload () {
+    Object.values(commands).forEach(command => powercord.api.commands.unregisterCommand(command.command));
     uninject('pc-commands-autocomplete');
   }
 };

@@ -6,7 +6,6 @@ const { ContextMenu: { Submenu } } = require('powercord/components');
 
 const Settings = require('./components/Settings');
 const translate = require('google-translate-api');
-const { resolve } = require('path');
 
 module.exports = class Translate extends Plugin {
   async startPlugin () {
@@ -25,19 +24,23 @@ module.exports = class Translate extends Plugin {
     Object.keys(this.messageClasses)
       .forEach(key => this.messageClasses[key] = `.${this.messageClasses[key].split(' ')[0]}`);
 
-    this.loadCSS(resolve(__dirname, 'style.scss'));
-    this.registerSettings('pc-translate', 'Translate', props => React.createElement(Settings, {
-      ...props,
-      main: this
-    }));
+    this.loadStylesheet('style.scss');
+    powercord.api.settings.registerSettings('pc-translate', {
+      category: this.entityID,
+      label: 'Translate',
+      render: (props) => React.createElement(Settings, {
+        ...props,
+        main: this
+      })
+    });
 
     this._injectTranslator();
   }
 
   pluginWillUnload () {
     this.removeResetButton();
-
-    // uninject('pc-translate-icon');
+    powercord.api.settings.unregisterSettings('pc-translate');
+    uninject('pc-translate-icon');
     uninject('pc-translate-slateContext');
     uninject('pc-translate-context');
     uninject('pc-translate-content');

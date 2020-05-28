@@ -221,8 +221,7 @@ module.exports = class EmojiUtility extends Plugin {
 
   async startPlugin () {
     await this.doImport();
-
-    this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.loadStylesheet('style.scss');
 
     /* Default settings */
     this.settings.set('useEmbeds', this.settings.get('useEmbeds', false));
@@ -539,14 +538,17 @@ module.exports = class EmojiUtility extends Plugin {
       return args;
     });
 
-    this.registerSettings('pc-emojiUtility', 'Emote Utility', Settings);
+    powercord.api.settings.registerSettings('pc-emojiUtility', {
+      category: this.entityID,
+      label: 'Emote Utility',
+      render: Settings
+    });
 
-    this.registerCommand(
-      'findemote',
-      [],
-      'Find the server an emote is from',
-      '{c} [emote]',
-      (args) => {
+    powercord.api.commands.registerCommand({
+      command: 'findemote',
+      description: 'Find the server an emote is from',
+      usage: '{c} [emote]',
+      executor: (args) => {
         const object = this.findEmojisForCommand(args);
         if (!object) {
           return;
@@ -580,14 +582,13 @@ module.exports = class EmojiUtility extends Plugin {
           result: description
         };
       }
-    );
+    });
 
-    this.registerCommand(
-      'massemote',
-      [],
-      'Send all emotes containing the specified name',
-      '{c} [emote name]',
-      (args) => {
+    powercord.api.commands.registerCommand({
+      command: 'massemote',
+      description: 'Send all emotes containing the specified name',
+      usage: '{c} [emote name]',
+      executor: (args) => {
         const argument = args.join(' ').toLowerCase();
         if (argument.length === 0) {
           return this.replyError('Please provide an emote name');
@@ -620,14 +621,13 @@ module.exports = class EmojiUtility extends Plugin {
 
         return this.replyError(`Could not find any emotes containing **${argument}**`);
       }
-    );
+    });
 
-    this.registerCommand(
-      'saveemote',
-      [],
-      'Save emotes to a specified directory',
-      '{c} [emote]',
-      async (args) => {
+    powercord.api.commands.registerCommand({
+      command: 'saveemote',
+      description: 'Save emotes to a specified directory',
+      usage: '{c} [emote]',
+      executor: async (args) => {
         if (!this.settings.get('filePath')) {
           return this.replyError('Please set your save directory in the settings');
         }
@@ -686,14 +686,13 @@ module.exports = class EmojiUtility extends Plugin {
           this.replySuccess(`Successfully downloaded **${foundEmojis.length - failedDownloads.length}**/**${foundEmojis.length}** emotes`);
         }
       }
-    );
+    });
 
-    this.registerCommand(
-      'cloneemote',
-      [],
-      'Clone an emote to your own server',
-      '{c} [emote] [server]',
-      async (args) => {
+    powercord.api.commands.registerCommand({
+      command: 'cloneemote',
+      description: 'Clone an emote to your own server',
+      usage: '{c} [emote] [server]',
+      executor: async (args) => {
         if (args.length === 0) {
           return this.replyError('Please provide an emote');
         }
@@ -758,10 +757,15 @@ module.exports = class EmojiUtility extends Plugin {
           return this.replyError(`Could not find emote ${emojiRaw}`);
         }
       }
-    );
+    });
   }
 
   pluginWillUnload () {
+    powercord.api.settings.unregisterSettings('pc-emojiUtility');
+    powercord.api.commands.unregisterCommand('cloneemote');
+    powercord.api.commands.unregisterCommand('findemote');
+    powercord.api.commands.unregisterCommand('massemote');
+    powercord.api.commands.unregisterCommand('saveemote');
     uninject('pc-emojiUtility-emojiContext');
     uninject('pc-emojiUtility-reactionContext');
     uninject('pc-emojiUtility-hideEmojisPicker');

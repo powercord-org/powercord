@@ -3,7 +3,6 @@ const { React, getModule, getModuleByDisplayName } = require('powercord/webpack'
 const { inject, uninject } = require('powercord/injector');
 const { WEBSITE } = require('powercord/constants');
 const { get, del } = require('powercord/http');
-const { resolve } = require('path');
 
 const SettingsConnections = require('./components/settings/ConnectedAccounts');
 const ProfileConnections = require('./components/profile/ConnectedAccounts');
@@ -17,7 +16,7 @@ module.exports = class Connections extends Plugin {
   }
 
   async startPlugin () {
-    this.loadCSS(resolve(__dirname, 'style.css'));
+    this.loadStylesheet('style.css');
     this.classes = {
       ...await getModule([ 'headerInfo', 'nameTag' ]),
       ...await getModule([ 'modal', 'inner' ]),

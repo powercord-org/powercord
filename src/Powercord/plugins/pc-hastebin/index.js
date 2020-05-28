@@ -6,15 +6,19 @@ const Settings = require('./Settings.jsx');
 
 module.exports = class Hastebin extends Plugin {
   startPlugin () {
-    this.registerSettings('pc-hastebin', 'Hastebin', Settings);
-
     const domain = this.settings.get('domain', 'https://haste.powercord.dev');
-    this.registerCommand(
-      'hastebin',
-      [],
-      'Lets you paste content to Hastebin',
-      '{c} [--send] <--clipboard | FILE_URL>',
-      async (args) => {
+
+    powercord.api.settings.registerSettings('pc-hastebin', {
+      category: this.entityID,
+      label: 'Hastebin',
+      render: Settings
+    });
+
+    powercord.api.commands.registerCommand({
+      command: 'hastebin',
+      description: 'Lets you paste content to Hastebin',
+      usage: '{c} [--send] <--clipboard | FILE_URL>',
+      executor: async (args) => {
         const send = args.includes('--send')
           ? !!args.splice(args.indexOf('--send'), 1)
           : this.settings.get('send', false);
@@ -44,7 +48,12 @@ module.exports = class Hastebin extends Plugin {
           };
         }
       }
-    );
+    });
+  }
+
+  pluginWillUnload () {
+    powercord.api.settings.unregisterSettings('pc-hastebin');
+    powercord.api.commands.unregisterCommand('hastebin');
   }
 
   parseArguments (args) {

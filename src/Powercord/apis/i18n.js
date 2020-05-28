@@ -31,19 +31,16 @@ module.exports = class I18nAPI extends API {
   }
 
   startAPI () {
-    this._startAPI();
-  }
-
-  async _startAPI () {
-    const module = await getModule([ 'locale', 'theme' ]);
-    this.locale = module.locale;
-    module.addChangeListener(() => {
-      if (module.locale !== this.locale) {
-        this.locale = module.locale;
-        i18n.loadPromise.then(() => this.addPowercordStrings());
-      }
+    getModule([ 'locale', 'theme' ]).then(module => {
+      this.locale = module.locale;
+      module.addChangeListener(() => {
+        if (module.locale !== this.locale) {
+          this.locale = module.locale;
+          i18n.loadPromise.then(() => this.addPowercordStrings());
+        }
+      });
+      this.addPowercordStrings();
     });
-    this.addPowercordStrings();
   }
 
   addPowercordStrings () {

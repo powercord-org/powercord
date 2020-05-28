@@ -1,5 +1,4 @@
 const { API } = require('powercord/entities');
-const { asyncArray } = require('powercord/util');
 const { WEBSITE } = require('powercord/constants');
 const { put } = require('powercord/http');
 
@@ -8,6 +7,14 @@ module.exports = class ConnectionsAPI extends API {
     super();
 
     this.connections = [];
+  }
+
+  get map () {
+    return this.connections.map.bind(this.connections);
+  }
+
+  get filter () {
+    return this.connections.filter.bind(this.connections);
   }
 
   registerConnection (connection) {
@@ -22,9 +29,12 @@ module.exports = class ConnectionsAPI extends API {
   }
 
   fetchAccounts (id) {
-    return asyncArray.map(this.filter(c => c.enabled), c => c.fetchAccount(id));
+    return Promise.all(
+      this.filter(c => c.enabled).map(c => c.fetchAccount(id))
+    );
   }
 
+  // @todo: Move this to the plugin?
   async setVisibility (type, value) {
     if (!powercord.account) {
       return;
@@ -44,13 +54,5 @@ module.exports = class ConnectionsAPI extends API {
     }
 
     return connections[type] || null;
-  }
-
-  map (callback) {
-    return this.connections.map(callback);
-  }
-
-  filter (callback) {
-    return this.connections.filter(callback);
   }
 };

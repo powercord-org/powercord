@@ -20,13 +20,7 @@ const SnippetButton = require('./components/SnippetButton');
 module.exports = class ModuleManager extends Plugin {
   async startPlugin () {
     powercord.api.i18n.loadAllStrings(i18n);
-
-    Object.values(commands).forEach(cmd =>
-      this.registerCommand(cmd.command, cmd.aliases || [],
-        cmd.description, cmd.usage,
-        cmd.func, cmd.autocompleteFunc
-      )
-    );
+    Object.values(commands).forEach(cmd => powercord.api.commands.registerCommand(cmd));
 
     powercord.api.labs.registerExperiment({
       id: 'pc-moduleManager-themes2',
@@ -68,9 +62,17 @@ module.exports = class ModuleManager extends Plugin {
     this._quickCSSFile = join(__dirname, 'quickcss.css');
     this._loadQuickCSS();
     this._injectSnippets();
-    this.loadCSS(join(__dirname, 'scss', 'style.scss'));
-    this.registerSettings('pc-moduleManager-plugins', () => Messages.POWERCORD_PLUGINS, Plugins);
-    this.registerSettings('pc-moduleManager-themes', () => Messages.POWERCORD_THEMES, Themes);
+    this.loadStylesheet('scss/style.scss');
+    powercord.api.settings.registerSettings('pc-moduleManager-plugins', {
+      category: this.entityID,
+      label: () => Messages.POWERCORD_PLUGINS,
+      render: Plugins
+    });
+    powercord.api.settings.registerSettings('pc-moduleManager-themes', {
+      category: this.entityID,
+      label: () => Messages.POWERCORD_THEMES,
+      render: Themes
+    });
 
     if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-deeplinks')) {
       deeplinks();
@@ -78,16 +80,29 @@ module.exports = class ModuleManager extends Plugin {
 
     if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-store')) {
       this._injectCommunityContent();
-      this.registerRoute('/store/plugins', Store, true);
-      this.registerRoute('/store/themes', Store, true);
+      powercord.api.router.registerRoute({
+        path: '/store/plugins',
+        render: Store,
+        noSidebar: true
+      });
+      powercord.api.router.registerRoute({
+        path: '/store/themes',
+        render: Store,
+        noSidebar: true
+      });
     }
   }
 
   pluginWillUnload () {
     document.querySelector('#powercord-quickcss').remove();
+    powercord.api.router.unregisterRoute('/store/plugins');
+    powercord.api.router.unregisterRoute('/store/themes');
+    powercord.api.settings.unregisterSettings('pc-moduleManager-plugins');
+    powercord.api.settings.unregisterSettings('pc-moduleManager-themes');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-store');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-themes2');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-deeplinks');
+    Object.values(commands).forEach(cmd => powercord.api.commands.unregisterCommand(cmd.command));
     uninject('pc-moduleManager-channelItem');
     uninject('pc-moduleManager-channelProps');
     uninject('pc-moduleManager-snippets');

@@ -40,7 +40,10 @@ exports.inject = async ({ getAppDir }) => {
     ),
     writeFile(
       join(appDir, 'package.json'),
-      JSON.stringify({ main: 'index.js' })
+      JSON.stringify({
+        main: 'index.js',
+        name: 'discord'
+      })
     )
   ]);
 

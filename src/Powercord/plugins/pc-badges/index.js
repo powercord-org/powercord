@@ -1,4 +1,3 @@
-const { resolve } = require('path');
 const { get } = require('powercord/http');
 const { Plugin } = require('powercord/entities');
 const { WEBSITE } = require('powercord/constants');
@@ -28,7 +27,7 @@ module.exports = class Badges extends Plugin {
       key => this.classes[key] = `.${this.classes[key].split(' ')[0]}`
     );
 
-    this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.loadStylesheet('style.scss');
     this._patchGuildTooltips();
     this._patchGuildHeaders();
     this._patchUserComponent();

@@ -4,7 +4,7 @@ const { WEBSITE } = require('powercord/constants');
 const { inject, uninject } = require('powercord/injector');
 
 module.exports = class RPC extends Plugin {
-  async startPlugin () { // Soon :)
+  async startPlugin () {
     this.handlers = await getModule([ 'INVITE_BROWSER' ]);
     this._patchHTTPServer();
     this._patchWebSocketServer();
@@ -72,7 +72,7 @@ module.exports = class RPC extends Plugin {
           'POWERCORD',
           ...Object.keys(powercord.api.rpc.scopes).filter(s => powercord.api.rpc.scopes[s](args[1]))
         ];
-        return new Promise(res => res());
+        return Promise.resolve(null);
       }
       return res;
     });

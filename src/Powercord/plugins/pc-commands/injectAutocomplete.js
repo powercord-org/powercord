@@ -8,18 +8,18 @@ module.exports = async function injectAutocomplete () {
   const ChannelAutocomplete = await getModuleByDisplayName('ChannelAutocomplete');
   inject('pc-commands-autocomplete', ChannelAutocomplete.prototype, 'render', function (_, res) {
     const { textValue } = this.props;
-    const currentCommandFilter = (command) => [ command.command, ...command.aliases ].some(commandName =>
+    const currentCommandFilter = (command) => [ command.command, ...(command.aliases || []) ].some(commandName =>
       textValue.startsWith(powercord.api.commands.prefix) &&
       (textValue.slice(powercord.api.commands.prefix.length).toLowerCase()).startsWith(commandName)
     );
 
     const autocompleteFunc = () => {
-      const currentCommand = powercord.api.commands.commands.find(currentCommandFilter);
+      const currentCommand = powercord.api.commands.find(currentCommandFilter);
       if (!currentCommand) {
         return false;
       }
 
-      const autocompleteRows = currentCommand.autocompleteFunc(
+      const autocompleteRows = currentCommand.autocomplete(
         textValue.slice(powercord.api.commands.prefix.length).split(' ').slice(1)
       );
 
@@ -33,7 +33,7 @@ module.exports = async function injectAutocomplete () {
 
     const { autocompleteOptions } = this.state;
     autocompleteOptions.POWERCORD_AUTOCOMPLETE = {
-      matches: () => powercord.api.commands.commands.filter(command => command.autocompleteFunc)
+      matches: () => powercord.api.commands.filter(command => command.autocomplete)
         .some(currentCommandFilter) && autocompleteFunc(),
       queryResults: autocompleteFunc,
       renderResults: (...args) => {
@@ -131,7 +131,7 @@ module.exports = async function injectAutocomplete () {
     const autocompleteOptions = getAutocompleteOptions(e, t, n, r, a);
     autocompleteOptions.POWERCORD_COMMANDS = {
       matches: (prefix, value, isAtStart) => isAtStart && (prefix + value).startsWith(powercord.api.commands.prefix),
-      queryResults: (value) => ({ commands: powercord.api.commands.commands.filter(({ command }) =>
+      queryResults: (value) => ({ commands: powercord.api.commands.filter(({ command }) =>
         command.startsWith(value.slice(powercord.api.commands.prefix.length - 1).toLowerCase())
       ) }),
       renderResults: (...args) => {

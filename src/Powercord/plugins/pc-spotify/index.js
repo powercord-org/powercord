@@ -4,7 +4,6 @@ const { open: openModal } = require('powercord/modal');
 const { getOwnerInstance, waitFor } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { React, getModule, getModuleByDisplayName, spotify } = require('powercord/webpack');
-const { resolve } = require('path');
 
 const Settings = require('./Settings');
 
@@ -19,7 +18,7 @@ module.exports = class Spotify extends Plugin {
   }
 
   async startPlugin () {
-    this.loadCSS(resolve(__dirname, 'style.scss'));
+    this.loadStylesheet('style.scss');
     this.containerClasses = {
       ...await getModule([ 'colorStandard' ]),
       ...await getModule([ 'button', 'lookFilled' ]),
@@ -42,20 +41,26 @@ module.exports = class Spotify extends Plugin {
       }
     });
 
-    this.registerSettings('pc-spotify', 'Spotify', (props) =>
-      React.createElement(Settings, {
-        patch: this._patchAutoPause.bind(this),
-        ...props
-      })
-    );
+    powercord.api.settings.registerSettings('pc-spotify', {
+      category: this.entityID,
+      label: 'Spotify',
+      render: (props) =>
+        React.createElement(Settings, {
+          patch: this._patchAutoPause.bind(this),
+          ...props
+        })
+    });
 
-    Object.values(commands).forEach(command =>
-      this.registerCommand(command.command, command.aliases || [], command.description, command.usage, command.func.bind(null, this.SpotifyPlayer))
-    );
+    Object.values(commands).forEach(cmd => powercord.api.commands.registerCommand({
+      ...cmd,
+      executor: cmd.executor.bind(null, this.SpotifyPlayer)
+    }));
   }
 
   pluginWillUnload () {
     this._patchAutoPause(true);
+    powercord.api.settings.unregisterSettings('pc-spotify');
+    Object.values(commands).forEach(cmd => powercord.api.commands.unregisterCommand(cmd));
     uninject('pc-spotify-modal');
     uninject('pc-spotify-listeningAlong');
     uninject('pc-spotify-update');

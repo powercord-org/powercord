@@ -3,20 +3,20 @@ module.exports = {
   aliases: [ 'h' ],
   description: 'Gives you a list of commands or information on a specific command.',
   usage: '{c} [ commandName ]',
-  func ([ commandName ]) {
+  executor ([ commandName ]) {
     let result;
 
     if (!commandName) {
       const getPropLength = (command) => command.command.length;
 
       const longestCommandName = getPropLength(
-        powercord.api.commands.commands.sort((a, b) => getPropLength(b) - getPropLength(a))[0]
+        powercord.api.commands.sort((a, b) => getPropLength(b) - getPropLength(a))[0]
       );
 
       result = {
         type: 'rich',
         title: 'List of Commands',
-        description: powercord.api.commands.commands
+        description: powercord.api.commands
           .map(({ command, description }) =>
             `\`${command.padEnd((longestCommandName * 2) - command.length, ' \u200b')} |\` \u200b \u200b*${description}*`
           )
@@ -26,7 +26,7 @@ module.exports = {
         }
       };
     } else {
-      const command = powercord.api.commands.commands.find(c => [ c.command, ...c.aliases ].includes(commandName));
+      const command = powercord.api.commands.find(c => [ c.command, ...(c.aliases || []) ].includes(commandName));
       if (!command) {
         result = `Command \`${commandName}\` not found.`;
       } else {
@@ -48,13 +48,13 @@ module.exports = {
       result
     };
   },
-  autocompleteFunc (args) {
+  autocomplete (args) {
     if (!args[0] || args.length > 1) {
       return false;
     }
 
     return {
-      commands: powercord.api.commands.commands
+      commands: powercord.api.commands
         .filter(command =>
           command.command
             .toLowerCase()

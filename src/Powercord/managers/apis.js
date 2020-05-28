@@ -16,18 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { resolve } = require('path');
-const { readdirSync } = require('fs');
+const { join } = require('path');
+const { readdirSync, statSync } = require('fs');
 
 module.exports = class APIManager {
   constructor () {
-    this.apiDir = resolve(__dirname, '..', 'apis');
+    this.apiDir = join(__dirname, '..', 'apis');
     this.apis = [];
   }
 
   mount (api) {
     try {
-      const APIClass = require(resolve(this.apiDir, api));
+      const APIClass = require(join(this.apiDir, api));
       api = api.replace(/\.js$/, '');
       powercord.api[api] = new APIClass();
       this.apis.push(api);
@@ -51,7 +51,9 @@ module.exports = class APIManager {
   // Start
   async startAPIs () {
     this.apis = [];
-    readdirSync(this.apiDir).forEach(filename => this.mount(filename));
+    readdirSync(this.apiDir)
+      .filter(f => statSync(join(this.apiDir, f)).isFile())
+      .forEach(filename => this.mount(filename));
     await this.load();
   }
 };

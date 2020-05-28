@@ -19,7 +19,7 @@
 /* global appSettings */
 const Module = require('module');
 const { join, dirname, resolve } = require('path');
-const { existsSync, unlinkSync } = require('fs');
+const { existsSync, unlinkSync, writeFileSync } = require('fs');
 const electron = require('electron');
 const { BrowserWindow, app, session } = electron;
 
@@ -27,6 +27,25 @@ const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
 console.log('Hello from Powercord!');
+
+/**
+ * Glasscord compatibility fix for legacy installs
+ * This is a temporary fix and will be removed on July 1st, 2020.
+ * Some cases might require just re-plugging Powercord, this isn't a perfect solution
+ * @see https://github.com/powercord-org/powercord/issues/316
+ */
+const _pkgFile = join(dirname(require.main.filename), 'package.json');
+const _pkg = require(_pkgFile);
+if (!_pkg.name) {
+  try {
+    writeFileSync(_pkgFile, {
+      ..._pkg,
+      name: 'discord'
+    });
+  } catch (e) {
+    // Most likely a perm issue. Let's fail silently on that one
+  }
+}
 
 let settings;
 try {
@@ -69,37 +88,21 @@ class PatchedBrowserWindow extends BrowserWindow {
   }
 }
 
-Object.assign(PatchedBrowserWindow, electron.BrowserWindow);
+
+const electronExports = new Proxy(electron, {
+  get (target, prop) {
+    switch (prop) {
+      case 'BrowserWindow': return PatchedBrowserWindow;
+      default: return target[prop];
+    }
+  }
+});
 
 delete require.cache[electronPath].exports;
-require.cache[electronPath].exports = {
-  deprecate: electron.deprecate,
-  BrowserWindow: PatchedBrowserWindow
-};
+require.cache[electronPath].exports = electronExports;
 
-const failedExports = [];
-for (const prop in electron) {
-  if (prop === 'BrowserWindow') {
-    continue;
-  }
-
-  try {
-    // noinspection JSUnfilteredForInLoop
-    Object.defineProperty(require.cache[electronPath].exports, prop, {
-      get () {
-        // noinspection JSUnfilteredForInLoop
-        return electron[prop];
-      }
-    });
-  } catch (_) {
-    // noinspection JSUnfilteredForInLoop
-    failedExports.push(prop);
-  }
-}
 
 app.once('ready', () => {
-  require.cache[electronPath].exports.BrowserWindow = PatchedBrowserWindow;
-
   // headers must die
   session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
     /*
@@ -131,10 +134,6 @@ app.once('ready', () => {
       done({});
     }
   });
-
-  for (const prop of failedExports) {
-    require.cache[electronPath].exports[prop] = electron[prop];
-  }
 });
 
 (async () => {
