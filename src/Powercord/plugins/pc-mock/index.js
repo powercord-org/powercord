@@ -3,7 +3,7 @@ const { Plugin } = require('powercord/entities');
 module.exports = class Mock extends Plugin {
   startPlugin () {
     powercord.api.commands.registerCommand({
-      command: 'cmock',
+      command: 'mock',
       description: 'Mock a user...',
       usage: '{c} [text to mock]',
       executor: (args) => ({

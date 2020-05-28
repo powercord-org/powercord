@@ -25,7 +25,7 @@ const settings = Object.fromEntries(
   readdirSync(SETTINGS_FOLDER).map(file => [
     file.split('.')[0],
     JSON.parse(
-      readFileSync(join(SETTINGS_FOLDER, file))
+      readFileSync(join(SETTINGS_FOLDER, file), 'utf8')
     )
   ])
 );
