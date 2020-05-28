@@ -21,6 +21,10 @@ const { existsSync, readdirSync, readFileSync, mkdirSync, writeFileSync } = requ
 const { SETTINGS_FOLDER, FluxActions: { Settings: ActionTypes } } = require('powercord/constants');
 const { Flux, FluxDispatcher } = require('powercord/webpack');
 
+if (!existsSync(SETTINGS_FOLDER)) {
+  mkdirSync(SETTINGS_FOLDER);
+}
+
 const settings = Object.fromEntries(
   readdirSync(SETTINGS_FOLDER)
     .filter(f => !f.startsWith('.') && f.endsWith('.json'))
@@ -96,10 +100,6 @@ class SettingsStore extends Flux.Store {
   }
 
   _persist () {
-    if (!existsSync(SETTINGS_FOLDER)) {
-      mkdirSync(SETTINGS_FOLDER);
-    }
-
     for (const category in settings) {
       const file = join(SETTINGS_FOLDER, `${category}.json`);
       const data = JSON.stringify(settings[category], null, 2);
