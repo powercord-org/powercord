@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { remote } = require('electron');
 const { join } = require('path');
 
 window.__SPLASH__ = true;
@@ -38,4 +37,4 @@ if (document.readyState === 'loading') {
   init();
 }
 
-// remote.getCurrentWebContents().openDevTools({ mode: 'detach' });
+// require('electron').remote.getCurrentWebContents().openDevTools({ mode: 'detach' });
