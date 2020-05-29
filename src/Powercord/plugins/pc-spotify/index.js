@@ -168,3 +168,8 @@ module.exports = class Spotify extends Plugin {
     }
   }
 };
+
+// eslint-disable-next-line no-constant-condition
+if (false) {
+  module.exports = require('./_rewrite');
+}

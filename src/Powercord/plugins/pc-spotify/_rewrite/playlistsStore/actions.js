@@ -16,25 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const Compiler = require('./compiler');
-const { readFile } = require('fs').promises;
+const { FluxDispatcher } = require('powercord/webpack');
+const { FluxActions } = require('../constants');
 
-/**
- * Noop compiler. Useful for just making use of the watcher
- * @extends {Compiler}
- */
-class Noop extends Compiler {
-  async compile () {
-    const css = await readFile(this.file, 'utf8');
-    if (this.watcherEnabled) {
-      this._watchFiles();
-    }
-    return css;
-  }
+module.exports = {
+  loadPlaylists: () => {
+    console.log('load playlists');
+  },
 
-  computeCacheKey () {
-    return null;
-  }
-}
+  createPlaylist: () => {
+    console.log('create playlist');
+  },
 
-module.exports = Noop;
+  updatePlaylist: () => {
+    console.log('update playlist');
+  },
+
+  addTrack: () => {
+    console.log('add track to playlist');
+  },
+
+  deleteTrack: () => {
+    console.log('delete track from playlist');
+  },
+
+  purgeCache: () => FluxDispatcher.dispatch({ type: FluxActions.PLAYLIST_PURGE })
+};

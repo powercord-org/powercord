@@ -18,8 +18,9 @@
 
 const { join } = require('path');
 const { existsSync, readdirSync, readFileSync, mkdirSync, writeFileSync } = require('fs');
-const { SETTINGS_FOLDER, FluxActions: { Settings: ActionTypes } } = require('powercord/constants');
+const { SETTINGS_FOLDER } = require('powercord/constants');
 const { Flux, FluxDispatcher } = require('powercord/webpack');
+const ActionTypes = require('./constants');
 
 if (!existsSync(SETTINGS_FOLDER)) {
   mkdirSync(SETTINGS_FOLDER);
