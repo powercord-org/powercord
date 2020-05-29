@@ -26,15 +26,25 @@ if (!existsSync(SETTINGS_FOLDER)) {
   mkdirSync(SETTINGS_FOLDER);
 }
 
-const settings = Object.fromEntries(
-  readdirSync(SETTINGS_FOLDER)
-    .filter(f => !f.startsWith('.') && f.endsWith('.json'))
-    .map(file => [
+function loadSettings (file) {
+  const categoryId = file.split('.')[0];
+  try {
+    return [
       file.split('.')[0],
       JSON.parse(
         readFileSync(join(SETTINGS_FOLDER, file), 'utf8')
       )
-    ])
+    ];
+  } catch (e) {
+    // Maybe corrupted settings; Let's consider them empty
+    return [ categoryId, {} ];
+  }
+}
+
+const settings = Object.fromEntries(
+  readdirSync(SETTINGS_FOLDER)
+    .filter(f => !f.startsWith('.') && f.endsWith('.json'))
+    .map(loadSettings)
 );
 
 function updateSettings (category, newSettings) {
