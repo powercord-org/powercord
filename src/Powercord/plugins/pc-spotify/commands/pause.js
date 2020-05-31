@@ -1,8 +1,10 @@
+const SpotifyAPI = require('../SpotifyAPI');
+
 module.exports = {
   command: 'pause',
   description: 'Pause Spotify playback',
   usage: '{c}',
-  executor (SpotifyPlayer) {
-    return SpotifyPlayer.pause();
+  executor () {
+    return SpotifyAPI.pause();
   }
 };

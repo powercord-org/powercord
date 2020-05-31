@@ -1,8 +1,8 @@
 const { React } = require('powercord/webpack');
 const { formatTime } = require('powercord/util');
-const SpotifyPlayer = require('../SpotifyPlayer');
+const SpotifyAPI = require('../SpotifyAPI');
 
-module.exports = class SeekBar extends React.Component {
+class SeekBar extends React.PureComponent {
   constructor (props) {
     super(props);
 
@@ -10,7 +10,6 @@ module.exports = class SeekBar extends React.Component {
       seeking: false,
       progress: null,
       wasPlaying: false,
-      renderInterval: null,
       listeners: {}
     };
 
@@ -19,9 +18,7 @@ module.exports = class SeekBar extends React.Component {
   }
 
   componentDidMount () {
-    this.setState({
-      renderInterval: setInterval(() => this.forceUpdate(), 1000)
-    });
+    this._renderInterval = setInterval(() => this.forceUpdate(), 1000);
   }
 
   componentDidUpdate (prevProps) {
@@ -39,8 +36,8 @@ module.exports = class SeekBar extends React.Component {
       document.removeEventListener('mouseup', this.endSeek);
     }
 
-    if (this.state.renderInterval) {
-      clearInterval(this.state.renderInterval);
+    if (this._renderInterval) {
+      clearInterval(this._renderInterval);
     }
   }
 
@@ -54,13 +51,13 @@ module.exports = class SeekBar extends React.Component {
       seeking: true,
       wasPlaying: this.props.isPlaying
     });
-    if (!await SpotifyPlayer.pause()) {
+    if (!await SpotifyAPI.pause()) {
       await this.endSeek(true);
     }
   }
 
   seek ({ clientX: mouseX }) {
-    const { x, width } = document.querySelector('.powercord-spotify-seek-bar').getBoundingClientRect();
+    const { x, width } = document.querySelector('.spotify-seek-bar').getBoundingClientRect();
     const delta = mouseX - x;
     const seek = delta / width;
     this.setState({ progress: Math.round(this.props.duration * Math.max(0, Math.min(seek, 1))) });
@@ -75,9 +72,9 @@ module.exports = class SeekBar extends React.Component {
     if (cancel) {
       this.setState({ progress: false });
     } else {
-      await SpotifyPlayer.seek(this.state.progress);
+      await SpotifyAPI.seek(this.state.progress);
       if (this.state.wasPlaying) {
-        await SpotifyPlayer.play();
+        await SpotifyAPI.play();
       }
     }
   }
@@ -87,26 +84,29 @@ module.exports = class SeekBar extends React.Component {
     const progress = (this.props.isPlaying && !this.state.seeking)
       ? rawProgress + (Date.now() - this.props.progressAt)
       : rawProgress;
-
-    const current = Math.min(progress / this.props.duration * 100, 100);
+    const trimmedProgress = Math.min(progress, this.props.duration);
+    const current = trimmedProgress / this.props.duration * 100;
+    if (progress - trimmedProgress > 2000) {
+      this.props.onDurationOverflow();
+    }
 
     return (
-      <div className='powercord-spotify-seek'>
-        <div className='powercord-spotify-seek-elements'>
-          <span className='powercord-spotify-seek-duration'>
+      <div className='spotify-seek'>
+        <div className='spotify-seek-elements'>
+          <span className='spotify-seek-duration'>
             {formatTime(progress)}
           </span>
-          {this.props.children}
-          <span className='powercord-spotify-seek-duration'>
+          <span className='spotify-seek-duration'>
             {formatTime(this.props.duration)}
           </span>
         </div>
-        <div className='powercord-spotify-seek-bar' onMouseDown={(e) => this.startSeek(e)}>
-          <span className='powercord-spotify-seek-bar-progress' style={{ width: `${current}%` }}/>
-          <span className='powercord-spotify-seek-bar-cursor' style={{ left: `${current}%` }}/>
+        <div className='spotify-seek-bar' onMouseDown={(e) => this.startSeek(e)}>
+          <span className='spotify-seek-bar-progress' style={{ width: `${current}%` }}/>
+          <span className='spotify-seek-bar-cursor' style={{ left: `${current}%` }}/>
         </div>
-        <div className='powercord-spotify-seek-spacer'/>
       </div>
     );
   }
-};
+}
+
+module.exports = SeekBar;

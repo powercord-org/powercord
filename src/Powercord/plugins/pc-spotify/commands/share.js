@@ -1,16 +1,18 @@
 const { open: openModal } = require('powercord/modal');
 const { React } = require('powercord/webpack');
-const ShareModal = require('../ShareModal');
+const SpotifyAPI = require('../SpotifyAPI');
+const playerStore = require('../playerStore/store');
+const ShareModal = require('../components/ShareModal');
 
 module.exports = {
   command: 'share',
   description: 'Send specified or currently playing song to current channel',
   usage: '{c} {song name/artist}',
-  async executor (SpotifyPlayer, query) {
+  async executor (query) {
     query = query.join(' ');
 
     if (query.length > 0) {
-      const result = await SpotifyPlayer.search(query, 'track', 14);
+      const result = await SpotifyAPI.search(query, 'track', 14);
       const closestTrack = result.tracks.items[0];
 
       if (result.tracks.items.length > 1) {
@@ -31,11 +33,17 @@ module.exports = {
       };
     }
 
-    if (SpotifyPlayer.player.item.external_urls) {
+    const currentTrack = playerStore.getCurrentTrack();
+    if (!currentTrack) {
       return {
-        send: true,
-        result: SpotifyPlayer.player.item.external_urls.spotify
+        send: false,
+        result: 'You are not currently listening to anything.'
       };
     }
+
+    return {
+      send: true,
+      result: currentTrack.urls.track
+    };
   }
 };

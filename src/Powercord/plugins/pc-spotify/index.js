@@ -1,45 +1,50 @@
-const fs = require('fs').promises;
 const { Plugin } = require('powercord/entities');
-const { open: openModal } = require('powercord/modal');
-const { getOwnerInstance, waitFor } = require('powercord/util');
+const { React, getModule, spotify } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
-const { React, getModule, getModuleByDisplayName, spotify } = require('powercord/webpack');
-
-const Settings = require('./Settings');
-
-const SpotifyPlayer = require('./SpotifyPlayer');
+const { waitFor, getOwnerInstance, findInTree } = require('powercord/util');
+const playerStoreActions = require('./playerStore/actions');
+const playerStore = require('./playerStore/store');
+const songsStoreActions = require('./songsStore/actions');
+const songsStore = require('./songsStore/store');
+const i18n = require('./i18n');
 const commands = require('./commands');
-const Modal = require('./Modal');
-const PlaylistModal = require('./Modal/PlaylistModal');
 
-module.exports = class Spotify extends Plugin {
-  get SpotifyPlayer () {
-    return SpotifyPlayer;
+const SpotifyAPI = require('./SpotifyAPI');
+
+const Settings = require('./components/Settings');
+const Modal = require('./components/Modal');
+
+class Spotify extends Plugin {
+  constructor () {
+    super();
+
+    this._handleSpotifyMessage = this._handleSpotifyMessage.bind(this);
   }
 
-  async startPlugin () {
+  get color () {
+    return '#1ed860';
+  }
+
+  get playerStore () {
+    return playerStore;
+  }
+
+  get songsStore () {
+    return songsStore;
+  }
+
+  get SpotifyAPI () {
+    return SpotifyAPI;
+  }
+
+  startPlugin () {
     this.loadStylesheet('style.scss');
-    this.containerClasses = {
-      ...await getModule([ 'colorStandard' ]),
-      ...await getModule([ 'button', 'lookFilled' ]),
-      ...await getModule([ 'container', 'usernameContainer' ]),
-      ...await getModule([ 'button', 'disabled', 'enabled' ]),
-      ...await getModule([ 'size10', 'size12' ]),
-      ...await getModule([ '_flex' ]),
-      ...await getModule(m => Object.keys(m).join('') === 'subtext')
-    };
-
     this._injectModal();
-    // @todo: fix this._injectListeningAlong();
     this._patchAutoPause();
-    this._patchSpotifySocket();
-    this._patchPremiumDialog();
-
-    this.on('event', ev => {
-      if (ev.type === 'PLAYER_STATE_CHANGED') {
-        this.SpotifyPlayer.player = ev.event.state;
-      }
-    });
+    powercord.on('webSocketMessage:dealer.spotify.com', this._handleSpotifyMessage);
+    SpotifyAPI.getPlayer().then(player => this._handlePlayerState(player));
+    powercord.api.i18n.loadAllStrings(i18n);
+    playerStoreActions.fetchDevices();
 
     powercord.api.settings.registerSettings('pc-spotify', {
       category: this.entityID,
@@ -51,65 +56,38 @@ module.exports = class Spotify extends Plugin {
         })
     });
 
-    Object.values(commands).forEach(cmd => powercord.api.commands.registerCommand({
-      ...cmd,
-      executor: cmd.executor.bind(null, this.SpotifyPlayer)
-    }));
+    Object.values(commands).forEach(cmd => powercord.api.commands.registerCommand(cmd));
   }
 
   pluginWillUnload () {
-    this._patchAutoPause(true);
-    powercord.api.settings.unregisterSettings('pc-spotify');
-    Object.values(commands).forEach(cmd => powercord.api.commands.unregisterCommand(cmd));
     uninject('pc-spotify-modal');
-    uninject('pc-spotify-listeningAlong');
-    uninject('pc-spotify-update');
-    uninject('pc-spotify-premium');
+    this._patchAutoPause(true);
+    powercord.off('webSocketMessage:dealer.spotify.com', this._handleSpotifyMessage);
+    Object.values(commands).forEach(cmd => powercord.api.commands.unregisterCommand(cmd.command));
+    powercord.api.settings.unregisterSettings('pc-spotify');
+    songsStoreActions.purgeSongs();
 
-    getOwnerInstance(document.querySelector(`.${this.containerClasses.container.split(' ')[0]}:not([id])`)).forceUpdate();
-    powercord.off('webSocketMessage:dealer.spotify.com', this._handler);
-
-    const el = document.querySelector('#powercord-spotify-modal');
-    if (el) {
-      el.remove();
-    }
-  }
-
-  async openPremiumDialog () {
-    if (!document.querySelector('.powercord-spotify-premium')) {
-      const PremiumDialog = await getModuleByDisplayName('SpotifyPremiumUpgrade');
-      openModal(() => React.createElement(PremiumDialog, { isPowercord: true }));
-    }
-  }
-
-  openPlaylistModal (songURI) {
-    openModal(() => React.createElement(PlaylistModal, { uri: songURI }));
-  }
-
-  getSpotifyLogo () {
-    return fs.readFile(`${__dirname}/spotify.png`, { encoding: 'base64' });
-  }
-
-  async _injectModal () {
-    const container = await waitFor(`.${this.containerClasses.container.split(' ')[0]}`);
-    const instance = getOwnerInstance(container);
-
-    const modal = React.createElement(this.settings.connectStore(Modal), { main: this });
-    await inject('pc-spotify-modal', instance.__proto__, 'render', (_, res) => [ modal, res ]);
+    const { container } = getModule([ 'container', 'usernameContainer' ], false);
+    const accountContainer = document.querySelector(`section > .${container}`);
+    const instance = getOwnerInstance(accountContainer);
     instance.forceUpdate();
   }
 
-  async _injectListeningAlong () {
-    const classes = await getModule([ 'listeningAlong' ]);
-    const listeningAlong = await waitFor(`.${classes.listeningAlong.split(' ')[0]}`);
-    const instance = getOwnerInstance(listeningAlong);
-    await inject('pc-spotify-listeningAlong', instance.__proto__, 'render', (_, res) => {
-      this._listeningAlongComponent = res;
-      if (this._forceUpdate) {
-        this._forceUpdate();
-      }
-      return null;
+  async _injectModal () {
+    const { container } = await getModule([ 'container', 'usernameContainer' ]);
+    const accountContainer = await waitFor(`section > .${container}`);
+    const instance = getOwnerInstance(accountContainer);
+    await inject('pc-spotify-modal', instance.__proto__, 'render', (_, res) => {
+      const realRes = findInTree(res, t => t.props && t.props.className === container);
+      return [
+        React.createElement(Modal, {
+          entityID: this.entityID,
+          base: realRes
+        }),
+        res
+      ];
     });
+    instance.forceUpdate();
   }
 
   _patchAutoPause (revert) {
@@ -123,53 +101,147 @@ module.exports = class Spotify extends Plugin {
     }
   }
 
-  async _patchSpotifySocket () {
-    this._handler = this._handleData.bind(this);
-    powercord.on('webSocketMessage:dealer.spotify.com', this._handler);
+  _handleSpotifyMessage (msg) {
+    const data = JSON.parse(msg.data);
+    if (!data.type === 'message' || !data.payloads) {
+      return;
+    }
 
-    this.emit('event', {
-      type: 'PLAYER_STATE_CHANGED',
-      event: {
-        state: await SpotifyPlayer.getPlayer()
-      }
-    });
-  }
-
-  async _patchPremiumDialog () {
-    const PremiumDialog = await getModuleByDisplayName('SpotifyPremiumUpgrade');
-
-    inject('pc-spotify-premium', PremiumDialog.prototype, 'render', function (args, res) {
-      if (this.props.isPowercord) {
-        res.props.children[1].props.children[1].props.children = 'Sorry pal, looks like you aren\'t a Spotify Premium member! Premium members are able to control Spotify through Discord with Powercord\'s Spotify modal';
-        res.props.children[1].props.children[1].props.className += ' powercord-spotify-premium';
-      }
-      return res;
-    });
-  }
-
-  _handleData (data) {
-    const parsedData = JSON.parse(data.data);
-    const collectionReg = /hm:\/\/collection\/collection\/[\w\d]+\/json/i;
-    if (parsedData.type === 'message' && parsedData.payloads) {
-      if (parsedData.uri === 'wss://event') {
-        for (const payload of parsedData.payloads || []) {
-          for (const ev of payload.events || []) {
-            this.emit('event', ev);
+    const collectionRegex = /hm:\/\/collection\/collection\/[\w\d]+\/json/i;
+    const playlistRegex = /hm:\/\/playlist\/v2\/playlist\/[\w\d]+/i;
+    switch (true) {
+      case data.uri === 'wss://event':
+        for (const payload of data.payloads || []) {
+          for (const event of payload.events || []) {
+            this._handleSpotifyEvent(event);
           }
         }
-      } else if (collectionReg.test(parsedData.uri)) {
-        for (let payload of parsedData.payloads || []) {
-          payload = JSON.parse(payload);
-          for (const item of payload.items || []) {
-            this.emit('event', item);
+        break;
+      case collectionRegex.test(data.uri): {
+        const currentTrack = playerStore.getCurrentTrack();
+        if (!currentTrack) {
+          // Useless to further process the event
+          return;
+        }
+
+        for (const rawPayload of data.payloads || []) {
+          const payload = JSON.parse(rawPayload);
+          for (const track of payload.items) {
+            if (track.identifier === currentTrack.id) {
+              playerStoreActions.updateCurrentLibraryState(
+                track.removed ? playerStore.LibraryState.NOT_IN_LIBRARY : playerStore.LibraryState.IN_LIBRARY
+              );
+            }
           }
         }
+        break;
       }
+      case playlistRegex.test(data.uri):
+        for (const hermes of data.payloads || []) {
+          const payload = this._decodePlaylistHermes(hermes);
+          if (payload.added) {
+            songsStoreActions.addTrack(payload.playlistId, payload.trackId);
+          } else {
+            songsStoreActions.deleteTrack(payload.playlistId, payload.trackId);
+          }
+        }
+        break;
     }
   }
-};
 
-// eslint-disable-next-line no-constant-condition
-if (false) {
-  module.exports = require('./_rewrite');
+  _handleSpotifyEvent (evt) {
+    switch (evt.type) {
+      case 'PLAYER_STATE_CHANGED':
+        this._handlePlayerState(evt.event.state);
+        break;
+      case 'DEVICE_STATE_CHANGED':
+        playerStoreActions.fetchDevices();
+        break;
+    }
+  }
+
+  _handlePlayerState (state) {
+    if (!state.timestamp) {
+      return;
+    }
+
+    // Handle track
+    const currentTrack = playerStore.getCurrentTrack();
+    if (!currentTrack || currentTrack.id !== state.item.id) {
+      if (this._libraryTimeout) {
+        clearTimeout(this._libraryTimeout);
+      }
+      if (!state.item.is_local) {
+        this._libraryTimeout = setTimeout(() => {
+          SpotifyAPI.checkLibrary(state.item.id).then(r => playerStoreActions.updateCurrentLibraryState(
+            r.body
+              ? playerStore.LibraryState.IN_LIBRARY
+              : playerStore.LibraryState.NOT_IN_LIBRARY
+          ));
+        }, 1500);
+      } else {
+        playerStoreActions.updateCurrentLibraryState(playerStore.LibraryState.LOCAL_SONG);
+      }
+      playerStoreActions.updateCurrentTrack({
+        id: state.item.id,
+        uri: state.item.uri,
+        name: state.item.name,
+        isLocal: state.item.is_local,
+        duration: state.item.duration_ms,
+        explicit: state.item.explicit,
+        cover: state.item.album && state.item.album.images[0] ? state.item.album.images[0].url : null,
+        artists: state.item.artists.map(a => a.name).join(', '),
+        album: state.item.album ? state.item.album.name : null,
+        urls: {
+          track: state.item.external_urls.spotify,
+          album: state.item.album ? state.item.album.external_urls.spotify : null
+        }
+      });
+    }
+
+    // Handle state
+    playerStoreActions.updatePlayerState({
+      repeat: state.repeat_state === 'track'
+        ? playerStore.RepeatState.REPEAT_TRACK
+        : state.repeat_state === 'context'
+          ? playerStore.RepeatState.REPEAT_CONTEXT
+          : playerStore.RepeatState.NO_REPEAT,
+      shuffle: state.shuffle_state,
+      canRepeat: !state.actions.disallows.toggling_repeat_context,
+      canRepeatOne: !state.actions.disallows.toggling_repeat_track,
+      canShuffle: !state.actions.disallows.toggling_shuffle,
+      spotifyRecordedProgress: state.progress_ms,
+      playing: state.is_playing,
+      volume: state.device.volume_percent
+    });
+  }
+
+  _decodePlaylistHermes (hermes) {
+    const hex = Buffer.from(hermes, 'base64').toString('hex');
+    const decoded = this._decodeHermes(hex);
+    const trackDetails = this._decodeHermes(decoded[3].hex.substring(18));
+    return {
+      playlistId: decoded[0].utf8.split(':').pop(),
+      trackId: trackDetails[0].utf8.replace(/[\n$]/g, '').split(':').pop(),
+      added: trackDetails.length === 2
+    };
+  }
+
+  _decodeHermes (hex) {
+    const res = [];
+    for (let i = 0; i < hex.length;) {
+      const length = parseInt(hex.substring(i + 2, i + 4), 16);
+      const rawStr = hex.substring(i + 4, i + 4 + (length * 2));
+      i += (length * 2) + 4;
+      res.push({
+        hex: rawStr,
+        get utf8 () {
+          return Buffer.from(rawStr, 'hex').toString('utf8');
+        }
+      });
+    }
+    return res;
+  }
 }
+
+module.exports = Spotify;
