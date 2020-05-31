@@ -13,6 +13,7 @@ class SeekBar extends React.PureComponent {
       listeners: {}
     };
 
+    this._overflowFired = false;
     this.seek = this.seek.bind(this);
     this.endSeek = this.endSeek.bind(this, false);
   }
@@ -86,8 +87,12 @@ class SeekBar extends React.PureComponent {
       : rawProgress;
     const trimmedProgress = Math.min(progress, this.props.duration);
     const current = trimmedProgress / this.props.duration * 100;
-    if (progress - trimmedProgress > 2000) {
+    const isOverflowing = progress - trimmedProgress > 2000;
+    if (isOverflowing && !this._overflowFired) {
+      this._overflowFired = true;
       this.props.onDurationOverflow();
+    } else if (!isOverflowing && this._overflowFired) {
+      this._overflowFired = false;
     }
 
     return (
