@@ -7,6 +7,7 @@ function formatTracks (spotifyTracks) {
     spotifyTracks.map(t => [
       t.id || t.uri,
       {
+        uri: t.uri,
         name: t.name,
         isLocal: t.is_local,
         duration: t.duration_ms,
@@ -41,6 +42,7 @@ module.exports = {
         albums.map(({ album }) => [
           album.id,
           {
+            uri: album.uri,
             name: album.name,
             tracks: formatTracks(album.tracks.items),
             tracksLoaded: !album.tracks.next
@@ -67,6 +69,7 @@ module.exports = {
         playlists.map(playlist => [
           playlist.id,
           {
+            uri: playlist.uri,
             name: playlist.name,
             icon: playlist.images[0] ? playlist.images[0].url : null,
             editable: playlist.owner.display_name === powercord.account.spotify || playlist.collaborative,

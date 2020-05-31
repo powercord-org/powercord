@@ -105,20 +105,33 @@ class ContextMenu extends React.Component {
         id={id}
         label={item.name}
         hint={item.tracksLoaded ? `${Object.keys(item.tracks).length} tracks` : Messages.DEFAULT_INPUT_PLACEHOLDER}
+        action={() => setTimeout(() => SpotifyAPI.play({ context_uri: item.uri }), 10)}
       >
         {item.tracksLoaded
-          ? this._renderSongs(item.tracks)
+          ? this._renderSongs(item.tracks, item.uri)
           : null}
       </Menu.MenuItem>
     ));
   }
 
-  _renderSongs (list) {
+  _renderSongs (list, uri) {
     return Object.entries(list).map(([ id, item ]) => (
       <Menu.MenuItem
         id={id}
         label={item.name}
         hint={formatTime(item.duration)}
+        action={() => setTimeout(() => {
+          if (uri) {
+            SpotifyAPI.play({
+              context_uri: uri,
+              offset: { uri: item.uri }
+            });
+          } else {
+            SpotifyAPI.play({
+              uris: [ item.uri ]
+            });
+          }
+        }, 10)}
       />
     ));
   }
@@ -128,26 +141,31 @@ class ContextMenu extends React.Component {
       return null;
     }
 
+    const cannotAll = !this.props.playerState.canRepeat && !this.props.playerState.canRepeatOne;
+    const isOff = this.props.playerState.repeat === playerStore.RepeatState.NO_REPEAT;
+    const isContext = this.props.playerState.repeat === playerStore.RepeatState.REPEAT_CONTEXT;
+    const isTrack = this.props.playerState.repeat === playerStore.RepeatState.REPEAT_TRACK;
+
     return (
       <Menu.MenuGroup>
-        <Menu.MenuItem id='repeat' label='Repeat Mode'>
+        <Menu.MenuItem id='repeat' label='Repeat Mode' disabled={cannotAll}>
           <Menu.MenuItem
-            id='off'
+            id={`off${isOff ? '-active' : ''}`}
             label='No Repeat'
             action={() => SpotifyAPI.setRepeatState('off')}
-            disabled={this.props.playerState.repeat === playerStore.RepeatState.NO_REPEAT}
+            disabled={isOff}
           />
           <Menu.MenuItem
-            id='context'
+            id={`context${isContext ? '-active' : ''}`}
             label='Repeat'
             action={() => SpotifyAPI.setRepeatState('context')}
-            disabled={this.props.playerState.repeat === playerStore.RepeatState.REPEAT_CONTEXT}
+            disabled={isContext || !this.props.playerState.canRepeat}
           />
           <Menu.MenuItem
-            id='track'
+            id={`track${isTrack ? '-active' : ''}`}
             label='Repeat Track'
             action={() => SpotifyAPI.setRepeatState('track')}
-            disabled={this.props.playerState.repeat === playerStore.RepeatState.REPEAT_TRACK}
+            disabled={isTrack || !this.props.playerState.canRepeatOne}
           />
         </Menu.MenuItem>
         <Menu.MenuCheckboxItem

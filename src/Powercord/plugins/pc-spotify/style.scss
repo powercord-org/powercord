@@ -151,7 +151,7 @@
 }
 
 #powercord-spotify-menu {
-  .disabled-1WRMNA[id^='powercord-spotify-menu-devices--'], .disabled-1WRMNA[id^='powercord-spotify-menu-repeat--'] {
+  .disabled-1WRMNA[id^='powercord-spotify-menu-devices--'], #powercord-spotify-menu-repeat + div [id*='-active'] {
     color: var(--spotify-color) !important;
     opacity: 1 !important;
   }
