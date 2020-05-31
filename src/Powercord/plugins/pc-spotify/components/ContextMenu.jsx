@@ -21,14 +21,16 @@ class ContextMenu extends React.Component {
   }
 
   componentDidMount () {
-    if (!this.props.songsLoaded) {
-      songsStoreActions.loadSongs();
-    }
-    if (!this.props.topSongsLoaded) {
-      songsStoreActions.loadTopSongs();
-    }
-    if (!this.props.albumsLoaded) {
-      songsStoreActions.loadAlbums();
+    if (powercord.account && powercord.account.spotify) {
+      if (!this.props.songsLoaded) {
+        songsStoreActions.loadSongs();
+      }
+      if (!this.props.topSongsLoaded) {
+        songsStoreActions.loadTopSongs();
+      }
+      if (!this.props.albumsLoaded) {
+        songsStoreActions.loadAlbums();
+      }
     }
     if (!this.props.playlistsLoaded) {
       songsStoreActions.loadPlaylists();

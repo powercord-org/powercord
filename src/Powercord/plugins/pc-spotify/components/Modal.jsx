@@ -137,16 +137,17 @@ class Modal extends React.PureComponent {
   }
 
   renderExtraControls () {
-    if (!this.props.getSetting('showControls', true) || !powercord.account || !powercord.account.spotify) {
+    if (!this.props.getSetting('showControls', true)) {
       return null;
     }
 
+    const hasCoolFeatures = powercord.account && powercord.account.spotify;
     return (
       <div className='spotify-extra-controls'>
-        {this.renderAddToLibrary()}
+        {hasCoolFeatures && this.renderAddToLibrary()}
         {this.renderShuffle()}
         {this.renderRepeat()}
-        {this.renderAddToPlaylist()}
+        {hasCoolFeatures && this.renderAddToPlaylist()}
       </div>
     );
   }
