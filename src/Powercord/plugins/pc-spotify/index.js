@@ -174,7 +174,7 @@ class Spotify extends Plugin {
       if (!state.item.is_local) {
         this._libraryTimeout = setTimeout(() => {
           SpotifyAPI.checkLibrary(state.item.id).then(r => playerStoreActions.updateCurrentLibraryState(
-            r.body
+            r.body[0]
               ? playerStore.LibraryState.IN_LIBRARY
               : playerStore.LibraryState.NOT_IN_LIBRARY
           ));
