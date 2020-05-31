@@ -27,8 +27,14 @@ function handleAlbumsLoaded (albumsData) {
 }
 
 function handleAlbumTracksLoaded (albumId, tracks) {
-  albums[albumId].tracksLoaded = true;
-  albums[albumId].tracks = tracks;
+  albums = {
+    ...albums,
+    [albumId]: {
+      ...albums[albumId],
+      tracksLoaded: true,
+      tracks
+    }
+  };
 }
 
 function handlePlaylistsLoaded (playlistsData) {
@@ -37,19 +43,35 @@ function handlePlaylistsLoaded (playlistsData) {
 }
 
 function handlePlaylistTracksLoaded (playlistId, tracks) {
-  playlists[playlistId].tracksLoaded = true;
-  playlists[playlistId].tracks = tracks;
+  playlists = {
+    ...playlists,
+    [playlistId]: {
+      ...playlists[playlistId],
+      tracksLoaded: true,
+      tracks
+    }
+  };
 }
 
 function handlePlaylistTrackAdded (playlistId, trackId, trackDetails) {
   if (playlists[playlistId]) { // If the playlist doesn't exist it means it hasn't been loaded; Let's skip the event
-    playlists[playlistId].tracks[trackId] = trackDetails;
+    playlists = {
+      ...playlists,
+      [playlistId]: {
+        ...playlists[playlistId],
+        tracks: {
+          ...playlists[playlistId].tracks,
+          [trackId]: trackDetails
+        }
+      }
+    };
   }
 }
 
 function handlePlaylistTrackRemoved (playlistId, trackId) {
   if (playlists[playlistId]) { // If the playlist doesn't exist it means it hasn't been loaded; Let's skip the event
     delete playlists[playlistId].tracks[trackId];
+    playlists = global._.cloneDeep(playlists);
   }
 }
 

@@ -16,6 +16,7 @@ const Tooltip = AsyncComponent.from(getModuleByDisplayName('Tooltip'));
 class Modal extends React.PureComponent {
   constructor (props) {
     super(props);
+    this._rerenderScheduled = false;
     this.state = {
       hover: false
     };
@@ -198,6 +199,15 @@ class Modal extends React.PureComponent {
 
   renderButton (tooltipText, icon, onClick, disabled, className) {
     const isPremium = getModule([ 'isSpotifyPremium' ], false).isSpotifyPremium();
+    if (isPremium === null && !this._rerenderScheduled) {
+      this._rerenderScheduled = true;
+      setTimeout(() => this.forceUpdate(), 1e3);
+    }
+
+    if (!isPremium) {
+      return null;
+    }
+
     return {
       ...this.props.base.props.children[2].props.children[0],
       props: {
@@ -206,10 +216,8 @@ class Modal extends React.PureComponent {
           className,
           icon
         }),
-        tooltipText: !isPremium
-          ? Messages.SPOTIFY_NOT_PREMIUM
-          : tooltipText(),
-        disabled: !isPremium || disabled,
+        tooltipText: tooltipText(),
+        disabled,
         onClick
       }
     };
