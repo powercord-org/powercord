@@ -171,7 +171,7 @@ class Spotify extends Plugin {
       if (this._libraryTimeout) {
         clearTimeout(this._libraryTimeout);
       }
-      if (!state.item.is_local) {
+      if (!state.item.is_local && powercord.account && powercord.account.spotify) {
         this._libraryTimeout = setTimeout(() => {
           SpotifyAPI.checkLibrary(state.item.id).then(r => playerStoreActions.updateCurrentLibraryState(
             r.body[0]
@@ -179,7 +179,7 @@ class Spotify extends Plugin {
               : playerStore.LibraryState.NOT_IN_LIBRARY
           ));
         }, 1500);
-      } else {
+      } else if (state.item.is_local) {
         playerStoreActions.updateCurrentLibraryState(playerStore.LibraryState.LOCAL_SONG);
       }
       playerStoreActions.updateCurrentTrack({
