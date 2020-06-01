@@ -8,7 +8,7 @@ const songsStore = require('../songsStore/store');
 const songsStoreActions = require('../songsStore/actions');
 const SpotifyAPI = require('../SpotifyAPI');
 
-class AddToPlaylist extends React.Component {
+class AddToPlaylist extends React.PureComponent {
   componentDidMount () {
     if (!this.props.loaded) {
       songsStoreActions.loadPlaylists();

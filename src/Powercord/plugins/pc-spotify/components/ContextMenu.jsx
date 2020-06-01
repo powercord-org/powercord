@@ -10,7 +10,7 @@ const playerStore = require('../playerStore/store');
 const SpotifyAPI = require('../SpotifyAPI');
 const AddToPlaylist = require('./AddToPlaylist');
 
-class ContextMenu extends React.Component {
+class ContextMenu extends React.PureComponent {
   constructor (props) {
     super(props);
     this.handleVolumeSlide = global._.debounce(this.handleVolumeSlide.bind(this), 200);
@@ -38,13 +38,15 @@ class ContextMenu extends React.Component {
   }
 
   render () {
+    const isPremium = getModule([ 'isSpotifyPremium' ], false).isSpotifyPremium();
+
     return (
       <Menu.Menu navId='powercord-spotify-menu' onClose={closeContextMenu}>
-        {this.renderDevices()}
-        {this.renderSongs()}
-        {this.renderPlaybackSettings()}
-        {this.renderVolume()}
-        {this.renderSave()}
+        {isPremium && this.renderDevices()}
+        {isPremium && this.renderSongs()}
+        {isPremium && this.renderPlaybackSettings()}
+        {isPremium && this.renderVolume()}
+        {isPremium && this.renderSave()}
         {this.renderActions()}
       </Menu.Menu>
     );
@@ -54,7 +56,7 @@ class ContextMenu extends React.Component {
     return (
       <Menu.MenuGroup>
         <Menu.MenuItem id='devices' label='Devices'>
-          {this.props.devices.sort(d => !d.is_active).map((device, i) => (
+          {this.props.devices.sort(d => -Number(d.is_active)).map((device, i) => (
             <>
               <Menu.MenuItem
                 id={device.id}
@@ -235,7 +237,10 @@ class ContextMenu extends React.Component {
         <Menu.MenuItem
           id='open-spotify'
           label='Open in Spotify'
-          action={() => shell.openExternal(this.props.currentTrack.uri)}
+          action={() => {
+            const protocol = getModule([ 'isProtocolRegistered', '_dispatchToken' ], false).isProtocolRegistered();
+            shell.openExternal(protocol ? this.props.currentTrack.uri : this.props.currentTrack.urls.track);
+          }}
         />
         <Menu.MenuItem
           id='send-album'

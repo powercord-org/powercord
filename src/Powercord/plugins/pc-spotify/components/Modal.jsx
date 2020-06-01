@@ -1,3 +1,4 @@
+const { shell } = require('electron');
 const { React, Flux, getModule, getModuleByDisplayName, contextMenu, i18n: { Messages } } = require('powercord/webpack');
 const { AsyncComponent, Icons: { FontAwesome } } = require('powercord/components');
 const { open: openModal } = require('powercord/modal');
@@ -25,6 +26,12 @@ class Modal extends React.PureComponent {
   render () {
     if (this.props.devices.length === 0 || !this.props.currentTrack) {
       return null;
+    }
+
+    const isPremium = getModule([ 'isSpotifyPremium' ], false).isSpotifyPremium();
+    if (isPremium === null && !this._rerenderScheduled) {
+      this._rerenderScheduled = true;
+      setTimeout(() => this.forceUpdate(), 1e3);
     }
 
     return (
@@ -70,7 +77,13 @@ class Modal extends React.PureComponent {
         className: `${this.props.base.props.className || ''}`,
         children: [
           (
-            <div className={avatarWrapper}>
+            <div
+              className={avatarWrapper}
+              onClick={() => {
+                const protocol = !getModule([ 'isProtocolRegistered', '_dispatchToken' ], false).isProtocolRegistered();
+                shell.openExternal(protocol ? this.props.currentTrack.uri : this.props.currentTrack.urls.track);
+              }}
+            >
               <Tooltip text={this.props.currentTrack.album} shouldShow={this.props.currentTrack.album}>
                 {(props) => (
                   <img
@@ -138,7 +151,8 @@ class Modal extends React.PureComponent {
   }
 
   renderExtraControls () {
-    if (!this.props.getSetting('showControls', true)) {
+    const isPremium = getModule([ 'isSpotifyPremium' ], false).isSpotifyPremium();
+    if (!this.props.getSetting('showControls', true) || !isPremium) {
       return null;
     }
 
@@ -199,11 +213,6 @@ class Modal extends React.PureComponent {
 
   renderButton (tooltipText, icon, onClick, disabled, className) {
     const isPremium = getModule([ 'isSpotifyPremium' ], false).isSpotifyPremium();
-    if (isPremium === null && !this._rerenderScheduled) {
-      this._rerenderScheduled = true;
-      setTimeout(() => this.forceUpdate(), 1e3);
-    }
-
     if (!isPremium) {
       return null;
     }

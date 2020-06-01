@@ -3,7 +3,7 @@ const { FormTitle, Text } = require('powercord/components');
 const { Modal } = require('powercord/components/modal');
 const { close: closeModal } = require('powercord/modal');
 
-class Track extends React.Component {
+class Track extends React.PureComponent {
   handleClick (item) {
     return messages.sendMessage(
       channels.getChannelId(),
@@ -24,7 +24,7 @@ class Track extends React.Component {
   }
 }
 
-module.exports = class ShareModal extends React.Component {
+module.exports = class ShareModal extends React.PureComponent {
   constructor () {
     super();
 

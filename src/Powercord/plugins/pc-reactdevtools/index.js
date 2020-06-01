@@ -6,6 +6,7 @@ const { get } = require('powercord/http');
 
 const unzip = require('unzip-crx');
 
+// @todo: Throw this plugin away and use a better loading method
 module.exports = class ReactDevtools extends Plugin {
   get path () {
     return join(__dirname, 'rdt.crx');

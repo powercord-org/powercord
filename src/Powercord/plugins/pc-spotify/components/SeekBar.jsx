@@ -19,7 +19,7 @@ class SeekBar extends React.PureComponent {
   }
 
   componentDidMount () {
-    this._renderInterval = setInterval(() => this.forceUpdate(), 1000);
+    this._renderInterval = setInterval(() => this.forceUpdate(), 500);
   }
 
   componentDidUpdate (prevProps) {
