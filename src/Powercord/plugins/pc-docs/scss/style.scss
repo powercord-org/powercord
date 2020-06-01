@@ -118,6 +118,10 @@
   }
 
   &-titlebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     background-color: var(--background-secondary);
     border-bottom: 1px solid var(--background-tertiary);
     color: var(--text-normal);

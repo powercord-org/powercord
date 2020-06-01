@@ -8,7 +8,7 @@ const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
 
 const documentCache = {};
 
-class DocPage extends React.Component {
+class DocPage extends React.PureComponent {
   constructor (props) {
     super(props);
 

@@ -1,7 +1,7 @@
 const { React, getModule, getModuleByDisplayName, contextMenu } = require('powercord/webpack');
 const { PopoutWindow, Tooltip, ContextMenu, Icons: { CodeBraces } } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
-const { getOwnerInstance } = require('powercord/util');
+const { getOwnerInstance, waitFor } = require('powercord/util');
 const { Plugin } = require('powercord/entities');
 const SdkWindow = require('./components/SdkWindow');
 
@@ -82,7 +82,7 @@ module.exports = class SDK extends Plugin {
     });
 
     const { title } = getModule([ 'title', 'chatContent' ], false);
-    getOwnerInstance(document.querySelector(`.${title}`)).forceUpdate();
+    getOwnerInstance(await waitFor(`.${title}`)).forceUpdate();
   }
 
   async _openSdk () {

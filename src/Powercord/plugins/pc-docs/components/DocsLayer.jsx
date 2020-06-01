@@ -13,7 +13,7 @@ let sectionsCache = [
   }
 ];
 
-class DocsLayer extends React.Component {
+class DocsLayer extends React.PureComponent {
   constructor () {
     super();
     this.state = {
@@ -66,8 +66,8 @@ class DocsLayer extends React.Component {
 
   openPopout () {
     getModule([ 'popLayer' ], false).popLayer();
-    getModule([ 'setAlwaysOnTop', 'open' ], false).open('DISCORD_POWERCORD_DOCUMENTATION', () => (
-      <PopoutWindow windowId='DISCORD_POWERCORD_DOCUMENTATION'>
+    getModule([ 'setAlwaysOnTop', 'open' ], false).open('DISCORD_POWERCORD_DOCUMENTATION', (key) => (
+      <PopoutWindow windowKey={key}>
         <ConnectedDocsLayer popout={true}/>
       </PopoutWindow>
     ));
