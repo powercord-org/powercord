@@ -87,6 +87,7 @@
   "POWERCORD_SETTINGS_SYNC_DESC": "Synchronizuj wszystkie twoje ustawienia Powercorda pomiędzy urządzeniami. Wymaga konta Powercord!",
   "POWERCORD_SETTINGS_TRANSPARENT": "Przezroczyste okno",
   "POWERCORD_SETTINGS_TRANSPARENT_DESC": "Sprawia, że wszystkie okna Discorda są przezroczyste, przydatne w tworzeniu motywów.\n****UWAGA:**** To zepsuje **przyciąganie okien** na Windowsie. **Akceleracja sprzętowa** musi być **wyłączona** na Linuxie. W niektórych przypadkach możesz napotkać problemy i mieć czarne tło, na przykład gdy okno jest na górze lub na dole z powodu rozdzielczości monitora lub gdy narzędzia programistyczne są otwarte i zadokowane. **Wymaga ponownego uruchomienia Discorda**.",
+  "POWERCORD_SETTINGS_TRANSPARENT_GLASSCORD": "Wygląda na to że masz zainstalowanego Glasscorda, co oznacza, że nie możesz zmienić tego ustawienia bezpośrednio w Powercordzie. Dowiedz się więcej o konfigurowaniu Glasscorda [tutaj]({glasscordCfgUrl})",
   "POWERCORD_SNIPPET_APPLIED": "Snippet Zastosowany",
   "POWERCORD_SNIPPET_APPLY": "Zastosuj Snippet",
   "POWERCORD_SNIPPET_LINE1": "Snippet z #css-snippets zastosowany {date, date, medium} o {date, time, medium}",
