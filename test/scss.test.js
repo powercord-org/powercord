@@ -8,13 +8,6 @@ const getPath = (type) => join(__dirname, 'test-data/scss', type, 'style.scss');
 const expected = `.test {
   color: red;
 }`;
-const expectedLong = `.test {
-  color: red;
-}
-
-.test {
-  color: blue;
-}`;
 
 describe('SCSS Compilation', () => {
   beforeEach(() => rmdir(cachePath));
