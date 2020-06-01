@@ -87,6 +87,7 @@
   "POWERCORD_SETTINGS_SYNC_DESC": "Tüm Powercord ayarlarınızı cihazlar arasında senkronize edin. Bir Powercord hesabı gerektirir!",
   "POWERCORD_SETTINGS_TRANSPARENT": "Şeffaf Pencere",
   "POWERCORD_SETTINGS_TRANSPARENT_DESC": "Discord tarafından açılan tüm pencereleri saydam hale getirir, temalar için kullanışlıdır.\n****DİKKAT:**** Bu, Windows'ta **pencere yapışmasını** kıracaktır. Linux'da**Donanım ivmesi** **off** konuma getirilmelidir. Bazı durumlarda sorunlarla karşılaşabilir ve siyah arka plana sahip olabilirsiniz, DevTools açıkken veya monitör çözünürlüğünüzden dolayı pencerenizin alttan, üstten kesilmesi gibi. **Yeniden başlatma gerektirir**.",
+  "POWERCORD_SETTINGS_TRANSPARENT_GLASSCORD": "Görünüşe göre Glasscord kurulu, bu demek oluyor ki bu ayarı doğrudan Powercord içinden güncelleyemezsiniz. [Buradan]({glasscordCfgUrl}) Glasscord'u yapılandırmak hakkında daha fazla bilgi edinebilirsiniz",
   "POWERCORD_SNIPPET_APPLIED": "Snippet Uygulandı",
   "POWERCORD_SNIPPET_APPLY": "Snippet Uygula",
   "POWERCORD_SNIPPET_LINE1": "#css-snippets 'den alınan snippet {date, date, medium} {date, time, medium} tarihinde uygulandı",
