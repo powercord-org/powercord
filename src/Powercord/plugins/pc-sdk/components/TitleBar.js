@@ -6,6 +6,7 @@ module.exports = AsyncComponent.from((async () => {
   const windows = titleBar({ type: 'WINDOWS' }).type;
   return (props) => {
     const res = windows(props);
+    res.props.className += ' powercord-sdk-title';
     res.props.children[0].props.children = React.createElement(SdkWordmark, { height: 16 });
     return res;
   };

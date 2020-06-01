@@ -1,17 +1,5 @@
-@use 'category';
-
 .powercord-sdk, .powercord-sdk * {
   box-sizing: border-box;
-}
-
-.titleBar-AC4pGV {
-  background-color: var(--background-tertiary);
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  margin-top: 0;
-  padding-top: 4px;
 }
 
 .powercord-sdk {
@@ -19,6 +7,16 @@
   height: calc(100% - 22px);
   margin-top: 22px;
   padding: 20px;
+
+  &-title {
+    background-color: var(--background-tertiary);
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    margin-top: 0;
+    padding-top: 4px;
+  }
 
   .description-3_Ncsb {
     white-space: pre-line;
