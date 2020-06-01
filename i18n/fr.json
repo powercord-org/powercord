@@ -60,6 +60,7 @@
   "POWERCORD_QUICKCSS_SETTINGS_MATCH_BRACKETS": "Crochets correspondant",
   "POWERCORD_QUICKCSS_SETTINGS_MATCH_BRACKETS_DESC": "Va surligner les crochet correspondant dès que les curseur est a coté.",
   "POWERCORD_QUICKCSS_SETTINGS_TABS": "Utiliser des tabulations pour l'indentation",
+  "POWERCORD_QUICKCSS_SETTINGS_WRAP": "Emballer les longues lignes",
   "POWERCORD_REFRESH_ACCOUNTS": "Rafraîchir les comptes",
   "POWERCORD_SETTINGS_ADVANCED_DESC": "Ne touchez à rien ici si vous n'êtes pas sur de ce que vous faites. Des choses inattendues peuvent arriver à votre chat.",
   "POWERCORD_SETTINGS_BACKEND": "URL du Backend",
