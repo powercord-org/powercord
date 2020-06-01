@@ -72,13 +72,21 @@ module.exports = class GeneralSettings extends React.Component {
           >
             {Messages.POWERCORD_SETTINGS_DEBUG_LOGS}
           </SwitchItem>
-          <SwitchItem
-            note={Messages.POWERCORD_SETTINGS_OVERLAY_DESC}
-            value={getSetting('openOverlayDevTools', false)}
-            onChange={() => toggleSetting('openOverlayDevTools')}
-          >
-            {Messages.POWERCORD_SETTINGS_OVERLAY}
-          </SwitchItem>
+          {powercord.api.labs.isExperimentEnabled('pc-sdk')
+            ? <SwitchItem
+              note={'Powercord\'s SDK is a toolkit made to make plugin and theme developer\'s life easier. Once enabled, you can access it through the icon at the top right hand corner of Discord.'}
+              value={getSetting('enableSdk', false)}
+              onChange={() => toggleSetting('enableSdk')}
+            >
+              Enable Powercord SDK
+            </SwitchItem>
+            : <SwitchItem
+              note={Messages.POWERCORD_SETTINGS_OVERLAY_DESC}
+              value={getSetting('openOverlayDevTools', false)}
+              onChange={() => toggleSetting('openOverlayDevTools')}
+            >
+              {Messages.POWERCORD_SETTINGS_OVERLAY}
+            </SwitchItem>}
           <SwitchItem
             note={Messages.POWERCORD_SETTINGS_KEEP_TOKEN_DESC}
             value={getSetting('hideToken', true)}

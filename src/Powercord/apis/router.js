@@ -9,6 +9,10 @@ const { getModule } = require('powercord/webpack');
  */
 
 /**
+ * @typedef PowercordDeeplink
+ */
+
+/**
  * Powercord custom router API
  * @property {PowercordRoute[]} routes Registered routes
  */
@@ -50,7 +54,7 @@ class RouterAPI extends API {
    * @param {String} path Route to unregister
    * @emits RouterAPI#routeRemoved
    */
-  unregisterScope (path) {
+  unregisterRoute (path) {
     if (this.routes.find(r => r.path === path)) {
       this.routes = this.routes.filter(r => r.path !== path);
       this.emit('routeRemoved', path);

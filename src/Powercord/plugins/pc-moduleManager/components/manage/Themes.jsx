@@ -1,5 +1,5 @@
 const { React, getModule, i18n: { Messages } } = require('powercord/webpack');
-const { TabBar, PopoutWindow } = require('powercord/components');
+const { TabBar } = require('powercord/components');
 const ThemeSettings = require('./ThemeSettings');
 const QuickCSS = require('./QuickCSS');
 const Base = require('./Base');
@@ -37,17 +37,7 @@ class Themes extends Base {
         </div>
         {this.state.tab === 'INSTALLED'
           ? super.render()
-          : <QuickCSS openPopout={async () => {
-            const popoutModule = await getModule([ 'setAlwaysOnTop', 'open' ]);
-            popoutModule.open('DISCORD_POWERCORD_QUICKCSS', (key) => (
-              <PopoutWindow
-                windowKey={key}
-                title='QuickCSS'
-              >
-                <QuickCSS popout={true}/>
-              </PopoutWindow>
-            ));
-          }}/>}
+          : <QuickCSS openPopout={this.props.openPopout}/>}
       </>
     );
   }

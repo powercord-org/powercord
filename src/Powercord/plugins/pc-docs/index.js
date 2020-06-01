@@ -12,7 +12,6 @@ module.exports = class Documentation extends Plugin {
       name: 'Documentation',
       date: 1572393600000,
       description: 'Powercord documentation for making plugin and themes',
-      usable: true,
       callback: enabled => {
         if (enabled) {
           this.addDocsItems();
@@ -29,6 +28,7 @@ module.exports = class Documentation extends Plugin {
 
   pluginWillUnload () {
     uninject('pc-docs-tab');
+    powercord.api.labs.unregisterExperiment('pc-docs');
   }
 
   async addDocsItems () {

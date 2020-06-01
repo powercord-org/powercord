@@ -1,7 +1,7 @@
 const { existsSync } = require('fs');
 const { writeFile, readFile } = require('fs').promises;
 const { React, constants: { Permissions }, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
-const { Icons: { Plugin: PluginIcon, Theme } } = require('powercord/components');
+const { PopoutWindow, Icons: { Plugin: PluginIcon, Theme } } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
 const { forceUpdateElement } = require('powercord/util');
 const { Plugin } = require('powercord/entities');
@@ -15,6 +15,7 @@ const i18n = require('./licenses/index');
 const Store = require('./components/store/Store');
 const Plugins = require('./components/manage/Plugins');
 const Themes = require('./components/manage/Themes');
+const QuickCSS = require('./components/manage/QuickCSS');
 const SnippetButton = require('./components/SnippetButton');
 
 module.exports = class ModuleManager extends Plugin {
@@ -71,7 +72,10 @@ module.exports = class ModuleManager extends Plugin {
     powercord.api.settings.registerSettings('pc-moduleManager-themes', {
       category: this.entityID,
       label: () => Messages.POWERCORD_THEMES,
-      render: Themes
+      render: (props) => React.createElement(Themes, {
+        openPopout: () => this._openQuickCSSPopout(),
+        ...props
+      })
     });
 
     if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-deeplinks')) {
@@ -266,5 +270,15 @@ module.exports = class ModuleManager extends Plugin {
     this._quickCSS = css.trim();
     this._quickCSSElement.innerHTML = this._quickCSS;
     await writeFile(this._quickCSSFile, this._quickCSS);
+  }
+
+  async _openQuickCSSPopout () {
+    const popoutModule = await getModule([ 'setAlwaysOnTop', 'open' ]);
+    popoutModule.open('DISCORD_POWERCORD_QUICKCSS', (key) => (
+      React.createElement(PopoutWindow, {
+        windowKey: key,
+        title: 'QuickCSS'
+      }, React.createElement(QuickCSS, { popout: true }))
+    ));
   }
 };

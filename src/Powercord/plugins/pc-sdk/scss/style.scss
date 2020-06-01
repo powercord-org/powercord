@@ -1,0 +1,44 @@
+@use 'category';
+
+.powercord-sdk, .powercord-sdk * {
+  box-sizing: border-box;
+}
+
+.titleBar-AC4pGV {
+  background-color: var(--background-tertiary);
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  margin-top: 0;
+  padding-top: 4px;
+}
+
+.powercord-sdk {
+  width: 100%;
+  height: calc(100% - 22px);
+  margin-top: 22px;
+  padding: 20px;
+
+  .description-3_Ncsb {
+    white-space: pre-line;
+
+    strong strong {
+      color: #f04747;
+    }
+  }
+
+  .category {
+    &:not(:first-child) {
+      margin-top: 46px;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: thin solid var(--background-modifier-accent);
+    }
+  }
+}

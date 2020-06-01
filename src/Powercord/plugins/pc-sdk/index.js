@@ -1,59 +1,106 @@
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
-const { Tooltip, Icons: { CodeBraces } } = require('powercord/components');
+const { React, getModule, getModuleByDisplayName, contextMenu } = require('powercord/webpack');
+const { PopoutWindow, Tooltip, ContextMenu, Icons: { CodeBraces } } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
+const { getOwnerInstance } = require('powercord/util');
 const { Plugin } = require('powercord/entities');
 const SdkWindow = require('./components/SdkWindow');
 
 module.exports = class SDK extends Plugin {
+  constructor () {
+    super();
+    this._storeListener = this._storeListener.bind(this);
+  }
+
   async startPlugin () {
-    if (this.settings.get('__experimental_2019-11-29', false)) {
-      this.log('Experimental SDK enabled.');
-      this._addPopoutIcon();
-    }
+    powercord.api.labs.registerExperiment({
+      id: 'pc-sdk',
+      name: 'Sandbox Development Kit',
+      date: 1591011180411,
+      description: 'Powercord\'s sandbox development kit for plugin and theme developers',
+      callback: () => void 0
+    });
+
+    this.loadStylesheet('scss/style.scss');
+    this.sdkEnabled = powercord.settings.get('sdkEnabled');
+    powercord.api.settings.store.addChangeListener(this._storeListener);
+    this._addPopoutIcon();
   }
 
   pluginWillUnload () {
     uninject('pc-sdk-icon');
+    powercord.api.settings.store.removeChangeListener(this._storeListener);
+    powercord.api.labs.unregisterExperiment('pc-sdk');
   }
 
   async _addPopoutIcon () {
     const classes = await getModule([ 'iconWrapper', 'clickable' ]);
     const HeaderBarContainer = await getModuleByDisplayName('HeaderBarContainer');
     inject('pc-sdk-icon', HeaderBarContainer.prototype, 'renderLoggedIn', (args, res) => {
-      const Switcher = React.createElement(Tooltip, {
-        text: 'SDK',
-        position: 'bottom'
-      }, React.createElement('div', {
-        className: [ classes.iconWrapper, classes.clickable ].join(' ')
-      }, React.createElement(CodeBraces, {
-        className: classes.icon,
-        onClick: async () => {
-          const popoutModule = await getModule([ 'setAlwaysOnTop', 'open' ]);
-          popoutModule.open('DISCORD_POWERCORD_SANDBOX', () => React.createElement(SdkWindow));
-          popoutModule.setAlwaysOnTop('DISCORD_POWERCORD_SANDBOX', true);
-        }
-      })));
+      if (powercord.api.labs.isExperimentEnabled('pc-sdk') && this.sdkEnabled) {
+        const Switcher = React.createElement(Tooltip, {
+          text: 'SDK',
+          position: 'bottom'
+        }, React.createElement('div', {
+          className: [ classes.iconWrapper, classes.clickable ].join(' ')
+        }, React.createElement(CodeBraces, {
+          className: classes.icon,
+          onClick: () => this._openSdk(),
+          onContextMenu: (e) => {
+            contextMenu.openContextMenu(e, () =>
+              React.createElement(ContextMenu, {
+                width: '50px',
+                itemGroups: [ [
+                  {
+                    type: 'button',
+                    name: 'Open Powercord SDK',
+                    onClick: () => this._openSdk()
+                  },
+                  {
+                    type: 'button',
+                    name: 'Open QuickCSS pop-out',
+                    onClick: () => powercord.pluginManager.get('pc-moduleManager')._openQuickCSSPopout()
+                  }
+                ], [
+                  {
+                    type: 'button',
+                    color: 'colorDanger',
+                    name: 'Completely restart Discord',
+                    onClick: () => window.reloadElectronApp()
+                  }
+                ] ]
+              })
+            );
+          }
+        })));
 
-      if (!res.props.toolbar) {
-        res.props.toolbar = Switcher;
-      } else {
+        if (!res.props.toolbar) {
+          res.props.toolbar = React.createElement(React.Fragment, { children: [] });
+        }
         res.props.toolbar.props.children.push(Switcher);
       }
-
       return res;
     });
+
+    const { title } = getModule([ 'title', 'chatContent' ], false);
+    getOwnerInstance(document.querySelector(`.${title}`)).forceUpdate();
   }
 
-  __toggleExperimental () {
-    const current = this.settings.get('__experimental_2019-11-29', false);
-    if (!current) {
-      this.warn('WARNING: This will enable the experimental SDK, that is NOT functional yet.');
-      this.warn('WARNING: Powercord Staff won\'t accept bug reports from this experimental version, nor provide support!');
-      this.warn('WARNING: Use it at your own risk! It\'s labeled experimental for a reason.');
-    } else {
-      this.log('Experimental SDK disabled.');
+  async _openSdk () {
+    const popoutModule = await getModule([ 'setAlwaysOnTop', 'open' ]);
+    popoutModule.open('DISCORD_POWERCORD_SANDBOX', (key) =>
+      React.createElement(PopoutWindow, {
+        windowKey: key,
+        title: 'QuickCSS'
+      }, React.createElement(SdkWindow))
+    );
+    popoutModule.setAlwaysOnTop('DISCORD_POWERCORD_SANDBOX', true);
+  }
+
+  _storeListener () {
+    if (this.sdkEnabled !== powercord.settings.get('sdkEnabled')) {
+      this.sdkEnabled = powercord.settings.get('sdkEnabled');
+      const { title } = getModule([ 'title', 'chatContent' ], false);
+      getOwnerInstance(document.querySelector(`.${title}`)).forceUpdate();
     }
-    this.settings.set('__experimental_2019-11-29', !current);
-    powercord.pluginManager.remount(this.entityID);
   }
 };
