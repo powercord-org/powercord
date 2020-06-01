@@ -80,7 +80,7 @@ class Modal extends React.PureComponent {
             <div
               className={avatarWrapper}
               onClick={() => {
-                const protocol = !getModule([ 'isProtocolRegistered', '_dispatchToken' ], false).isProtocolRegistered();
+                const protocol = getModule([ 'isProtocolRegistered', '_dispatchToken' ], false).isProtocolRegistered();
                 shell.openExternal(protocol ? this.props.currentTrack.uri : this.props.currentTrack.urls.track);
               }}
             >
