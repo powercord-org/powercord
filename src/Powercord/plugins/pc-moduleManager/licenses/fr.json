@@ -24,7 +24,7 @@
   "POWERCORD_PLUGINS_LICENSE_PERMISSIONS": "Autorisations",
   "POWERCORD_PLUGINS_LICENSE_PRIVATE_USE_DESC": "Ce logiciel peut être utilisé et modifié en privé.",
   "POWERCORD_PLUGINS_LICENSE_PRIVATE_USE_NAME": "Utilisation privée",
-  "POWERCORD_PLUGINS_LICENSE_SAME_LICENSE_DESC": "Les modifications doivent être distribuée sous la même licence que celle du logiciel d'origine. Dans certains cas, une licence similaire peut être utilisée.",
+  "POWERCORD_PLUGINS_LICENSE_SAME_LICENSE_DESC": "Les modifications doivent être distribuées sous la même licence que celle du logiciel d'origine. Dans certains cas, une licence similaire peut être utilisée.",
   "POWERCORD_PLUGINS_LICENSE_SAME_LICENSE_NAME": "Même licence",
   "POWERCORD_PLUGINS_LICENSE_TRADEMARK_USE_DESC": "Cette licence indique explicitement qu'elle n'accorde PAS de droits de marque, même si les licences sans une telle déclaration n'accordent probablement aucun droit de marque implicite.",
   "POWERCORD_PLUGINS_LICENSE_TRADEMARK_USE_NAME": "Utilisation de la marque",
