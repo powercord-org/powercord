@@ -8,7 +8,7 @@
   "POWERCORD_PLUGINS_LICENSE_DESC_Apache-2.0": "Une licence permissive dont les principales conditions exigent la préservation des droits d'auteur et des avis de licence. Les contributeurs fournissent un octroi explicite de droits de brevet. Les œuvres sous licence, les modifications et les œuvres plus importantes peuvent être distribuées sous différentes conditions et sans code source.",
   "POWERCORD_PLUGINS_LICENSE_DESC_Artistic-2.0": "Très appréciée par la communauté Perl, la licence Artistic exige que les versions modifiées du logiciel n'empêchent pas les utilisateurs d'utiliser la version standard.",
   "POWERCORD_PLUGINS_LICENSE_DESC_BSD-2-Clause": "Une licence permissive qui se décline en deux variantes, la BSD 2-Clause et la BSD 3-Clause. Toutes deux présentent des différences très minimes par rapport à la licence du MIT.",
-  "POWERCORD_PLUGINS_LICENSE_DESC_BSD-3-Clause-Clear": "Une variante de la licence BSD 3  qui n'accorde explicitement aucun droit de brevet.",
+  "POWERCORD_PLUGINS_LICENSE_DESC_BSD-3-Clause-Clear": "Une variante de la licence BSD 3 qui n'accorde explicitement aucun droit de brevet.",
   "POWERCORD_PLUGINS_LICENSE_DISCLAIMER": "Ceci n'est pas un avis juridique. Données tirées de [choosealicense.com]({url}).",
   "POWERCORD_PLUGINS_LICENSE_DISCLOSE_SOURCE_DESC": "Le code source doit être disponible une fois le logiciel distribué.",
   "POWERCORD_PLUGINS_LICENSE_DISCLOSE_SOURCE_NAME": "Divulguer la source",
