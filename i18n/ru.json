@@ -87,6 +87,7 @@
   "POWERCORD_SETTINGS_SYNC_DESC": "Синхронизируйте все ваши настройки Powercord между устройствами. Нужен аккаунт Powercord!",
   "POWERCORD_SETTINGS_TRANSPARENT": "Прозрачное окно",
   "POWERCORD_SETTINGS_TRANSPARENT_DESC": "Делает любые окна открытыми Discord прозрачными, полезно для создания тем.\n****ПРЕДУПРЕЖДЕНИЕ:**** Это поломает **прикрепление окон** на Windows. **Аппаратное ускорение** должно быть **выключено** на Linux. Вы можете столкнуться с проблемами и иметь черный фон в некоторых случаях, например, когда окно обрезается сверху или снизу из-за разрешения монитора или когда devtools открыты и закреплены. **Требуется перезагрузка**.",
+  "POWERCORD_SETTINGS_TRANSPARENT_GLASSCORD": "Похоже что у Вас уже установлен Glasscord, это означает, что вы не можете обновить этот параметр непосредственно через Powercord. Узнать подробнее о конфигурации Glasscord можно [здесь]({glasscordCfgUrl})",
   "POWERCORD_SNIPPET_APPLIED": "Сниппет применён",
   "POWERCORD_SNIPPET_APPLY": "Применить сниппет",
   "POWERCORD_SNIPPET_LINE1": "Сниппер из #css-snippets применён {date, date, medium} в {date, time, medium}",
