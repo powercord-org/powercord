@@ -75,8 +75,8 @@ module.exports = class GeneralSettings extends React.Component {
           {powercord.api.labs.isExperimentEnabled('pc-sdk')
             ? <SwitchItem
               note={'Powercord\'s SDK is a toolkit made to make plugin and theme developer\'s life easier. Once enabled, you can access it through the icon at the top right hand corner of Discord.'}
-              value={getSetting('enableSdk', false)}
-              onChange={() => toggleSetting('enableSdk')}
+              value={getSetting('sdkEnabled', false)}
+              onChange={() => toggleSetting('sdkEnabled')}
             >
               Enable Powercord SDK
             </SwitchItem>
