@@ -4,7 +4,7 @@ const { SwitchItem } = require('powercord/components/settings');
 class Settings extends React.PureComponent {
   render () {
     return (
-      <div className='category'>
+      <div id='sdk-settings' className='category'>
         <h2>SDK Settings</h2>
         <SwitchItem
           note={Messages.POWERCORD_SETTINGS_OVERLAY_DESC}

@@ -4,9 +4,9 @@
 
 .powercord-sdk {
   width: 100%;
-  height: calc(100% - 22px);
   margin-top: 22px;
-  padding: 20px;
+  height: calc(100% - 22px);
+  background-color: var(--background-primary);
 
   &-title {
     background-color: var(--background-tertiary);
@@ -18,12 +18,22 @@
     padding-top: 4px;
   }
 
-  .description-3_Ncsb {
-    white-space: pre-line;
+  .title-3qD0b- {
+    box-shadow: var(--elevation-low);
 
-    strong strong {
-      color: #f04747;
+    .children-19S4PO {
+      div:first-child {
+        margin-left: 8px;
+      }
+
+      div:last-child {
+        margin-left: auto;
+      }
     }
+  }
+
+  &-container {
+    padding: 20px;
   }
 
   .category {
@@ -37,6 +47,26 @@
       margin-bottom: 16px;
       padding-bottom: 16px;
       border-bottom: thin solid var(--background-modifier-accent);
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    .description-3_Ncsb {
+      white-space: pre-line;
+
+      strong strong {
+        color: #f04747;
+      }
+    }
+  }
+
+  .splash-buttons button {
+    margin-bottom: 8px;
+
+    &:not(:last-child) {
+      margin-right: 8px;
     }
   }
 }

@@ -6,6 +6,12 @@ module.exports = AsyncComponent.from((async () => {
   const SettingsView = await getModuleByDisplayName('SettingsView');
 
   class DocsSidebarView extends StandardSidebarView {
+    render () {
+      const res = super.render();
+      res.props.className += ' powercord-documentation';
+      return res;
+    }
+
     renderTools () {
       if (this.props.popout) {
         return null;
@@ -38,7 +44,7 @@ module.exports = AsyncComponent.from((async () => {
       if (this.props.popout) {
         return (
           <>
-            <div className='powercord-documentation-titlebar'>
+            <div className='powercord-docs-titlebar'>
               <Tooltip
                 text={this.props.windowOnTop ? Messages.POPOUT_REMOVE_FROM_TOP : Messages.POPOUT_STAY_ON_TOP}
                 position='left'

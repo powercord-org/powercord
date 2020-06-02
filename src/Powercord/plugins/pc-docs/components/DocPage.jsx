@@ -94,8 +94,8 @@ class DocPage extends React.PureComponent {
 
     // render
     return <div>
-      <FormTitle tag='h2' className='powercord-documentation-title'>{document.name}</FormTitle>
-      <div className='powercord-documentation'>{render}</div>
+      <FormTitle tag='h2' className='powercord-docs-title'>{document.name}</FormTitle>
+      <div className='powercord-docs'>{render}</div>
     </div>;
   }
 

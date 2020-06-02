@@ -19,4 +19,3 @@ if (document.readyState === 'loading') {
   init();
 }
 
-// require('electron').remote.getCurrentWebContents().openDevTools({ mode: 'detach' });
