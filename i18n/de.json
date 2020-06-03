@@ -87,6 +87,7 @@
   "POWERCORD_SETTINGS_SYNC_DESC": "Synchronisiere alle deine Powercord Einstellungen zwischen allen deinen Geräten. Dazu ist ein separates Powercord Konto erforderlich!",
   "POWERCORD_SETTINGS_TRANSPARENT": "Transparentes Fenster",
   "POWERCORD_SETTINGS_TRANSPARENT_DESC": "Macht alle Fenster die durch Discord geöffnet werden transparent, hilfreich für Theme-Entwicklung.\n****WARNUNG:**** Hierdurch wird das dynamische \"Einschnappen\" von Fenstern in Windows nicht mehr funktionieren. **Hardwarebeschleunigung** muss auf Linux **ausgeschaltet** sein. Es kann zu Fehlern kommen. Beispiele: Ein schwarzer Hintergrund, abgeschnittene (Discord) Fenster - oben sowie unten, vor allem in Kombination mit geöffneten DevTools. **Neustart erforderlich**.",
+  "POWERCORD_SETTINGS_TRANSPARENT_GLASSCORD": "Es sieht so aus, als hättest du Glasscord installiert, was bedeutet, dass du diese Einstellung nicht direkt in Powercord einstellen kannst. Du kannst [hier]({glasscordCfgUrl}) mehr über die Konfiguration von Glasscord erfahren",
   "POWERCORD_SNIPPET_APPLIED": "Snippet angewandt",
   "POWERCORD_SNIPPET_APPLY": "Snippet anwenden",
   "POWERCORD_SNIPPET_LINE1": "Snippet aus #css-snippets angewandt am {date, date, medium} um {date, time, medium}",
