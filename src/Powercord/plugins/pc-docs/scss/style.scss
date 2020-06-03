@@ -46,14 +46,15 @@
   }
 
   h2, h3, h4, h5 {
+    margin: 0;
     text-transform: uppercase;
     font-weight: 600;
-    margin-top: 35px;
-    margin-bottom: 15px;
+    padding-top: 35px;
+    padding-bottom: 15px;
   }
 
   h2 {
-    margin-top: 55px;
+    padding-top: 55px;
     font-size: 22px;
   }
 
@@ -173,5 +174,13 @@
 
   svg {
     height: 100%;
+  }
+}
+
+.powercord-documentation {
+  [data-item-id^="_part/"] {
+    margin-left: 16px;
+    padding-top: 3px;
+    padding-bottom: 3px;
   }
 }

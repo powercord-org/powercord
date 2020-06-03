@@ -55,7 +55,6 @@
         height: 100%;
         display: block;
         background-color: var(--spotify-color);
-        cursor: pointer;
       }
 
       &-cursor {
@@ -67,9 +66,14 @@
         border-radius: 50%;
         border: 2px #b9bbbe solid;
         background-color: #fff;
-        cursor: pointer;
         opacity: 0;
         transition: opacity .2s;
+      }
+    }
+
+    &:not(.no-premium) {
+      .spotify-seek-bar-progress, .spotify-seek-bar-cursor {
+        cursor: pointer;
       }
     }
   }
@@ -91,11 +95,13 @@
         height: 12px;
       }
 
-      &-bar {
-        height: 4px;
+      &:not(.no-premium) {
+        .spotify-seek-bar {
+          height: 4px;
 
-        &-cursor {
-          opacity: 1;
+          &-cursor {
+            opacity: 1;
+          }
         }
       }
     }

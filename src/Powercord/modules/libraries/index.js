@@ -10,12 +10,10 @@ module.exports = () => {
         elem.setAttribute('rel', 'stylesheet');
         elem.setAttribute('href', library.url);
         break;
-
       case 'js':
         elem = document.createElement('script');
         elem.setAttribute('src', library.url);
         break;
-
       default:
         console.error('Unsupported library type', library.type, 'for library', library.url);
     }

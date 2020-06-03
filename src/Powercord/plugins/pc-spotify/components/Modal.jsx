@@ -47,6 +47,7 @@ class Modal extends React.PureComponent {
         {this.renderFromBase()}
         {this.renderExtraControls()}
         <SeekBar
+          isPremium={isPremium}
           isPlaying={this.props.playerState.playing}
           duration={this.props.currentTrack.duration}
           progress={this.props.playerState.spotifyRecordedProgress}

@@ -1,5 +1,6 @@
 const { React, Flux, getModule } = require('powercord/webpack');
 const { PopoutWindow, Spinner } = require('powercord/components');
+const { getOwnerInstance } = require('powercord/util');
 const { WEBSITE } = require('powercord/constants');
 const { get } = require('powercord/http');
 const DocPage = require('./DocPage');
@@ -33,13 +34,28 @@ class DocsLayer extends React.PureComponent {
           section: 'HEADER',
           label: section.metadata.name
         },
-        ...section.docs.map(doc => ({
-          section: `${section.id}/${doc.id}`,
-          label: doc.name,
-          element: () => (
-            <DocPage category={section.id} doc={doc.id} setSection={section => this.setState({ section })}/>
-          )
-        }))
+        ...section.docs.map(doc => {
+          const tab = {
+            section: `${section.id}/${doc.id}`,
+            label: doc.name,
+            element: () => (
+              <DocPage
+                doc={doc.id}
+                category={section.id}
+                setSection={section => this.setState({ section })}
+                onScrollTo={(part) => this.scrollTo(part)}
+              />
+            )
+          };
+          return [
+            tab,
+            ...doc.parts.map(part => ({
+              section: `_part/${section.id}/${doc.id}/${part.replace(/[^\w]+/ig, '-').replace(/^-+|-+$/g, '').toLowerCase()}`,
+              label: part,
+              predicate: () => this.state.section === tab.section
+            }))
+          ];
+        }).flat()
       );
     });
     sectionsCache.shift();
@@ -51,9 +67,6 @@ class DocsLayer extends React.PureComponent {
 
   render () {
     return <SettingsView
-      onPopout={() => this.openPopout()}
-      onClose={() => getModule([ 'popLayer' ], false).popLayer()}
-      onSetSection={section => this.setState({ section })}
       sections={this.state.sections}
       section={this.state.section}
       theme={this.props.theme}
@@ -61,7 +74,29 @@ class DocsLayer extends React.PureComponent {
       guestWindow={this.props.guestWindow}
       windowOnTop={this.props.windowOnTop}
       popout={this.props.popout}
+      onPopout={() => this.openPopout()}
+      onClose={() => getModule([ 'popLayer' ], false).popLayer()}
+      onSetSection={section => {
+        if (section.startsWith('_part/')) {
+          this.scrollTo(section.split('/').pop());
+        } else if (this.state.section === section) {
+          this.scrollTo();
+        } else {
+          this.setState({ section });
+        }
+      }}
     />;
+  }
+
+  scrollTo (part) {
+    const element = document.querySelector('.powercord-documentation div + div > div > div');
+    const scroller = getOwnerInstance(element);
+    if (part) {
+      const partElement = document.getElementById(part);
+      scroller.scrollIntoView(partElement);
+    } else {
+      scroller.scrollTo(0);
+    }
   }
 
   openPopout () {

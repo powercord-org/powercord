@@ -21,6 +21,12 @@ class SplashScreen extends React.PureComponent {
     };
   }
 
+  componentWillUnmount () {
+    if (this.state.opened) {
+      this.closeSplashScreen(true);
+    }
+  }
+
   render () {
     return (
       <div id='splash-screen' className='category'>
@@ -36,7 +42,7 @@ class SplashScreen extends React.PureComponent {
 
   renderClosed () {
     return (
-      <Button onClick={() => this.openSplashScreen()}>Open splash screen</Button>
+      <Button onClick={() => this.openSplashScreen()}>Open Splash Screen</Button>
     );
   }
 
@@ -45,30 +51,30 @@ class SplashScreen extends React.PureComponent {
       <>
         <Flex className='splash-buttons' wrap={Flex.Wrap.WRAP}>
           <Button color={Button.Colors.YELLOW} onClick={() => this.closeSplashScreen(true) | this.openSplashScreen(true)}>
-            Restart splash screen
+            Restart Splash Screen
           </Button>
           <Button color={Button.Colors.RED} onClick={() => this.closeSplashScreen()}>
-            Close splash screen
+            Close Splash Screen
           </Button>
         </Flex>
         <Flex className='splash-buttons' wrap={Flex.Wrap.WRAP}>
           <Button onClick={() => this.setSplashStage(SplashStages.CHECKING_FOR_UPDATES)}>
-            Checking for updates
+            Checking For Updates
           </Button>
           <Button onClick={() => this.setSplashStage(SplashStages.DOWNLOADING_UPDATES)}>
-            Downloading updates
+            Downloading Updates
           </Button>
           <Button onClick={() => this.setSplashStage(SplashStages.INSTALLING_UPDATES)}>
-            Installing updates
+            Installing Updates
           </Button>
           <Button onClick={() => this.setSplashStage(SplashStages.UPDATES_FAILED)}>
-            Updates failed
+            Updates Failed
           </Button>
           <Button onClick={() => this.setSplashStage(SplashStages.LUCKY_DAY)}>
             It's your lucky day!
           </Button>
           <Button onClick={() => this.setSplashStage(SplashStages.STARTING_UP)}>
-            Starting up
+            Starting Up
           </Button>
         </Flex>
       </>

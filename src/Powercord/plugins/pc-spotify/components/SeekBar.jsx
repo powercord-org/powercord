@@ -43,6 +43,10 @@ class SeekBar extends React.PureComponent {
   }
 
   async startSeek (e) {
+    if (!this.props.isPremium) {
+      return;
+    }
+
     this.seek(e);
     document.addEventListener('mousemove', this.seek);
     document.addEventListener('mouseup', this.endSeek);
@@ -52,7 +56,7 @@ class SeekBar extends React.PureComponent {
       seeking: true,
       wasPlaying: this.props.isPlaying
     });
-    if (!await SpotifyAPI.pause()) {
+    if (this.props.isPlaying && !await SpotifyAPI.pause()) {
       await this.endSeek(true);
     }
   }
@@ -96,7 +100,7 @@ class SeekBar extends React.PureComponent {
     }
 
     return (
-      <div className='spotify-seek'>
+      <div className={[ 'spotify-seek', !this.props.isPremium && 'no-premium' ].filter(Boolean).join(' ')}>
         <div className='spotify-seek-elements'>
           <span className='spotify-seek-duration'>
             {formatTime(progress)}

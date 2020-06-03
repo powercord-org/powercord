@@ -17,8 +17,8 @@ class SdkWindow extends React.PureComponent {
     return (
       <>
         <TitleBar type='WINDOWS' windowKey={'DISCORD_POWERCORD_SANDBOX'} themeOverride={this.props.theme}/>
+        {this.renderHeaderBar()}
         <div className='powercord-text powercord-sdk'>
-          {this.renderHeaderBar()}
           <VerticalScroller _pass={{ ref: this.scrollerRef }}>
             <div className='powercord-sdk-container'>
               <ForceUI/>
@@ -34,7 +34,7 @@ class SdkWindow extends React.PureComponent {
   renderHeaderBar () {
     const { title } = getModule([ 'title', 'chatContent' ], false);
     return (
-      <HeaderBar transparent={false} className={title}>
+      <HeaderBar transparent={false} className={[ title, 'powercord-sdk-header' ].join(' ')}>
         {this.renderIcon('Force UI', 'Arch', 'force-ui', 'right')}
         {this.renderIcon('Discord Splash Screen', 'Arch', 'splash-screen')}
         {this.renderIcon('SDK Settings', 'Gear', 'sdk-settings')}
