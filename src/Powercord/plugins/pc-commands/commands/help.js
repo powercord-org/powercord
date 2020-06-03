@@ -57,12 +57,11 @@ module.exports = {
     }
 
     return {
-      commands: powercord.api.commands
-        .filter(command =>
-          command.command
-            .toLowerCase()
-            .includes(args[0])
-        ),
+      commands: powercord.api.commands.filter(command =>
+        [ command.command, ...(command.aliases || []) ].some(commandName =>
+          commandName.includes(args[0])
+        )
+      ),
       header: 'powercord command list'
     };
   }

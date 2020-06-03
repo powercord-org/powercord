@@ -44,20 +44,18 @@ module.exports = async function injectAutocomplete () {
     const [ command, ...args ] = textValue.slice(prefix.length).split(' ');
     const currentWord = textarea.getCurrentWord();
 
-    if (prefix.endsWith(' ') || prefix.length > 1 || prefix.length === 1) {
-      currentWord.word = command && args[0] ? `${prefix}${command} ${args.join(' ')}` : textValue;
-      currentWord.isAtStart = args.length === 0;
+    const currentCommand = powercord.api.commands.find(c => [ c.command, ...(c.aliases || []) ].includes(command));
+    if (!currentCommand || !currentCommand.showTyping) {
+      typing.stopTyping(this.props.channel.id);
     }
+
+    currentWord.word = command && args[0] ? `${prefix}${command} ${args.join(' ')}` : textValue;
+    currentWord.isAtStart = args.length === 0 || !currentCommand.autocomplete;
 
     const { word, isAtStart } = currentWord;
 
     const query = word ? word.slice(isAtStart || command ? prefix.length : 0).toLowerCase() : '';
     const type = Object.keys(autocompleteOptions).find(option => autocompleteOptions[option].matches(isAtStart ? prefix : word, query, isAtStart));
-
-    const currentCommand = powercord.api.commands.find(c => [ c.command, ...(c.aliases || []) ].includes(command));
-    if (!currentCommand || !currentCommand.showTyping) {
-      typing.stopTyping(this.props.channel.id);
-    }
 
     return {
       prefix: word,
