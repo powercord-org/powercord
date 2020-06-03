@@ -1,78 +1,75 @@
 const { Plugin } = require('powercord/entities');
-const { React, getAllModules } = require('powercord/webpack');
+const { React, getModule, hljs } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
+const { findInReactTree } = require('powercord/util');
 const { clipboard } = require('electron');
 
 module.exports = class Codeblocks extends Plugin {
-  constructor () {
-    super();
-
-    this.commentRegEx = new RegExp(/<span class="hljs-comment">(.|\n)*?<\/span>/, 'g');
-  }
-
   async startPlugin () {
     this.loadStylesheet('style.scss');
     this.patchCodeblocks();
   }
 
   pluginWillUnload () {
-    uninject('pc-codeblocks-styling');
+    uninject('pc-codeblocks-inline');
+    uninject('pc-codeblocks-embed');
   }
 
   async patchCodeblocks () {
-    const LazyWebpackLoader = (await getAllModules([ 'LazyLibrary' ]))[1];
-    inject('pc-codeblocks-styling', LazyWebpackLoader, 'LazyLibrary', (args, res) => {
-      if (res.type === 'pre') {
-        this.injectCodeblock(args, res);
+    const parser = await getModule([ 'parse', 'parseTopic' ]);
+    inject('pc-codeblocks-inline', parser.defaultRules.codeBlock, 'react', (args, res) => {
+      this.injectCodeblock(args, res);
+
+      return res;
+    });
+
+    inject('pc-codeblocks-embed', parser, 'parseAllowLinks', (_, res) => {
+      for (const children of res) {
+        const codeblock = findInReactTree(children, n => n.type && n.type.name === '');
+        if (codeblock) {
+          this.injectCodeblock(null, codeblock);
+        }
       }
 
       return res;
     });
   }
 
-  injectCodeblock (args) {
-    const { render } = args[0];
-    args[0].render = (hljs) => {
-      const res = render(hljs);
+  injectCodeblock (args, codeblock) {
+    const { render } = codeblock.props;
+
+    codeblock.props.render = (codeblock) => {
+      const res = render(codeblock);
 
       const { children } = res.props;
-      const lang = children.props.className.split(' ').find(className => !className.includes('-') && className !== 'hljs');
+      const lang = args ? args[0].lang : children.props.className.split(' ').find(className => !className.includes('-') && className !== 'hljs');
 
       if (children.props.dangerouslySetInnerHTML) {
-        children.props.children = this.renderCodeblock(lang, children.props.dangerouslySetInnerHTML.__html);
+        children.props.children = this.renderCodeblock(lang, children.props.dangerouslySetInnerHTML);
 
         delete children.props.dangerouslySetInnerHTML;
       } else if (typeof children.props.children === 'string') {
-        children.props.children = this.renderCodeblock(lang, children.props.children, true);
+        children.props.children = this.renderCodeblock(lang, children.props.children);
       }
 
       return res;
     };
   }
 
-  renderCodeblock (lang, content, fallback = false) {
-    const getProps = (content) => fallback ? ({ children: content }) : ({ dangerouslySetInnerHTML: { __html: content } });
-
-    let lineNumber = 0;
-    const tableContent = content.split(/\r?\n/).map(content =>
-      React.createElement('tr', {}, React.createElement('td', {
-        className: 'powercord-codeblock-ln-line',
-        'data-line-number': ++lineNumber
-      }), React.createElement('td', {
-        className: 'powercord-codeblock-ln-code',
-        ...getProps(content)
-      }))
-    );
-
+  renderCodeblock (lang, content) {
     const children = [];
+    const isDangerouslySetInnerHTML = typeof content === 'object';
+    const isValidLanguage = typeof hljs.getLanguage(lang) !== 'undefined';
 
-    children.push(lang && React.createElement('div', {
+    children.push(React.createElement('div', {
+      dangerouslySetInnerHTML: isDangerouslySetInnerHTML ? content : null
+    }, isDangerouslySetInnerHTML ? null : content), isValidLanguage && React.createElement('div', {
       className: 'powercord-codeblock-lang'
-    }, lang), React.createElement('table', {
-      className: 'powercord-codeblock-ln'
-    }, tableContent), React.createElement('button', {
+    }, lang), React.createElement('div', {
+      className: 'powercord-lines'
+    }), React.createElement('button', {
       className: 'powercord-codeblock-copy-btn',
-      onClick: this._onClickHandler.bind(this)
+      onClick: this._onClickHandler
     }, 'copy'));
 
     return children;
@@ -93,7 +90,7 @@ module.exports = class Codeblocks extends Plugin {
       target.classList.remove('copied');
     }, 1000);
 
-    const codeContent = target.previousSibling;
+    const codeContent = target.parentElement.children[0];
     const pcCopy = codeContent.querySelector('[data-powercord-codeblock-copy]');
     if (pcCopy) {
       return clipboard.writeText(pcCopy.textContent);
