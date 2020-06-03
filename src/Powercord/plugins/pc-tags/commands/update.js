@@ -53,7 +53,7 @@ module.exports = {
         header: 'Tags available to update',
         commands: settings
           .getKeys()
-          .filter(tag => tag.toLowerCase().includes(args[0].toLowerCase()))
+          .filter(tag => tag.toLowerCase().includes(args[0]))
           .map(tag => ({
             command: tag,
             description: settings.get(tag)

@@ -30,7 +30,9 @@ module.exports = class GeneralSettings extends React.Component {
         />
         <TextInput
           defaultValue={getSetting('prefix', '.')}
-          onChange={p => updateSetting('prefix', !p ? '.' : p)}
+          onChange={p => updateSetting('prefix', !p ? '.' : p.replace(/\s+(?=\S)|(?<=\s)\s+/g, '').toLowerCase())}
+          onBlur={({ target }) => target.value = getSetting('prefix', '.')}
+          error={getSetting('prefix', '.') === '/' ? 'Prefix should not be set to `/` as it is already in use by Discord and may disable Powercord autocompletions.' : ''}
         >
           {Messages.POWERCORD_COMMAND_PREFIX}
         </TextInput>

@@ -15,8 +15,8 @@ class Settings extends React.PureComponent {
         </SwitchItem>
         <SwitchItem
           note={<>
-            Binds useful short aliases to developer tools' console to let you test things out more quickly.
-            You can see the full reference of those aliases in <a href='#'>the documentation</a>.
+            Binds useful short aliases to the developer tools' console, letting you test things out more quickly.
+            You can find a full reference of available aliases in <a href='#'>the documentation</a>.
           </>}
           value={this.props.getSetting('openOverlayDevTools', false)}
           onChange={() => this.props.toggleSetting('openOverlayDevTools')}
@@ -25,7 +25,7 @@ class Settings extends React.PureComponent {
         </SwitchItem>
         <SwitchItem
           note={<>
-            Loads React Devtools extension in Electron to let you look at the React tree and debug stuff more
+            Loads React Devtools extension in Electron, letting you look at the React tree and debug stuff more
             easily. <b>Requires restart</b>.<br/><br/>
             <strong><strong>NOTE:</strong></strong> on <b>Windows</b> installations, enabling this might make Discord
             unusable without Powercord due to a <a href='https://github.com/electron/electron/issues/19468' target='_blank'>bug in Electron</a>.
@@ -34,11 +34,11 @@ class Settings extends React.PureComponent {
           value={this.props.getSetting('openOverlayDevTools', false)}
           onChange={() => this.props.toggleSetting('openOverlayDevTools')}
         >
-          Enable React Devtools
+          Enable React DevTools
         </SwitchItem>
         <SwitchItem
           note={<>
-            Loads required code to hook into the standalone React Devtools. <b>Requires restart</b>.
+            Loads required code to hook into the standalone React DevTools. <b>Requires restart</b>.
           </>}
           value={this.props.getSetting('openOverlayDevTools', false)}
           onChange={() => this.props.toggleSetting('openOverlayDevTools')}

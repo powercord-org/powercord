@@ -1,16 +1,23 @@
+.hljs {
+  position: relative;
+
+  &:hover .powercord-codeblock-copy-btn {
+    opacity: 1;
+  }
+}
+
 .powercord-codeblock-copy-btn {
   color: #fff;
   border-radius: 4px;
 
   line-height: 20px;
   padding: 0 10px;
-  font-family: 'Raleway', sans-serif;
-  font-size: 0.8em;
+  font-size: .8em;
   text-transform: uppercase;
   font-weight: bold;
 
   margin: 3px;
-  background: rgba(0, 0, 0, .5);
+  background: var(--background-floating);
   position: absolute;
   right: 0 !important;
   bottom: 0 !important;
@@ -25,64 +32,40 @@
 
 .powercord-codeblock-lang {
   color: var(--text-normal);
-  border-bottom: 1px solid rgba(0, 0, 0, .2);
-
-  line-height: 20px;
-  padding: 0 5px;
-  font-family: 'Raleway', sans-serif;
-  font-size: 0.8em;
   text-transform: uppercase;
   font-weight: bold;
   font-style: initial;
+  margin: -5px 0 5px 0;
 
-  position: absolute;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: initial !important;
+  &::after {
+    content: "";
+    position: absolute;
+    border-bottom: 1px solid var(--background-modifier-accent);
+    left: 0;
+    right: 0;
+    display: flex;
+  }
 }
 
-/* Attribution: ThuverX#9814 */
+.powercord-codeblock-ln-line {
+  text-align: center;
+  padding-right: 5px;
+  border-right: 1px solid var(--background-modifier-accent);
+  vertical-align: top;
+  font-weight: initial;
+  font-style: initial;
 
-$numbers: '';
-@for $i from 1 through 999 {
-  $numbers: $numbers + $i + '\A '
+  &::before {
+    content: attr(data-line-number);
+    user-select: none;
+  }
 }
 
-.hljs {
-  overflow: hidden;
-  position: relative;
-  padding-left: calc(35px + .5em) !important;
+.powercord-codeblock-ln-code {
+  padding-left: 10px;
+  word-break: break-word;
+}
 
-  &:not([class$='hljs']) {
-    padding-top: calc(20px + .5em) !important;
-
-    .powercord-lines:after {
-      top: calc(20px + .5em);
-    }
-  }
-
-  .powercord-lines {
-    text-align: right;
-    height: 100%;
-    width: 30px;
-    line-height: 1.125rem;
-    font-weight: initial;
-    font-style: initial;
-
-    &:after {
-      overflow: hidden;
-      content: $numbers;
-      position: absolute;
-      padding-right: 6px;
-      left: -3px;
-      top: .5em;
-      bottom: .5em;
-      border-right: 1px solid rgba(0, 0, 0, .2);
-    }
-  }
-
-  &:hover .powercord-codeblock-copy-btn {
-    opacity: 1;
-  }
+.powercord-codeblock-ln {
+  border-collapse: collapse;
 }

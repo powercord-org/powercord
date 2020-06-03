@@ -3,7 +3,6 @@ const { uninject } = require('powercord/injector');
 
 const commands = require('./commands');
 const monkeypatchMessages = require('./monkeypatchMessages.js');
-const monkeypatchTyping = require('./monkeypatchTyping.js');
 const injectAutocomplete = require('./injectAutocomplete.js');
 
 module.exports = class Commands extends Plugin {
@@ -12,11 +11,11 @@ module.exports = class Commands extends Plugin {
 
     monkeypatchMessages.call(this);
     injectAutocomplete.call(this);
-    monkeypatchTyping.call(this);
   }
 
   pluginWillUnload () {
     Object.values(commands).forEach(command => powercord.api.commands.unregisterCommand(command.command));
+    uninject('pc-commands-autocomplete-prefix');
     uninject('pc-commands-autocomplete');
   }
 };

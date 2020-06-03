@@ -33,7 +33,7 @@ module.exports = class Tags extends Plugin {
       autocomplete: (args) => {
         if (args[0] !== void 0 && args.length === 1) {
           return {
-            commands: Object.values(commands).filter(({ command }) => command.includes(args[0].toLowerCase())),
+            commands: Object.values(commands).filter(({ command }) => command.includes(args[0])),
             header: 'tag subcommands'
           };
         }

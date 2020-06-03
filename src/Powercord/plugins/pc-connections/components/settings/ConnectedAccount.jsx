@@ -1,6 +1,8 @@
 const { React, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
 const { AsyncComponent, Clickable } = require('powercord/components');
 const { SwitchItem } = require('powercord/components/settings');
+const { WEBSITE } = require('powercord/constants');
+const { put } = require('powercord/http');
 
 const FormText = AsyncComponent.from(getModuleByDisplayName('FormText'));
 
@@ -31,7 +33,7 @@ module.exports = class ConnectedAccount extends React.PureComponent {
     this.setState({
       visibility: value
     });
-    powercord.api.connections.setVisibility(account.type, value);
+    this.setVisibility(account.type, value);
   }
 
   renderHeader () {
@@ -69,6 +71,18 @@ module.exports = class ConnectedAccount extends React.PureComponent {
         </SwitchItem>
       </div>
     </div>;
+  }
+
+  async setVisibility (type, value) {
+    if (!powercord.account) {
+      return;
+    }
+
+    const baseUrl = powercord.settings.get('backendURL', WEBSITE);
+    await put(`${baseUrl}/api/v2/users/@me/accounts/${type}`)
+      .set('Authorization', powercord.account.token)
+      .set('Content-Type', 'application/json')
+      .send({ visibility: value });
   }
 
   render () {

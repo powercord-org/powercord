@@ -51,6 +51,10 @@ class CommandsAPI extends API {
    * @param {PowercordChatCommand} command Command to register
    */
   registerCommand (command) {
+    // @todo: remove this once there's a proper implemention (if any) for fetching the command origin.
+    const stackTrace = (new Error()).stack;
+    const [ , origin ] = stackTrace.match(new RegExp(`${global._.escapeRegExp(powercord.pluginManager.pluginDir)}.([-\\w]+)`));
+
     if (typeof command === 'string') {
       console.error('no');
       return;
@@ -59,7 +63,10 @@ class CommandsAPI extends API {
       throw new Error(`Command ${command.command} is already registered!`);
     }
 
-    this.commands[command.command] = command;
+    this.commands[command.command] = {
+      ...command,
+      origin
+    };
   }
 
   /**

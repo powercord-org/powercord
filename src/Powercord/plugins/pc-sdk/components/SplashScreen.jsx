@@ -26,8 +26,8 @@ class SplashScreen extends React.PureComponent {
       <div id='splash-screen' className='category'>
         <h2>Discord Splash Screen</h2>
         <p>
-          You can open a fake splash screen that won't go away, with its developer tools. You can also manipulate
-          its state to your likings to theme all parts of it without any trouble.
+          Here, you can open a fake splash screen (with its developer tools) that will remain on-screen until closed. You can also manipulate
+          its state to your likings and theme all parts of it without any trouble.
         </p>
         {this.state.opened ? this.renderOpened() : this.renderClosed()}
       </div>
@@ -36,7 +36,7 @@ class SplashScreen extends React.PureComponent {
 
   renderClosed () {
     return (
-      <Button onClick={() => this.openSplashScreen()}>Open Splash Screen</Button>
+      <Button onClick={() => this.openSplashScreen()}>Open splash screen</Button>
     );
   }
 
@@ -45,10 +45,10 @@ class SplashScreen extends React.PureComponent {
       <>
         <Flex className='splash-buttons' wrap={Flex.Wrap.WRAP}>
           <Button color={Button.Colors.YELLOW} onClick={() => this.closeSplashScreen(true) | this.openSplashScreen(true)}>
-            Restart Splash Screen
+            Restart splash screen
           </Button>
           <Button color={Button.Colors.RED} onClick={() => this.closeSplashScreen()}>
-            Close Splash Screen
+            Close splash screen
           </Button>
         </Flex>
         <Flex className='splash-buttons' wrap={Flex.Wrap.WRAP}>

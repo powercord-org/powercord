@@ -7,9 +7,9 @@ class ForceUI extends React.PureComponent {
       <div id='force-ui' className='category'>
         <h2>Force UI</h2>
         <p>
-          Some elements might be painful to theme, either because locked to specific cases or simply features you
-          cannot always access (e.g. Verified perks, Nitro, ...). This tool lets you trick Discord's UI and forcefully
-          show those elements.
+          Some elements are painful to theme, either because they are locked to specific cases or are simply features you
+          cannot always access (e.g. Verified perks, Nitro, etc.). By using this tool, you can trick Discord's UI and forcefully
+          show those elements to your heart's desire.
         </p>
         <ButtonItem
           note={'In large servers, trying to ping everyone will show a warning asking you if you\'re sure you want to perform this action.'}

@@ -90,7 +90,7 @@ module.exports = class SDK extends Plugin {
     popoutModule.open('DISCORD_POWERCORD_SANDBOX', (key) =>
       React.createElement(PopoutWindow, {
         windowKey: key,
-        title: 'QuickCSS'
+        title: 'SDK'
       }, React.createElement(SdkWindow))
     );
     popoutModule.setAlwaysOnTop('DISCORD_POWERCORD_SANDBOX', true);

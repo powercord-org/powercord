@@ -1,13 +1,13 @@
-const { findInReactTree, forceUpdateElement } = require('powercord/util');
+const { forceUpdateElement } = require('powercord/util');
 const { React, getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 
 module.exports = async () => {
   const Avatar = await getModule([ 'AnimatedAvatar' ]);
-  inject('pc-utilitycls-avatar', Avatar, 'default', (_, res) => {
-    const avatar = findInReactTree(res, n => n.src);
-    if (avatar && avatar.src) {
-      [ , , , , res.props['data-user-id'] ] = avatar.src.split('/');
+  inject('pc-utilitycls-avatar', Avatar, 'default', (args, res) => {
+    const avatar = args[0].src || void 0;
+    if (avatar && avatar.includes('/avatars')) {
+      [ , res.props['data-user-id'] ] = avatar.match(/\/avatars\/(\d+)/);
     }
 
     return res;

@@ -132,28 +132,58 @@
 
   .debugInfo {
     display: flex;
-    color: var(--header-secondary);
+    color: var(--interactive-normal);
+    user-select: text;
+    cursor: text;
+
+    &.copied b {
+      color: #3ca374;
+    }
 
     code {
       white-space: pre-wrap;
-      font-size: 75%;
+      font-family: inherit;
+      font-size: 12px;
+    }
+
+    b {
+      align-items: center;
+      color: #7289da;
+      text-transform: uppercase;
+      display: flex;
+
+      &::after {
+        content: "";
+        margin-left: 4px;
+        border: thin dashed;
+        opacity: .6;
+        flex: 1;
+      }
+
+      transition: color .2s ease;
     }
 
     .row {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      margin-left: 20px;
+      margin: 8px 0 8px 20px;
     }
 
     .column {
-      padding: 0 0 8px 5px;
       flex-basis: 25%;
+
+      &:nth-child(n+5) {
+        margin-top: 8px;
+      }
     }
 
     .full-column {
-      padding: 0 0 8px 5px;
       flex-basis: 100%;
+
+      &:nth-child(n+2) {
+        margin-top: 8px;
+      }
     }
 
     &:hover {
@@ -161,7 +191,7 @@
         opacity: 1;
       }
 
-      code > :last-child > :last-child {
+      :last-child:not(button) > :last-child {
         flex-basis: 85%;
       }
     }
@@ -169,13 +199,9 @@
     button {
       opacity: 0;
       align-self: flex-end;
-      transition: opacity .1s ease;
+      transition: opacity .2s ease;
       position: absolute;
       right: 20px;
-
-      > div {
-        overflow: visible;
-      }
     }
   }
 }

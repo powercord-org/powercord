@@ -33,14 +33,14 @@ module.exports = {
       .sort((a, b) => a - b)
       .map(plugin => powercord.pluginManager.plugins.get(plugin));
 
-    if (args.length > 1) {
+    if (!args[0] || args.length > 1) {
       return false;
     }
 
     return {
       commands: plugins
         .filter(plugin => plugin.entityID !== 'pc-commands' &&
-          plugin.entityID.includes(args[0].toLowerCase()))
+          plugin.entityID.includes(args[0]))
         .map(plugin => ({
           command: plugin.entityID,
           description: plugin.manifest.description

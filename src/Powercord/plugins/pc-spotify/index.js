@@ -93,9 +93,13 @@ class Spotify extends Plugin {
 
   _patchAutoPause (revert) {
     if (this.settings.get('noAutoPause', true)) {
+      const spotifyMdl = getModule([ 'initialize', 'wasAutoPaused' ], false);
       if (revert) {
+        spotifyMdl.wasAutoPaused = spotifyMdl._wasAutoPaused;
         spotify.pause = spotify._pause;
       } else {
+        spotifyMdl._wasAutoPaused = spotifyMdl.wasAutoPaused;
+        spotifyMdl.wasAutoPaused = () => false;
         spotify._pause = spotify.pause;
         spotify.pause = () => void 0;
       }

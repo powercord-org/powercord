@@ -38,7 +38,7 @@ module.exports = {
       }
     }
 
-    console.debug('[SpotifyAPI]', 'color: #1ed860', 'No Spotify account linked to Powercord; Falling back to Discord\'s token');
+    console.debug('%c[SpotifyAPI]', 'color: #1ed860', 'No Spotify account linked to Powercord; Falling back to Discord\'s token');
     const spotifyMdl = await getModule([ 'getActiveSocketAndDevice' ]);
     const active = spotifyMdl.getActiveSocketAndDevice();
     if (active && active.socket && active.socket.accessToken) {
