@@ -3,6 +3,7 @@
   "POWERCORD_PLUGINS_LICENSE_COMMERCIAL_USE_NAME": "Uso comercial",
   "POWERCORD_PLUGINS_LICENSE_CONDITIONS": "Condições",
   "POWERCORD_PLUGINS_LICENSE_DESC_0BSD": "A licença BSD Zero Clause vai além da licença BSD 2-Clause ao permitir liberdade ilimitada com o programa sem os requerimentos de incluir um aviso de direitos autorais, texto da licença, ou isenção de responsabilidade tanto na forma original quanto na forma binária.",
+  "POWERCORD_PLUGINS_LICENSE_DESC_AFL-3.0": "A licença Academic Free License é uma variante da licença Open Software License que não requer que o código fonte de obras derivadas seja divulgado. Ela contém direitos autorais explícitos e concessões de patentes e reserva direitos de marca registrada no autor.",
   "POWERCORD_PLUGINS_LICENSE_DISCLAIMER": "Isto não é um aconselhamento jurídico. Dados de [choosealicense.com]({url}).",
   "POWERCORD_PLUGINS_LICENSE_DISCLOSE_SOURCE_DESC": "O código fonte deve estar disponível quando o programa é distribuído.",
   "POWERCORD_PLUGINS_LICENSE_DISCLOSE_SOURCE_NAME": "Divulgação de fonte",
