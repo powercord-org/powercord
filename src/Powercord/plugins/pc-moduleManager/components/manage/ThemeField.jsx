@@ -86,7 +86,6 @@ class ThemeField extends React.PureComponent {
         onChange={opt => this.props.onChange(opt ? opt.value : null)}
         options={option.options}
         searchable={searchable}
-        lazySearch
         clearable
       >
         {option.name}
