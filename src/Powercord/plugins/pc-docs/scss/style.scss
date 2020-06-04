@@ -54,16 +54,32 @@
   }
 
   h2 {
-    padding-top: 55px;
+    padding-top: 40px;
     font-size: 22px;
+
+    &:first-child {
+      padding-top: 5px;
+    }
+
+    + h3 {
+      padding-top: 10px;
+    }
   }
 
   h3 {
     font-size: 18px;
+
+    + h4 {
+      padding-top: 10px;
+    }
   }
 
   h4 {
     font-size: 16px;
+
+    + h5 {
+      padding-top: 10px;
+    }
   }
 
   h5 {

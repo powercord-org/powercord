@@ -416,8 +416,6 @@ module.exports = class StyleManager {
   _validateSettingsNumber (option) {
     const errors = [];
     if (typeof option.limit !== 'undefined') {
-      errors.push('Invalid option: limit is required for numeric fields! Please refer to the documentation.');
-    } else {
       errors.push(...this._validateLimits(option.limit));
     }
     if (typeof option.markers !== 'undefined') {

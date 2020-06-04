@@ -1,15 +1,21 @@
-const { React, Flux, getModule, i18n: { Messages } } = require('powercord/webpack');
-const { TabBar, Divider, Button } = require('powercord/components');
+const { React, Flux, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
+const { TabBar, Divider, Button, AsyncComponent } = require('powercord/components');
 
 const InstalledProduct = require('../parts/InstalledProduct');
+const ThemeField = require('./ThemeField');
+
+const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
 
 class ThemeSettings extends React.PureComponent {
   constructor (props) {
     super(props);
     this.state = {
+      errors: {},
       theme: powercord.styleManager.get(props.theme),
       tab: 'SETTINGS'
     };
+
+    this.applySettings = global._.debounce(this.applySettings.bind(this), 1000);
   }
 
   render () {
@@ -35,8 +41,8 @@ class ThemeSettings extends React.PureComponent {
           </div>
         </div>
         <Divider/>
-        {hasSettings && hasPlugins && this.renderTopPills()}
-        {((hasBoth && this.state.tab === 'SETTINGS') || (!hasBoth && hasSettings)) && this.renderSettings()}
+        {hasBoth && this.renderTopPills()}
+        {((hasBoth && this.state.tab === 'SETTINGS') || (!hasBoth && hasSettings)) && this.renderSettings(settings)}
         {((hasBoth && this.state.tab === 'PLUGINS') || (!hasBoth && hasPlugins)) && this.renderPlugins()}
       </div>
     );
@@ -62,27 +68,25 @@ class ThemeSettings extends React.PureComponent {
     );
   }
 
-  renderSettings () {
-    return (
-      <>
-        {this.renderSettingsGroup('Theme Settings', null)}
-      </>
-    );
+  renderSettings (settings) {
+    return settings.map(setting => this.renderSettingsGroup(setting.name, setting.options));
   }
 
-  renderSettingsGroup (groupName, settings) {
-    console.log(settings);
-    return groupName;
-    /*
-     * string
-     * number
-     * color
-     * color_alpha
-     * background
-     * url
-     * select
-     * font
-     */
+  renderSettingsGroup (groupName, options) {
+    console.log(options);
+    return (
+      <div className='powercord-entities-settings-group' key={groupName}>
+        <FormTitle tag='h2'>{groupName}</FormTitle>
+        {options.map(opt => (
+          <ThemeField
+            option={opt}
+            key={opt.variable}
+            value={this.props.getSetting(opt.variable)}
+            onChange={v => this.props.updateSetting(opt.variable, v) | this.applySettings()}
+          />
+        ))}
+      </div>
+    );
   }
 
   renderPlugins () {
@@ -92,7 +96,7 @@ class ThemeSettings extends React.PureComponent {
     }
     return plugins.map(plugin => (
       <InstalledProduct
-        isEnabled={this.props.getSetting('_enabledPlugins', []).includes()}
+        isEnabled={this.props.getSetting('_enabledPlugins', []).includes(plugin.file)}
         product={{
           name: plugin.name,
           description: plugin.description,
@@ -100,30 +104,54 @@ class ThemeSettings extends React.PureComponent {
           version: plugin.version || version,
           license: plugin.license || license
         }}
-        onToggle={v => console.log('yes', v)}
+        onToggle={v => {
+          const enabled = this.props.getSetting('_enabledPlugins', []);
+          if (v) {
+            this.props.updateSetting('_enabledPlugins', enabled.concat(plugin.file));
+          } else {
+            this.props.updateSetting('_enabledPlugins', enabled.filter(e => e !== plugin.file));
+          }
+        }}
       />
     ));
   }
 
   renderWtf () {
     return (
-      <div style={{
-        fontSize: 69,
-        marginTop: 69,
-        textAlign: 'center',
-        fontFamily: '"Comic Sans MS", "Comic Sans", cursive'
-      }}>{Messages.SETTINGS_GAMES_NOT_PLAYING}</div>
+      <div
+        style={{
+          fontSize: 69,
+          marginTop: 69,
+          textAlign: 'center',
+          fontFamily: '"Comic Sans MS", "Comic Sans", cursive'
+        }}
+      >
+        {Messages.SETTINGS_GAMES_NOT_PLAYING}
+      </div>
     );
   }
 
-  getApplicableSettings () { // @todo: Take plugin settings into account
+  getApplicableSettings () {
     const settings = [];
-    if (this.state.theme.settings) {
+    if (this.state.theme.manifest.settings) {
       settings.push({
         name: 'Theme Settings',
-        options: this.state.theme.settings.options
+        options: this.state.theme.manifest.settings.options
       });
     }
+    for (const plugin of this.state.theme.manifest.plugins.filter(p => p.settings)) {
+      if (this.props.getSetting('_enabledPlugins', []).includes(plugin.file)) {
+        settings.push({
+          name: plugin.name,
+          options: plugin.settings.options
+        });
+      }
+    }
+    return settings;
+  }
+
+  applySettings () {
+    console.log('yes');
   }
 }
 

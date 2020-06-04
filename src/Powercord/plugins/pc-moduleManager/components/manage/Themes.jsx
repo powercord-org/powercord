@@ -8,7 +8,7 @@ class Themes extends Base {
   constructor () {
     super();
     this.state.tab = 'INSTALLED';
-    // this.state.settings = 'Discord_Theme';
+    this.state.settings = 'Customa-Discord';
   }
 
   render () {
