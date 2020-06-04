@@ -1,3 +1,4 @@
+/* eslint-disable */
 const { React, Flux, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
 const { TextInput, SwitchItem, ButtonItem, Category } = require('powercord/components/settings');
 const { TabBar, Divider, Button, AsyncComponent } = require('powercord/components');
