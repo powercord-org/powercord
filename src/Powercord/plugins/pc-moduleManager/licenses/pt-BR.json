@@ -11,6 +11,8 @@
   "POWERCORD_PLUGINS_LICENSE_DOCUMENT_CHANGES_NAME": "Mudanças de estado",
   "POWERCORD_PLUGINS_LICENSE_INCLUDE_COPYRIGHT_DESC": "Uma cópia do aviso de direitos autorais e licença devem ser incluídos com o programa.",
   "POWERCORD_PLUGINS_LICENSE_INCLUDE_COPYRIGHT_NAME": "Aviso de direitos autorais e licença",
+  "POWERCORD_PLUGINS_LICENSE_LIABILITY_DESC": "Está licença incluí uma limitação de responsabilidade.",
+  "POWERCORD_PLUGINS_LICENSE_LIABILITY_NAME": "Responsabilidade",
   "POWERCORD_PLUGINS_LICENSE_LIMITATIONS": "Limitações",
   "POWERCORD_PLUGINS_LICENSE_MODIFICATIONS_DESC": "Este programa pode ser modificado.",
   "POWERCORD_PLUGINS_LICENSE_MODIFICATIONS_NAME": "Modificação",
