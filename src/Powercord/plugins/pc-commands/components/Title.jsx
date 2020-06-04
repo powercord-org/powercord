@@ -2,7 +2,7 @@ const { getModuleByDisplayName } = require('powercord/webpack');
 
 const Autocomplete = getModuleByDisplayName('Autocomplete', false);
 
-module.exports = class Command extends Autocomplete.Title {
+module.exports = class Title extends Autocomplete.Title {
   render () {
     const res = super.render();
     if (!this.props.title[0]) {

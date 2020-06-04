@@ -15,7 +15,7 @@ module.exports = {
       };
     }
 
-    const name = args.shift();
+    const name = args.shift().toLowerCase();
     const value = args.join(' ').replace(/\\n/g, '\n');
     if (main.settings.get(name)) {
       return {
@@ -58,12 +58,14 @@ module.exports = {
       };
     }
 
-    return {
-      commands: [ {
-        command: `Enter the content of "${args[0]}"...`,
-        wildcard: true,
-        instruction: true
-      } ]
-    };
+    if (args[2] === void 0) {
+      return {
+        commands: [ {
+          command: `Enter the content of "${args[0]}"...`,
+          wildcard: true,
+          instruction: true
+        } ]
+      };
+    }
   }
 };

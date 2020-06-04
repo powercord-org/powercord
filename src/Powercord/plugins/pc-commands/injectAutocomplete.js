@@ -50,7 +50,7 @@ module.exports = async function injectAutocomplete () {
     }
 
     currentWord.word = command && args[0] ? `${prefix}${command} ${args.join(' ')}` : textValue;
-    currentWord.isAtStart = args.length === 0 || !currentCommand.autocomplete;
+    currentWord.isAtStart = args.length === 0 || (currentCommand && !currentCommand.autocomplete);
 
     const { word, isAtStart } = currentWord;
 
@@ -96,7 +96,7 @@ module.exports = async function injectAutocomplete () {
           return false;
         }
 
-        if (currentCommand && currentCommand.autocomplete) {
+        if (currentCommand.autocomplete) {
           const autocompleteRows = currentCommand.autocomplete(value.split(' ').slice(1));
 
           if (autocompleteRows) {
