@@ -1,13 +1,22 @@
 {
-  "POWERCORD_PLUGINS_LICENSE_COMMERCIAL_USE_DESC": "Este software e derivados podem ser usados para fins comerciais.",
+  "POWERCORD_PLUGINS_LICENSE_COMMERCIAL_USE_DESC": "Este programa e derivados podem ser usados para fins comerciais.",
   "POWERCORD_PLUGINS_LICENSE_COMMERCIAL_USE_NAME": "Uso comercial",
   "POWERCORD_PLUGINS_LICENSE_CONDITIONS": "Condições",
-  "POWERCORD_PLUGINS_LICENSE_DISCLAIMER": "Este não é um aviso legal. Dados de [choosealicense.com]({url}).",
-  "POWERCORD_PLUGINS_LICENSE_DISTRIBUTION_DESC": "Este software pode ser distribuído.",
+  "POWERCORD_PLUGINS_LICENSE_DISCLAIMER": "Isto não é um aconselhamento jurídico. Dados de [choosealicense.com]({url}).",
+  "POWERCORD_PLUGINS_LICENSE_DISCLOSE_SOURCE_DESC": "O código fonte deve estar disponível quando o programa é distribuído.",
+  "POWERCORD_PLUGINS_LICENSE_DISCLOSE_SOURCE_NAME": "Divulgação de fonte",
+  "POWERCORD_PLUGINS_LICENSE_DISTRIBUTION_DESC": "Este programa pode ser distribuído.",
   "POWERCORD_PLUGINS_LICENSE_DISTRIBUTION_NAME": "Distribuição",
+  "POWERCORD_PLUGINS_LICENSE_DOCUMENT_CHANGES_DESC": "Mudanças feitas no código devem estar documentadas.",
+  "POWERCORD_PLUGINS_LICENSE_DOCUMENT_CHANGES_NAME": "Mudanças de estado",
+  "POWERCORD_PLUGINS_LICENSE_INCLUDE_COPYRIGHT_DESC": "Uma cópia do aviso de direitos autorais e licença devem ser incluídos com o programa.",
+  "POWERCORD_PLUGINS_LICENSE_INCLUDE_COPYRIGHT_NAME": "Aviso de direitos autorais e licença",
   "POWERCORD_PLUGINS_LICENSE_LIMITATIONS": "Limitações",
-  "POWERCORD_PLUGINS_LICENSE_MODIFICATIONS_DESC": "Este software pode ser modificado.",
+  "POWERCORD_PLUGINS_LICENSE_MODIFICATIONS_DESC": "Este programa pode ser modificado.",
   "POWERCORD_PLUGINS_LICENSE_MODIFICATIONS_NAME": "Modificação",
+  "POWERCORD_PLUGINS_LICENSE_NETWORK_USE_DISCLOSE_NAME": "O uso da rede é para distribuição",
   "POWERCORD_PLUGINS_LICENSE_PATENT_USE_NAME": "Uso de patentes",
-  "POWERCORD_PLUGINS_LICENSE_PERMISSIONS": "Permissões"
+  "POWERCORD_PLUGINS_LICENSE_PERMISSIONS": "Permissões",
+  "POWERCORD_PLUGINS_LICENSE_PRIVATE_USE_DESC": "Este programa pode ser usado e modificado em privado.",
+  "POWERCORD_PLUGINS_LICENSE_PRIVATE_USE_NAME": "Uso privado"
 }
