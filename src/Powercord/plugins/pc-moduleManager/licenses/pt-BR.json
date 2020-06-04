@@ -21,5 +21,7 @@
   "POWERCORD_PLUGINS_LICENSE_PATENT_USE_NAME": "Uso de patentes",
   "POWERCORD_PLUGINS_LICENSE_PERMISSIONS": "Permissões",
   "POWERCORD_PLUGINS_LICENSE_PRIVATE_USE_DESC": "Este programa pode ser usado e modificado em privado.",
-  "POWERCORD_PLUGINS_LICENSE_PRIVATE_USE_NAME": "Uso privado"
+  "POWERCORD_PLUGINS_LICENSE_PRIVATE_USE_NAME": "Uso privado",
+  "POWERCORD_PLUGINS_LICENSE_SAME_LICENSE_DESC": "Modificações devem ser feitas usando a mesma licença de quando distribuindo o programa. Em alguns casos uma licença similar ou relacionada deve ser usada.",
+  "POWERCORD_PLUGINS_LICENSE_SAME_LICENSE_NAME": "Mesma licença"
 }
