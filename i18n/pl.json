@@ -24,7 +24,7 @@
   "POWERCORD_I18N_TRANSLATED_PERCENTAGE": "Powercord: przetłumaczono {translated,number}%",
   "POWERCORD_LINKING_ERRORED": "Wystąpił błąd. Sprawdź konsolę, aby zobaczyć szczegóły i proszę [zgłoś ten błąd]({newIssueUrl}), jeśli wystąpi ponownie.",
   "POWERCORD_LINKING_TIMED_OUT": "Upłynął limit czasu łączenia konta :( Może spróbuj ponownie?",
-  "POWERCORD_LINKING_UNLINKED": "Nie połączyłeś jeszcze swojego konta.",
+  "POWERCORD_LINKING_UNLINKED": "Nie masz jeszcze połączonego konta.\nNie połączyłeś jeszcze swojego konta. < sounds more correct",
   "POWERCORD_LINKING_WAITING": "Łączenie twojego konta…",
   "POWERCORD_LINK_NOW": "Połącz konto",
   "POWERCORD_PASSPHRASE": "Hasło",
