@@ -40,6 +40,7 @@ const { transparentWindow, experimentalWebPlatform } = settings;
 class PatchedBrowserWindow extends BrowserWindow {
   // noinspection JSAnnotator - Make JetBrains happy
   constructor (opts) {
+    console.log(opts);
     if (opts.webContents) {
       // General purpose popouts used by Discord
     } else if (opts.webPreferences && opts.webPreferences.nodeIntegration) {
@@ -67,6 +68,7 @@ class PatchedBrowserWindow extends BrowserWindow {
       }
     }
 
+    opts.webPreferences.enableRemoteModule = true;
     return new BrowserWindow(opts);
   }
 }
