@@ -1,6 +1,6 @@
 require('../polyfills');
 
-const { remote } = require('electron');
+const { ipcRenderer } = require('electron');
 const { join } = require('path');
 const { existsSync, mkdirSync, open, write } = require('fs');
 const { LOGS_FOLDER } = require('./fake_node_modules/powercord/constants');
@@ -18,7 +18,7 @@ if (process.platform === 'darwin' && !process.env.PATH.includes('/usr/local/bin'
 }
 
 // Discord's preload
-require(remote.getGlobal('originalPreload'));
+require(ipcRenderer.sendSync("preload"))
 
 // Debug logging
 let debugLogs;
@@ -78,17 +78,6 @@ try {
 // Overlay devtools
 powercord.once('loaded', () => {
   if (window.__OVERLAY__ && powercord.api.settings.store.getSetting('pc-general', 'openOverlayDevTools', false)) {
-    const overlayWindow = remote.getCurrentWindow();
-    overlayWindow.openDevTools({ mode: 'detach' });
-    let devToolsWindow = new remote.BrowserWindow({
-      webContents: overlayWindow.devToolsWebContents
-    });
-    devToolsWindow.on('ready-to-show', () => {
-      devToolsWindow.show();
-    });
-    devToolsWindow.on('close', () => {
-      overlayWindow.closeDevTools();
-      devToolsWindow = null;
-    });
+    ipcRenderer.invoke('openDevTools', true);
   }
 });

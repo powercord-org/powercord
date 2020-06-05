@@ -3,7 +3,7 @@ const Module = require('module');
 const { join, dirname, resolve } = require('path');
 const { existsSync, unlinkSync, writeFileSync } = require('fs');
 const electron = require('electron');
-const { BrowserWindow, app, session } = electron;
+const { BrowserWindow, app, session, ipcMain } = electron;
 
 const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
@@ -37,6 +37,8 @@ try {
 }
 const { transparentWindow, experimentalWebPlatform } = settings;
 
+let originalPreload;
+
 class PatchedBrowserWindow extends BrowserWindow {
   // noinspection JSAnnotator - Make JetBrains happy
   constructor (opts) {
@@ -48,12 +50,12 @@ class PatchedBrowserWindow extends BrowserWindow {
       opts.webPreferences.preload = join(__dirname, 'preloadSplash.js');
     } else if (opts.webPreferences && opts.webPreferences.offscreen) {
       // Overlay
-      global.originalPreload = opts.webPreferences.preload;
+      originalPreload = opts.webPreferences.preload;
       opts.webPreferences.preload = join(__dirname, 'preload.js');
       opts.webPreferences.nodeIntegration = true;
     } else if (opts.webPreferences && opts.webPreferences.preload) {
       // Discord Client
-      global.originalPreload = opts.webPreferences.preload;
+      originalPreload = opts.webPreferences.preload;
       opts.webPreferences.preload = join(__dirname, 'preload.js');
       opts.webPreferences.nodeIntegration = true;
 
@@ -69,7 +71,8 @@ class PatchedBrowserWindow extends BrowserWindow {
     }
 
     opts.webPreferences.enableRemoteModule = true;
-    return new BrowserWindow(opts);
+    const win = new BrowserWindow(opts);
+    return win;
   }
 }
 
@@ -85,6 +88,31 @@ const electronExports = new Proxy(electron, {
 
 delete require.cache[electronPath].exports;
 require.cache[electronPath].exports = electronExports;
+
+
+//#region IPC
+// TODO(TTtie): Move this into another module
+ipcMain.on('preload', (ev) => ev.returnValue = originalPreload);
+ipcMain.handle('openDevTools', (ev, isOverlay) => {
+  const win = BrowserWindow.fromWebContents(ev.sender);
+  if (!win) return;
+  if (isOverlay) {
+    win.openDevTools({ mode: 'detach' });
+    let devToolsWindow = new BrowserWindow({
+      webContents: win.devToolsWebContents
+    });
+    devToolsWindow.on('ready-to-show', () => {
+      win.show();
+    });
+    devToolsWindow.on('close', () => {
+      win.closeDevTools();
+      devToolsWindow = null;
+    });
+  } else {
+    win.openDevTools();
+  }
+});
+//#endregion IPC
 
 
 app.once('ready', () => {
