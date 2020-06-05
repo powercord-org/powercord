@@ -48,7 +48,7 @@
   "POWERCORD_PLUGINS_VERSION": "Версия",
   "POWERCORD_PRODUCT_LOOKING": "Что ты ищешь?",
   "POWERCORD_QUICKCSS": "Быстрая настройка CSS",
-  "POWERCORD_QUICKCSS_AUTOCOMPLETE": "Ctrl + Пробел для автозаполнения",
+  "POWERCORD_QUICKCSS_AUTOCOMPLETE": "Ctrl+Пробел для автозаполнения",
   "POWERCORD_QUICKCSS_POPPED_OUT": "Редактор открылся в отдельном окне",
   "POWERCORD_QUICKCSS_SETTINGS": "Настройки CodeMirror",
   "POWERCORD_QUICKCSS_SETTINGS_CLOSE_BRACKETS": "Автоматически закрывать скобки",
