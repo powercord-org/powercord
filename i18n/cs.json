@@ -87,6 +87,7 @@
   "POWERCORD_SETTINGS_SYNC_DESC": "Synchronizuj všechna tvoje nastavení Powercordu mezi zařízeními. Vyžaduje Powercord účet!",
   "POWERCORD_SETTINGS_TRANSPARENT": "Průhledné okno",
   "POWERCORD_SETTINGS_TRANSPARENT_DESC": "Udělá jakákoliv okna otevřená Discordem průhledná, užitečné pro motivy.\n****VAROVÁNÍ:**** Toto znefunkční **přichycení oken** na Windows. **Hardwarová akcelerace** musí být vypnuta na Linuxu. Můžeš se setkat s problémy a mít v některých případech černé pozadí, např. když je okno oříznuto nahoře nebo dole kvůli rozlišení monitoru nebo když jsou vývojářské nástroje otevřeny a ukotveny. **Vyžaduje restart**.",
+  "POWERCORD_SETTINGS_TRANSPARENT_GLASSCORD": "Vypadá to, že máte nainstalovaný Glasscord, což znamená, že toto nastavení nemůžete aktualizovat přímo v Powercordu. Další informace o konfiguraci Glasscordu [zde] ({glasscordCfgUrl})",
   "POWERCORD_SNIPPET_APPLIED": "Snippet použit",
   "POWERCORD_SNIPPET_APPLY": "Použít snippet",
   "POWERCORD_SNIPPET_LINE1": "Snippet z #css-snipets použit {date, date, medium} v {date, time, medium}",
