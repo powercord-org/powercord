@@ -71,8 +71,7 @@ class PatchedBrowserWindow extends BrowserWindow {
     }
 
     opts.webPreferences.enableRemoteModule = true;
-    const win = new BrowserWindow(opts);
-    return win;
+    return new BrowserWindow(opts);
   }
 }
 
@@ -88,32 +87,6 @@ const electronExports = new Proxy(electron, {
 
 delete require.cache[electronPath].exports;
 require.cache[electronPath].exports = electronExports;
-
-
-//#region IPC
-// TODO(TTtie): Move this into another module
-ipcMain.on('preload', (ev) => ev.returnValue = originalPreload);
-ipcMain.handle('openDevTools', (ev, isOverlay) => {
-  const win = BrowserWindow.fromWebContents(ev.sender);
-  if (!win) return;
-  if (isOverlay) {
-    win.openDevTools({ mode: 'detach' });
-    let devToolsWindow = new BrowserWindow({
-      webContents: win.devToolsWebContents
-    });
-    devToolsWindow.on('ready-to-show', () => {
-      win.show();
-    });
-    devToolsWindow.on('close', () => {
-      win.closeDevTools();
-      devToolsWindow = null;
-    });
-  } else {
-    win.openDevTools();
-  }
-});
-//#endregion IPC
-
 
 app.once('ready', () => {
   // headers must die
@@ -148,6 +121,30 @@ app.once('ready', () => {
     }
   });
 });
+
+
+// #region IPC
+
+// TODO(TTtie): Move this into another module
+ipcMain.on('getPreload', (ev) => ev.returnValue = originalPreload);
+ipcMain.on('openDevTools', (ev, isOverlay) => {
+  if (isOverlay) {
+    ev.sender.openDevTools({ mode: 'detach' });
+    let devToolsWindow = new BrowserWindow({
+      webContents: ev.sender.devToolsWebContents
+    });
+    devToolsWindow.on('ready-to-show', () => {
+      devToolsWindow.show();
+    });
+    devToolsWindow.on('close', () => {
+      ev.sender.closeDevTools();
+      devToolsWindow = null;
+    });
+  } else {
+    ev.sender.openDevTools();
+  }
+});
+// #endregion IPC
 
 (async () => {
   if (process.argv[1] === '--squirrel-obsolete') {

@@ -18,7 +18,7 @@ if (process.platform === 'darwin' && !process.env.PATH.includes('/usr/local/bin'
 }
 
 // Discord's preload
-require(ipcRenderer.sendSync("preload"))
+require(ipcRenderer.sendSync('getPreload'));
 
 // Debug logging
 let debugLogs;
@@ -78,6 +78,6 @@ try {
 // Overlay devtools
 powercord.once('loaded', () => {
   if (window.__OVERLAY__ && powercord.api.settings.store.getSetting('pc-general', 'openOverlayDevTools', false)) {
-    ipcRenderer.invoke('openDevTools', true);
+    ipcRenderer.send('openDevTools', true);
   }
 });
