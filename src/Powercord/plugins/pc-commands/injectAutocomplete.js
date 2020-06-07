@@ -1,4 +1,4 @@
-const { webContents } = require('electron').remote.getCurrentWindow();
+const { ipcRenderer } = require('electron');
 const { React, i18n: { Messages }, typing, getModuleByDisplayName } = require('powercord/webpack');
 const { inject } = require('powercord/injector');
 
@@ -128,7 +128,7 @@ module.exports = async function injectAutocomplete () {
           state = true;
 
           setImmediate(() => {
-            webContents.sendInputEvent({
+            ipcRenderer.invoke('pc-sendInputEvent', {
               type: 'char',
               keyCode: '\u000d'
             });
@@ -139,7 +139,7 @@ module.exports = async function injectAutocomplete () {
           return textValue.split(' ').pop();
         } else if (commands[index].instruction) {
           setImmediate(() => {
-            webContents.sendInputEvent({
+            ipcRenderer.invoke('pc-sendInputEvent', {
               type: 'keyDown',
               keyCode: 'Backspace'
             });

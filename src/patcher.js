@@ -126,8 +126,8 @@ app.once('ready', () => {
 // #region IPC
 
 // TODO(TTtie): Move this into another module
-ipcMain.on('getPreload', (ev) => ev.returnValue = originalPreload);
-ipcMain.on('openDevTools', (ev, isOverlay) => {
+ipcMain.on('pc-getPreload', (ev) => ev.returnValue = originalPreload);
+ipcMain.handle('pc-openDevTools', (ev, isOverlay) => {
   if (isOverlay) {
     ev.sender.openDevTools({ mode: 'detach' });
     let devToolsWindow = new BrowserWindow({
@@ -143,6 +143,9 @@ ipcMain.on('openDevTools', (ev, isOverlay) => {
   } else {
     ev.sender.openDevTools();
   }
+});
+ipcMain.handle('pc-sendInputEvent', (ev, data) => {
+  ev.sender.sendInputEvent(data);
 });
 // #endregion IPC
 
