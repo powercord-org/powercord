@@ -1,4 +1,4 @@
-const { remote } = require('electron');
+const { ipcRenderer } = require('electron');
 const { React, getModule, i18n: { Messages } } = require('powercord/webpack');
 const { Icons: { FontAwesome } } = require('powercord/components');
 const { open: openModal, close: closeModal } = require('powercord/modal');
@@ -174,7 +174,7 @@ module.exports = class GeneralSettings extends React.Component {
 
   clearDiscordCache () {
     this.setState({ discordCleared: true });
-    remote.getCurrentWindow().webContents.session.clearCache(() => void 0);
+    ipcRenderer.invoke('pc-clearDiscordCache');
     setTimeout(() => {
       this.setState({ discordCleared: false });
     }, 2500);

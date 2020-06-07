@@ -159,6 +159,8 @@ ipcMain.handle('pc-openDevTools', (ev, isOverlay) => {
 ipcMain.handle('pc-sendInputEvent', (ev, data) => {
   ev.sender.sendInputEvent(data);
 });
+ipcMain.handle('pc-clearDiscordCache', (ev) => 
+  new Promise((rs) => ev.sender.session.clearCache(rs)));
 // #endregion IPC
 
 (async () => {
