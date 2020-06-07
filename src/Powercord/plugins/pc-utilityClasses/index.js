@@ -1,4 +1,4 @@
-const { remote } = require('electron');
+const { ipcRenderer } = require('electron');
 const { Plugin } = require('powercord/entities');
 const modules = require('./modules');
 
@@ -16,7 +16,7 @@ module.exports = class UtilityClasses extends Plugin {
     if (window.__OVERLAY__) {
       document.body.classList.add('overlay');
     }
-    const webPrefs = remote.getCurrentWebContents().getWebPreferences();
+    const webPrefs = ipcRenderer.sendSync('pc-getWebPreferences');
     if (webPrefs.transparent) {
       document.body.classList.add('transparent');
     }
@@ -28,13 +28,14 @@ module.exports = class UtilityClasses extends Plugin {
       document.body.classList.add('april-fools');
     }
 
-    if (remote.getCurrentWindow().isMaximized()) {
+    if (ipcRenderer.sendSync('pc-getMaximized')) {
       document.body.classList.add('maximized');
     } else {
       document.body.classList.remove('maximized');
     }
-    remote.getCurrentWindow().on('maximize', () => document.body.classList.add('maximized'));
-    remote.getCurrentWindow().on('unmaximize', () => document.body.classList.remove('maximized'));
+    ipcRenderer.send('pc-handleMaximize');
+    ipcRenderer.on('pc-windowMaximize', () => document.body.classList.add('maximized'));
+    ipcRenderer.on('pc-windowUnmaximize', () => document.body.classList.remove('maximized'));
   }
 
   pluginWillUnload () {

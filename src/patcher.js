@@ -127,6 +127,18 @@ app.once('ready', () => {
 
 // TODO(TTtie): Move this into another module
 ipcMain.on('pc-getPreload', (ev) => ev.returnValue = originalPreload);
+ipcMain.on('pc-getWebPreferences', (ev) => ev.returnValue = ev.sender.getWebPreferences())
+ipcMain.on('pc-getMaximized', (ev) => {
+  const win = BrowserWindow.fromWebContents(ev.sender);
+  if (!win) return;
+  ev.returnValue = win.isMaximized();
+});
+ipcMain.on('pc-handleMaximize', (ev) => {
+  const win = BrowserWindow.fromWebContents(ev.sender);
+  if (!win) return;
+  win.on('maximize', () => ev.reply('pc-windowMaximize'));
+  win.on('unmaximize', () => ev.reply('pc-windowUnmaximize'));
+});
 ipcMain.handle('pc-openDevTools', (ev, isOverlay) => {
   if (isOverlay) {
     ev.sender.openDevTools({ mode: 'detach' });
