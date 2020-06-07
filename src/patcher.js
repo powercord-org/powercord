@@ -127,15 +127,19 @@ app.once('ready', () => {
 
 // TODO(TTtie): Move this into another module
 ipcMain.on('pc-getPreload', (ev) => ev.returnValue = originalPreload);
-ipcMain.on('pc-getWebPreferences', (ev) => ev.returnValue = ev.sender.getWebPreferences())
+ipcMain.on('pc-getWebPreferences', (ev) => ev.returnValue = ev.sender.getWebPreferences());
 ipcMain.on('pc-getMaximized', (ev) => {
   const win = BrowserWindow.fromWebContents(ev.sender);
-  if (!win) return;
+  if (!win) {
+    return;
+  }
   ev.returnValue = win.isMaximized();
 });
 ipcMain.on('pc-handleMaximize', (ev) => {
   const win = BrowserWindow.fromWebContents(ev.sender);
-  if (!win) return;
+  if (!win) {
+    return;
+  }
   win.on('maximize', () => ev.reply('pc-windowMaximize'));
   win.on('unmaximize', () => ev.reply('pc-windowUnmaximize'));
 });
@@ -159,8 +163,36 @@ ipcMain.handle('pc-openDevTools', (ev, isOverlay) => {
 ipcMain.handle('pc-sendInputEvent', (ev, data) => {
   ev.sender.sendInputEvent(data);
 });
-ipcMain.handle('pc-clearDiscordCache', (ev) => 
+ipcMain.handle('pc-clearDiscordCache', (ev) =>
   new Promise((rs) => ev.sender.session.clearCache(rs)));
+
+let _splash;
+ipcMain.on('pc-openSplashScreen', (ev, settings, url) => {
+  if (_splash) {
+    return;
+  }
+  _splash = new BrowserWindow(settings);
+  _splash.loadURL(url);
+  _splash.webContents.openDevTools({ mode: 'detach' });
+  _splash.on('close', () => {
+    ev.reply('pc-splashClosed');
+    _splash = null;
+  });
+});
+ipcMain.handle('pc-closeSplashScreen', () => {
+  if (!_splash) {
+    return;
+  }
+  _splash.close();
+  _splash = null;
+});
+ipcMain.on('pc-sendToSplash', (_, channel, ...args) => {
+  if (!_splash) {
+    return;
+  }
+  _splash.webContents.send(channel, ...args);
+});
+ipcMain.on('pc-getAppPath', (ev) => ev.returnValue = app.getAppPath());
 // #endregion IPC
 
 (async () => {

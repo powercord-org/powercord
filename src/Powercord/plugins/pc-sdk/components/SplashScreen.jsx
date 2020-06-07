@@ -1,6 +1,6 @@
 const { join } = require('path');
 const { format: formatUrl } = require('url');
-const { remote: { BrowserWindow, app: remoteApp } } = require('electron');
+const { remote: { BrowserWindow, app: remoteApp }, ipcRenderer } = require('electron');
 const { React } = require('powercord/webpack');
 const { Flex, Button } = require('powercord/components');
 
@@ -50,7 +50,7 @@ class SplashScreen extends React.PureComponent {
     return (
       <>
         <Flex className='splash-buttons' wrap={Flex.Wrap.WRAP}>
-          <Button color={Button.Colors.YELLOW} onClick={() => this.closeSplashScreen(true) | this.openSplashScreen(true)}>
+          <Button color={Button.Colors.YELLOW} onClick={() => this.closeSplashScreen(true).then(() => this.openSplashScreen(true))}>
             Restart Splash Screen
           </Button>
           <Button color={Button.Colors.RED} onClick={() => this.closeSplashScreen()}>
@@ -82,7 +82,7 @@ class SplashScreen extends React.PureComponent {
   }
 
   openSplashScreen (keepState) {
-    const baseAsar = remoteApp.getAppPath();
+    const baseAsar = ipcRenderer.sendSync('pc-getAppPath');
     const splashIndex = formatUrl({
       protocol: 'file',
       slashes: true,
@@ -106,13 +106,10 @@ class SplashScreen extends React.PureComponent {
       }
     };
 
-    this._window = new BrowserWindow(windowSettings);
-    this._window.loadURL(splashIndex);
-    this._window.webContents.openDevTools({ mode: 'detach' });
-    this._window.on('close', () => {
+    ipcRenderer.send('pc-openSplashScreen', windowSettings, splashIndex);
+    ipcRenderer.once('pc-splashClosed', () => {
       if (!this._closeScheduled) {
         this.setState({ opened: false });
-        delete this._window;
       }
     });
 
@@ -121,10 +118,9 @@ class SplashScreen extends React.PureComponent {
     }
   }
 
-  closeSplashScreen (keepState) {
+  async closeSplashScreen (keepState) {
     this._closeScheduled = true;
-    this._window.close();
-    delete this._window;
+    await ipcRenderer.invoke('pc-closeSplashScreen');
     setImmediate(() => (this._closeScheduled = false));
     if (!keepState) {
       this.setState({ opened: false });
@@ -153,7 +149,7 @@ class SplashScreen extends React.PureComponent {
         data.status = 'launching';
         break;
     }
-    this._window.webContents.send('DISCORD_SPLASH_UPDATE_STATE', data);
+    ipcRenderer.send('pc-sendToSplash', 'DISCORD_SPLASH_UPDATE_STATE', data);
   }
 }
 
