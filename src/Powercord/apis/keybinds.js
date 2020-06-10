@@ -1,4 +1,4 @@
-const { remote: { globalShortcut } } = require('electron');
+const globalShortcut = require('powercord/globalShortcut');
 const localShortcut = require('keybindutils/localShortcut');
 const { API } = require('powercord/entities');
 

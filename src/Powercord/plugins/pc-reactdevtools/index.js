@@ -1,5 +1,5 @@
 const { join } = require('path');
-const { remote } = require('electron');
+const { ipcRenderer } = require('electron');
 const { createWriteStream, existsSync, readFileSync } = require('fs');
 const { Plugin } = require('powercord/entities');
 const { get } = require('powercord/http');
@@ -29,23 +29,22 @@ module.exports = class ReactDevtools extends Plugin {
 
     this.checkForUpdate();
 
-    remote.getCurrentWindow().webContents.on('devtools-opened', this.listener);
-    if (remote.getCurrentWindow().webContents.isDevToolsOpened()) {
+    ipcRenderer.send('pc-handleDevTools');
+    ipcRenderer.on('pc-devToolsOpened', this.listener.bind(this));
+    if (ipcRenderer.sendSync('pc-getDevToolsOpened')) {
       this.listener();
     }
   }
 
   pluginWillUnload () {
-    remote
-      .getCurrentWindow()
-      .webContents.removeListener('devtools-opened', this.listener);
+    ipcRenderer.send('pc-stopHandleDevTools');
   }
 
   listener () {
-    remote.BrowserWindow.removeDevToolsExtension('React Developer Tools');
+    ipcRenderer.send('pc-removeDevToolsExtension', 'React Developer Tools');
 
     if (this.isInstalledLocally) {
-      if (remote.BrowserWindow.addDevToolsExtension(this.folderPath)) {
+      if (ipcRenderer.sendSync('pc-addDevToolsExtension', this.folderPath)) {
         this.log('Successfully installed React DevTools.');
         this.log('If React DevTools is missing or empty, close Developer Tools and re-open it.');
       } else {

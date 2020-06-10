@@ -3,7 +3,7 @@ const Module = require('module');
 const { join, dirname, resolve } = require('path');
 const { existsSync, unlinkSync, writeFileSync } = require('fs');
 const electron = require('electron');
-const { BrowserWindow, app, session, ipcMain } = electron;
+const { BrowserWindow, app, session, ipcMain, globalShortcut } = electron;
 
 const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
@@ -124,8 +124,6 @@ app.once('ready', () => {
 
 
 // #region IPC
-
-// TODO(TTtie): Move this into another module
 ipcMain.on('pc-getPreload', (ev) => ev.returnValue = originalPreload);
 ipcMain.on('pc-getWebPreferences', (ev) => ev.returnValue = ev.sender.getWebPreferences());
 ipcMain.on('pc-getMaximized', (ev) => {
@@ -193,6 +191,26 @@ ipcMain.on('pc-sendToSplash', (_, channel, ...args) => {
   _splash.webContents.send(channel, ...args);
 });
 ipcMain.on('pc-getAppPath', (ev) => ev.returnValue = app.getAppPath());
+ipcMain.on('pc-getDevToolsOpened', (ev) => ev.returnValue = ev.sender.isDevToolsOpened());
+ipcMain.on('pc-handleDevTools', (ev) => {
+  const listener = () => {
+    ev.reply('pc-devToolsOpened');
+  };
+
+  ev.sender.on('devtools-opened', listener);
+  ipcMain.once('pc-stopHandleDevTools', (_ev) => {
+    if (_ev.sender.id === ev.sender.id) {
+      ev.sender.removeListener('devtools-opened', listener);
+    }
+  });
+});
+ipcMain.handle('pc-removeDevToolsExtension', (_, name) => {
+  BrowserWindow.removeDevToolsExtension(name);
+});
+ipcMain.on('pc-addDevToolsExtension', (ev, path) => ev.returnValue = path && !!BrowserWindow.addDevToolsExtension(path));
+ipcMain.on('pc-registerGlobalShortcut', (ev, accelerator) => ev.returnValue = accelerator && globalShortcut.register(accelerator, () => ev.reply('pc-globalShortcutInvoke', accelerator)));
+ipcMain.handle('pc-unregisterGlobalShortcut', (_, accelerator) => globalShortcut.unregister(accelerator));
+ipcMain.handle('pc-unregisterAllGlobalShortcuts', () => globalShortcut.unregisterAll());
 // #endregion IPC
 
 (async () => {
