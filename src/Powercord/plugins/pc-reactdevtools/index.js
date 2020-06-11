@@ -93,8 +93,6 @@ If you are still unable to find tabs for React DevTools in Developer Tools, relo
 							// Unzip the folder.
 							unzip(crxPath, devtoolsPath).then(() => {
 								this.addReactDevTools();
-								// Remove the CRX to free space.
-								unlinkSync(crxPath);
 							});
 						});
 					},
