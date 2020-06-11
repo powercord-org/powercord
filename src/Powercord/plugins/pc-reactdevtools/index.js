@@ -44,8 +44,8 @@ module.exports = class ReactDevtools extends Plugin {
 If React DevTools is missing or empty, close Developer Tools and re-open it.
 If you are still unable to find tabs for React DevTools in Developer Tools, reload your client (Ctrl + R)."`);
         })
-        .catch((e) => {
-          this.error("Couldn't find React DevTools in Chrome extensions!");
+        .catch(() => {
+          this.error('Couldn\'t find React DevTools in Chrome extensions!');
         });
     }
   }
