@@ -56,7 +56,7 @@
   "POWERCORD_QUICKCSS_SETTINGS_FOLDING": "Habilitar a dobragem de código",
   "POWERCORD_QUICKCSS_SETTINGS_INDENT": "Tamanho de identação",
   "POWERCORD_QUICKCSS_SETTINGS_INDENT_WARNING": "O tamanho da identação não pode ser alterado numa janela solta devido a restrições técnicas.",
-  "POWERCORD_QUICKCSS_SETTINGS_LINES": "Mostrar números de linha",
+  "POWERCORD_QUICKCSS_SETTINGS_LINES": "Mostrar contador de linhas",
   "POWERCORD_QUICKCSS_SETTINGS_MATCH_BRACKETS": "Corresponder parênteses",
   "POWERCORD_QUICKCSS_SETTINGS_MATCH_BRACKETS_DESC": "Irá realças os parênteses correspondentes quando o cursos estiver próximo deles.",
   "POWERCORD_QUICKCSS_SETTINGS_TABS": "Usar tabs para identação",
