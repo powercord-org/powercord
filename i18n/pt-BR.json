@@ -88,6 +88,7 @@
   "POWERCORD_SETTINGS_TRANSPARENT": "Janela Transparente",
   "POWERCORD_SETTINGS_TRANSPARENT_DESC": "Torna as janelas abertas pelo Discord transparentes, útil para temas.\n****AVISO:**** Isto quebrará **window snapping** no Windows. A **aceleração do hardware** deve estar **desligada** no Linux. Você poderá encontrar problemas e ter um fundo preto em alguns casos, como quando a janela é cortada na parte superior ou inferior devido à resolução do seu monitor ou quando as devtools estão abertas e encaixadas. **Requer reinicialização**.",
   "POWERCORD_SETTINGS_TRANSPARENT_GLASSCORD": "Parece que você tem o Glasscord instalado, e não pode atualizar esta configuração diretamente no Powercord. Saiba mais sobre como configurar o Glasscord [aqui]({glasscordCfgUrl})",
+  "POWERCORD_SNIPPET_APPLIED": "Snippet aplicada",
   "POWERCORD_SNIPPET_APPLY": "Aplicar Snippet",
   "POWERCORD_SNIPPET_LINE1": "Snippet de #css-snippets aplicado em {date, date, medium} às {date, time, medium}",
   "POWERCORD_SNIPPET_LINE2": "Criado por {authorTag} ({authorId})",
