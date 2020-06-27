@@ -3,6 +3,7 @@
     "powercord": true,
     "webpackJsonp": true,
     "DiscordNative": false,
+    "PowercordNative": false,
     "GLOBAL_ENV": true
   },
   "parserOptions": {

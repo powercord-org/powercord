@@ -3,7 +3,7 @@ const { Button } = require('powercord/components');
 
 const Icons = require('./Icons');
 
-module.exports = class Update extends React.Component {
+module.exports = class Update extends React.PureComponent {
   constructor () {
     super();
     this.plugin = powercord.pluginManager.get('pc-updater');

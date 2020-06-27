@@ -215,7 +215,7 @@ module.exports = class StyleManager {
               text: 'Open DevTools',
               color: 'green',
               look: 'ghost',
-              onClick: () => require('electron').remote.BrowserWindow.getFocusedWindow().openDevTools()
+              onClick: () => PowercordNative.openDevTools()
             },
             {
               text: 'Got it',
@@ -234,7 +234,7 @@ module.exports = class StyleManager {
               text: 'Open DevTools',
               color: 'green',
               look: 'ghost',
-              onClick: () => require('electron').remote.BrowserWindow.getFocusedWindow().openDevTools()
+              onClick: () => PowercordNative.openDevTools()
             },
             {
               text: 'Got it',

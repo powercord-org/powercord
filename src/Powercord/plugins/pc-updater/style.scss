@@ -130,7 +130,7 @@
     margin-bottom: 8px;
   }
 
-  .debugInfo {
+  .debug-info {
     display: flex;
     color: var(--interactive-normal);
     user-select: text;
@@ -190,10 +190,10 @@
       button {
         opacity: 1;
       }
+    }
 
-      :last-child:not(button) > :last-child {
-        flex-basis: 85%;
-      }
+    :last-child:not(button) > :last-child {
+      flex-basis: 85%;
     }
 
     button {
