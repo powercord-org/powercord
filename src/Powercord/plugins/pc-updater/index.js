@@ -110,7 +110,7 @@ module.exports = class Updater extends Plugin {
       if (this.settings.get('automatic', false)) {
         this.doUpdate();
       } else if (!document.querySelector('#powercord-updater, .powercord-updater')) {
-        this.sendToast('powercord-updater', {
+        powercord.api.notices.sendToast('powercord-updater', {
           header: Messages.POWERCORD_UPDATES_TOAST_AVAILABLE_HEADER,
           content: Messages.POWERCORD_UPDATES_TOAST_AVAILABLE_DESC,
           icon: 'wrench',
@@ -159,7 +159,7 @@ module.exports = class Updater extends Plugin {
       this.settings.set('failed', true);
       this.settings.set('updates', failed);
       if (!document.querySelector('#powercord-updater, .powercord-updater')) {
-        this.sendToast('powercord-updater', {
+        powercord.api.notices.sendToast('powercord-updater', {
           header: Messages.POWERCORD_UPDATES_TOAST_FAILED,
           type: 'danger',
           buttons: [ {

@@ -53,7 +53,7 @@ try {
             if (typeof part === 'string' && part.includes('%c')) { // Remove console formatting
               cleaned.push(part.replace(/%c/g, ''));
               i++;
-            } else if (part instanceof Error) { // Objects
+            } else if (part instanceof Error) { // Errors
               cleaned.push(part.message);
             } else if (typeof part === 'object') { // Objects
               cleaned.push(JSON.stringify(part));

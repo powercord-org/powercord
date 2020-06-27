@@ -194,7 +194,7 @@ module.exports = class GeneralSettings extends React.Component {
       header={Messages.ERRORS_RESTART_APP}
       confirmText={Messages.BUNDLE_READY_RESTART}
       cancelText={Messages.BUNDLE_READY_LATER}
-      onConfirm={() => window.reloadElectronApp()}
+      onConfirm={() => DiscordNative.app.relaunch()}
       onCancel={closeModal}
     >
       <div className='powercord-text'>

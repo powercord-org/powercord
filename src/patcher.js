@@ -107,10 +107,7 @@ app.once('ready', () => {
 
   // source maps must die
   session.defaultSession.webRequest.onBeforeRequest((details, done) => {
-    if (details.url.endsWith('.js.map')) {
-      // source maps must die
-      done({ cancel: true });
-    } else if (details.url.startsWith('https://canary.discordapp.com/_powercord')) { // @todo: discord.com
+    if (details.url.startsWith('https://canary.discordapp.com/_powercord')) { // @todo: discord.com
       appSettings.set('_POWERCORD_ROUTE', details.url.replace('https://canary.discordapp.com', ''));
       appSettings.save();
       // It should get restored to _powercord url later

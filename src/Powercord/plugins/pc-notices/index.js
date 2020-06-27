@@ -56,7 +56,7 @@ module.exports = class Notices extends Plugin {
   }
 
   _welcomeNewUser () {
-    this.sendAnnouncement('pc-first-welcome', {
+    powercord.api.notices.sendAnnouncement('pc-first-welcome', {
       color: 'green',
       message: 'Welcome! Powercord has been successfully injected into your Discord client. Feel free to join our Discord server for announcements, support and more!',
       button: {
@@ -82,7 +82,7 @@ module.exports = class Notices extends Plugin {
   }
 
   _unsupportedBuild () {
-    this.sendAnnouncement('pc-unsupported-build', {
+    powercord.api.notices.sendAnnouncement('pc-unsupported-build', {
       color: 'orange',
       message: `Powercord does not support the ${window.GLOBAL_ENV.RELEASE_CHANNEL} release of Discord. Please use Canary for best results.`
     });

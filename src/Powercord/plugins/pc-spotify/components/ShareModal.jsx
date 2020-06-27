@@ -2,6 +2,7 @@ const { React, messages, channels } = require('powercord/webpack');
 const { FormTitle, Text } = require('powercord/components');
 const { Modal } = require('powercord/components/modal');
 const { close: closeModal } = require('powercord/modal');
+const { SPOTIFY_DEFAULT_IMAGE } = require('../constants');
 
 class Track extends React.PureComponent {
   handleClick (item) {
@@ -14,7 +15,7 @@ class Track extends React.PureComponent {
   render () {
     const image = this.props.item.album.images[0]
       ? <img className='image' alt='cover' src={this.props.item.album.images[0].url} height='50' width='50' />
-      : <img className='image' alt='cover' src={this.props.spotifyImg} height='50' />;
+      : <img className='image' alt='cover' src={SPOTIFY_DEFAULT_IMAGE} height='50' />;
     return (
       <div className='powercord-spotify-playlist' onClick={() => this.handleClick(this.props.item)}>
         {image}
@@ -29,26 +30,19 @@ module.exports = class ShareModal extends React.PureComponent {
     super();
 
     this.state = {
-      tracks: [],
-      spotifyImg: ''
+      tracks: []
     };
   }
 
-  componentDidMount () {
-    Promise.all([ this.props.tracks, powercord.pluginManager.get('pc-spotify').getSpotifyLogo() ])
-      .then(values => {
-        this.setState({
-          tracks: values[0].items,
-          spotifyImg: `data:image/png;base64, ${values[1]}`
-        });
-      });
+  async componentDidMount () {
+    this.setState({ tracks: await this.props.tracks });
   }
 
   render () {
     const { tracks } = this.state;
     const trackList = [];
     tracks.forEach(track => {
-      trackList.push(<Track className='powercord-spotify-playlist' spotifyImg={this.state.spotifyImg} item={track}/>);
+      trackList.push(<Track className='powercord-spotify-playlist' item={track}/>);
     });
     return (
       <Modal size={Modal.Sizes.MEDIUM}>
