@@ -16,7 +16,7 @@ module.exports = {
     if (!hasCoolFeatures) {
       return {
         send: false,
-        result: 'You need a powercord account and connected Spotify account.'
+        result: 'You need a Powercord account and connected Spotify account.'
       };
     }
 
