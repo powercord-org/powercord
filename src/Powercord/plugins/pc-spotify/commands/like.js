@@ -12,6 +12,14 @@ module.exports = {
         result: 'You are not currently listening to anything.'
       };
     }
+    const hasCoolFeatures = powercord.account && powercord.account.spotify;
+    if (!hasCoolFeatures) {
+      return {
+        send: false,
+        result: 'You need a [powercord](https://powercord.dev/) account and connected Spotify account.'
+      };
+    }
+
     const { body } = await SpotifyAPI.checkLibrary(currentTrack.id);
     if (body[0]) {
       SpotifyAPI.removeSong(currentTrack.id);
