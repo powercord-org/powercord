@@ -16,8 +16,10 @@ module.exports = async () => {
     const { message } = msg;
     res.props['data-author-id'] = message.author.id;
     res.props['data-message-type'] = message.type;
-    res.props['data-is-author-self'] = String(message.author.id === userStore.getCurrentUser().id);
     res.props['data-is-author-bot'] = String(message.author.bot);
+    if (userStore.getCurrentUser()) {
+      res.props['data-is-author-self'] = String(message.author.id === userStore.getCurrentUser().id);
+    }
     return res;
   });
   Message.default.displayName = 'Message';

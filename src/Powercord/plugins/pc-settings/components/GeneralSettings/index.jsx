@@ -1,4 +1,3 @@
-const { remote } = require('electron');
 const { React, getModule, i18n: { Messages } } = require('powercord/webpack');
 const { Icons: { FontAwesome } } = require('powercord/components');
 const { open: openModal, close: closeModal } = require('powercord/modal');
@@ -174,18 +173,20 @@ module.exports = class GeneralSettings extends React.Component {
 
   clearDiscordCache () {
     this.setState({ discordCleared: true });
-    remote.getCurrentWindow().webContents.session.clearCache(() => void 0);
-    setTimeout(() => {
-      this.setState({ discordCleared: false });
-    }, 2500);
+    PowercordNative.clearCache().then(() => {
+      setTimeout(() => {
+        this.setState({ discordCleared: false });
+      }, 2500);
+    });
   }
 
   clearPowercordCache () {
     this.setState({ powercordCleared: true });
-    rmdirRf(CACHE_FOLDER);
-    setTimeout(() => {
-      this.setState({ powercordCleared: false });
-    }, 2500);
+    rmdirRf(CACHE_FOLDER).then(() => {
+      setTimeout(() => {
+        this.setState({ powercordCleared: false });
+      }, 2500);
+    });
   }
 
   askRestart () {

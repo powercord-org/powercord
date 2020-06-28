@@ -21,13 +21,21 @@ global.PowercordNative = {
    * @param {boolean} externalWindow Whether the DevTools should be opened in an external window or not.
    */
   openDevTools (opts, externalWindow) {
-    throw new Error('Not implemented');
+    ipcRenderer.send('POWERCORD_OPEN_DEVTOOLS', opts, externalWindow);
   },
 
   /**
    * Closes DevTools for the current window
    */
   closeDevTools () {
-    throw new Error('Not implemented');
+    ipcRenderer.send('POWERCORD_CLOSE_DEVTOOLS');
+  },
+
+  /**
+   * Clears Chromium's cache
+   * @returns {Promise<void>}
+   */
+  clearCache () {
+    return ipcRenderer.invoke('POWERCORD_CACHE_CLEAR');
   }
 };

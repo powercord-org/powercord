@@ -1,5 +1,7 @@
 const { join } = require('path');
 
+require('./ipc/renderer');
+
 window.__SPLASH__ = true;
 
 // Add Powercord's modules

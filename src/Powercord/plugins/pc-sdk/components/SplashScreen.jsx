@@ -1,6 +1,6 @@
-const { join } = require('path');
+const { join, dirname } = require('path');
 const { format: formatUrl } = require('url');
-const { remote: { BrowserWindow, app: remoteApp } } = require('electron');
+const { remote: { BrowserWindow } } = require('electron');
 const { React } = require('powercord/webpack');
 const { Flex, Button } = require('powercord/components');
 
@@ -82,7 +82,7 @@ class SplashScreen extends React.PureComponent {
   }
 
   openSplashScreen (keepState) {
-    const baseAsar = remoteApp.getAppPath();
+    const baseAsar = dirname(module.paths[0]);
     const splashIndex = formatUrl({
       protocol: 'file',
       slashes: true,
@@ -106,6 +106,7 @@ class SplashScreen extends React.PureComponent {
       }
     };
 
+    // this._window = PowercordNative.openBrowserWindow(windowSettings);
     this._window = new BrowserWindow(windowSettings);
     this._window.loadURL(splashIndex);
     this._window.webContents.openDevTools({ mode: 'detach' });

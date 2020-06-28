@@ -1,7 +1,6 @@
 const { join } = require('path');
 const { BrowserWindow } = require('electron');
 
-
 let settings = {};
 let transparency = false;
 let ewp = false;
