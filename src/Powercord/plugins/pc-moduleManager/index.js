@@ -170,6 +170,7 @@ module.exports = class ModuleManager extends Plugin {
           main: this
         })
       );
+      return res;
     });
     MiniPopover.default.displayName = 'MiniPopover';
   }

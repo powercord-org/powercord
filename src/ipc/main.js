@@ -7,7 +7,6 @@ if (!ipcMain) {
 function openDevTools (e, opts, externalWindow) {
   e.sender.openDevTools(opts);
   if (externalWindow) {
-    console.log(BrowserWindow);
     if (externalWindow) {
       let devToolsWindow = new BrowserWindow({ webContents: e.sender.devToolsWebContents });
       devToolsWindow.on('ready-to-show', () => devToolsWindow.show());
@@ -23,13 +22,24 @@ function closeDevTools (e) {
   e.sender.closeDevTools();
 }
 
+async function installExtension (e, extPath) {
+  const ext = await e.sender.session.loadExtension(extPath);
+  return ext.id;
+}
+
+function uninstallExtension (e, extId) {
+  return e.sender.session.removeExtension(extId);
+}
+
 function clearCache (e) {
   return new Promise(resolve => {
-    e.sender.session.clearCache(() => resolve());
+    e.sender.session.clearCache(() => resolve(null));
   });
 }
 
 ipcMain.on('POWERCORD_GET_PRELOAD', e => e.returnValue = e.sender._preload);
-ipcMain.on('POWERCORD_OPEN_DEVTOOLS', openDevTools);
-ipcMain.on('POWERCORD_CLOSE_DEVTOOLS', closeDevTools);
+ipcMain.handle('POWERCORD_OPEN_DEVTOOLS', openDevTools);
+ipcMain.handle('POWERCORD_CLOSE_DEVTOOLS', closeDevTools);
+ipcMain.handle('POWERCORD_INSTALL_EXTENSION', installExtension);
+ipcMain.handle('POWERCORD_UNINSTALL_EXTENSION', uninstallExtension);
 ipcMain.handle('POWERCORD_CACHE_CLEAR', clearCache);
