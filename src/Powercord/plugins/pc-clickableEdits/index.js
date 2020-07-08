@@ -1,6 +1,6 @@
 const { Plugin } = require('powercord/entities');
 const { getModule, messages } = require('powercord/webpack');
-const { forceUpdateElement, sleep } = require('powercord/util');
+const { forceUpdateElement } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 
 const Settings = require('./Settings');
@@ -10,9 +10,9 @@ module.exports = class ClickableEdits extends Plugin {
     super();
 
     this.classes = {
-      textArea: getModule([ 'textArea', 'textAreaDisabled' ], false),
-      channelTextArea: getModule([ 'message', 'divider' ], false),
-      messages: getModule([ 'messages', 'scroller' ], false)
+      messages: getModule([ 'messages', 'scroller' ], false),
+      container: getModule([ 'container', 'embedWrapper' ], false),
+      markup: getModule([ 'markup' ], false)
     };
 
     Object.keys(this.classes).forEach(key =>
@@ -25,10 +25,6 @@ module.exports = class ClickableEdits extends Plugin {
   }
 
   async startPlugin () {
-    while (!this.currentUser.id) {
-      await sleep(1000);
-    }
-
     powercord.api.settings.registerSettings('pc-clickableEdits', {
       category: this.entityID,
       label: 'Clickable Edits',
@@ -41,7 +37,7 @@ module.exports = class ClickableEdits extends Plugin {
   pluginWillUnload () {
     powercord.api.settings.unregisterSettings('pc-clickableEdits');
     uninject('clickableEdits-message');
-    forceUpdateElement(this.classes.messages, true);
+    forceUpdateElement(this.classes.messages);
   }
 
   async patchMessageContent () {
@@ -59,27 +55,24 @@ module.exports = class ClickableEdits extends Plugin {
 
     Message.default.displayName = 'Message';
 
-    forceUpdateElement(this.classes.messages, true);
-  }
-
-  get (key) {
-    return this.settings.get(key, false);
+    forceUpdateElement(this.classes.messages);
   }
 
   handleMessageEdit (channel_id, message_id, content) {
-    const shiftKey = (e) => e.shiftKey && e.button === (this.get('rightClickEdits') ? 2 : 0) && e.detail === 1;
-    const doubleClick = (e) => e.button === (this.get('rightClickEdits') ? 2 : 0) && e.detail > 1;
+    const get = (key) => this.settings.get(key, false);
+    const shiftKey = (e) => e.shiftKey && e.button === (get('rightClickEdits') ? 2 : 0) && e.detail === 1;
+    const doubleClick = (e) => e.button === (get('rightClickEdits') ? 2 : 0) && e.detail > 1;
 
-    let args = [ channel_id, message_id, !this.get('clearContent') ? content : '' ];
-    const dualControl = (e) => this.get('dualControlEdits') && shiftKey(e)
+    let args = [ channel_id, message_id, !get('clearContent') ? content : '' ];
+    const dualControl = (e) => get('dualControlEdits') && shiftKey(e)
       ? args = [ channel_id, message_id, '' ]
       : doubleClick(e)
         ? args = [ channel_id, message_id, content ]
         : false;
 
     return (e) => {
-      if (this.get('dualControlEdits') ? dualControl(e) : this.get('useShiftKey') ? shiftKey(e) : doubleClick(e)) {
-        if (e.target.className && (e.target.className.includes('markup') || e.target.className.includes('container'))) {
+      if (get('dualControlEdits') ? dualControl(e) : get('useShiftKey') ? shiftKey(e) : doubleClick(e)) {
+        if (e.target.closest(this.classes.markup) || e.target.closest(this.classes.container)) {
           messages.startEditMessage(...args);
         }
       }

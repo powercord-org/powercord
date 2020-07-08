@@ -5,7 +5,7 @@ const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
 const { REPO_URL, CACHE_FOLDER } = require('powercord/constants');
 const { clipboard } = require('electron');
-const { readdirSync } = require('fs');
+const { readdirSync, existsSync } = require('fs');
 
 const Icons = require('./Icons');
 const Update = require('./Update');
@@ -334,9 +334,9 @@ module.exports = class UpdaterSettings extends React.PureComponent {
       return path;
     };
 
-    const cachedFiles = readdirSync(CACHE_FOLDER)
+    const cachedFiles = (existsSync(CACHE_FOLDER) && readdirSync(CACHE_FOLDER)
       .map(d => readdirSync(`${CACHE_FOLDER}/${d}`))
-      .flat().length;
+      .flat().length) || 'n/a';
 
     const createPathReveal = (title, path) =>
       <div className='full-column'>

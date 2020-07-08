@@ -59,6 +59,13 @@ function toggleSetting (category, setting, defaultValue) {
   }
 }
 
+function deleteSetting (category, setting) {
+  if (!settings[category]) {
+    settings[category] = {};
+  }
+  delete settings[category][setting];
+}
+
 class SettingsStore extends Flux.Store {
   constructor (Dispatcher, handlers) {
     super(Dispatcher, handlers);
@@ -105,5 +112,5 @@ module.exports = new SettingsStore(FluxDispatcher, {
   [ActionTypes.UPDATE_SETTINGS]: ({ category, settings }) => updateSettings(category, settings),
   [ActionTypes.TOGGLE_SETTING]: ({ category, setting, defaultValue }) => toggleSetting(category, setting, defaultValue),
   [ActionTypes.UPDATE_SETTING]: ({ category, setting, value }) => updateSetting(category, setting, value),
-  [ActionTypes.DELETE_SETTING]: ({ category, setting }) => toggleSetting(category, setting)
+  [ActionTypes.DELETE_SETTING]: ({ category, setting }) => deleteSetting(category, setting)
 });
