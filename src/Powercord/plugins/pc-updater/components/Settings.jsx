@@ -437,7 +437,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
   }
 
   handleDebugInfoCopy (moment, plugins) {
-    const extract = document.querySelector('.debugInfo > code')
+    const extract = document.querySelector('.debug-info > code')
       .innerText.replace(/([A-Z/ ]+) (?=\s(?!C:\\).*?:)/g, '\n[$1]').replace(/(.*?):\s(.*.+)/g, '$1="$2"').replace(/[ -](\w*(?=.*=))/g, '$1');
 
     this.setState({ copied: true });

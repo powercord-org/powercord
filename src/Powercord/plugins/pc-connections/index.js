@@ -2,11 +2,9 @@ const { Plugin } = require('powercord/entities');
 const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 const { WEBSITE } = require('powercord/constants');
-const { get, del } = require('powercord/http');
 
 const SettingsConnections = require('./components/settings/ConnectedAccounts');
 const ProfileConnections = require('./components/profile/ConnectedAccounts');
-const Connection = require('./components/ConnectAccountButton');
 
 module.exports = class Connections extends Plugin {
   constructor () {
@@ -16,7 +14,6 @@ module.exports = class Connections extends Plugin {
   }
 
   async startPlugin () {
-    this.loadStylesheet('style.css');
     this.classes = {
       ...await getModule([ 'headerInfo', 'nameTag' ]),
       ...await getModule([ 'modal', 'inner' ]),
@@ -25,46 +22,9 @@ module.exports = class Connections extends Plugin {
 
     this.patchSettingsConnections();
     this.patchUserConnections();
-
-    powercord.api.connections.registerConnection({
-      type: 'github',
-      name: 'GitHub',
-      color: '#1b1f23',
-      icon: {
-        color: 'https://powercord.dev/assets/github_color.png',
-        white: 'https://powercord.dev/assets/github_white.png'
-      },
-      enabled: true,
-      fetchAccount: async (id) => {
-        let accounts = [];
-        try {
-          if (!id) {
-            if (powercord.account) {
-              accounts = await get(`${this.baseUrl}/api/v2/users/@me/accounts`)
-                .set('Authorization', powercord.account.token)
-                .then(r => r.body);
-            }
-          } else {
-            accounts = await get(`${this.baseUrl}/api/v2/users/${id}/accounts`)
-              .then(r => r.body);
-          }
-        } catch (e) {
-          // Let it fail silently
-        }
-
-        return accounts.find(account => account.type === 'github');
-      },
-      getPlatformUserUrl: (account) => {
-        const username = account.id;
-        return `https://github.com/${encodeURIComponent(username)}`;
-      },
-      onDisconnect: async (account) => del(`${this.baseUrl}/api/v2/users/@me/accounts/${account.type}`)
-        .set('Authorization', powercord.account.token)
-    });
   }
 
   pluginWillUnload () {
-    powercord.api.connections.unregisterConnection('github');
     uninject('pc-connections-settings');
     uninject('pc-connections-profile');
   }
@@ -75,14 +35,6 @@ module.exports = class Connections extends Plugin {
       if (!res.props.children) {
         return res;
       }
-
-      const availableConnections = res.props.children[0].props.children[2].props.children;
-      availableConnections.push(React.createElement(Connection, {
-        className: this.classes.accountBtn,
-        innerClassName: this.classes.accountBtnInner,
-        disabled: !powercord.account,
-        type: 'github'
-      }));
 
       const connectedAccounts = res.props.children[2].props.children;
       connectedAccounts.push(React.createElement(SettingsConnections, {}));
