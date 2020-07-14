@@ -38,8 +38,8 @@ try {
     process.exit(1);
   }
 })().catch(e => {
-  if (e.code === 'EACCES' && process.platform === 'linux') {
-    console.log('Missing required permissions, rerun with root privileges.');
+  if (e.code === 'EACCES') {
+    console.log(`Unable to ${process.argv[2]} because of missing permissions. Consider rerunning with elevated rights. `);
   } else {
     console.error('fucky wucky', e)
   }
