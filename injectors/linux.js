@@ -1,6 +1,9 @@
 const { join } = require('path');
 const { existsSync } = require('fs');
 const { execSync } = require('child_process');
+const readline = require('readline');
+
+
 
 exports.getAppDir = async () => {
   const discordProcess = execSync('ps x')
@@ -17,7 +20,27 @@ exports.getAppDir = async () => {
       '/opt/discord-canary',
       '/opt/DiscordCanary'
     ];
-    const discordPath = paths.find(path => existsSync(path));
+    let discordPath = paths.find(path => existsSync(path));
+
+    if (discordPath === undefined) {
+      const readlineInterface = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
+
+      console.log('A Discord Canary installation sdcould not be found at the usual paths.')
+       discordPath = await new Promise(resolve => readlineInterface.question('Provide your Discord Canary install location: ', customDiscordPath => {
+        if (existsSync(customDiscordPath)) {
+          readlineInterface.close();
+          resolve(customDiscordPath);
+        } else {
+          console.log('Path provided is invalid.');
+          process.exit(1);
+        }
+        
+      }));
+    }
+
     return join(discordPath, 'resources', 'app');
   }
 
