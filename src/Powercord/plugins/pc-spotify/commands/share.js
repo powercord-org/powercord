@@ -6,7 +6,7 @@ const ShareModal = require('../components/ShareModal');
 
 module.exports = {
   command: 'share',
-  description: 'Send specified or currently playing song to current channel',
+  description: 'Send specified or current playing song to selected channel',
   usage: '{c} {song name/artist}',
   async executor (query) {
     query = query.join(' ');

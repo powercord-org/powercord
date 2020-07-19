@@ -3,12 +3,12 @@ const SpotifyAPI = require('../SpotifyAPI');
 
 module.exports = {
   command: 'like',
-  description: 'Like a current playing song',
+  description: 'Like the current playing song',
   async executor () {
     if (!powercord.account && !powercord.account.spotify) {
       return {
         send: false,
-        result: 'You need a Powercord account and connected Spotify account.'
+        result: 'You need a Powercord account and connected Spotify account to use this feature!'
       };
     }
     const currentTrack = playerStore.getCurrentTrack();
@@ -19,17 +19,10 @@ module.exports = {
       };
     }
     const { body } = await SpotifyAPI.checkLibrary(currentTrack.id);
-    if (body[0]) {
-      SpotifyAPI.removeSong(currentTrack.id);
-      return {
-        send: false,
-        result: `You removed **${currentTrack.name}** by **${currentTrack.artists}** from your Liked Songs`
-      };
-    }
-    SpotifyAPI.addSong(currentTrack.id);
+    SpotifyAPI[body[0] ? 'removeSong' : 'addSong'](currentTrack.id);
     return {
       send: false,
-      result: `You added **${currentTrack.name}** by **${currentTrack.artists}** to your Liked Songs`
+      result: `You ${body[0] ? 'removed' : 'added'} **${currentTrack.name}** by **${currentTrack.artists}** from your Liked Songs.`
     };
   }
 };
