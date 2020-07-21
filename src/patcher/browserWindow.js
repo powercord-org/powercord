@@ -6,10 +6,9 @@ let transparency = false;
 let ewp = false;
 try {
   settings = require(join(__dirname, '../../settings/pc-general.json'));
-} finally {
   transparency = settings.transparentWindow;
   ewp = settings.experimentalWebPlatform;
-}
+} catch (e) {}
 
 class PatchedBrowserWindow extends BrowserWindow {
   // noinspection JSAnnotator - Make JetBrains happy
@@ -30,6 +29,7 @@ class PatchedBrowserWindow extends BrowserWindow {
       originalPreload = opts.webPreferences.preload;
       opts.webPreferences.preload = join(__dirname, '../preload.js');
       opts.webPreferences.nodeIntegration = true;
+      opts.webPreferences.contextIsolation = false;
 
       if (transparency) {
         opts.transparent = true;
