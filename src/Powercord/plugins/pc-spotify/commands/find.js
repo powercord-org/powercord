@@ -24,9 +24,10 @@ module.exports = {
       const tracksArray = body.tracks.items;
       if (tracksArray.length > 0) {
         const trackURL = tracksArray[0].uri;
-        return SpotifyAPI.play({
+        SpotifyAPI.play({
           uris: [ trackURL ]
         });
+        return;
       }
       return {
         send: false,
