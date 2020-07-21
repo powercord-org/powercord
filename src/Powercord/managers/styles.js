@@ -42,7 +42,7 @@ module.exports = class StyleManager {
         this.__settings = {};
         try {
           this.__settings = require(join(SETTINGS_FOLDER, 'pc-general.json'));
-        } finally {
+        } catch (e) {} finally {
           return this.__settings.disabledThemes || [];
         }
       }
