@@ -45,7 +45,7 @@ class PatchedBrowserWindow extends BrowserWindow {
     // @todo: get rid of this. see #337
     opts.webPreferences.enableRemoteModule = true;
     const win = new BrowserWindow(opts);
-    win.webContents._preload = originalPreload;
+    win.webContents._powercordPreload = originalPreload;
     return win;
   }
 }

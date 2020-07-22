@@ -37,7 +37,7 @@ function clearCache (e) {
   });
 }
 
-ipcMain.on('POWERCORD_GET_PRELOAD', e => e.returnValue = e.sender._preload);
+ipcMain.on('POWERCORD_GET_PRELOAD', e => e.returnValue = e.sender._powercordPreload);
 ipcMain.handle('POWERCORD_OPEN_DEVTOOLS', openDevTools);
 ipcMain.handle('POWERCORD_CLOSE_DEVTOOLS', closeDevTools);
 ipcMain.handle('POWERCORD_INSTALL_EXTENSION', installExtension);

@@ -42,9 +42,8 @@ module.exports = class StyleManager {
         this.__settings = {};
         try {
           this.__settings = require(join(SETTINGS_FOLDER, 'pc-general.json'));
-        } catch (e) {} finally {
-          return this.__settings.disabledThemes || [];
-        }
+        } catch (e) {}
+        return this.__settings.disabledThemes || [];
       }
     }
     return powercord.settings.get('disabledThemes', []);
