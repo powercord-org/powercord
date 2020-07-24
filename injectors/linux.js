@@ -28,13 +28,13 @@ exports.getAppDir = async () => {
         output: process.stdout
       });
 
-      console.log('A Discord Canary installation sdcould not be found at the usual paths.')
+      console.log('A Discord Canary installation could not be found at the usual paths.')
        discordPath = await new Promise(resolve => readlineInterface.question('Provide your Discord Canary install location: ', customDiscordPath => {
         if (existsSync(customDiscordPath)) {
           readlineInterface.close();
           resolve(customDiscordPath);
         } else {
-          console.log('Path provided is invalid.');
+          console.log('Path provided is invalid, aborting.');
           process.exit(1);
         }
         
