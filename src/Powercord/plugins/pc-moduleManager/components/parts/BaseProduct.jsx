@@ -59,7 +59,7 @@ class BaseProduct extends React.PureComponent {
           <div className='buttons'>
             {typeof this.props.onUninstall === 'function' &&
             <Button
-              onClick={() => this.onUninstall()}
+              onClick={() => this.props.onUninstall()}
               color={Button.Colors.RED}
               look={Button.Looks.FILLED}
               size={Button.Sizes.SMALL}
