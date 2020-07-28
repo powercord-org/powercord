@@ -15,7 +15,8 @@ exports.getAppDir = async () => {
       '/usr/share/discord-canary',
       '/usr/lib64/discord-canary',
       '/opt/discord-canary',
-      '/opt/DiscordCanary'
+      '/opt/DiscordCanary',
+      '~/.local/bin/DiscordCanary/'
     ];
     const discordPath = paths.find(path => existsSync(path));
     return join(discordPath, 'resources', 'app');
