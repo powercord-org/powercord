@@ -16,7 +16,7 @@ const unzip = require('unzip-crx');
 const { get } = require('powercord/http');
 const { rmdirRf } = require('powercord/util');
 
-const CRX_URL = 'https://clients2.google.com/service/update2/crx?response=redirect&os=win&arch=x86-64&os_arch=x86-64&nacl_arch=x86-64&prod=chromecrx&prodchannel=unknown&prodversion=83.0.4103.103&acceptformat=crx2&x=id=fmkadmapgofadopljbjfkapdkoienihi%26uc';
+const CRX_URL = 'https://clients2.google.com/service/update2/crx?response=redirect&prodversion=49.0&acceptformat=crx3&x=id%3Dfmkadmapgofadopljbjfkapdkoienihi%26installsource%3Dondemand%26uc';
 const EXT_PATH = join(__dirname, 'ext');
 const RDT_PATH = join(EXT_PATH, 'rdt');
 
