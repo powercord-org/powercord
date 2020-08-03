@@ -5,7 +5,7 @@ module.exports = {
   command: 'like',
   description: 'Like the current playing song',
   async executor () {
-    if (!powercord.account && !powercord.account.spotify) {
+    if (!powercord.account || !powercord.account.spotify) {
       return {
         send: false,
         result: 'You need a Powercord account and connected Spotify account to use this feature!'
@@ -22,7 +22,7 @@ module.exports = {
     SpotifyAPI[body[0] ? 'removeSong' : 'addSong'](currentTrack.id);
     return {
       send: false,
-      result: `You ${body[0] ? 'removed' : 'added'} **${currentTrack.name}** by **${currentTrack.artists}** from your Liked Songs.`
+      result: `You ${body[0] ? 'removed' : 'added'} **${currentTrack.name}** by **${currentTrack.artists}** ${body[0] ? 'from' : 'to'} your Liked Songs.`
     };
   }
 };
