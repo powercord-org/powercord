@@ -1,7 +1,4 @@
-const { randomBytes, scryptSync, createCipheriv, createDecipheriv } = require('crypto');
 const { Flux } = require('powercord/webpack');
-const { WEBSITE } = require('powercord/constants');
-const { get, put } = require('powercord/http');
 const { API } = require('powercord/entities');
 
 const store = require('./settingsStore/store');
@@ -113,112 +110,34 @@ class SettingsAPI extends API {
     await this.upload();
   }
 
-  /** @deprecated */
   async upload () {
-    if (!powercord.account || !this.store.getSetting('pc-general', 'settingsSync', false)) {
-      return;
-    }
-
-    const passphrase = store.getSetting('pc-general', 'passphrase', '');
-    const token = store.getSetting('pc-general', 'powercordToken');
-    const baseUrl = store.getSetting('pc-general', 'backendURL', WEBSITE);
-
-    let isEncrypted = false;
-    const payloads = {
-      powercord: JSON.stringify(store.getAllSettings()),
-      discord: JSON.stringify(this.localStorage.items)
-    };
-
-    if (passphrase !== '') {
-      for (const payload in payloads) {
-        // key + IV
-        const iv = randomBytes(16);
-        const salt = randomBytes(32);
-        const key = scryptSync(passphrase, salt, 32);
-
-        // Encryption
-        const cipher = createCipheriv('aes-256-cbc', key, iv);
-        let encrypted = cipher.update(payloads[payload]);
-        encrypted = Buffer.concat([ encrypted, cipher.final() ]);
-
-        // tada
-        payloads[payload] = `${salt.toString('hex')}::${iv.toString('hex')}::${encrypted.toString('hex')}`;
-        isEncrypted = true;
-      }
-    }
-
-    await put(`${baseUrl}/api/v2/users/@me/settings`)
-      .set('Authorization', token)
-      .set('Content-Type', 'application/json')
-      .send({
-        isEncrypted,
-        ...payloads
-      });
+    // https://img.pngio.com/be-right-back-png-group-hd-png-well-be-right-back-png-640_480.png
+    return false;
   }
 
-  /** @deprecated */
   async download () {
-    if (!powercord.account || !store.getSetting('pc-general', 'settingsSync', false)) {
-      return;
-    }
-
-    const passphrase = store.getSetting('pc-general', 'passphrase', '');
-    const token = store.getSetting('pc-general', 'powercordToken');
-    const baseUrl = store.getSetting('pc-general', 'backendURL', WEBSITE);
-    const response = (await get(`${baseUrl}/api/v2/users/@me/settings`)
-      .set('Authorization', token)
-      .then(r => r.body));
-
-    const settings = {
-      powercord: response.powercord,
-      discord: response.discord
-    };
-
-    if (response.isEncrypted && passphrase !== '') {
-      try {
-        for (const origin in settings) {
-          const [ salt, iv, encrypted ] = settings[origin].split('::');
-          const key = scryptSync(passphrase, Buffer.from(salt, 'hex'), 32);
-          const decipher = createDecipheriv('aes-256-cbc', key, Buffer.from(iv, 'hex'));
-          let decrypted = decipher.update(Buffer.from(encrypted, 'hex'));
-          decrypted = Buffer.concat([ decrypted, decipher.final() ]);
-
-          settings[origin] = decrypted.toString();
-        }
-      } catch (e) {
-        return; // Probably bad passphrase
-      }
-    }
-
-    const data = JSON.parse(settings.discord);
-    Object.keys(data).forEach(item => window.localStorage.setItem(item, JSON.stringify(data[item])));
-
-    try {
-      const data = JSON.parse(settings.powercord);
-      Object.keys(data).forEach(category => actions.updateSettings(category, data[category]));
-    } catch (e) {
-      return console.error('%c[Powercord:SettingsManager]', 'color: #7289da', 'Unable to sync settings!', e);
-    }
-  }
-
-  /** @deprecated */
-  get localStorage () {
-    const { localStorage } = window;
-    const blacklist = [
-      'APPLICATION_RPC_RESPONSE', 'deviceProperties', 'email_cache',
-      'gatewayURL', 'referralProperties', 'token', 'user_id_cache'
-    ];
-
-    const items = {};
-
-    for (const item in localStorage) {
-      if (localStorage.hasOwnProperty(item) && !blacklist.includes(item)) {
-        items[item] = JSON.parse(localStorage[item]);
-      }
-    }
-
-    return { items };
+    // https://img.pngio.com/be-right-back-png-group-hd-png-well-be-right-back-png-640_480.png
+    return false;
   }
 }
+
+/*
+ * // key + IV
+ * const iv = randomBytes(16);
+ * const salt = randomBytes(32);
+ * const key = scryptSync(passphrase, salt, 32);
+ *
+ * // Encryption
+ * const cipher = createCipheriv('aes-256-cbc', key, iv);
+ * let encrypted = cipher.update(payloads[payload]);
+ * encrypted = Buffer.concat([ encrypted, cipher.final() ]);
+ *
+ *
+ * const [ salt, iv, encrypted ] = settings[origin].split('::');
+ * const key = scryptSync(passphrase, Buffer.from(salt, 'hex'), 32);
+ * const decipher = createDecipheriv('aes-256-cbc', key, Buffer.from(iv, 'hex'));
+ * let decrypted = decipher.update(Buffer.from(encrypted, 'hex'));
+ * decrypted = Buffer.concat([ decrypted, decipher.final() ]);
+ */
 
 module.exports = SettingsAPI;

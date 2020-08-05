@@ -10,6 +10,7 @@ module.exports = {
       }
     }
   },
+
   unload () {
     return Promise.all(unloadFuncs.map(f => f()));
   }

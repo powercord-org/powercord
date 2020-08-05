@@ -20,6 +20,12 @@
   font-family: "Font Awesome 5 Pro" !important;
 }
 
+/* Utility class */
 .powercord-text {
   color: var(--text-normal);
+}
+
+/* Fix for the guilds scroller going crazy */
+.guilds-1SWlCJ .scroller-2TZvBN {
+  contain: none !important;
 }

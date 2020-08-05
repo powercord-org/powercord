@@ -35,18 +35,7 @@ module.exports = class GeneralSettings extends React.Component {
         >
           {Messages.POWERCORD_COMMAND_PREFIX}
         </TextInput>
-        <SwitchItem
-          note={Messages.POWERCORD_SETTINGS_SYNC_DESC}
-          value={powercord.account && getSetting('settingsSync', false)}
-          disabled={!powercord.account}
-          onChange={() => {
-            if (!getSetting('settingsSync', false)) {
-              this.passphrase(true);
-            } else {
-              toggleSetting('settingsSync');
-            }
-          }}
-        >
+        <SwitchItem note={'Settings sync is currently not available.'} disabled>
           {Messages.POWERCORD_SETTINGS_SYNC}
         </SwitchItem>
         <SwitchItem

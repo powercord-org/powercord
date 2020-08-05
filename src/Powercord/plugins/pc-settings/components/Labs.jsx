@@ -18,8 +18,9 @@ class Labs extends React.Component {
         type={FormNotice.Types.DANGER}
         title='Experiments ahead!'
         body={<>Any feature you see here is under development and is likely to be unfinished and/or broken. Powercord
-          Staff will <b>NOT</b> provide any support, explain, or accept any bug report for those. <b>Use them at your
-            own risk</b>.</>}
+          Staff will <b>NOT</b> provide any support, explain, or accept any bug report or suggestion for those. They
+          are provided as-is and there's a 50% chance devs will yell at you for using them and say your cat is
+          fat. <b>Use them at your own risk</b>.</>}
       />
       {powercord.api.labs.experiments.sort((a, b) => a.date > b.date ? -1 : a.date < b.date ? 1 : 0).map(e => this.renderItem(e))}
     </>;
