@@ -13,8 +13,8 @@ const exec = promisify(cp.exec);
 const PluginManager = require('./managers/plugins');
 const StyleManager = require('./managers/styles');
 const APIManager = require('./managers/apis');
-const coremods = require('./coremods');
 const modules = require('./modules');
+let coremods;
 
 /**
  * @typedef PowercordAPI
@@ -118,6 +118,7 @@ class Powercord extends Updatable {
     this.styleManager.loadThemes();
 
     // Plugins
+    coremods = require('./coremods');
     await coremods.load();
     await this.pluginManager.startPlugins();
 

@@ -15,6 +15,7 @@ const ErrorTypes = Object.freeze({
 
 module.exports = class StyleManager {
   constructor () {
+    this._coreStyles = [];
     this.themesDir = join(__dirname, '../themes');
     this.themes = new Map();
 
