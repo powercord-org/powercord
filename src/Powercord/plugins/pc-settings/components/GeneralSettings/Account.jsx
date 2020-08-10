@@ -9,8 +9,9 @@ module.exports = (props) => {
     <div className='powercord-account-list-account'>
       {React.createElement(Icons[props.type])}
       <span className='powercord-account-item'>
-        {powercord.account[props.type.toLowerCase()] ||
-      <a href={`${baseUrl}/oauth/${props.type.toLowerCase()}`} target='_blank'>{Messages.POWERCORD_LINK_NOW}</a>}
+        {powercord.account[props.type.toLowerCase()]
+          ? powercord.account[props.type.toLowerCase()].name
+          : <a href={`${baseUrl}/oauth/${props.type.toLowerCase()}`} target='_blank'>{Messages.POWERCORD_LINK_NOW}</a>}
       </span>
     </div>
   );
