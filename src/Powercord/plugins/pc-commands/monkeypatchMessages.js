@@ -6,7 +6,7 @@ module.exports = async function monkeypatchMessages () {
   const { createBotMessage } = await getModule([ 'createBotMessage' ]);
 
   // create a new `BOT_AVATARS` key called "powercord" which we'll later use to replace Clyde. >:D
-  BOT_AVATARS.powercord = 'https://powercord.dev/assets/powercord.png';
+  BOT_AVATARS.powercord = 'https://cdn.discordapp.com/attachments/552938674837258242/742181722254475424/powercord.png';
 
   messages.sendMessage = (sendMessage => async (id, message, ...params) => {
     if (!message.content.startsWith(powercord.api.commands.prefix)) {
