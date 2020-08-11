@@ -3,8 +3,6 @@ const { existsSync } = require('fs');
 const { execSync } = require('child_process');
 const readline = require('readline');
 
-
-
 exports.getAppDir = async () => {
   const discordProcess = execSync('ps x')
     .toString()
