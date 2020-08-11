@@ -72,7 +72,7 @@ module.exports = {
             uri: playlist.uri,
             name: playlist.name,
             icon: playlist.images[0] ? playlist.images[0].url : null,
-            editable: playlist.owner.display_name === powercord.account.spotify || playlist.collaborative,
+            editable: playlist.owner.display_name === powercord.account.spotify.name || playlist.collaborative,
             tracksLoaded: false
           }
         ])
