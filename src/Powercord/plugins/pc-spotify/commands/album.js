@@ -2,7 +2,7 @@ const playerStore = require('../playerStore/store');
 
 module.exports = {
   command: 'album',
-  description: 'Send currently playing song album to current channel',
+  description: 'Send album of current playing song to selected channel',
   executor () {
     const currentTrack = playerStore.getCurrentTrack();
     if (!currentTrack) {
