@@ -39,7 +39,7 @@ try {
   }
 })().catch(e => {
   if (e.code === 'EACCES') {
-    console.log(`Unable to ${process.argv[2]} because of missing permissions. Consider rerunning with elevated rights. `);
+    console.log(`Unable to ${process.argv[2]} because of missing permissions. Consider rerunning with elevated rights.`);
   } else {
     console.error('fucky wucky', e)
   }
