@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2018-2020 aetheryx & Bowser65
+ * All Rights Reserved. Licensed under the Porkord License
+ * https://powercord.dev/porkord-license
+ */
+
 const { join } = require('path');
 const { BrowserWindow } = require('electron');
 
@@ -18,16 +24,16 @@ class PatchedBrowserWindow extends BrowserWindow {
       // General purpose popouts used by Discord
     } else if (opts.webPreferences && opts.webPreferences.nodeIntegration) {
       // Splash Screen
-      opts.webPreferences.preload = join(__dirname, '../preloadSplash.js');
+      opts.webPreferences.preload = join(__dirname, './preloadSplash.js');
     } else if (opts.webPreferences && opts.webPreferences.offscreen) {
       // Overlay
       originalPreload = opts.webPreferences.preload;
-      opts.webPreferences.preload = join(__dirname, '../preload.js');
+      opts.webPreferences.preload = join(__dirname, './preload.js');
       opts.webPreferences.nodeIntegration = true;
     } else if (opts.webPreferences && opts.webPreferences.preload) {
       // Discord Client
       originalPreload = opts.webPreferences.preload;
-      opts.webPreferences.preload = join(__dirname, '../preload.js');
+      opts.webPreferences.preload = join(__dirname, './preload.js');
       opts.webPreferences.nodeIntegration = true;
       opts.webPreferences.contextIsolation = false;
 

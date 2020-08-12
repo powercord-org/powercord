@@ -28,6 +28,8 @@ module.exports = class I18nAPI extends API {
   addPowercordStrings () {
     Object.assign(i18n._proxyContext.messages, this.messages[this.locale]);
     Object.assign(i18n._proxyContext.defaultMessages, this.messages['en-US']);
+
+    // begone annoying warning
     delete i18n._proxyContext.messages.SELF_XSS_HEADER;
     delete i18n._proxyContext.defaultMessages.SELF_XSS_HEADER;
   }

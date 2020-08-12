@@ -40,6 +40,8 @@ module.exports = () => {
         installDeps();
         break;
       }
+
+      // @todo: make this smarter
       const expectedFrom = `${dependency}@${dependencies[dependency]}`;
       const depPackage = require(join(depPath, 'package.json'));
       if (expectedFrom !== depPackage._from) {

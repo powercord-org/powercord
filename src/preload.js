@@ -1,14 +1,19 @@
+/**
+ * Copyright (c) 2018-2020 aetheryx & Bowser65
+ * All Rights Reserved. Licensed under the Porkord License
+ * https://powercord.dev/porkord-license
+ */
+
 require('../polyfills');
 
 const { ipcRenderer, contextBridge } = require('electron');
 const { join } = require('path');
 const { existsSync, mkdirSync, open, write } = require('fs');
 const { LOGS_FOLDER } = require('./fake_node_modules/powercord/constants');
-contextBridge.exposeInMainWorld = () => void 0;
+contextBridge.exposeInMainWorld = () => void 0; // Prevent Discord from using this
+require('./ipc/renderer');
 
 console.log('[Powercord] Loading Powercord');
-
-require('./ipc/renderer');
 
 // Add Powercord's modules
 require('module').Module.globalPaths.push(join(__dirname, 'fake_node_modules'));
@@ -86,6 +91,6 @@ if (debugLogs) {
 // Overlay devtools
 powercord.once('loaded', () => {
   if (window.__OVERLAY__ && powercord.api.settings.store.getSetting('pc-general', 'openOverlayDevTools', false)) {
-    PowercordNative.openDevTools();
+    PowercordNative.openDevTools({}, true);
   }
 });
