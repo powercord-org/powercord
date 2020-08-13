@@ -1,11 +1,15 @@
-// Perform checks
-require('./env_check')();
+/**
+ * Copyright (c) 2018-2020 aetheryx & Bowser65
+ * All Rights Reserved. Licensed under the Porkord License
+ * https://powercord.dev/porkord-license
+ */
 
-// And then do stuff
-require('../polyfills');
+require('./env_check')(); // Perform checks
+require('../polyfills'); // And then do stuff
 
+const { join } = require('path');
 const { writeFile } = require('fs').promises;
-const { resolve } = require('path');
+const { BasicMessages } = require('./log');
 const main = require('./main.js');
 
 let platformModule;
@@ -13,34 +17,42 @@ try {
   platformModule = require(`./${process.platform}.js`);
 } catch (err) {
   if (err.code === 'MODULE_NOT_FOUND') {
-    console.log(`Unsupported platform "${process.platform}"`);
-    process.exit(1);
+    console.log(BasicMessages.PLUG_FAILED, '\n');
+    console.log('It seems like your platform is not supported yet.', '\n');
+    console.log('Feel free to open an issue about it, so we can add support for it!');
+    console.log(`Make sure to mention the platform you are on is "${process.platform}" in your issue ticket.`);
+    console.log('https://github.com/powercord-org/powercord/issues/new/choose');
+    process.exit(process.argv.includes('--no-exit-codes') ? 0 : 1);
   }
 }
 
 (async () => {
   if (process.argv[2] === 'inject') {
     if (await main.inject(platformModule)) {
-      // To show up popup message
-      await writeFile(
-        resolve(__dirname, '..', 'src', '__injected.txt'),
-        'hey cutie'
-      );
+      if (!process.argv.includes('--no-welcome-message')) {
+        await writeFile(join(__dirname, '../src/__injected.txt'), 'hey cutie');
+      }
 
-      console.log('Successfully plugged Powercord!');
+      // @todo: prompt to (re)start automatically
+      console.log(BasicMessages.PLUG_SUCCESS, '\n');
+      console.log('You now have to completely close the Discord client, from the system tray or through the task manager.');
     }
   } else if (process.argv[2] === 'uninject') {
     if (await main.uninject(platformModule)) {
-      console.log('Successfully unplugged Powercord!');
+      // @todo: prompt to (re)start automatically
+      console.log(BasicMessages.UNPLUG_SUCCESS, '\n');
+      console.log('You now have to completely close the Discord client, from the system tray or through the task manager.');
     }
   } else {
-    console.log(`Unsupported argument "${process.argv[2]}", exiting..`);
-    process.exit(1);
+    console.log(`Unsupported argument "${process.argv[2]}", exiting.`);
+    process.exit(process.argv.includes('--no-exit-codes') ? 0 : 1);
   }
 })().catch(e => {
   if (e.code === 'EACCES') {
-    console.log(`Unable to ${process.argv[2]} because of missing permissions. Consider rerunning with elevated rights.`);
+    console.log(process.argv[2] === 'inject' ? BasicMessages.PLUG_FAILED : BasicMessages.UNPLUG_FAILED, '\n');
+    console.log('Powercord wasn\'t able to inject itself due to missing permissions.', '\n');
+    console.log('Try again with elevated permissions.');
   } else {
-    console.error('fucky wucky', e)
+    console.error('fucky wucky', e);
   }
 });

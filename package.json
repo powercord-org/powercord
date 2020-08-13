@@ -7,10 +7,10 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint --ext js --ext jsx src",
-    "plug": "node injectors/index.js inject",
-    "unplug": "node injectors/index.js uninject",
-    "inject": "node injectors/index.js inject",
-    "uninject": "node injectors/index.js uninject"
+    "plug": "node injectors/index.js inject --no-exit-codes",
+    "unplug": "node injectors/index.js uninject --no-exit-codes",
+    "inject": "node injectors/index.js inject --no-exit-codes",
+    "uninject": "node injectors/index.js uninject --no-exit-codes"
   },
   "repository": "https://github.com/powercord-org/powercord.git",
   "author": "aetheryx",

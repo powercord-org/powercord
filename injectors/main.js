@@ -1,20 +1,29 @@
-const { mkdir, writeFile, unlink, rmdir, access } = require('fs').promises;
-const { join, sep } = require('path');
+/**
+ * Copyright (c) 2018-2020 aetheryx & Bowser65
+ * All Rights Reserved. Licensed under the Porkord License
+ * https://powercord.dev/porkord-license
+ */
 
-const exists = (path) =>
-  access(path)
-    .then(() => true)
-    .catch(() => false);
+const rmdirRf = require('../src/fake_node_modules/powercord/util/rmdirRf');
+const { existsSync } = require('fs');
+const { mkdir, writeFile } = require('fs').promises;
+const { join, sep } = require('path');
+const { AnsiEscapes } = require('./log');
 
 exports.inject = async ({ getAppDir }) => {
   const appDir = await getAppDir();
-  if (await exists(appDir)) {
-    console.log('Looks like you already have an injector in place. Try uninjecting (`npm run unplug`) and try again.');
+  if (existsSync(appDir)) {
+    /*
+     * @todo: verify if there is nothing in discord_desktop_core as well
+     * @todo: prompt to automatically uninject and continue
+     */
+    console.log('Looks like you already have an injector in place. Try unplugging (`npm run unplug`) and try again.', '\n');
+    console.log(`${AnsiEscapes.YELLOW}NOTE:${AnsiEscapes.RESET} If you already have BetterDiscord or another client mod injected, Powercord cannot run along with it!`);
+    console.log('Read our FAQ for more details: https://powercord.dev/faq#bd-and-pc');
     return false;
   }
 
   await mkdir(appDir);
-
   await Promise.all([
     writeFile(
       join(appDir, 'index.js'),
@@ -35,16 +44,11 @@ exports.inject = async ({ getAppDir }) => {
 exports.uninject = async ({ getAppDir }) => {
   const appDir = await getAppDir();
 
-  if (!(await exists(appDir))) {
-    console.log('There is nothing to uninject.');
+  if (!existsSync(appDir)) {
+    console.log('There is nothing to unplug. You are already running Discord without mods.');
     return false;
   }
 
-  await Promise.all([
-    unlink(join(appDir, 'package.json')),
-    unlink(join(appDir, 'index.js'))
-  ]);
-
-  await rmdir(appDir);
+  await rmdirRf(appDir);
   return true;
 };
