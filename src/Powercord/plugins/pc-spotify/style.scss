@@ -9,6 +9,10 @@
 
   .spotify-buttons button {
     color: var(--spotify-color) !important;
+
+    > div {
+      color: inherit;
+    }
   }
 
   .spotify-extra-controls {
