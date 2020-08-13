@@ -1,5 +1,4 @@
 const { API } = require('powercord/entities');
-const { getModule } = require('powercord/webpack');
 
 /**
  * @typedef PowercordRoute
@@ -27,12 +26,15 @@ class RouterAPI extends API {
    * Restores previous navigation if necessary
    */
   async restorePrevious () {
-    const oldRoute = await DiscordNative.settings.get('_POWERCORD_ROUTE');
-    if (oldRoute && this.routes.find(c => c.path === oldRoute.split('/_powercord')[1])) {
-      const router = await getModule([ 'replaceWith' ]);
-      router.replaceWith(oldRoute);
-    }
-    return DiscordNative.settings.set('_POWERCORD_ROUTE', void 0);
+    return null;
+    /*
+     * const oldRoute = await DiscordNative.settings.get('_POWERCORD_ROUTE');
+     * if (oldRoute && this.routes.find(c => c.path === oldRoute.split('/_powercord')[1])) {
+     *   const router = await getModule([ 'replaceWith' ]);
+     *   router.replaceWith(oldRoute);
+     * }
+     * return DiscordNative.settings.set('_POWERCORD_ROUTE', void 0);
+     */
   }
 
   /**

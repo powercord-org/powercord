@@ -61,7 +61,7 @@ module.exports = class EmojiUtility extends Plugin {
     await this.import('createBotMessage');
     await this.import('receiveMessage');
     await this.import('getSelectedChannelState');
-    await this.import('getChannelId');
+    await this.import([ 'getLastSelectedChannelId' ], 'getChannelId');
     await this.import('queryEmojiResults');
   }
 

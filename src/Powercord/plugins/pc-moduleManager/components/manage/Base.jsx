@@ -52,7 +52,7 @@ class Base extends React.Component {
         {this.renderSearch()}
         {items.length === 0
           ? <div className='empty'>
-            <div className={getModule([ 'emptyStateImage' ], false).emptyStateImage}/>
+            <div className={getModule([ 'emptyStateImage', 'emptyStateSubtext' ], false).emptyStateImage}/>
             <p>{Messages.GIFT_CONFIRMATION_HEADER_FAIL}</p>
             <p>{Messages.SEARCH_NO_RESULTS}</p>
           </div>

@@ -4,6 +4,8 @@
  * https://powercord.dev/porkord-license
  */
 
+/* eslint-disable */
+
 /**
  * bowoser's notes:
  *
@@ -45,6 +47,7 @@ async function download () {
 
 let id;
 module.exports = () => {
-  download().then(() => PowercordNative.installExtension(RDT_PATH)).then(eid => id = eid);
-  return () => id && PowercordNative.uninstallExtension(id);
+  return () => void 0;
+  // download().then(() => PowercordNative.installExtension(RDT_PATH)).then(eid => id = eid);
+  // return () => id && PowercordNative.uninstallExtension(id);
 };

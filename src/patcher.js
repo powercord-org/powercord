@@ -4,7 +4,6 @@
  * https://powercord.dev/porkord-license
  */
 
-/* global appSettings */
 const Module = require('module');
 const { join, dirname } = require('path');
 const { existsSync, unlinkSync } = require('fs');
@@ -39,10 +38,9 @@ electron.app.once('ready', () => {
     done({ responseHeaders });
   });
 
+  // @todo: move this to a custom loadURL logic
   electron.session.defaultSession.webRequest.onBeforeRequest((details, done) => {
-    if (details.url.startsWith('https://canary.discordapp.com/_powercord')) { // @todo: discord.com
-      appSettings.set('_POWERCORD_ROUTE', details.url.replace('https://canary.discordapp.com', ''));
-      appSettings.save();
+    if (details.url.startsWith('https://canary.discordapp.com/_powercord')) {
       // It should get restored to _powercord url later
       done({ redirectURL: 'https://canary.discordapp.com/app' });
     } else {
