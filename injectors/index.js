@@ -37,4 +37,10 @@ try {
     console.log(`Unsupported argument "${process.argv[2]}", exiting..`);
     process.exit(1);
   }
-})().catch(e => console.error('fucky wucky', e));
+})().catch(e => {
+  if (e.code === 'EACCES') {
+    console.log(`Unable to ${process.argv[2]} because of missing permissions. Consider rerunning with elevated rights.`);
+  } else {
+    console.error('fucky wucky', e)
+  }
+});
