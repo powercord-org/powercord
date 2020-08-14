@@ -51,8 +51,21 @@ class PatchedBrowserWindow extends BrowserWindow {
     // @todo: get rid of this. see #337
     opts.webPreferences.enableRemoteModule = true;
     const win = new BrowserWindow(opts);
+    const ogLoadUrl = win.loadURL.bind(win);
+    Object.defineProperty(win, 'loadURL', {
+      get: () => PatchedBrowserWindow.loadUrl(ogLoadUrl),
+      configurable: true
+    });
+
     win.webContents._powercordPreload = originalPreload;
     return win;
+  }
+
+  static loadUrl (ogLoadUrl) {
+    return function (url, opts) {
+      // @todo: Redirect _powercord routes
+      return ogLoadUrl(url, opts);
+    };
   }
 }
 

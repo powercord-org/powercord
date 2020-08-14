@@ -15,6 +15,9 @@ require('./ipc/main');
 const electronPath = require.resolve('electron');
 const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
+// Restore the classic path; The updater relies on it and it makes Discord go corrupt
+require.main.filename = join(discordPath, 'app_bootstrap/index.js');
+
 console.log('Hello from Powercord!');
 
 const electronExports = new Proxy(electron, {

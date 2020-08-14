@@ -15,8 +15,6 @@ if (process.platform === 'win32') {
   const { restart: squirrelRestart } = require(squirrelUpdateScript);
   require.cache[squirrelUpdateScript].exports.restart = function (app, newVersion) {
     console.log('[Powercord] Injecting in the new version');
-    inject(win32).then(() =>
-      squirrelRestart(app, newVersion)
-    );
+    inject(win32).then(() => squirrelRestart(app, newVersion));
   };
 }
