@@ -1,36 +1,34 @@
 const { resolve } = require('path');
-const { readdirSync } = require('fs');
+const { readdirSync, existsSync, writeFileSync } = require('fs');
 const { rmdirRf } = require('powercord/util');
-var shell = require('electron').shell;
-var fs = require('fs');
 
 module.exports = class PluginManager {
-  constructor() {
+  constructor () {
     this.pluginDir = resolve(__dirname, '..', 'plugins');
     this.plugins = new Map();
 
-    this.manifestKeys = ['name', 'version', 'description', 'author', 'license'];
+    this.manifestKeys = [ 'name', 'version', 'description', 'author', 'license' ];
   }
 
   // Getters
-  get(pluginID) {
+  get (pluginID) {
     return this.plugins.get(pluginID);
   }
 
-  getPlugins() {
-    return [...this.plugins.keys()];
+  getPlugins () {
+    return [ ...this.plugins.keys() ];
   }
 
-  isInstalled(plugin) {
+  isInstalled (plugin) {
     return this.plugins.has(plugin);
   }
 
-  isEnabled(plugin) {
+  isEnabled (plugin) {
     return !powercord.settings.get('disabledPlugins', []).includes(plugin);
   }
 
   // Mount/load/enable/install shit
-  mount(pluginID) {
+  mount (pluginID) {
     let manifest;
     try {
       manifest = Object.assign({
@@ -39,7 +37,7 @@ module.exports = class PluginManager {
         optionalDependencies: []
       }, require(resolve(this.pluginDir, pluginID, 'manifest.json')));
       if (!pluginID.startsWith("pc-"))
-        if (!(fs.existsSync(resolve(this.pluginDir, pluginID, '.git')) || fs.existsSync(resolve(this.pluginDir, pluginID, '.ignore-no-git')))) {
+        if (!(existsSync(resolve(this.pluginDir, pluginID, '.git')) || existsSync(resolve(this.pluginDir, pluginID, '.ignore-no-git')))) {
           powercord.api.notices.sendToast('pc-plugin-warning-' + pluginID, {
             header: 'Plugin warning', // required
             content: 'Plugin "' + pluginID + '" is installed incorrectly, or is unsupported!',
@@ -59,7 +57,7 @@ module.exports = class PluginManager {
               color: 'red',
               size: 'medium',
               look: 'outlined',
-              onClick: () => fs.writeFileSync(resolve(this.pluginDir, pluginID, '.ignore-no-git'), "Remove this file if your plugin is a valid git repo!")
+              onClick: () => writeFileSync(resolve(this.pluginDir, pluginID, '.ignore-no-git'), "Remove this file if your plugin is a valid git repo!")
             }],
             callback: () => console.log('Plugin warning ignored')
           });
@@ -95,17 +93,17 @@ module.exports = class PluginManager {
     }
   }
 
-  async remount(pluginID) {
+  async remount (pluginID) {
     try {
       await this.unmount(pluginID);
     } catch (e) {
       // chhhh
     }
-    this.mount(pluginID);
+    this.mount (pluginID);
     this.plugins.get(pluginID)._load();
   }
 
-  async unmount(pluginID) {
+  async unmount (pluginID) {
     const plugin = this.get(pluginID);
     if (!plugin) {
       throw new Error(`Tried to unmount a non installed plugin (${plugin})`);
@@ -123,7 +121,7 @@ module.exports = class PluginManager {
   }
 
   // Load
-  load(pluginID) {
+  load (pluginID) {
     const plugin = this.get(pluginID);
     if (!plugin) {
       throw new Error(`Tried to load a non installed plugin (${plugin})`);
@@ -135,7 +133,7 @@ module.exports = class PluginManager {
     plugin._load();
   }
 
-  unload(pluginID) {
+  unload (pluginID) {
     const plugin = this.get(pluginID);
     if (!plugin) {
       throw new Error(`Tried to unload a non installed plugin (${plugin})`);
@@ -148,7 +146,7 @@ module.exports = class PluginManager {
   }
 
   // Enable
-  enable(pluginID) {
+  enable (pluginID) {
     if (!this.get(pluginID)) {
       throw new Error(`Tried to enable a non installed plugin (${pluginID})`);
     }
@@ -161,7 +159,7 @@ module.exports = class PluginManager {
     this.load(pluginID);
   }
 
-  disable(pluginID) {
+  disable (pluginID) {
     const plugin = this.get(pluginID);
 
     if (!plugin) {
@@ -177,11 +175,11 @@ module.exports = class PluginManager {
   }
 
   // noinspection JSUnusedLocalSymbols - Install
-  async install(pluginID) { // eslint-disable-line no-unused-vars
+  async install (pluginID) { // eslint-disable-line no-unused-vars
     throw new Error('no');
   }
 
-  async uninstall(pluginID) {
+  async uninstall (pluginID) {
     if (pluginID.startsWith('pc-')) {
       throw new Error(`You cannot uninstall an internal plugin. (Tried to uninstall ${pluginID})`);
     }
@@ -191,7 +189,7 @@ module.exports = class PluginManager {
   }
 
   // Start
-  startPlugins(sync = false) {
+  startPlugins (sync = false) {
     const missingPlugins = [];
     const isOverlay = (/overlay/).test(location.pathname);
     readdirSync(this.pluginDir).sort(this._sortPlugins).forEach(filename => !this.isInstalled(filename) && this.mount(filename));
@@ -220,18 +218,18 @@ module.exports = class PluginManager {
     }
   }
 
-  shutdownPlugins() {
-    return this._bulkUnload([...powercord.pluginManager.plugins.keys()]);
+  shutdownPlugins () {
+    return this._bulkUnload([ ...powercord.pluginManager.plugins.keys() ]);
   }
 
-  _sortPlugins(pluginA, pluginB) {
-    const priority = ['pc-dnt', 'pc-router', 'pc-commands', 'pc-settings', 'pc-moduleManager', 'pc-updater'].reverse();
+  _sortPlugins (pluginA, pluginB) {
+    const priority = [ 'pc-dnt', 'pc-router', 'pc-commands', 'pc-settings', 'pc-moduleManager', 'pc-updater' ].reverse();
     const priorityA = priority.indexOf(pluginA);
     const priorityB = priority.indexOf(pluginB);
     return (priorityA === priorityB ? 0 : (priorityA < priorityB ? 1 : -1));
   }
 
-  async _bulkUnload(plugins) {
+  async _bulkUnload (plugins) {
     const nextPlugins = [];
     for (const plugin of plugins) {
       const deps = this.get(plugin).allDependencies;
