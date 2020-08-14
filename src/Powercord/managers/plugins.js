@@ -1,7 +1,7 @@
 const { resolve } = require('path');
 const { readdirSync, existsSync, writeFileSync } = require('fs');
 const { rmdirRf } = require('powercord/util');
-const shell = require('electron').shell;
+const { shell } = require('electron');
 
 module.exports = class PluginManager {
   constructor () {
@@ -37,7 +37,7 @@ module.exports = class PluginManager {
         dependencies: [],
         optionalDependencies: []
       }, require(resolve(this.pluginDir, pluginID, 'manifest.json')));
-      if (!pluginID.startsWith("pc-")) {
+      if (!pluginID.startsWith('pc-')) {
         if (!(existsSync(resolve(this.pluginDir, pluginID, '.git')) || existsSync(resolve(this.pluginDir, pluginID, '.ignore-no-git')))) {
           powercord.api.notices.sendToast(`pc-plugin-warning-${pluginID}`, {
             header: 'Plugin warning', // required
