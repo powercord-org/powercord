@@ -37,32 +37,33 @@ module.exports = class PluginManager {
         dependencies: [],
         optionalDependencies: []
       }, require(resolve(this.pluginDir, pluginID, 'manifest.json')));
-      if (!pluginID.startsWith("pc-"))
+      if (!pluginID.startsWith("pc-")) {
         if (!(existsSync(resolve(this.pluginDir, pluginID, '.git')) || existsSync(resolve(this.pluginDir, pluginID, '.ignore-no-git')))) {
-          powercord.api.notices.sendToast('pc-plugin-warning-' + pluginID, {
+          powercord.api.notices.sendToast(`pc-plugin-warning-${pluginID}`, {
             header: 'Plugin warning', // required
-            content: 'Plugin "' + pluginID + '" is installed incorrectly, or is unsupported!',
+            content: `Plugin "${pluginID}" is installed incorrectly, or is unsupported!`,
             image: 'https://cdn.discordapp.com/emojis/540635231217123338.png?v=1',
             imageClass: 'powercord_warning_icon',
             type: 'info',
             timeout: 10e3,
-            buttons: [{
+            buttons: [ {
               text: 'How do I fix it?', // required
               color: 'green',
               size: 'medium',
               look: 'outlined',
-              onClick: () => shell.openExternal("https://www.youtube.com/watch?v=7jdl7nlZ664")
+              onClick: () => shell.openExternal('https://www.youtube.com/watch?v=7jdl7nlZ664')
             },
             {
               text: 'Ignore permanently', // required
               color: 'red',
               size: 'medium',
               look: 'outlined',
-              onClick: () => writeFileSync(resolve(this.pluginDir, pluginID, '.ignore-no-git'), "Remove this file if your plugin is a valid git repo!")
-            }],
+              onClick: () => writeFileSync(resolve(this.pluginDir, pluginID, '.ignore-no-git'), 'Remove this file if your plugin is a valid git repo!')
+            } ],
             callback: () => console.log('Plugin warning ignored')
           });
         }
+      }
     } catch (e) {
       return console.error('%c[Powercord]', 'color: #7289da', `Plugin ${pluginID} doesn't have a valid manifest - Skipping`);
     }
@@ -100,7 +101,7 @@ module.exports = class PluginManager {
     } catch (e) {
       // chhhh
     }
-    this.mount (pluginID);
+    this.mount(pluginID);
     this.plugins.get(pluginID)._load();
   }
 
@@ -194,7 +195,7 @@ module.exports = class PluginManager {
     const missingPlugins = [];
     const isOverlay = (/overlay/).test(location.pathname);
     readdirSync(this.pluginDir).sort(this._sortPlugins).forEach(filename => !this.isInstalled(filename) && this.mount(filename));
-    for (const plugin of [...this.plugins.values()]) {
+    for (const plugin of [ ...this.plugins.values() ]) {
       if (powercord.settings.get('disabledPlugins', []).includes(plugin.entityID)) {
         continue;
       }
