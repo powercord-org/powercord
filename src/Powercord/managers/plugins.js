@@ -1,6 +1,7 @@
 const { resolve } = require('path');
 const { readdirSync, existsSync, writeFileSync } = require('fs');
 const { rmdirRf } = require('powercord/util');
+const shell = require('electron').shell;
 
 module.exports = class PluginManager {
   constructor () {
@@ -50,7 +51,7 @@ module.exports = class PluginManager {
               color: 'green',
               size: 'medium',
               look: 'outlined',
-              onClick: () => window.location.href = "https://canary.discordapp.com/channels/538759280057122817/539443125727395858/582984735337218058"
+              onClick: () => shell.openExternal("https://www.youtube.com/watch?v=7jdl7nlZ664")
             },
             {
               text: 'Ignore permanently', // required
