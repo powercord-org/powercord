@@ -88,18 +88,18 @@
       right: 0;
       z-index: 69;
 
-      > div {
+      > .settings {
         padding: 25px;
       }
 
       h2 {
-        margin-bottom: 40px;
+        margin: 30px 20px 20px;
       }
 
       .close {
         &-wrapper {
           position: absolute;
-          top: 20px;
+          top: 28px;
           right: 20px;
         }
 

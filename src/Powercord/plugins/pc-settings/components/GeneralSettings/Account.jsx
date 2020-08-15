@@ -11,7 +11,7 @@ module.exports = (props) => {
       <span className='powercord-account-item'>
         {powercord.account[props.type.toLowerCase()]
           ? powercord.account[props.type.toLowerCase()].name
-          : <a href={`${baseUrl}/oauth/${props.type.toLowerCase()}`} target='_blank'>{Messages.POWERCORD_LINK_NOW}</a>}
+          : <a href={`${baseUrl}/api/v2/oauth/${props.type.toLowerCase()}`} target='_blank'>{Messages.POWERCORD_LINK_NOW}</a>}
       </span>
     </div>
   );

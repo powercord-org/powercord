@@ -1,9 +1,7 @@
-const { React, Flux, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
+const { React, Flux, getModule, i18n: { Messages } } = require('powercord/webpack');
 const { SwitchItem, SliderInput } = require('powercord/components/settings');
-const { AsyncComponent, Clickable, FormTitle, Tooltip, Icons: { Pin, Unpin, Gear, Close, ExternalLink } } = require('powercord/components');
+const { AsyncComponent, Clickable, FormTitle, Tooltip, AdvancedScrollerThin, Icons: { Pin, Unpin, Gear, Close, ExternalLink } } = require('powercord/components');
 const CodeMirror = require('./CodeMirror');
-
-const VerticalScroller = AsyncComponent.from(getModuleByDisplayName('VerticalScroller'));
 
 class QuickCSS extends React.PureComponent {
   constructor () {
@@ -91,7 +89,7 @@ class QuickCSS extends React.PureComponent {
     const { getSetting, updateSetting, toggleSetting } = this.props;
 
     return (
-      <VerticalScroller outerClassName='powercord-quickcss-editor-settings' theme='themeGhostHairline-DBD-2d' fade>
+      <AdvancedScrollerThin className='powercord-quickcss-editor-settings' theme='themeGhostHairline-DBD-2d' fade>
         <FormTitle tag='h2'>{Messages.POWERCORD_QUICKCSS_SETTINGS}</FormTitle>
         <div className='close-wrapper'>
           <Tooltip text={Messages.CLOSE} position='left'>
@@ -100,7 +98,7 @@ class QuickCSS extends React.PureComponent {
             </Clickable>
           </Tooltip>
         </div>
-        <div>
+        <div className='settings'>
           <SwitchItem
             value={getSetting('cm-lineNumbers', true)}
             onChange={v => {
@@ -177,7 +175,7 @@ class QuickCSS extends React.PureComponent {
             {Messages.POWERCORD_QUICKCSS_SETTINGS_INDENT}
           </SliderInput>
         </div>
-      </VerticalScroller>
+      </AdvancedScrollerThin>
     );
   }
 

@@ -30,7 +30,7 @@ module.exports = {
           message: revokedMessages[resp.revoked],
           button: {
             text: 'Relink Spotify',
-            onClick: () => openExternal(`${baseUrl}/oauth/spotify`)
+            onClick: () => openExternal(`${baseUrl}/api/v2/oauth/spotify`)
           }
         });
       } else if (resp.token) {

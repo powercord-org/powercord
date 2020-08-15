@@ -195,7 +195,7 @@ class Powercord extends Updatable {
             message: 'Your Powercord account is no longer linked to your Discord account! Some integrations will be disabled.',
             button: {
               text: 'Link it back',
-              onClick: () => openExternal(`${WEBSITE}/oauth/discord`)
+              onClick: () => openExternal(`${WEBSITE}/api/v2/oauth/discord`)
             }
           });
 
