@@ -6,15 +6,17 @@
 
 const { join } = require('path');
 const { inject } = require('../injectors/main');
-const win32 = require('../injectors/win32');
 
-if (process.platform === 'win32') {
-  console.log('[Powercord] Detected a Windows installation. Injecting into the updater');
+const applicableEnvs = [ 'win32', 'darwin' ];
+
+if (applicableEnvs.includes(process.platform)) {
+  console.log('[Powercord] Detected an installation sensitive to host updates. Injecting into the updater');
+  const injector = require(`../injectors/${process.platform}`);
   const squirrelUpdateScript = join(process.execPath, '..', 'resources/app.asar', 'app_bootstrap/squirrelUpdate.js');
 
   const { restart: squirrelRestart } = require(squirrelUpdateScript);
   require.cache[squirrelUpdateScript].exports.restart = function (app, newVersion) {
     console.log('[Powercord] Injecting in the new version');
-    inject(win32).then(() => squirrelRestart(app, newVersion));
+    inject(injector).then(() => squirrelRestart(app, newVersion));
   };
 }
