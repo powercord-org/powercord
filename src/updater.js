@@ -7,7 +7,7 @@
 const { join } = require('path');
 const { inject } = require('../injectors/main');
 
-const applicableEnvs = [ 'win32', 'darwin' ];
+const applicableEnvs = [ 'win32' /* ,  'darwin' */ ];
 
 if (applicableEnvs.includes(process.platform)) {
   console.log('[Powercord] Detected an installation sensitive to host updates. Injecting into the updater');

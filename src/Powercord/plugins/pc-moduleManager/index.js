@@ -12,7 +12,6 @@ const commands = require('./commands');
 const deeplinks = require('./deeplinks');
 const i18n = require('./licenses/index');
 
-const Store = require('./components/store/Store');
 const Plugins = require('./components/manage/Plugins');
 const Themes = require('./components/manage/Themes');
 const QuickCSS = require('./components/manage/QuickCSS');
@@ -29,18 +28,6 @@ module.exports = class ModuleManager extends Plugin {
       name: 'New themes features',
       date: 1587857509321,
       description: 'New Theme management UI & settings',
-      callback: () => {
-        // We're supposed to do it properly but reload > all
-        setImmediate(() => powercord.pluginManager.remount(this.entityID));
-        // And we wrap it in setImmediate to not break the labs UI
-      }
-    });
-
-    powercord.api.labs.registerExperiment({
-      id: 'pc-moduleManager-store',
-      name: 'Powercord Store',
-      date: 1571961600000,
-      description: 'Powercord Plugin and Theme store',
       callback: () => {
         // We're supposed to do it properly but reload > all
         setImmediate(() => powercord.pluginManager.remount(this.entityID));
@@ -81,20 +68,6 @@ module.exports = class ModuleManager extends Plugin {
 
     if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-deeplinks')) {
       deeplinks();
-    }
-
-    if (powercord.api.labs.isExperimentEnabled('pc-moduleManager-store')) {
-      this._injectCommunityContent();
-      powercord.api.router.registerRoute({
-        path: '/store/plugins',
-        render: Store,
-        noSidebar: true
-      });
-      powercord.api.router.registerRoute({
-        path: '/store/themes',
-        render: Store,
-        noSidebar: true
-      });
     }
   }
 

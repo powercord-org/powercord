@@ -5,6 +5,7 @@
  */
 
 module.exports = [
+  require('./store'),
   require('./badges'),
   require('./react-devtools')
 ];
