@@ -4,11 +4,13 @@
  * https://powercord.dev/porkord-license
  */
 
+const { join } = require('path');
 const { inject, uninject } = require('powercord/injector');
 const { React, getModule, getModuleByDisplayName, FluxDispatcher, constants: { Permissions }, i18n: { Messages } } = require('powercord/webpack');
 const { Icons: { Plugin: PluginIcon, Theme } } = require('powercord/components');
 const { MAGIC_CHANNELS: { STORE_PLUGINS, STORE_THEMES } } = require('powercord/constants');
 const { waitFor, getOwnerInstance, forceUpdateElement } = require('powercord/util');
+const { loadStyle, unloadStyle } = require('../util');
 
 const Sidebar = require('./components/Sidebar');
 const Store = require('./components/Store');
@@ -103,6 +105,7 @@ function _shut () {
 }
 
 module.exports = function () {
+  const styleId = loadStyle(join(__dirname, 'style/style.scss'));
   powercord.api.labs.registerExperiment({
     id: 'pc-moduleManager-store',
     name: 'Powercord Store',
@@ -116,6 +119,7 @@ module.exports = function () {
   }
 
   return () => {
+    unloadStyle(styleId);
     powercord.api.labs.unregisterExperiment('pc-moduleManager-store');
     _shut();
   };

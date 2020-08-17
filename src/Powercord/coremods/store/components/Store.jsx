@@ -5,6 +5,11 @@
  */
 
 const { React, Router } = require('powercord/webpack');
+const StoreListing = require('./StoreListing');
+const Suggestions = require('./Suggestions');
+const Publish = require('./Publish');
+const Verification = require('./Verification');
+const Hosting = require('./Hosting');
 
 module.exports = function () {
   // dont touch mah stuff :angery:
@@ -35,22 +40,22 @@ module.exports = function () {
   return (
     <Router.Switch>
       <Router.Route path='/_powercord/store/plugins' exact>
-        <p>todo</p>
+        <StoreListing type='plugins'/>
       </Router.Route>
       <Router.Route path='/_powercord/store/themes' exact>
-        <p>todo</p>
+        <StoreListing type='themes'/>
       </Router.Route>
       <Router.Route path='/_powercord/store/suggestions' exact>
-        <p>todo</p>
+        <Suggestions/>
       </Router.Route>
       <Router.Route path='/_powercord/store/forms/publish' exact>
-        <p>todo</p>
+        <Publish/>
       </Router.Route>
       <Router.Route path='/_powercord/store/forms/verificaton' exact>
-        <p>todo</p>
+        <Verification/>
       </Router.Route>
       <Router.Route path='/_powercord/store/forms/hosting' exact>
-        <p>todo</p>
+        <Hosting/>
       </Router.Route>
       <Router.Route path='/_powercord/store' exact>
         <Router.Redirect path='/_powercord/store/plugins'/>
@@ -58,4 +63,3 @@ module.exports = function () {
     </Router.Switch>
   );
 };
- 

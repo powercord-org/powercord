@@ -11,19 +11,19 @@ const Item = React.memo(
   ({ path, icon, children }) => {
     const { useLocation } = getModule([ 'useLocation' ], false);
     const { transitionTo } = getModule([ 'transitionTo' ], false);
-    const { categoryItem, selectedCategoryItem, innerItem } = getModule([ 'discoverHeader' ], false);
+    const { categoryItem, selectedCategoryItem, itemInner } = getModule([ 'discoverHeader' ], false);
     const { container, selected: selectedClass, clickable, wrappedLayout, layout, avatar, content } = getModule([ 'wrappedLayout' ], false);
 
     const loc = useLocation();
-    const fullPath = `/_powercord/store/${path}`;
+    const fullPath = `/_powercord/store${path}`;
     const selected = loc.pathname.startsWith(fullPath);
 
     return (
       <Clickable
         onClick={() => !selected && transitionTo(fullPath)}
-        className={[ container, clickable, categoryItem, selected && `${selectedCategoryItem} ${selectedClass}` ].filter(Boolean).join(' ')}
+        className={`${container} ${categoryItem} ${selected ? `${selectedCategoryItem} ${selectedClass}` : clickable}`}
       >
-        <div className={`${layout} ${wrappedLayout} ${innerItem}`}>
+        <div className={`${layout} ${wrappedLayout} ${itemInner}`}>
           <div className={avatar}>
             {React.createElement(Icons[icon], {
               width: 24,
@@ -51,7 +51,7 @@ module.exports = React.memo(
 
         <h3 className={`${discoverHeader} ${sizes.size20}`}>Get in touch</h3>
         <Item icon='CloudUpload' path='/forms/publish'>Publish a product</Item>
-        <Item icon='Certificate' path='/forms/verificaton'>Get verified</Item>
+        <Item icon='Verified' path='/forms/verificaton'>Get verified</Item>
         <Item icon='Server' path='/forms/hosting'>Host a backend</Item>
       </AdvancedScrollerThin>
     );
