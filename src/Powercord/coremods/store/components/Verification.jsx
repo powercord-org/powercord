@@ -8,7 +8,6 @@ const { React, getModule } = require('powercord/webpack');
 const { Flex } = require('powercord/components');
 
 const Layout = require('./layouts/FormLayout');
-const FormOrPoop = require('./FormOrPoop');
 
 module.exports = React.memo(
   () => {
@@ -68,7 +67,6 @@ module.exports = React.memo(
           </Flex.Child>
         </Flex>
         <h2 className={`${size32} ${marginBottom20}`}>My product meets all the requirements!</h2>
-        <FormOrPoop/>
       </Layout>
     );
   }
