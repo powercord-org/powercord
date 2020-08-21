@@ -53,7 +53,7 @@ class PatchedBrowserWindow extends BrowserWindow {
     const win = new BrowserWindow(opts);
     const ogLoadUrl = win.loadURL.bind(win);
     Object.defineProperty(win, 'loadURL', {
-      get: () => PatchedBrowserWindow.loadUrl(ogLoadUrl),
+      get: () => PatchedBrowserWindow.loadUrl.bind(win, ogLoadUrl),
       configurable: true
     });
 
@@ -61,11 +61,13 @@ class PatchedBrowserWindow extends BrowserWindow {
     return win;
   }
 
-  static loadUrl (ogLoadUrl) {
-    return function (url, opts) {
-      // @todo: Redirect _powercord routes
-      return ogLoadUrl(url, opts);
-    };
+  static loadUrl (ogLoadUrl, url, opts) {
+    console.log(url);
+    if (url.match(/^https:\/\/canary\.discord(app)?\.com\/_powercord\//)) {
+      this.webContents._powercordOgUrl = url;
+      return ogLoadUrl('https://canary.discordapp.com/app', opts);
+    }
+    return ogLoadUrl(url, opts);
   }
 }
 

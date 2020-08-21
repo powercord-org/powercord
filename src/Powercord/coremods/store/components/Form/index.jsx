@@ -4,16 +4,29 @@
  * https://powercord.dev/porkord-license
  */
 
-const { React, getModule } = require('powercord/webpack');
-const { AdvancedScrollerAuto, Icons } = require('powercord/components');
+const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { AdvancedScrollerAuto, Icons, AsyncComponent } = require('powercord/components');
+
+const Banned = require('./Banned');
+const Intro = require('./Intro');
+const Form = require('./Form');
+const Success = require('./Success');
+
+const Sequencer = AsyncComponent.from(getModuleByDisplayName('Sequencer'));
 
 module.exports = React.memo(
-  ({ icon, title, children }) => {
+  ({ icon, title, eligibility, renderIntro, renderForm }) => {
     const { base } = getModule([ 'base' ], false);
     const { size32 } = getModule([ 'size24' ], false);
     const { pageWrapper } = getModule([ 'pageWrapper' ], false);
     const { scroller } = getModule([ 'headerContentWrapper' ], false);
     const { wrappedLayout, layout, avatar, content } = getModule([ 'wrappedLayout' ], false);
+
+    const [ step, setStep ] = React.useState(0);
+
+    if (!eligibility) {
+      return <Banned/>;
+    }
 
     return (
       <div className={`powercord-store ${pageWrapper}`}>
@@ -27,7 +40,13 @@ module.exports = React.memo(
             </div>
             <div className={content}>{title}</div>
           </h2>
-          {children}
+          <Sequencer step={step} steps={[ 0, 1, 2 ]} className='powercord-store-form'>
+            {step === 0
+              ? <Intro renderer={renderIntro} onClick={() => setStep(1)}/>
+              : step === 1
+                ? <Form error={null} renderer={renderForm} testCallback={() => setStep(2)}/>
+                : <Success/>}
+          </Sequencer>
         </AdvancedScrollerAuto>
       </div>
     );

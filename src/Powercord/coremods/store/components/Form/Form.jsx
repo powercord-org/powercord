@@ -5,13 +5,13 @@
  */
 
 const { React } = require('powercord/webpack');
-
-const Layout = require('./layouts/FormLayout');
+const { Button } = require('powercord/components');
 
 module.exports = React.memo(
-  () => (
-    <Layout icon='Server' title='Host a backend'>
-
-    </Layout>
+  ({ renderer, testCallback }) => (
+    <>
+      {renderer()}
+      <Button onClick={testCallback}>test</Button>
+    </>
   )
 );

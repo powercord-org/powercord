@@ -41,7 +41,7 @@ electron.app.once('ready', () => {
     done({ responseHeaders });
   });
 
-  // @todo: move this to a custom loadURL logic
+  // @todo: make this be not shit
   electron.session.defaultSession.webRequest.onBeforeRequest((details, done) => {
     if (details.url.startsWith('https://canary.discordapp.com/_powercord')) {
       // It should get restored to _powercord url later

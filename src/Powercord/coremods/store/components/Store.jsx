@@ -11,10 +11,13 @@ const { get } = require('powercord/http');
 
 const StoreListing = require('./StoreListing');
 const Suggestions = require('./Suggestions');
-const Publish = require('./Publish');
-const Verification = require('./Verification');
-const Hosting = require('./Hosting');
-const Banned = require('./Banned');
+const Form = require('./Form');
+const PublishIntro = require('./Publish/Intro');
+const PublishForm = require('./Publish/Form');
+const VerificationIntro = require('./Verification/Intro');
+const VerificationForm = require('./Verification/Form');
+const HostingIntro = require('./Hosting/Intro');
+const HostingForm = require('./Hosting/Form');
 
 module.exports = function () {
   // dont touch mah stuff :angery:
@@ -63,13 +66,34 @@ module.exports = function () {
         <Suggestions/>
       </Router.Route>
       <Router.Route path='/_powercord/store/forms/publish' exact>
-        {eligibility && !eligibility.publish ? <Banned/> : <Publish/>}
+        <Form
+          key='publish'
+          icon='CloudUpload'
+          title='Publish a product'
+          eligibility={eligibility ? eligibility.publish : true}
+          renderIntro={() => <PublishIntro/>}
+          renderForm={() => <PublishForm/>}
+        />
       </Router.Route>
       <Router.Route path='/_powercord/store/forms/verificaton' exact>
-        {eligibility && !eligibility.verificaton ? <Banned/> : <Verification/>}
+        <Form
+          key='verificaton'
+          icon='Verified'
+          title='Get verified'
+          eligibility={eligibility ? eligibility.verificaton : true}
+          renderIntro={() => <VerificationIntro/>}
+          renderForm={() => <VerificationForm/>}
+        />
       </Router.Route>
       <Router.Route path='/_powercord/store/forms/hosting' exact>
-        {eligibility && !eligibility.hosting ? <Banned/> : <Hosting/>}
+        <Form
+          key='hosting'
+          icon='Server'
+          title='Host a backend'
+          eligibility={eligibility ? eligibility.hosting : true}
+          renderIntro={() => <HostingIntro/>}
+          renderForm={() => <HostingForm/>}
+        />
       </Router.Route>
       <Router.Route path='/_powercord/store' exact>
         <Router.Redirect path='/_powercord/store/plugins'/>

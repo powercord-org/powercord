@@ -6,15 +6,13 @@
 
 const { React, getModule } = require('powercord/webpack');
 
-const Layout = require('./layouts/FormLayout');
-
 module.exports = React.memo(
   () => {
     const { size32, size20, size16 } = getModule([ 'size24' ], false);
     const { marginBottom20, marginBottom8 } = getModule([ 'marginBottom20' ], false);
 
     return (
-      <Layout icon='CloudUpload' title='Publish a product'>
+      <>
         <p className={size16}>
           You just finished making your plugin or theme and want to publish it? Great! You're almost there!
         </p>
@@ -33,12 +31,11 @@ module.exports = React.memo(
         </div>
         <div className={marginBottom20}>
           <div className={`${size20} ${marginBottom8}`}>Be licensed under an <a href='https://opensource.org/licenses' target='_blank'>OSI approved license</a></div>
-          <div className={size16}><b>Plugin developers, heads up</b>: you cannot license your plugin under the GPL-3.0 or the AGPL-3.0.</div>
-          <div className={size16}>Those licenses requires reciprocal licensing on linked works, and neither Powercord or Discord is GPL-compatible. With those licenses, users are not allowed to run the plugin without violating the license terms.</div>
+          <div className={size16}><b>Plugin developers, heads up</b>: you cannot license your plugin under the GPL-3.0 or the AGPL-3.0, except if you write a linking exception clause.</div>
+          <div className={size16}>Those licenses requires reciprocal licensing on linked works, and neither Powercord or Discord is GPL-compatible. In short, applying this license without linking exception clauses forbids the users to use your plugin.</div>
           <div className={size16}>Be careful when choosing your license, and use a license that doesn't have this reciprocal linking clause.</div>
         </div>
-        <h2 className={`${size32} ${marginBottom20}`}>My product meets all the requirements!</h2>
-      </Layout>
+      </>
     );
   }
 );
