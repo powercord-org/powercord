@@ -6,29 +6,11 @@
 
 const { shell: { openExternal } } = require('electron');
 const { open: openModal } = require('powercord/modal');
+const { gotoOrJoinServer } = require('powercord/util');
 const { Clickable, Tooltip, Icons: { badges: BadgeIcons } } = require('powercord/components');
-const { React, getModule, constants: { Routes }, i18n: { Messages } } = require('powercord/webpack');
-const { WEBSITE, I18N_WEBSITE, GUILD_ID, DISCORD_INVITE, REPO_URL } = require('powercord/constants');
+const { React, getModule, i18n: { Messages } } = require('powercord/webpack');
+const { WEBSITE, I18N_WEBSITE, DISCORD_INVITE, REPO_URL } = require('powercord/constants');
 const DonateModal = require('./DonateModal');
-
-async function goToPowercord () {
-  const store = await getModule([ 'getGuilds' ]);
-  if (store.getGuilds()[GUILD_ID]) {
-    const router = await getModule([ 'transitionTo' ]);
-    const channel = await getModule([ 'getLastSelectedChannelId' ]);
-    const userProfileModal = await getModule([ 'fetchProfile' ]);
-    // eslint-disable-next-line new-cap
-    router.transitionTo(Routes.CHANNEL(GUILD_ID, channel.getChannelId(GUILD_ID)));
-    userProfileModal.close();
-  } else {
-    const windowManager = await getModule([ 'flashFrame', 'minimize' ]);
-    const { INVITE_BROWSER: { handler: popInvite } } = await getModule([ 'INVITE_BROWSER' ]);
-    const oldMinimize = windowManager.minimize;
-    windowManager.minimize = () => void 0;
-    popInvite({ args: { code: DISCORD_INVITE } });
-    windowManager.minimize = oldMinimize;
-  }
-}
 
 const Base = React.memo(({ color, tooltip, tooltipPosition, onClick, className, children }) => {
   const { profileBadge, profileBadgeWrapper } = getModule([ 'profileBadges' ], false);
@@ -68,7 +50,7 @@ const Developer = React.memo(({ color }) => (
 
 const Staff = React.memo(({ color }) => (
   <Base
-    onClick={() => goToPowercord()}
+    onClick={() => gotoOrJoinServer(DISCORD_INVITE)}
     className='powercord-badge-staff'
     tooltip={Messages.POWERCORD_BADGES_STAFF}
     color={color}
@@ -79,7 +61,7 @@ const Staff = React.memo(({ color }) => (
 
 const Support = React.memo(({ color }) => (
   <Base
-    onClick={() => goToPowercord()}
+    onClick={() => gotoOrJoinServer(DISCORD_INVITE)}
     className='powercord-badge-support'
     tooltip={Messages.POWERCORD_BADGES_SUPPORT}
     color={color}

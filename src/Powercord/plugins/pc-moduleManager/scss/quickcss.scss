@@ -79,6 +79,7 @@
     }
 
     &-settings {
+      -webkit-app-region: no-drag;
       background-color: var(--background-secondary);
       height: calc(100% + 38px) !important;
       position: absolute !important;

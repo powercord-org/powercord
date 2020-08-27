@@ -9,7 +9,7 @@ module.exports = React.memo(
         value={getSetting('squareCovers', false)}
         onChange={() => toggleSetting('squareCovers')}
       >
-      Squared covers
+        Squared covers
       </SwitchItem>
 
       <SwitchItem
@@ -17,7 +17,7 @@ module.exports = React.memo(
         value={getSetting('showControls', true)}
         onChange={() => toggleSetting('showControls')}
       >
-      Show advanced controls
+        Show advanced controls
       </SwitchItem>
 
       <SwitchItem
@@ -28,7 +28,7 @@ module.exports = React.memo(
           toggleSetting('noAutoPause');
         }}
       >
-      No auto pause
+        No auto pause
       </SwitchItem>
     </div>
   )

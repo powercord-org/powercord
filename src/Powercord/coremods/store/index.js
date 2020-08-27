@@ -8,8 +8,8 @@ const { join } = require('path');
 const { inject, uninject } = require('powercord/injector');
 const { React, getModule, getModuleByDisplayName, FluxDispatcher, constants: { Permissions }, i18n: { Messages } } = require('powercord/webpack');
 const { Icons: { Plugin: PluginIcon, Theme } } = require('powercord/components');
-const { MAGIC_CHANNELS: { STORE_PLUGINS, STORE_THEMES } } = require('powercord/constants');
-const { waitFor, getOwnerInstance, forceUpdateElement } = require('powercord/util');
+const { SpecialChannels: { STORE_PLUGINS, STORE_THEMES } } = require('powercord/constants');
+const { forceUpdateElement } = require('powercord/util');
 const { loadStyle, unloadStyle } = require('../util');
 
 const Sidebar = require('./components/Sidebar');
@@ -65,38 +65,20 @@ async function injectChannels () {
   forceUpdateElement(`.${containerDefault}`, true);
 }
 
-async function injectSidebar () {
-  const { panels } = await getModule([ 'panels' ]);
-  const instance = getOwnerInstance(await waitFor(`.${panels}`));
-  inject('pc-store-sidebar', instance._reactInternalFiber.type.prototype, 'render', (_, res) => {
-    const renderer = res.props.children;
-    res.props.children = (props) => {
-      const rendered = renderer(props);
-      const className = rendered && rendered.props && rendered.props.children && rendered.props.children.props && rendered.props.children.props.className;
-      if (className && className.startsWith('sidebar-') && rendered.props.value.location.pathname.startsWith('/_powercord/store/')) {
-        rendered.props.children.props.children[0] = React.createElement(Sidebar);
-      }
-      return rendered;
-    };
-    return res;
-  });
-}
-
 function _init () {
   injectChannels();
-  injectSidebar();
 
   powercord.api.router.registerRoute({
     path: '/store',
-    render: Store
+    render: Store,
+    sidebar: () => React.createElement(Sidebar)
   });
 }
 
 function _shut () {
-  powercord.api.router.unregisterRoute('/store/plugins');
+  powercord.api.router.unregisterRoute('/store');
   uninject('pc-store-channels-perms');
   uninject('pc-store-channels-props');
-  uninject('pc-store-sidebar');
 
   const classes = getModule([ 'containerDefault' ], false);
   if (classes) {

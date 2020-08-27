@@ -1,6 +1,6 @@
 const { shell } = require('electron');
 const { React, Flux, getModule, getModuleByDisplayName, contextMenu, i18n: { Messages } } = require('powercord/webpack');
-const { AsyncComponent, Icons: { FontAwesome } } = require('powercord/components');
+const { AsyncComponent, Icon, Icons: { FontAwesome } } = require('powercord/components');
 const { open: openModal } = require('powercord/modal');
 
 const { SPOTIFY_DEFAULT_IMAGE } = require('../constants');
@@ -10,6 +10,7 @@ const playerStoreActions = require('../playerStore/actions');
 const AddToPlaylist = require('./AddToPlaylist');
 const ContextMenu = require('./ContextMenu');
 const SeekBar = require('./SeekBar');
+const PayUp = require('./PayUp');
 
 const PanelSubtext = AsyncComponent.from(getModuleByDisplayName('PanelSubtext'));
 const Tooltip = AsyncComponent.from(getModuleByDisplayName('Tooltip'));
@@ -44,8 +45,8 @@ class Modal extends React.PureComponent {
           this.setState({ hover: false });
         }}
       >
-        {this.renderFromBase()}
-        {this.renderExtraControls()}
+        {this.renderFromBase(isPremium)}
+        {isPremium && this.renderExtraControls()}
         <SeekBar
           isPremium={isPremium}
           isPlaying={this.props.playerState.playing}
@@ -65,7 +66,7 @@ class Modal extends React.PureComponent {
     );
   }
 
-  renderFromBase () {
+  renderFromBase (isPremium) {
     const { avatar, avatarWrapper } = getModule([ 'container', 'usernameContainer' ], false);
 
     return {
@@ -112,17 +113,15 @@ class Modal extends React.PureComponent {
             props: {
               ...this.props.base.props.children[2].props,
               className: `${this.props.base.props.children[2].props.className || ''} spotify-buttons`.trim(),
-              children: [
-                this.renderButton(() => Messages.PAGINATION_PREVIOUS, 'backward', () =>
-                  SpotifyAPI.prev()),
-                this.props.playerState.playing
-                  ? this.renderButton(() => Messages.PAUSE, 'pause', () =>
-                    SpotifyAPI.pause())
-                  : this.renderButton(() => Messages.PLAY, 'play', () =>
-                    SpotifyAPI.play()),
-                this.renderButton(() => Messages.NEXT, 'forward', () =>
-                  SpotifyAPI.next())
-              ]
+              children: isPremium
+                ? [
+                  this.renderButton(() => Messages.PAGINATION_PREVIOUS, 'backward', () => SpotifyAPI.prev()),
+                  this.props.playerState.playing
+                    ? this.renderButton(() => Messages.PAUSE, 'pause', () => SpotifyAPI.pause())
+                    : this.renderButton(() => Messages.PLAY, 'play', () => SpotifyAPI.play()),
+                  this.renderButton(() => Messages.NEXT, 'forward', () => SpotifyAPI.next())
+                ]
+                : this.renderInfoPremium()
             }
           }
         ]
@@ -152,8 +151,7 @@ class Modal extends React.PureComponent {
   }
 
   renderExtraControls () {
-    const isPremium = getModule([ 'isSpotifyPremium' ], false).isSpotifyPremium();
-    if (!this.props.getSetting('showControls', true) || !isPremium) {
+    if (!this.props.getSetting('showControls', true)) {
       return null;
     }
 
@@ -213,11 +211,6 @@ class Modal extends React.PureComponent {
   }
 
   renderButton (tooltipText, icon, onClick, disabled, className) {
-    const isPremium = getModule([ 'isSpotifyPremium' ], false).isSpotifyPremium();
-    if (!isPremium) {
-      return null;
-    }
-
     return {
       ...this.props.base.props.children[2].props.children[0],
       props: {
@@ -229,6 +222,23 @@ class Modal extends React.PureComponent {
         tooltipText: tooltipText(),
         disabled,
         onClick
+      }
+    };
+  }
+
+  renderInfoPremium () {
+    return {
+      ...this.props.base.props.children[2].props.children[0],
+      props: {
+        ...this.props.base.props.children[2].props.children[0].props,
+        tooltipText: 'Not seeing controls?',
+        icon: () => React.createElement(Icon, {
+          name: 'Info',
+          width: 20,
+          height: 20,
+          style: { color: 'var(--interactive-normal)' }
+        }),
+        onClick: () => openModal(() => React.createElement(PayUp))
       }
     };
   }

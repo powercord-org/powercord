@@ -1,11 +1,11 @@
 const { existsSync } = require('fs');
 const { writeFile, readFile } = require('fs').promises;
-const { React, constants: { Permissions }, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
-const { PopoutWindow, Icons: { Plugin: PluginIcon, Theme } } = require('powercord/components');
+const { React, getModule, i18n: { Messages } } = require('powercord/webpack');
+const { PopoutWindow } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
-const { findInReactTree, forceUpdateElement } = require('powercord/util');
+const { findInReactTree } = require('powercord/util');
 const { Plugin } = require('powercord/entities');
-const { MAGIC_CHANNELS: { CSS_SNIPPETS, STORE_PLUGINS, STORE_THEMES } } = require('powercord/constants');
+const { SpecialChannels: { CSS_SNIPPETS } } = require('powercord/constants');
 const { join } = require('path');
 
 const commands = require('./commands');
@@ -73,60 +73,14 @@ module.exports = class ModuleManager extends Plugin {
 
   pluginWillUnload () {
     document.querySelector('#powercord-quickcss').remove();
-    powercord.api.router.unregisterRoute('/store/plugins');
-    powercord.api.router.unregisterRoute('/store/themes');
     powercord.api.settings.unregisterSettings('pc-moduleManager-plugins');
     powercord.api.settings.unregisterSettings('pc-moduleManager-themes');
-    powercord.api.labs.unregisterExperiment('pc-moduleManager-store');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-themes2');
     powercord.api.labs.unregisterExperiment('pc-moduleManager-deeplinks');
     Object.values(commands).forEach(cmd => powercord.api.commands.unregisterCommand(cmd.command));
-    uninject('pc-moduleManager-channelItem');
-    uninject('pc-moduleManager-channelProps');
     uninject('pc-moduleManager-snippets');
-  }
 
-  async _injectCommunityContent () {
-    const permissionsModule = await getModule([ 'can' ]);
-    inject('pc-moduleManager-channelItem', permissionsModule, 'can', (args, res) => {
-      if (args[2].id === STORE_PLUGINS || args[2].id === STORE_THEMES) {
-        return args[0] === Permissions.VIEW_CHANNEL;
-      }
-      return res;
-    });
-
-    const { transitionTo } = await getModule([ 'transitionTo' ]);
-    const ChannelItem = await getModuleByDisplayName('ChannelItem');
-    inject('pc-moduleManager-channelProps', ChannelItem.prototype, 'render', function (args, res) {
-      const data = {
-        [STORE_PLUGINS]: {
-          icon: PluginIcon,
-          name: Messages.POWERCORD_PLUGINS,
-          route: '/_powercord/store/plugins'
-        },
-        [STORE_THEMES]: {
-          icon: Theme,
-          name: Messages.POWERCORD_THEMES,
-          route: '/_powercord/store/themes'
-        }
-      };
-
-      if (this.props.channel.id === STORE_PLUGINS || this.props.channel.id === STORE_THEMES) {
-        res.props.children[1].props.children[1].props.children = data[this.props.channel.id].name;
-        res.props.children[1].props.children[0] = React.createElement(data[this.props.channel.id].icon, {
-          className: res.props.children[1].props.children[0].props.className,
-          width: 24,
-          height: 24
-        });
-        res.props.onClick = () => transitionTo(data[this.props.channel.id].route);
-        delete res.props.onMouseDown;
-        delete res.props.onContextMenu;
-      }
-      return res;
-    });
-
-    const { containerDefault } = await getModule([ 'containerDefault' ]);
-    forceUpdateElement(`.${containerDefault}`, true);
+    document.querySelectorAll('.powercord-snippet-apply').forEach(e => e.style.display = 'none');
   }
 
   async _injectSnippets () {
@@ -174,6 +128,7 @@ module.exports = class ModuleManager extends Plugin {
           break;
       }
       css += `${snippet}\n`;
+      css += `/** ${message.id} */\n`;
     }
     this._saveQuickCSS(this._quickCSS + css);
   }

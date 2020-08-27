@@ -3,8 +3,8 @@ const { API } = require('powercord/entities');
 /**
  * @typedef PowercordRoute
  * @property {String} path Route path
- * @property {Boolean} noSidebar Whether the sidebar should be removed or not
- * @property {function(): React.ReactNode} render Route renderer
+ * @property {React.Component|function(): React.ReactNode} render Route renderer
+ * @property {React.Component|function(): React.ReactNode|undefined} sidebar Sidebar renderer
  */
 
 /**

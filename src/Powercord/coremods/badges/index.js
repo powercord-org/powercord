@@ -146,7 +146,7 @@ async function injectGuilds () {
 }
 
 module.exports = async function () {
-  const styleId = loadStyle(join(__dirname, 'style.scss'));
+  const styleId = loadStyle(join(__dirname, 'style.css'));
   await injectUsers();
   await injectGuilds();
 

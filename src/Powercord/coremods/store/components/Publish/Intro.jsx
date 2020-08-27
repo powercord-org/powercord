@@ -14,7 +14,9 @@ module.exports = React.memo(
     return (
       <>
         <p className={size16}>
-          You just finished making your plugin or theme and want to publish it? Great! You're almost there!
+          You just finished making your plugin or theme and want to publish it? Great! You're almost there! Once
+          the procedure is complete, your plugin will get a repo on our community GitHub org and have a spot
+          in the store.
         </p>
         <h2 className={size32}>Requirements</h2>
         <p className={`${size16} ${marginBottom20}`}>

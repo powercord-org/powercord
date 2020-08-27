@@ -5,7 +5,7 @@ const { findInReactTree } = require('powercord/util');
 const { clipboard } = require('electron');
 
 module.exports = class Codeblocks extends Plugin {
-  async startPlugin () {
+  startPlugin () {
     this.loadStylesheet('style.scss');
     this.patchCodeblocks();
   }
@@ -13,6 +13,8 @@ module.exports = class Codeblocks extends Plugin {
   pluginWillUnload () {
     uninject('pc-codeblocks-inline');
     uninject('pc-codeblocks-embed');
+
+    document.querySelectorAll('.hljs [class^=powercord]').forEach(e => e.style.display = 'none');
   }
 
   async patchCodeblocks () {

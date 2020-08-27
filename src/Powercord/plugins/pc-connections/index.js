@@ -38,10 +38,10 @@ module.exports = class Connections extends Plugin {
 
       const connectedAccounts = res.props.children[2].props.children;
       connectedAccounts.push(React.createElement(SettingsConnections, {}));
-
-      UserSettingsConnections.default.displayName = 'UserSettingsConnections';
       return res;
     });
+
+    UserSettingsConnections.default.displayName = 'UserSettingsConnections';
   }
 
   async patchUserConnections () {

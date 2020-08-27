@@ -1,8 +1,18 @@
+/**
+ * Copyright (c) 2018-2020 aetheryx & Bowser65
+ * All Rights Reserved. Licensed under the Porkord License
+ * https://powercord.dev/porkord-license
+ */
+
 const { getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 
 module.exports = async () => {
-  const GuildFolder = await getModule(m => m.default && m.default.type && m.default.type.toString().includes('defaultFolderName'), false);
+  const GuildFolder = await getModule(m => m.default && (
+    (m.default.type && m.default.type.toString().includes('defaultFolderName')) ||
+    (m.default.__powercordOriginal_type && m.default.__powercordOriginal_type.toString().includes('defaultFolderName'))
+  ), false);
+
   inject('pc-utilitycls-folders', GuildFolder.default, 'type', (args, res) => {
     const { audio, badge: mentions, selected, expanded, unread, video, folderName } = args[0];
 

@@ -7,7 +7,7 @@
 const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { AdvancedScrollerAuto, Icons, AsyncComponent } = require('powercord/components');
 
-const Banned = require('./Banned');
+const Closed = require('./Closed');
 const Intro = require('./Intro');
 const Form = require('./Form');
 const Success = require('./Success');
@@ -24,8 +24,11 @@ module.exports = React.memo(
 
     const [ step, setStep ] = React.useState(0);
 
-    if (!eligibility) {
-      return <Banned/>;
+    if (eligibility && eligibility !== 'OK') {
+      if (eligibility === 'BANNED') {
+        return <Closed.Banned/>;
+      }
+      return <Closed.Unavailable/>;
     }
 
     return (
