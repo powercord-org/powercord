@@ -175,8 +175,8 @@
   }
 }
 
-.theme-light {
-  .powercord-spotify img[src*='powercord.dev'], .spotify-add-to-playlist img[src*='powercord.dev'] {
+.theme-dark {
+  .powercord-spotify img[src*='_global/favicon.png'], .spotify-add-to-playlist img[src*='_global/favicon.png'] {
     filter: invert(1);
   }
 }

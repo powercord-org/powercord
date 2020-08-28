@@ -23,7 +23,8 @@ module.exports = React.memo(
         <h2 className={size32}>What do I need to get verified?</h2>
         <p className={`${size16} ${marginBottom20}`}>
           We want the verified checkmark to be a sign of quality. That's why for verified products we have an additional
-          set of requirements your product must abide by to get the ultimate sign of quality.
+          set of requirements your product must abide by to get the ultimate sign of quality. Please note that the
+          list is not exhaustive and we may at our sole discretion reject products in line with what's below.
         </p>
         <Flex>
           <Flex.Child>

@@ -47,7 +47,12 @@ module.exports = React.memo(
             {step === 0
               ? <Intro renderer={renderIntro} onClick={() => setStep(1)}/>
               : step === 1
-                ? <Form error={null} renderer={renderForm} testCallback={() => setStep(2)}/>
+                ? <Form
+                  error={null}
+                  renderer={renderForm}
+                  doneCallback={() => setStep(2)}
+                  cancelCallback={() => setStep(0)}
+                />
                 : <Success/>}
           </Sequencer>
         </AdvancedScrollerAuto>

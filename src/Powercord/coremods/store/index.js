@@ -71,7 +71,7 @@ function _init () {
   powercord.api.router.registerRoute({
     path: '/store',
     render: Store,
-    sidebar: () => React.createElement(Sidebar)
+    sidebar: Sidebar
   });
 }
 

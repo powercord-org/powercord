@@ -16,6 +16,6 @@ module.exports = Object.freeze({
   },
   SPOTIFY_BASE_URL: 'https://api.spotify.com/v1',
   SPOTIFY_PLAYER_URL: 'https://api.spotify.com/v1/me/player',
-  SPOTIFY_DEFAULT_IMAGE: 'https://powercord.dev/assets/spotify.png',
+  SPOTIFY_DEFAULT_IMAGE: 'https://scdn.co/i/_global/favicon.png',
   SPOTIFY_COLOR: '#1ed860'
 });

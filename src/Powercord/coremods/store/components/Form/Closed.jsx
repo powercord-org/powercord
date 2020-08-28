@@ -40,8 +40,8 @@ const Unavailable = React.memo(
       <div className={`powercord-store ${pageWrapper}`}>
         <GatedContent
           imageClassName={ageGatedImage}
-          title={'We\'re not accepting applications at this time'}
-          description={'Powercord Staff temporarily locked this form. Please try again later.'}
+          title={'We\'re not accepting submissions at this time'}
+          description={'Please try again later.'}
           onAgree={() => window.history.back()}
           onDisagree={() => gotoOrJoinServer(DISCORD_INVITE)}
           disagreement='Support Server'
