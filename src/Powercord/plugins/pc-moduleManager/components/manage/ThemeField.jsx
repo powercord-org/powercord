@@ -1,14 +1,16 @@
 /* eslint-disable */
-const { default: SystemFonts } = require('system-font-families');
+const fontList = require('font-list');
 const { React, Flux, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
 const { TextInput, SwitchItem, ButtonItem, SelectInput, ColorPickerInput } = require('powercord/components/settings');
 const { TabBar, Divider, Button, AsyncComponent } = require('powercord/components');
 
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/ig;
 
-let fonts = null
-const systemFonts = new SystemFonts();
-const fontsPromise = systemFonts.getFonts().then(f => (fonts = f))
+let fonts = null;
+const fontsPromise = fontList.getFonts().then(f => {
+  const cleaned = f.map(font => font.replace(/["\\]/g, '')); // Removes double quotes and backslashes
+  return fonts = cleaned;
+});
 
 class ThemeField extends React.PureComponent {
   constructor (props) {
@@ -23,7 +25,7 @@ class ThemeField extends React.PureComponent {
   componentDidMount () {
     if (this.props.option.type === 'font' && !this.state.fonts) {
       fontsPromise.then(fonts => {
-        this.setState({ fonts })
+        this.setState({ fonts });
       })
     }
   }

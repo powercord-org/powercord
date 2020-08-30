@@ -19,12 +19,12 @@
   },
   "dependencies": {
     "codemirror": "^5.54.0",
+    "font-list": "^1.2.11",
     "less": "^3.11.1",
     "node-watch": "^0.6.4",
     "sass": "^1.26.7",
     "stylus": "^0.54.7",
     "sucrase": "^3.15.0",
-    "system-font-families": "^0.4.1",
     "unzip-crx": "^0.2.0"
   },
   "devDependencies": {
