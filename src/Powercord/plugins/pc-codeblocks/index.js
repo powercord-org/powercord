@@ -50,7 +50,10 @@ module.exports = class Codeblocks extends Plugin {
       const lines = children.props.dangerouslySetInnerHTML
         ? children.props.dangerouslySetInnerHTML.__html
           // Ensure there is no span on multiple lines
-          .replace(/<span class="(hljs-[a-z]+)">([^<]*)\n/g, '<span class="$1">$2</span>\n<span class="$1">')
+          .replace(
+            /<span class="(hljs-[a-z]+)">([^<]*)<\/span>/g,
+            (_, className, code) => code.split('\n').map(l => `<span class="${className}">${l}</span>`).join('\n')
+          )
           .split('\n')
         : children.props.children.split('\n');
 
