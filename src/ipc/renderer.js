@@ -33,6 +33,10 @@ global.PowercordNative = {
 
   openBrowserWindow (opts) {
     throw new Error('Not implemented');
+  },
+
+  __compileSass (file) {
+    return ipcRenderer.invoke('POWERCORD_COMPILE_MF_SASS', file);
   }
 };
 
