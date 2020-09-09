@@ -24,24 +24,6 @@ global.PowercordNative = {
   },
 
   /**
-   * Installs a chrome extension
-   * @param {string} extPath Path to the extension
-   * @returns {Promise<string>} Extension ID, to be used with uninstallExtension.
-   */
-  installExtension (extPath) { // tbd
-    return ipcRenderer.invoke('POWERCORD_INSTALL_EXTENSION', extPath);
-  },
-
-  /**
-   * Uninstalls an extension
-   * @param {string} extId Extension ID
-   * @returns {Promise<void>}
-   */
-  uninstallExtension (extId) { // tbd
-    return ipcRenderer.invoke('POWERCORD_UNINSTALL_EXTENSION', extId);
-  },
-
-  /**
    * Clears Chromium's cache
    * @returns {Promise<void>}
    */
@@ -51,5 +33,24 @@ global.PowercordNative = {
 
   openBrowserWindow (opts) {
     throw new Error('Not implemented');
+  }
+};
+
+window.require = function (mdl) {
+  switch (mdl) {
+    case 'powercord/compilers':
+    case 'powercord/components':
+    case 'powercord/components/settings':
+    case 'powercord/http':
+    case 'powercord/injector':
+    case 'powercord/util':
+    case 'powercord/webpack':
+    case 'powercord/constants':
+    case 'powercord/modal':
+    case 'powercord':
+    case 'electron':
+      return require(mdl);
+    default:
+      throw new Error('Unknown module');
   }
 };

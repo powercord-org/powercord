@@ -33,6 +33,7 @@ delete require.cache[electronPath].exports;
 require.cache[electronPath].exports = electronExports;
 
 electron.app.once('ready', () => {
+  // @todo: Whitelist a few domains instead of removing CSP altogether; See #386
   electron.session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
     Object.keys(responseHeaders)
       .filter(k => (/^content-security-policy/i).test(k) || (/^x-frame-options/i).test(k))

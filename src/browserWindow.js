@@ -28,13 +28,11 @@ class PatchedBrowserWindow extends BrowserWindow {
     } else if (opts.webPreferences && opts.webPreferences.offscreen) {
       // Overlay
       originalPreload = opts.webPreferences.preload;
-      opts.webPreferences.preload = join(__dirname, './preload.js');
-      opts.webPreferences.nodeIntegration = true;
+      // opts.webPreferences.preload = join(__dirname, './preload.js');
     } else if (opts.webPreferences && opts.webPreferences.preload) {
       // Discord Client
       originalPreload = opts.webPreferences.preload;
       opts.webPreferences.preload = join(__dirname, './preload.js');
-      opts.webPreferences.nodeIntegration = true;
       opts.webPreferences.contextIsolation = false;
 
       if (transparency) {

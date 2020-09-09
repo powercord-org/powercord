@@ -1,14 +1,15 @@
 /* eslint-disable */
-const { default: SystemFonts } = require('system-font-families');
+// const { default: SystemFonts } = require('system-font-families');
 const { React, Flux, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
 const { TextInput, SwitchItem, ButtonItem, SelectInput, ColorPickerInput } = require('powercord/components/settings');
 const { TabBar, Divider, Button, AsyncComponent } = require('powercord/components');
 
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/ig;
 
-let fonts = null
-const systemFonts = new SystemFonts();
-const fontsPromise = systemFonts.getFonts().then(f => (fonts = f))
+let fonts = []
+const fontsPromise = Promise.resolve()
+// const systemFonts = new SystemFonts();
+// const fontsPromise = systemFonts.getFonts().then(f => (fonts = f))
 
 class ThemeField extends React.PureComponent {
   constructor (props) {
