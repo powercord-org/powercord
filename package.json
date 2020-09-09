@@ -18,18 +18,18 @@
     "url": "https://github.com/powercord-org/powercord/issues"
   },
   "dependencies": {
-    "codemirror": "^5.54.0",
-    "less": "^3.11.1",
+    "codemirror": "^5.57.0",
+    "less": "^3.12.2",
     "node-watch": "^0.6.4",
-    "sass": "^1.26.7",
-    "stylus": "^0.54.7",
+    "sass": "1.26.7",
+    "stylus": "^0.54.8",
     "sucrase": "^3.15.0",
     "system-font-families": "^0.4.1",
     "unzip-crx": "^0.2.0"
   },
   "devDependencies": {
-    "eslint": "^7.1.0",
-    "eslint-plugin-react": "^7.20.0",
-    "jest": "^26.0.1"
+    "eslint": "^7.8.1",
+    "eslint-plugin-react": "^7.20.6",
+    "jest": "^26.4.2"
   }
 }
