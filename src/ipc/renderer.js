@@ -36,21 +36,23 @@ global.PowercordNative = {
   }
 };
 
-window.require = function (mdl) {
-  switch (mdl) {
-    case 'powercord/compilers':
-    case 'powercord/components':
-    case 'powercord/components/settings':
-    case 'powercord/http':
-    case 'powercord/injector':
-    case 'powercord/util':
-    case 'powercord/webpack':
-    case 'powercord/constants':
-    case 'powercord/modal':
-    case 'powercord':
-    case 'electron':
-      return require(mdl);
-    default:
-      throw new Error('Unknown module');
-  }
-};
+if (!window.__SPLASH__) {
+  window.require = function (mdl) {
+    switch (mdl) {
+      case 'powercord/compilers':
+      case 'powercord/components':
+      case 'powercord/components/settings':
+      case 'powercord/http':
+      case 'powercord/injector':
+      case 'powercord/util':
+      case 'powercord/webpack':
+      case 'powercord/constants':
+      case 'powercord/modal':
+      case 'powercord':
+      case 'electron':
+        return require(mdl);
+      default:
+        throw new Error('Unknown module');
+    }
+  };
+}

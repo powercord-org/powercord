@@ -4,11 +4,10 @@
  * https://powercord.dev/porkord-license
  */
 
-const { join } = require('path');
-
-require('./ipc/renderer');
-
 window.__SPLASH__ = true;
+
+const { join } = require('path');
+require('./ipc/renderer');
 
 // Add Powercord's modules
 require('module').Module.globalPaths.push(join(__dirname, 'fake_node_modules'));
