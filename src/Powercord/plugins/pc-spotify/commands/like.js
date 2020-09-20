@@ -4,6 +4,7 @@ const SpotifyAPI = require('../SpotifyAPI');
 module.exports = {
   command: 'like',
   description: 'Like the current playing song',
+  category: 'Spotify',
   async executor () {
     if (!powercord.account || !powercord.account.spotify) {
       return {

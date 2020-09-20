@@ -6,6 +6,7 @@ module.exports = {
   aliases: [ 'prev' ],
   description: 'Go back one Spotify song',
   usage: '{c}',
+  category: 'Spotify',
   executor () {
     const isPremium = getModule([ 'isSpotifyPremium' ], false).isSpotifyPremium();
     if (!isPremium) {

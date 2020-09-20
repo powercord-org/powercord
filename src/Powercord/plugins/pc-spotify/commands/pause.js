@@ -5,6 +5,7 @@ module.exports = {
   command: 'pause',
   description: 'Pause Spotify playback',
   usage: '{c}',
+  category: 'Spotify',
   executor () {
     const isPremium = getModule([ 'isSpotifyPremium' ], false).isSpotifyPremium();
     if (!isPremium) {

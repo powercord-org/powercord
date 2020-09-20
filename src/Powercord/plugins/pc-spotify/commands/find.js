@@ -5,6 +5,7 @@ module.exports = {
   command: 'find',
   description: 'Searches for a song and plays it!',
   usage: '{c} {song}',
+  category: 'Spotify',
   executor (args) {
     const isPremium = getModule([ 'isSpotifyPremium' ], false).isSpotifyPremium();
     if (!isPremium) {
