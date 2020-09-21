@@ -3,6 +3,7 @@ const playerStore = require('../playerStore/store');
 module.exports = {
   command: 'album',
   description: 'Send album of current playing song to selected channel',
+  category: 'Spotify',
   executor () {
     const currentTrack = playerStore.getCurrentTrack();
     if (!currentTrack) {

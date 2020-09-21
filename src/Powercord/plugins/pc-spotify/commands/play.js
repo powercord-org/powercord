@@ -6,6 +6,7 @@ module.exports = {
   command: 'play',
   description: 'Play a Spotify URL',
   usage: '{c} <URL>',
+  category: 'Spotify',
   executor ([ url ]) {
     const isPremium = getModule([ 'isSpotifyPremium' ], false).isSpotifyPremium();
     if (!isPremium) {

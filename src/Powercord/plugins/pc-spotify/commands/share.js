@@ -8,6 +8,7 @@ module.exports = {
   command: 'share',
   description: 'Send specified or current playing song to selected channel',
   usage: '{c} {song name/artist}',
+  category: 'Spotify',
   async executor (query) {
     query = query.join(' ');
 

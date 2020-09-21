@@ -6,6 +6,7 @@ module.exports = {
   aliases: [ 'vol' ],
   description: 'Change Spotify volume',
   usage: '{c} <number between 0-100>',
+  category: 'Spotify',
   executor ([ args ]) {
     const isPremium = getModule([ 'isSpotifyPremium' ], false).isSpotifyPremium();
     if (!isPremium) {
