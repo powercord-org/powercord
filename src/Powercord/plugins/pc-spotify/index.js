@@ -1,7 +1,7 @@
 const { Plugin } = require('powercord/entities');
 const { React, getModule, spotify } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
-const { waitFor, getOwnerInstance, findInTree } = require('powercord/util');
+const { waitFor, getOwnerInstance, findInTree, sleep } = require('powercord/util');
 const playerStoreActions = require('./playerStore/actions');
 const playerStore = require('./playerStore/store');
 const songsStoreActions = require('./songsStore/actions');
@@ -75,6 +75,7 @@ class Spotify extends Plugin {
   }
 
   async _injectModal () {
+    await sleep(1e3); // It ain't stupid if it works
     const { container } = await getModule([ 'container', 'usernameContainer' ]);
     const accountContainer = await waitFor(`section > .${container}`);
     const instance = getOwnerInstance(accountContainer);
