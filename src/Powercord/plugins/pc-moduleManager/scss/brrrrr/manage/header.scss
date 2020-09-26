@@ -1,0 +1,44 @@
+.powercord-entities-manage {
+  .formNotice-2_hHWR {
+    margin-bottom: 25px;
+  }
+
+  &-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h3 {
+      font-size: 18px;
+      flex: 1;
+    }
+  }
+
+  &-fetch, &-opener {
+    margin-left: 15px;
+    flex: 0 0 auto;
+    display: flex;
+  }
+
+  &-search {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+
+    > div {
+      flex: 1;
+
+      + button {
+        margin-left: 15px;
+      }
+
+      > :last-child {
+        display: none;
+      }
+    }
+
+    input {
+      height: 32px;
+    }
+  }
+}

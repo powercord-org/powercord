@@ -1,0 +1,705 @@
+{
+  "0BSD": {
+    "name": "BSD Zero Clause License",
+    "url": "https://choosealicense.com/licenses/0bsd/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "DISTRIBUTION",
+      "MODIFICATIONS",
+      "PRIVATE_USE"
+    ],
+    "conditions": [],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "AFL-3.0": {
+    "name": "Academic Free License v3.0",
+    "url": "https://choosealicense.com/licenses/afl-3.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE",
+      "PATENT_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DOCUMENT_CHANGES"
+    ],
+    "limitations": [
+      "TRADEMARK_USE",
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "AGPL-3.0": {
+    "name": "GNU Affero General Public License v3.0",
+    "url": "https://choosealicense.com/licenses/agpl-3.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DOCUMENT_CHANGES",
+      "DISCLOSE_SOURCE",
+      "NETWORK_USE_DISCLOSE",
+      "SAME_LICENSE"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "Apache-2.0": {
+    "name": "Apache License 2.0",
+    "url": "https://choosealicense.com/licenses/apache-2.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DOCUMENT_CHANGES"
+    ],
+    "limitations": [
+      "TRADEMARK_USE",
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "Artistic-2.0": {
+    "name": "Artistic License 2.0",
+    "url": "https://choosealicense.com/licenses/artistic-2.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DOCUMENT_CHANGES"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "TRADEMARK_USE",
+      "WARRANTY"
+    ]
+  },
+  "BSD-2-Clause": {
+    "name": "BSD 2-Clause \"Simplified\" License",
+    "url": "https://choosealicense.com/licenses/bsd-2-clause/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "BSD-3-Clause-Clear": {
+    "name": "BSD 3-Clause Clear License",
+    "url": "https://choosealicense.com/licenses/bsd-3-clause-clear/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "PATENT_USE",
+      "WARRANTY"
+    ]
+  },
+  "BSD-3-Clause": {
+    "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+    "url": "https://choosealicense.com/licenses/bsd-3-clause/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "BSL-1.0": {
+    "name": "Boost Software License 1.0",
+    "url": "https://choosealicense.com/licenses/bsl-1.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "CC-BY-4.0": {
+    "name": "Creative Commons Attribution 4.0 International",
+    "url": "https://choosealicense.com/licenses/cc-by-4.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DOCUMENT_CHANGES"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "TRADEMARK_USE",
+      "PATENT_USE",
+      "WARRANTY"
+    ]
+  },
+  "CC-BY-SA-4.0": {
+    "name": "Creative Commons Attribution Share Alike 4.0 International",
+    "url": "https://choosealicense.com/licenses/cc-by-sa-4.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DOCUMENT_CHANGES",
+      "SAME_LICENSE"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "TRADEMARK_USE",
+      "PATENT_USE",
+      "WARRANTY"
+    ]
+  },
+  "CC0-1.0": {
+    "name": "Creative Commons Zero v1.0 Universal",
+    "url": "https://choosealicense.com/licenses/cc0-1.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [],
+    "limitations": [
+      "LIABILITY",
+      "TRADEMARK_USE",
+      "PATENT_USE",
+      "WARRANTY"
+    ]
+  },
+  "CECILL-2.1": {
+    "name": "CeCILL Free Software License Agreement v2.1",
+    "url": "https://choosealicense.com/licenses/cecill-2.1/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE",
+      "PATENT_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DISCLOSE_SOURCE",
+      "SAME_LICENSE"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "ECL-2.0": {
+    "name": "Educational Community License v2.0",
+    "url": "https://choosealicense.com/licenses/ecl-2.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DOCUMENT_CHANGES"
+    ],
+    "limitations": [
+      "TRADEMARK_USE",
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "EPL-1.0": {
+    "name": "Eclipse Public License 1.0",
+    "url": "https://choosealicense.com/licenses/epl-1.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "DISTRIBUTION",
+      "MODIFICATIONS",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "DISCLOSE_SOURCE",
+      "INCLUDE_COPYRIGHT",
+      "SAME_LICENSE"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "EPL-2.0": {
+    "name": "Eclipse Public License 2.0",
+    "url": "https://choosealicense.com/licenses/epl-2.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "DISTRIBUTION",
+      "MODIFICATIONS",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "DISCLOSE_SOURCE",
+      "INCLUDE_COPYRIGHT",
+      "SAME_LICENSE"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "EUPL-1.1": {
+    "name": "European Union Public License 1.1",
+    "url": "https://choosealicense.com/licenses/eupl-1.1/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DISCLOSE_SOURCE",
+      "DOCUMENT_CHANGES",
+      "NETWORK_USE_DISCLOSE",
+      "SAME_LICENSE"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "TRADEMARK_USE",
+      "WARRANTY"
+    ]
+  },
+  "EUPL-1.2": {
+    "name": "European Union Public License 1.2",
+    "url": "https://choosealicense.com/licenses/eupl-1.2/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DISCLOSE_SOURCE",
+      "DOCUMENT_CHANGES",
+      "NETWORK_USE_DISCLOSE",
+      "SAME_LICENSE"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "TRADEMARK_USE",
+      "WARRANTY"
+    ]
+  },
+  "GPL-2.0": {
+    "name": "GNU General Public License v2.0",
+    "url": "https://choosealicense.com/licenses/gpl-2.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DOCUMENT_CHANGES",
+      "DISCLOSE_SOURCE",
+      "SAME_LICENSE"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "GPL-3.0": {
+    "name": "GNU General Public License v3.0",
+    "url": "https://choosealicense.com/licenses/gpl-3.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DOCUMENT_CHANGES",
+      "DISCLOSE_SOURCE",
+      "SAME_LICENSE"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "ISC": {
+    "name": "ISC License",
+    "url": "https://choosealicense.com/licenses/isc/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "DISTRIBUTION",
+      "MODIFICATIONS",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "LGPL-2.1": {
+    "name": "GNU Lesser General Public License v2.1",
+    "url": "https://choosealicense.com/licenses/lgpl-2.1/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DISCLOSE_SOURCE",
+      "DOCUMENT_CHANGES",
+      "SAME_LICENSE__LIBRARY"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "LGPL-3.0": {
+    "name": "GNU Lesser General Public License v3.0",
+    "url": "https://choosealicense.com/licenses/lgpl-3.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DISCLOSE_SOURCE",
+      "DOCUMENT_CHANGES",
+      "SAME_LICENSE__LIBRARY"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "LPPL-1.3c": {
+    "name": "LaTeX Project Public License v1.3c",
+    "url": "https://choosealicense.com/licenses/lppl-1.3c/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DOCUMENT_CHANGES",
+      "DISCLOSE_SOURCE"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "MIT": {
+    "name": "MIT License",
+    "url": "https://choosealicense.com/licenses/mit/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "MPL-2.0": {
+    "name": "Mozilla Public License 2.0",
+    "url": "https://choosealicense.com/licenses/mpl-2.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "DISCLOSE_SOURCE",
+      "INCLUDE_COPYRIGHT",
+      "SAME_LICENSE__FILE"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "TRADEMARK_USE",
+      "WARRANTY"
+    ]
+  },
+  "MS-PL": {
+    "name": "Microsoft Public License",
+    "url": "https://choosealicense.com/licenses/ms-pl/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT"
+    ],
+    "limitations": [
+      "WARRANTY",
+      "TRADEMARK_USE"
+    ]
+  },
+  "MS-RL": {
+    "name": "Microsoft Reciprocal License",
+    "url": "https://choosealicense.com/licenses/ms-rl/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "DISCLOSE_SOURCE",
+      "INCLUDE_COPYRIGHT",
+      "SAME_LICENSE__FILE"
+    ],
+    "limitations": [
+      "WARRANTY",
+      "TRADEMARK_USE"
+    ]
+  },
+  "NCSA": {
+    "name": "University of Illinois/NCSA Open Source License",
+    "url": "https://choosealicense.com/licenses/ncsa/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "ODbL-1.0": {
+    "name": "ODC Open Database License v1.0",
+    "url": "https://choosealicense.com/licenses/odbl-1.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "DISTRIBUTION",
+      "MODIFICATIONS",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "DISCLOSE_SOURCE",
+      "INCLUDE_COPYRIGHT",
+      "SAME_LICENSE"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "PATENT_USE",
+      "TRADEMARK_USE",
+      "WARRANTY"
+    ]
+  },
+  "OFL-1.1": {
+    "name": "SIL Open Font License 1.1",
+    "url": "https://choosealicense.com/licenses/ofl-1.1/",
+    "permissions": [
+      "PRIVATE_USE",
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "SAME_LICENSE"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "OSL-3.0": {
+    "name": "Open Software License 3.0",
+    "url": "https://choosealicense.com/licenses/osl-3.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "DISTRIBUTION",
+      "MODIFICATIONS",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DISCLOSE_SOURCE",
+      "DOCUMENT_CHANGES",
+      "NETWORK_USE_DISCLOSE",
+      "SAME_LICENSE"
+    ],
+    "limitations": [
+      "TRADEMARK_USE",
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "PostgreSQL": {
+    "name": "PostgreSQL License",
+    "url": "https://choosealicense.com/licenses/postgresql/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "Unlicense": {
+    "name": "The Unlicense",
+    "url": "https://choosealicense.com/licenses/unlicense/",
+    "permissions": [
+      "PRIVATE_USE",
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION"
+    ],
+    "conditions": [],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "UPL-1.0": {
+    "name": "Universal Permissive License v1.0",
+    "url": "https://choosealicense.com/licenses/upl-1.0/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PATENT_USE",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  },
+  "WTFPL": {
+    "name": "Do What The F*ck You Want To Public License",
+    "url": "https://choosealicense.com/licenses/wtfpl/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [],
+    "limitations": []
+  },
+  "Zlib": {
+    "name": "zlib License",
+    "url": "https://choosealicense.com/licenses/zlib/",
+    "permissions": [
+      "COMMERCIAL_USE",
+      "MODIFICATIONS",
+      "DISTRIBUTION",
+      "PRIVATE_USE"
+    ],
+    "conditions": [
+      "INCLUDE_COPYRIGHT",
+      "DOCUMENT_CHANGES"
+    ],
+    "limitations": [
+      "LIABILITY",
+      "WARRANTY"
+    ]
+  }
+}

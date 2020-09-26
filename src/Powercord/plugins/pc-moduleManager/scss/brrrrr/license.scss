@@ -1,0 +1,49 @@
+.powercord-entities-license {
+  &-data {
+    margin-top: 25px;
+    margin-bottom: 20px;
+
+    &.permissions span:before {
+      background-color: #43b581;
+    }
+
+    &.limitations span:before {
+      background-color: #f04747;
+    }
+
+    &.conditions span:before {
+      background-color: #7289da;
+    }
+  }
+
+  &-entry {
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+    span {
+      display: flex;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      align-items: center;
+
+      &:before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        margin-right: 10px;
+        border-radius: 50%;
+        background-color: #fff;
+      }
+    }
+  }
+
+  &-card {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    padding: 10px;
+    border-color: #e19517;
+    background-color: rgba(225, 149, 23, .15);
+  }
+}

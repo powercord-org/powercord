@@ -1,0 +1,6 @@
+{
+  "SPOTIFY_NOT_PREMIUM": "You are not Spotify Premium.",
+  "SPOTIFY_ADD_LIKED_SONGS": "Save to Liked Songs",
+  "SPOTIFY_REMOVE_LIKED_SONGS": "Remove from Liked Songs",
+  "SPOTIFY_CANT_LIKE_LOCAL": "You can't add a local song to your Liked Songs"
+}
