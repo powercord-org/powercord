@@ -1,7 +1,0 @@
-{
-  "name": "Powercord RPC",
-  "version": "1.0.0",
-  "description": "Patches RPC to get Powercord-specific features",
-  "author": "Powercord Team",
-  "license": "MIT"
-}
