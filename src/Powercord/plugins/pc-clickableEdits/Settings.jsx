@@ -10,7 +10,7 @@ module.exports = class Settings extends React.Component {
         <SwitchItem
           note={[
             'Use the ‘⇧ Shift’ key and primary mouse button to perform cleared message edits, while still ' +
-            'being able to double-click to edit messages normally (i.e. without the removable of content).'
+            'being able to double-click to edit messages normally (i.e. without the removal of content).'
           ]}
           value={getSetting('dualControlEdits', false)}
           onChange={() => toggleSetting('dualControlEdits')}
