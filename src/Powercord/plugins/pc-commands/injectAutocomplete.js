@@ -140,7 +140,7 @@ module.exports = async function injectAutocomplete () {
   const PlainTextArea = await getModuleByDisplayName('PlainTextArea');
   inject('pc-commands-plainAutocomplete', PlainTextArea.prototype, 'getCurrentWord', function (_args, res) {
     const { value } = this.props;
-    if (new RegExp(`^${powercord.api.commands.prefix}\\S+ `).test(value)) {
+    if (new RegExp(`^\\${powercord.api.commands.prefix}\\S+ `).test(value)) {
       return {
         word: value,
         isAtStart: true
@@ -153,7 +153,7 @@ module.exports = async function injectAutocomplete () {
   inject('pc-commands-slateAutocomplete', SlateChannelTextArea.prototype, 'getCurrentWord', function (_args, res) {
     const { value } = this.editorRef;
     const { selection, document } = value;
-    if (new RegExp(`^${powercord.api.commands.prefix}\\S+ `).test(document.text)) {
+    if (new RegExp(`^\\${powercord.api.commands.prefix}\\S+ `).test(document.text)) {
       const node = document.getNode(selection.start.key);
       if (node) {
         return {
