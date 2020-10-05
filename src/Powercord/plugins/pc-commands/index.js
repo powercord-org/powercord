@@ -15,7 +15,8 @@ module.exports = class Commands extends Plugin {
 
   pluginWillUnload () {
     Object.values(commands).forEach(command => powercord.api.commands.unregisterCommand(command.command));
-    uninject('pc-commands-autocomplete-prefix');
-    uninject('pc-commands-autocomplete');
+    uninject('pc-commands-textArea');
+    uninject('pc-commands-plainAutocomplete');
+    uninject('pc-commands-slateAutocomplete');
   }
 };

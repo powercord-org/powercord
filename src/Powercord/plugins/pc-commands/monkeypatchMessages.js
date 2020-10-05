@@ -1,7 +1,8 @@
-const { getModule, messages, channels: { getChannelId } } = require('powercord/webpack');
-const { receiveMessage } = messages;
+const { getModule, channels: { getChannelId } } = require('powercord/webpack');
 
 module.exports = async function monkeypatchMessages () {
+  const messages = await getModule([ 'sendMessage', 'editMessage' ]);
+
   const { BOT_AVATARS } = await getModule([ 'BOT_AVATARS' ]);
   const { createBotMessage } = await getModule([ 'createBotMessage' ]);
 
@@ -49,7 +50,7 @@ module.exports = async function monkeypatchMessages () {
       }
 
       // noinspection CommaExpressionJS
-      return (receiveMessage(receivedMessage.channel_id, receivedMessage), delete BOT_AVATARS[result.avatar_url]);
+      return (messages.receiveMessage(receivedMessage.channel_id, receivedMessage), delete BOT_AVATARS[result.avatar_url]);
     }
 
     return sendMessage(id, message, ...params);

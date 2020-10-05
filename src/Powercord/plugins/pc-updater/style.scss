@@ -184,6 +184,10 @@
       &:nth-child(n+2) {
         margin-top: 8px;
       }
+
+      &> a {
+        user-select: none;
+      }
     }
 
     &:hover {

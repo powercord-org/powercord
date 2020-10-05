@@ -52,7 +52,7 @@ module.exports = {
     };
   },
   autocomplete (args) {
-    if (!args[0] || args.length > 1) {
+    if (args.length > 1) {
       return false;
     }
 

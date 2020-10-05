@@ -1,5 +1,5 @@
 const { React, getModule, i18n: { Messages, chosenLocale: currentLocale } } = require('powercord/webpack');
-const { Clickable, Button, FormNotice, FormTitle, Tooltip, Icons: { FontAwesome } } = require('powercord/components');
+const { Button, FormNotice, FormTitle, Tooltip, Icons: { FontAwesome } } = require('powercord/components');
 const { SwitchItem, TextInput, Category, ButtonItem } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
@@ -411,17 +411,17 @@ module.exports = class UpdaterSettings extends React.PureComponent {
           <div className='row'>
             {createPathReveal('Powercord Path', powercord.basePath)}
             {createPathReveal('Discord Path', discordPath)}
-            <div className='full-column'>Experiments:&#10;{experimentOverrides ? Object.keys(getExperimentOverrides()).join(', ') : 'n/a'}</div>
+            <div className='full-column'>Experiments:&#10;{experimentOverrides > 0 ? Object.keys(getExperimentOverrides()).join(', ') : 'n/a'}</div>
             <div className='full-column'>Labs:&#10;
               {enabledLabs.length ? enabledLabs.map(e => e.name).join(', ') : 'n/a'}
             </div>
             <div className='full-column'>
               Plugins:&#10;
-              {(plugins.length > 6 ? `${(this.state.pluginsRevealed ? plugins : plugins.slice(0, 6)).join(', ')}` : plugins.join(', ')) || 'n/a'}&nbsp;
+              {(plugins.length > 6 ? `${(this.state.pluginsRevealed ? plugins : plugins.slice(0, 6)).join(', ')};` : plugins.join(', ')) || 'n/a'}&nbsp;
               {plugins.length > 6 &&
-              <Clickable tag='a' onClick={() => this.setState({ pluginsRevealed: !this.state.pluginsRevealed })}>
+              <a onClick={() => this.setState({ pluginsRevealed: !this.state.pluginsRevealed })}>
                 {this.state.pluginsRevealed ? 'Show less' : 'Show more'}
-              </Clickable>}
+              </a>}
             </div>
           </div>
         </code>

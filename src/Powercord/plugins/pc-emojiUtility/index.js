@@ -1,7 +1,6 @@
 const { Plugin } = require('powercord/entities');
 
 const {
-  getModuleByDisplayName,
   getModule,
   React,
   /* contextMenu, */
@@ -523,22 +522,11 @@ module.exports = class EmojiUtility extends Plugin {
      * });
      */
 
-    /*
-     *const ChannelAutocomplete = await getModuleByDisplayName('ChannelAutocomplete');
-     *inject('pc-emojiUtility-hideEmojisComplete', ChannelAutocomplete.prototype, 'grabAutocompleteOptions', (args) => {
-     *  const { channel } = args[0];
-     *  const { autocompleteOptions } = args[1];
-     *
-     *  if (autocompleteOptions) {
-     *    autocompleteOptions.EMOJIS.queryResults = (value) => ({
-     *      emojis: this.queryEmojiResults(value, channel).emojis.filter(emoji =>
-     *        !emoji.guildId || !this.getHiddenGuilds().includes(emoji.guildId))
-     *    });
-     *  }
-     *
-     *  return args;
-     *});
-     */
+    const { AUTOCOMPLETE_OPTIONS: AutocompleteTypes } = await getModule([ 'AUTOCOMPLETE_OPTIONS' ]);
+    inject('pc-emojiUtility-hideEmojisComplete', AutocompleteTypes.EMOJIS, 'queryResults', (args, res) => {
+      res.emojis = res.emojis.filter(emoji => !this.getHiddenGuilds().includes(emoji.guildId));
+      return res;
+    });
 
     powercord.api.settings.registerSettings('pc-emojiUtility', {
       category: this.entityID,

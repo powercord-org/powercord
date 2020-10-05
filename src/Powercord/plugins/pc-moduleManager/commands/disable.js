@@ -33,7 +33,7 @@ module.exports = {
       .sort((a, b) => a - b)
       .map(plugin => powercord.pluginManager.plugins.get(plugin));
 
-    if (!args[0] || args.length > 1) {
+    if (args.length > 1) {
       return false;
     }
 
@@ -44,8 +44,7 @@ module.exports = {
         .map(plugin => ({
           command: plugin.entityID,
           description: plugin.manifest.description
-        }))
-        .slice(0, 10),
+        })),
       header: 'powercord plugin list'
     };
   }
