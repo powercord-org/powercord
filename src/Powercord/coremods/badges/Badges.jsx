@@ -13,11 +13,13 @@ const { WEBSITE, I18N_WEBSITE, DISCORD_INVITE, REPO_URL } = require('powercord/c
 const DonateModal = require('./DonateModal');
 
 const Base = React.memo(({ color, tooltip, tooltipPosition, onClick, className, children }) => {
-  const { profileBadge, profileBadgeWrapper } = getModule([ 'profileBadges' ], false);
+  const { background } = getModule(['background'], false)
+  const { rowIcon } = getModule(['rowIcon'], false)
+  const { guildBadge } = getModule(['guildBadge', 'dropdown', 'disableColor'], false)
   return (
-    <div className={`${profileBadgeWrapper} powercord-badge`} style={{ color: `#${color || '7289da'}` }}>
+    <div className={`${background} ${rowIcon} powercord-badge`} style={{ color: `#${color || '7289da'}` }}>
       <Tooltip text={tooltip} position={tooltipPosition || 'top' }>
-        <Clickable onClick={onClick || (() => void 0)} className={`${profileBadge} ${className}`}>
+        <Clickable onClick={onClick || (() => void 0)} className={`${background} ${guildBadge} ${className}`}>
           {children}
         </Clickable>
       </Tooltip>
