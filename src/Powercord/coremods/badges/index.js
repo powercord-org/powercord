@@ -59,50 +59,55 @@ async function injectUsers () {
   });
 
   inject('pc-badges-users-render', UserProfileBody.prototype, 'renderBadges', function (_, res) {
-    if (this.state.__pcBadges && hasBadge(this.state.__pcBadges)) {
-      if (!res) {
-        // There's no container if the user have no flags
-        res = React.createElement(Flex, {
-          className: profileBadges,
-          basis: 'auto',
-          grow: 1,
-          shrink: 1
-        }, []);
-      }
+    const renderer = res.type;
+    res.type = (props) => {
+      const res = renderer(props);
+      if (this.state.__pcBadges && hasBadge(this.state.__pcBadges)) {
+        if (!res) {
+          // There's no container if the user have no flags
+          return React.createElement(Flex, {
+            className: profileBadges,
+            basis: 'auto',
+            grow: 1,
+            shrink: 1
+          }, []);
+        }
 
-      const render = (Component, key, props = {}) => (
-        React.createElement(Component, {
-          key: `pc-${key}`,
-          color: this.state.__pcBadges.custom && this.state.__pcBadges.custom.color,
-          ...props
-        })
-      );
+        const render = (Component, key, props = {}) => (
+          React.createElement(Component, {
+            key: `pc-${key}`,
+            color: this.state.__pcBadges.custom && this.state.__pcBadges.custom.color,
+            ...props
+          })
+        );
 
-      if (this.state.__pcBadges.custom && this.state.__pcBadges.custom.name && this.state.__pcBadges.custom.icon) {
-        res.props.children.push(render(Badges.Custom, 'cutie', this.state.__pcBadges.custom));
+        if (this.state.__pcBadges.custom && this.state.__pcBadges.custom.name && this.state.__pcBadges.custom.icon) {
+          res.props.children.push(render(Badges.Custom, 'cutie', this.state.__pcBadges.custom));
+        }
+        if (this.state.__pcBadges.developer) {
+          res.props.children.push(render(Badges.Developer, 'developer'));
+        }
+        if (this.state.__pcBadges.staff) {
+          res.props.children.push(render(Badges.Staff, 'staff'));
+        }
+        if (this.state.__pcBadges.support) {
+          res.props.children.push(render(Badges.Support, 'support'));
+        }
+        if (this.state.__pcBadges.contributor) {
+          res.props.children.push(render(Badges.Contributor, 'contributor'));
+        }
+        if (this.state.__pcBadges.translator) {
+          res.props.children.push(render(Badges.Translator, 'translator'));
+        }
+        if (this.state.__pcBadges.hunter) {
+          res.props.children.push(render(Badges.BugHunter, 'hunter'));
+        }
+        if (this.state.__pcBadges.early) {
+          res.props.children.push(render(Badges.EarlyUser, 'early'));
+        }
       }
-      if (this.state.__pcBadges.developer) {
-        res.props.children.push(render(Badges.Developer, 'developer'));
-      }
-      if (this.state.__pcBadges.staff) {
-        res.props.children.push(render(Badges.Staff, 'staff'));
-      }
-      if (this.state.__pcBadges.support) {
-        res.props.children.push(render(Badges.Support, 'support'));
-      }
-      if (this.state.__pcBadges.contributor) {
-        res.props.children.push(render(Badges.Contributor, 'contributor'));
-      }
-      if (this.state.__pcBadges.translator) {
-        res.props.children.push(render(Badges.Translator, 'translator'));
-      }
-      if (this.state.__pcBadges.hunter) {
-        res.props.children.push(render(Badges.BugHunter, 'hunter'));
-      }
-      if (this.state.__pcBadges.early) {
-        res.props.children.push(render(Badges.EarlyUser, 'early'));
-      }
-    }
+      return res;
+    };
 
     return res;
   });

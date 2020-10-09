@@ -30,8 +30,9 @@ module.exports = class I18nAPI extends API {
     Object.assign(i18n._proxyContext.defaultMessages, this.messages['en-US']);
 
     // begone annoying warning
-    delete i18n._proxyContext.messages.SELF_XSS_HEADER;
-    delete i18n._proxyContext.defaultMessages.SELF_XSS_HEADER;
+    [ 'messages', 'defaultMessages' ].forEach(obj => {
+      Object.keys(i18n._proxyContext[obj]).filter(key => key.startsWith('SELF_XSS')).forEach(key => delete i18n._proxyContext[obj][key]);
+    });
   }
 
   loadAllStrings (strings) {

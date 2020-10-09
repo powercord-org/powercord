@@ -13,7 +13,7 @@ const { WEBSITE, I18N_WEBSITE, DISCORD_INVITE, REPO_URL } = require('powercord/c
 const DonateModal = require('./DonateModal');
 
 const Base = React.memo(({ color, tooltip, tooltipPosition, onClick, className, children }) => {
-  const { profileBadge, profileBadgeWrapper } = getModule([ 'profileBadges' ], false);
+  const { profileBadge, profileBadgeWrapper } = getModule([ 'profileBadge' ], false);
   return (
     <div className={`${profileBadgeWrapper} powercord-badge`} style={{ color: `#${color || '7289da'}` }}>
       <Tooltip text={tooltip} position={tooltipPosition || 'top' }>
