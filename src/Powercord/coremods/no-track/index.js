@@ -38,7 +38,6 @@ module.exports = async function () {
   );
 
   return () => {
-    DiscordMedia.getSystemAnalyticsBlob = DiscordMedia.__oldSystemAnalyticsBlob;
     Analytics.track = Analytics.__oldTrack;
     Reporter.submitLiveCrashReport = Reporter.__oldSubmitLiveCrashReport;
     Sentry.main.addBreadcrumb = Sentry.main.__oldAddBreadcrumb;
