@@ -58,7 +58,7 @@ module.exports = async function injectAutocomplete () {
         return autocompleteRows;
       }
     },
-    renderResults: (_channel, value, selected, onHover, onClick, _state, { commands }) => {
+    renderResults: (_channel, value, selected, onHover, onClick, _state, { commands } = {}) => {
       if (commands) {
         const customHeader = Array.isArray(commands.__header) ? commands.__header : [ commands.__header ];
 
