@@ -58,8 +58,9 @@ module.exports = async function injectAutocomplete () {
         return autocompleteRows;
       }
     },
-    renderResults: (_channel, value, selected, onHover, onClick, _state, { commands }) => {
-      if (commands) {
+    renderResults: (_channel, value, selected, onHover, onClick, _state, autocomplete) => {
+      if (autocomplete && autocomplete.commands) {
+        const { commands } = autocomplete;
         const customHeader = Array.isArray(commands.__header) ? commands.__header : [ commands.__header ];
 
         return renderCommandResults(value, selected, commands, onHover, onClick, c => ({
@@ -101,9 +102,9 @@ module.exports = async function injectAutocomplete () {
     queryResults: (_channel, value) => ({
       commands: powercord.api.commands.filter(c => [ c.command, ...(c.aliases || []) ].some(commandName => commandName.includes(value)))
     }),
-    renderResults: (_channel, value, selected, onHover, onClick, _state, { commands }) => {
-      if (commands) {
-        return renderCommandResults(value, selected, commands, onHover, onClick, c => ({
+    renderResults: (_channel, value, selected, onHover, onClick, _state, autocomplete) => {
+      if (autocomplete && autocomplete.commands) {
+        return renderCommandResults(value, selected, autocomplete.commands, onHover, onClick, c => ({
           key: `powercord-${c.command}`,
           command: {
             name: c.command,
