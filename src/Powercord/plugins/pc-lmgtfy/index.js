@@ -3,11 +3,14 @@ const { Plugin } = require('powercord/entities');
 const Constants = Object.freeze({
   SEARCH_ENGINES: {
     google: 'g',
-    yahoo: 'y',
+    lmgtfy: 'l',
     bing: 'b',
-    ask: 'k',
+    yahoo: 'y',
     aol: 'a',
-    duckduckgo: 'd'
+    ask: 'k',
+    duckduckgo: 'd',
+    snopes: 's',
+    startpage: 't'
   },
   SEARCH_TYPES: {
     web: 'w',
@@ -18,13 +21,22 @@ const Constants = Object.freeze({
   }
 });
 
+const Settings = require('./Settings');
+
 module.exports = class LMGTFY extends Plugin {
   startPlugin () {
+    powercord.api.settings.registerSettings('pc-lmgtfy', {
+      category: this.entityID,
+      label: 'LMGTFY',
+      render: Settings
+    });
+
     powercord.api.commands.registerCommand({
       command: 'lmgtfy',
       description: 'Let me Google that for you...',
-      usage: '{c} [...search terms] <search engine> <search type>',
-      executor: this.handleCommand.bind(this)
+      usage: '{c} [--iie] [...search terms] <search engine> <search type>',
+      executor: this.handleCommand.bind(this),
+      autocomplete: this.handleAutocomplete.bind(this)
     });
   }
 
@@ -37,6 +49,7 @@ module.exports = class LMGTFY extends Plugin {
       return;
     }
 
+    const iie = args[0].includes('--iie') ? !!args.splice(args.indexOf('--iie'), 1) : this.settings.get('iie', false);
     const options = args.slice(-2).map(arg => arg.toLowerCase());
     const params = {};
     params.searchEngine = Constants.SEARCH_ENGINES.google;
@@ -48,7 +61,7 @@ module.exports = class LMGTFY extends Plugin {
             const match = options[i].toLowerCase() === searchEngine;
             if (match) {
               params.searchEngine = Constants.SEARCH_ENGINES[searchEngine];
-              args.splice(args.indexOf(searchEngine), 1);
+              args.splice(args.lastIndexOf(searchEngine), 1);
               options.splice(i, 1);
               break;
             }
@@ -61,7 +74,7 @@ module.exports = class LMGTFY extends Plugin {
             if (match) {
               if (params.searchEngine === 'g') {
                 params.searchType = Constants.SEARCH_TYPES[searchType];
-                args.splice(args.indexOf(searchType), 1);
+                args.splice(args.lastIndexOf(searchType), 1);
               }
             }
           }
@@ -79,9 +92,51 @@ module.exports = class LMGTFY extends Plugin {
       queryString.append('s', searchEngine);
     }
 
+    if (iie) {
+      queryString.append('iie', +iie);
+    }
+
     return {
       send: true,
       result: `<https://lmgtfy.com/?${queryString}>`
     };
+  }
+
+  handleAutocomplete (args) {
+    if (!this.settings.get('autocompletes', true) || args.length === 0) {
+      return false;
+    }
+
+    if (args[1] === void 0) {
+      return {
+        commands: [ {
+          command: 'Please input your search terms...',
+          instruction: true
+        } ]
+      };
+    }
+
+    const lastArg = args[args.length - 1];
+    const searchEngines = Object.keys(Constants.SEARCH_ENGINES);
+    const searchEngine = searchEngines.find(engine => args[args.lastIndexOf(engine)] === engine);
+    if (!searchEngine) {
+      return {
+        commands: searchEngines
+          .filter(engine => engine.includes(lastArg))
+          .map(engine => ({ command: engine })),
+        header: 'select a search engine...'
+      };
+    }
+
+    const searchTypes = Object.keys(Constants.SEARCH_TYPES);
+    const searchType = searchTypes.find(type => args[args.indexOf(searchEngine) + 1] === type);
+    if (searchEngine === 'google' && !searchType) {
+      return {
+        commands: searchTypes
+          .filter(type => type.includes(lastArg))
+          .map(type => ({ command: type })),
+        header: 'select a search type...'
+      };
+    }
   }
 };

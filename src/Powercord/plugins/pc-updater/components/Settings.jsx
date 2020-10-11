@@ -325,7 +325,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
 
     const discordPath = process.resourcesPath.slice(0, -10);
     const maskPath = (path) => {
-      path = path.replace(/(?:\/home\/|C:\\Users\\|\/Users\/)([ \w.-]+).*/, (path, username) => {
+      path = path.replace(/(?:\/home\/|C:\\Users\\|\/Users\/)([ \w.-]+).*/i, (path, username) => {
         const usernameIndex = path.indexOf(username);
         return [ path.slice(0, usernameIndex), username.charAt(0) + username.slice(1).replace(/[a-zA-Z]/g, '*'),
           path.slice(usernameIndex + username.length) ].join('');
@@ -357,7 +357,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
             <div className='column'>OS:&#10;{(window.platform.os).toString()}</div>
             <div className='column'>Architecture:&#10;{superProperties.os_arch}</div>
             {process.platform === 'linux' && (
-              <div className='column'>Distro:&#10;{superProperties.distro}</div>
+              <div className='column'>Distro:&#10;{superProperties.distro || 'n/a'}</div>
             )}
             <div className='column'>Release Channel:&#10;{superProperties.release_channel}</div>
             <div className='column'>App Version:&#10;{superProperties.client_version}</div>

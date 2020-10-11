@@ -18,7 +18,7 @@ const Store = require('./components/Store');
 async function injectChannels () {
   const permissionsModule = await getModule([ 'can' ]);
   inject('pc-store-channels-perms', permissionsModule, 'can', (args, res) => {
-    if (args[1].id === STORE_PLUGINS || args[1].id === STORE_THEMES) {
+    if (args[1] && (args[1].id === STORE_PLUGINS || args[1].id === STORE_THEMES)) {
       return args[0].data === Permissions.VIEW_CHANNEL.data;
     }
     return res;

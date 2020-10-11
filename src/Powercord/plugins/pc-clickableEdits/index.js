@@ -11,6 +11,7 @@ module.exports = class ClickableEdits extends Plugin {
 
     this.classes = {
       messages: getModule([ 'messages', 'scroller' ], false),
+      messageContent: getModule([ 'wrapper', 'username' ], false),
       container: getModule([ 'container', 'embedWrapper' ], false),
       markup: getModule([ 'markup' ], false)
     };
@@ -72,7 +73,7 @@ module.exports = class ClickableEdits extends Plugin {
 
     return (e) => {
       if (get('dualControlEdits') ? dualControl(e) : get('useShiftKey') ? shiftKey(e) : doubleClick(e)) {
-        if (e.target.closest(this.classes.markup) || e.target.closest(this.classes.container)) {
+        if (e.target.closest(`${this.classes.markup}${this.classes.messageContent}`) || e.target.closest(this.classes.container)) {
           messages.startEditMessage(...args);
         }
       }
