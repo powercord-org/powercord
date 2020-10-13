@@ -265,9 +265,8 @@ module.exports = class Updater extends Plugin {
   }
 
   async changeBranch (branch) {
-    await exec('git fetch', this.cwd);
+    await exec('git fetch origin +v2:v2', this.cwd);
     await exec(`git checkout ${branch}`, this.cwd);
-    await exec('git pull', this.cwd);
     // location.reload();
   }
 
