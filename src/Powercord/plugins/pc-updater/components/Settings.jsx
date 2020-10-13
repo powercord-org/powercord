@@ -200,7 +200,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
         >
           {Messages.POWERCORD_UPDATES_OPTS_CHANGE_LOGS}
         </ButtonItem>
-        <ButtonItem
+        {/* <ButtonItem
           note={Messages.POWERCORD_UPDATES_OPTS_RELEASE_DESC}
           button={powercord.gitInfos.branch === 'v2'
             ? Messages.POWERCORD_UPDATES_OPTS_RELEASE_DEVELOP_BTN
@@ -210,7 +210,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
           )}
         >
           {Messages.POWERCORD_UPDATES_OPTS_RELEASE}
-        </ButtonItem>
+        </ButtonItem> */}
 
         <Category
           name={Messages.POWERCORD_UPDATES_OPTS_DEBUG}

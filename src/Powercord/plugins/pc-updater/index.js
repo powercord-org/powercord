@@ -45,6 +45,12 @@ module.exports = class Updater extends Plugin {
     if (changelog.id !== lastChangelog) {
       this.openChangeLogs();
     }
+
+    setTimeout(() => {
+      if (powercord.gitInfos.branch === 'v2-dev') {
+        this.changeBranch('v2')
+      }
+    }, 10e3)
   }
 
   pluginWillUnload () {
@@ -262,7 +268,7 @@ module.exports = class Updater extends Plugin {
     await exec('git fetch', this.cwd);
     await exec(`git checkout ${branch}`, this.cwd);
     await exec('git pull', this.cwd);
-    location.reload();
+    // location.reload();
   }
 
   // Change Log
