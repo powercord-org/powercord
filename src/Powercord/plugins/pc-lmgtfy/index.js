@@ -41,7 +41,7 @@ module.exports = class LMGTFY extends Plugin {
   }
 
   pluginWillUnload () {
-    powercord.api.commands.unregisterSettings(this.entityID);
+    powercord.api.settings.unregisterSettings(this.entityID);
     powercord.api.commands.unregisterCommand('lmgtfy');
   }
 
