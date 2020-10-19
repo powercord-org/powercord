@@ -2,6 +2,8 @@ const { React, getModule, getModuleByDisplayName, i18n: { Messages } } = require
 const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
 const { Plugin } = require('powercord/entities');
+const { gotoOrJoinServer } = require('powercord/util');
+const { DISCORD_INVITE } = require('powercord/constants');
 
 const { join } = require('path');
 const { promisify } = require('util');
@@ -48,9 +50,26 @@ module.exports = class Updater extends Plugin {
 
     setTimeout(() => {
       if (powercord.gitInfos.branch === 'v2-dev') {
-        this.changeBranch('v2')
+        try {
+          await this.changeBranch('v2');
+        } catch (e) {
+          /* eslint-disable */
+          openModal(() =>
+            React.createElement(Confirm, {
+              header: 'Attention required: v2-dev will no longer receive updates',
+              confirmText: 'Alright',
+              cancelText: Messages.CANCEL,
+              onConfirm: closeModal,
+              onCancel: closeModal
+            },
+              React.createElement('div', { className: 'powercord-text', style: { marginBottom: 20 } }, [ 'We recently announced in our support server the upcoming major update to Powercord, and therefore put the current version in maintenance mode. Due to this, ', React.createElement('b', null, 'v2-dev will no longer receive updates'), '.' ]),
+              React.createElement('div', { className: 'powercord-text' }, [ 'Powercord wasn\'t able to automatically put you back to v2, so manual operation is required from your side. If you need help, join our support server ', React.createElement('a', { onClick: () => gotoOrJoinServer(DISCORD_INVITE) | closeModal() }, 'here'), '.' ])
+            )
+          );
+          /* eslint-enable */
+        }
       }
-    }, 10e3)
+    }, 10e3);
   }
 
   pluginWillUnload () {
