@@ -25,7 +25,7 @@ const Settings = require('./Settings');
 
 module.exports = class LMGTFY extends Plugin {
   startPlugin () {
-    powercord.api.settings.registerSettings('pc-lmgtfy', {
+    powercord.api.settings.registerSettings(this.entityID, {
       category: this.entityID,
       label: 'LMGTFY',
       render: Settings
@@ -41,6 +41,7 @@ module.exports = class LMGTFY extends Plugin {
   }
 
   pluginWillUnload () {
+    powercord.api.commands.registerSettings(this.entityID);
     powercord.api.commands.unregisterCommand('lmgtfy');
   }
 
