@@ -44,7 +44,7 @@ function fetchBadges () {
   const baseUrl = powercord.settings.get('backendURL', WEBSITE);
   get(`${baseUrl}/api/v2/users/${this.props.user.id}`)
     .then(res => this.setState({ __pcBadges: res.body.badges }))
-    .catch(() => void 0);
+    .catch(() => this.setState({ __pcBadges: null }));
 }
 
 async function injectUsers () {
