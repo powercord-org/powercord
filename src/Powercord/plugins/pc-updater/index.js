@@ -48,9 +48,9 @@ module.exports = class Updater extends Plugin {
 
     setTimeout(() => {
       if (powercord.gitInfos.branch === 'v2-dev') {
-        this.changeBranch('v2')
+        this.changeBranch('v2');
       }
-    }, 10e3)
+    }, 10e3);
   }
 
   pluginWillUnload () {
