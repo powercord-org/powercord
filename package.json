@@ -20,7 +20,7 @@
   "dependencies": {
     "codemirror": "^5.57.0",
     "less": "^3.12.2",
-    "node-watch": "^0.6.4",
+    "node-watch": "^0.7.0",
     "sass": "^1.26.10",
     "stylus": "^0.54.8",
     "sucrase": "^3.15.0",
