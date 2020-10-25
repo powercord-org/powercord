@@ -6,7 +6,7 @@ const { Plugin } = require('powercord/entities');
 
 const ErrorBoundary = require('./components/ErrorBoundary');
 const GeneralSettings = require('./components/GeneralSettings');
-const Labs = require('./components/Labs');
+// const Labs = require('./components/Labs');
 
 const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
 const FormSection = AsyncComponent.from(getModuleByDisplayName('FormSection'));
@@ -53,20 +53,9 @@ module.exports = class Settings extends Plugin {
 
   async patchSettingsComponent () {
     const SettingsView = await getModuleByDisplayName('SettingsView');
-    inject('pc-settings-items', SettingsView.prototype, 'getPredicateSections', (args, sections) => {
+    inject('pc-settings-items', SettingsView.prototype, 'getPredicateSections', (_, sections) => {
       const changelog = sections.find(c => c.section === 'changelog');
       if (changelog) {
-        if (powercord.settings.get('experiments', false)) {
-          sections.splice(
-            sections.indexOf(changelog) + 1, 0,
-            {
-              section: 'pc-labs',
-              label: 'Powercord Labs',
-              element: () => this._renderWrapper('Powercord Labs', Labs)
-            }
-          );
-        }
-
         const settingsSections = Object.keys(powercord.api.settings.tabs).map(s => this._makeSection(s));
         sections.splice(
           sections.indexOf(changelog), 0,

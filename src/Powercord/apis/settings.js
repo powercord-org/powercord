@@ -43,8 +43,11 @@ class SettingsAPI extends API {
     if (this.tabs[tabId]) {
       throw new Error(`Settings tab ${tabId} is already registered!`);
     }
+
     this.tabs[tabId] = props;
     this.tabs[tabId].render = this.connectStores(props.category)(props.render);
+    Object.freeze(this.tabs[tabId].render.prototype);
+    Object.freeze(this.tabs[tabId]);
   }
 
   /**

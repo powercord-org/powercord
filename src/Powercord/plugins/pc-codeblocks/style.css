@@ -22,6 +22,8 @@
 
 .powercord-codeblock-table tr {
   height: 19px;
+  width: 100%;
+  word-break: break-all;
 }
 
 .powercord-codeblock-table td:first-child {

@@ -15,16 +15,16 @@ module.exports = async () => {
     const msg = findInReactTree(res, n => n.message);
     if (!msg) {
       if (findInReactTree(res, n => n.className && n.className.startsWith('blockedSystemMessage'))) {
-        res.props['data-is-blocked'] = 'true';
+        res.props.children.props['data-is-blocked'] = 'true';
       }
       return res;
     }
     const { message } = msg;
-    res.props['data-author-id'] = message.author.id;
-    res.props['data-message-type'] = message.type;
-    res.props['data-is-author-bot'] = String(message.author.bot);
+    res.props.children.props['data-author-id'] = message.author.id;
+    res.props.children.props['data-message-type'] = message.type;
+    res.props.children.props['data-is-author-bot'] = String(message.author.bot);
     if (userStore.getCurrentUser()) {
-      res.props['data-is-author-self'] = String(message.author.id === userStore.getCurrentUser().id);
+      res.props.children.props['data-is-author-self'] = String(message.author.id === userStore.getCurrentUser().id);
     }
     return res;
   });
