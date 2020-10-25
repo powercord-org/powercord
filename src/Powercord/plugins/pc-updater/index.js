@@ -48,7 +48,7 @@ module.exports = class Updater extends Plugin {
       this.openChangeLogs();
     }
 
-    setTimeout(() => {
+    setTimeout(async () => {
       if (powercord.gitInfos.branch === 'v2-dev') {
         try {
           await this.changeBranch('v2');
