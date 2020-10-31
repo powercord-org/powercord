@@ -4,18 +4,18 @@
  * https://powercord.dev/porkord-license
  */
 
-const { remote } = require('electron'); // @todo: remove
+const { ipcRenderer } = require('electron');
 
 module.exports = async () => {
   document.body.classList.add('powercord');
   if (window.__OVERLAY__) {
     document.body.classList.add('overlay');
   }
-  const webPrefs = remote.getCurrentWebContents().getWebPreferences();
-  if (webPrefs.transparent) {
+
+  if (powercord.settings.get('transparentWindow')) {
     document.body.classList.add('transparent');
   }
-  if (webPrefs.experimentalFeatures) {
+  if (powercord.settings.get('experimentalWebPlatform')) {
     document.body.classList.add('experimental-web-features');
   }
   const date = new Date();
@@ -23,12 +23,15 @@ module.exports = async () => {
     document.body.classList.add('april-fools');
   }
 
-  if (remote.getCurrentWindow().isMaximized()) {
-    document.body.classList.add('maximized');
-  } else {
-    document.body.classList.remove('maximized');
-  }
+  ipcRenderer.invoke('POWERCORD_WINDOW_IS_MAXIMIZED').then(isMaximized => {
+    console.log(isMaximized);
+    if (isMaximized) {
+      document.body.classList.add('maximized');
+    } else {
+      document.body.classList.remove('maximized');
+    }
+  });
 
-  remote.getCurrentWindow().on('maximize', () => document.body.classList.add('maximized'));
-  remote.getCurrentWindow().on('unmaximize', () => document.body.classList.remove('maximized'));
+  ipcRenderer.on('POWERCORD_WINDOW_MAXIMIZE', () => document.body.classList.add('maximized'));
+  ipcRenderer.on('POWERCORD_WINDOW_UNMAXIMIZE', () => document.body.classList.remove('maximized'));
 };

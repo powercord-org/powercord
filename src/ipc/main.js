@@ -63,3 +63,4 @@ ipcMain.handle('POWERCORD_OPEN_DEVTOOLS', openDevTools);
 ipcMain.handle('POWERCORD_CLOSE_DEVTOOLS', closeDevTools);
 ipcMain.handle('POWERCORD_CACHE_CLEAR', clearCache);
 ipcMain.handle('POWERCORD_COMPILE_MF_SASS', compileSass);
+ipcMain.handle('POWERCORD_WINDOW_IS_MAXIMIZED', e => BrowserWindow.fromWebContents(e.sender).isMaximized());

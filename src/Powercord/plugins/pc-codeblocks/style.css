@@ -23,7 +23,6 @@
 .powercord-codeblock-table tr {
   height: 19px;
   width: 100%;
-  word-break: break-all;
 }
 
 .powercord-codeblock-table td:first-child {
@@ -35,6 +34,7 @@
 
 .powercord-codeblock-table td:last-child {
   padding-left: 8px;
+  word-break: break-all;
 }
 
 .powercord-codeblock-copy-btn {

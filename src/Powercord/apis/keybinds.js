@@ -1,5 +1,3 @@
-const { remote: { globalShortcut } } = require('electron');
-const localShortcut = require('keybindutils/localShortcut');
 const { API } = require('powercord/entities');
 
 /**
@@ -27,6 +25,8 @@ class KeybindsAPI extends API {
    * @param {PowercordKeybind} keybind Keybind
    */
   registerKeybind (id, keybind) {
+    throw new Error('Keybinds API is currently not working');
+    // eslint-disable-next-line no-unreachable
     if (this.keybinds[id]) {
       throw new Error(`Keybind ${id} is already registered!`);
     }
@@ -40,6 +40,8 @@ class KeybindsAPI extends API {
    * @param {String} newBind New keybind to bind
    */
   changeBind (id, newBind) {
+    throw new Error('Keybinds API is currently not working');
+    // eslint-disable-next-line no-unreachable
     if (!this.keybinds[id]) {
       throw new Error(`Keybind ${id} is not registered!`);
     }
@@ -54,6 +56,8 @@ class KeybindsAPI extends API {
    * @param {String} id Keybind to unregister
    */
   unregisterKeybind (id) {
+    throw new Error('Keybinds API is currently not working');
+    // eslint-disable-next-line no-unreachable
     if (this.keybinds[id]) {
       this._unregister(this.keybinds[id]);
       delete this.keybinds[id];
@@ -64,9 +68,9 @@ class KeybindsAPI extends API {
   _register (keybind) {
     try {
       if (keybind.isGlobal) {
-        globalShortcut.register(keybind.keybind, keybind.executor);
+        // globalShortcut.register(keybind.keybind, keybind.executor);
       } else {
-        localShortcut.register(keybind.keybind, keybind.executor);
+        // localShortcut.register(keybind.keybind, keybind.executor);
       }
     } catch (e) {
       this.error('Failed to register keybind!', e);
@@ -77,9 +81,9 @@ class KeybindsAPI extends API {
   _unregister (keybind) {
     try {
       if (keybind.isGlobal) {
-        globalShortcut.unregister(keybind.keybind);
+        // globalShortcut.unregister(keybind.keybind);
       } else {
-        localShortcut.unregister(keybind.keybind);
+        // localShortcut.unregister(keybind.keybind);
       }
     } catch (e) {
       // let it fail silently, probably just invalid/unset keybind

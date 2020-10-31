@@ -46,14 +46,15 @@ class PatchedBrowserWindow extends BrowserWindow {
       }
     }
 
-    // @todo: get rid of this. see #337
-    opts.webPreferences.enableRemoteModule = true;
     const win = new BrowserWindow(opts);
     const ogLoadUrl = win.loadURL.bind(win);
     Object.defineProperty(win, 'loadURL', {
       get: () => PatchedBrowserWindow.loadUrl.bind(win, ogLoadUrl),
       configurable: true
     });
+
+    win.on('maximize', () => win.webContents.send('POWERCORD_WINDOW_MAXIMIZE'));
+    win.on('unmaximize', () => win.webContents.send('POWERCORD_WINDOW_UNMAXIMIZE'));
 
     win.webContents._powercordPreload = originalPreload;
     return win;
