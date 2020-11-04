@@ -9,6 +9,8 @@ const { getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 
 module.exports = async () => {
+  return () => void 0;
+  /* eslint-disable */
   const guildClasses = await getModule([ 'blobContainer' ]);
   const guildElement = (await waitFor(`.${guildClasses.blobContainer.split(' ')[0]}`)).parentElement;
   const instance = getOwnerInstance(guildElement);
