@@ -3,5 +3,10 @@
  * All Rights Reserved. Licensed under the Porkord License
  * https://powercord.dev/porkord-license
  */
-
-exports.getAppDir = async () => '/Applications/Discord Canary.app/Contents/Resources/app';
+if (process.argv.includes('--install-path')) {
+  installPath = process.argv[process.argv.indexOf('--install-path') + 1]
+  console.log('\x1b[35m%s\x1b[0m', 'Installing to ' + installPath)
+  exports.getAppDir = async () => installPath + '/Contents/Resources/app'
+} else {
+  exports.getAppDir = async () => '/Applications/Discord Canary.app/Contents/Resources/app';
+}
