@@ -9,11 +9,11 @@ const { inject, uninject } = require('powercord/injector');
 
 module.exports = async () => {
   const GuildFolder = await getModule(m => m.default && (
-    (m.default.type && m.default.type.toString().includes('defaultFolderName')) ||
-    (m.default.__powercordOriginal_type && m.default.__powercordOriginal_type.toString().includes('defaultFolderName'))
+    (m.default.type?.render?.toString().includes('defaultFolderName')) ||
+    (m.default.type?.__powercordOriginal_render?.toString().includes('defaultFolderName'))
   ), false);
 
-  inject('pc-utilitycls-folders', GuildFolder.default, 'type', (args, res) => {
+  inject('pc-utilitycls-folders', GuildFolder.default.type, 'render', (args, res) => {
     const { audio, badge: mentions, selected, expanded, unread, video, folderName } = args[0];
 
     const conditionals = {

@@ -1,5 +1,5 @@
 const { React, getModuleByDisplayName, getModule, i18n: { Messages } } = require('powercord/webpack');
-const { AsyncComponent } = require('powercord/components');
+const { AsyncComponent, Menu } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
 const { WEBSITE } = require('powercord/constants');
 const { Plugin } = require('powercord/entities');
@@ -21,14 +21,10 @@ module.exports = class Settings extends Plugin {
       render: GeneralSettings
     });
 
+    this.patchSettingsContextMenu();
     this.patchSettingsComponent();
     this.patchExperiments();
-
-    if (this.settings.get('__experimental_2019-12-16', false)) {
-      this.log('Experimental Settings enabled.');
-      this.patchSettingsContextMenu();
     }
-  }
 
   async pluginWillUnload () {
     powercord.api.settings.unregisterSettings('pc-general');
@@ -131,46 +127,37 @@ module.exports = class Settings extends Plugin {
   }
 
   async patchSettingsContextMenu () {
-    const SubMenuItem = await getModuleByDisplayName('FluxContainer(SubMenuItem)');
-    const ImageMenuItem = await getModuleByDisplayName('ImageMenuItem');
-    const SettingsContextMenu = await getModuleByDisplayName('UserSettingsCogContextMenu');
-    inject('pc-settings-actions', SettingsContextMenu.prototype, 'render', (args, res) => {
-      const parent = React.createElement(SubMenuItem, {
-        label: 'Powercord',
-        render: () => powercord.api.settings.tabs.map(tab => React.createElement(ImageMenuItem, {
-          label: tab.label,
+    const SettingsContextMenu = await getModule(m => m.default?.displayName === 'UserSettingsCogContextMenu');
+    inject('pc-settings-actions', SettingsContextMenu, 'default', (_, res) => {
+      const parent = React.createElement(Menu.MenuItem, {
+        id: 'powercord-actions',
+        label: 'Powercord'
+      }, Object.keys(powercord.api.settings.tabs).map(tabId => {
+        const props = powercord.api.settings.tabs[tabId];
+        const label = typeof props.label === 'function' ? props.label() : props.label;
+
+        return React.createElement(Menu.MenuItem, {
+          label,
+          id: tabId,
           action: async () => {
             const settingsModule = await getModule([ 'open', 'saveAccountChanges' ]);
-            settingsModule.open(tab.section);
+            settingsModule.open(tabId);
           }
-        }))
-      });
+        });
+      }));
 
       parent.key = 'Powercord';
 
       const items = res.props.children.find(child => Array.isArray(child));
-      const changelog = items.find(item => item && item.key === 'changelog');
+      const changelog = items.find(item => item?.props?.id === 'changelog');
       if (changelog) {
         items.splice(items.indexOf(changelog), 0, parent);
       } else {
-        this.error('Unable to locate \'Change Log\' item; forcing element to context menu!');
+        this.error('Unable to locate "Change Log" item; forcing element to context menu!');
         res.props.children.push(parent);
       }
 
       return res;
     });
-  }
-
-  __toggleExperimental () {
-    const current = this.settings.get('__experimental_2019-12-16', false);
-    if (!current) {
-      this.warn('WARNING: This will enable the new and experimental settings context menu, that is NOT functional yet.');
-      this.warn('WARNING: Powercord Staff won\'t accept bug reports from this experimental version, nor provide support!');
-      this.warn('WARNING: Use it at your own risk! It\'s labeled experimental for a reason.');
-    } else {
-      this.log('Experimental Settings disabled.');
-    }
-    this.settings.set('__experimental_2019-12-16', !current);
-    powercord.pluginManager.remount(this.entityID);
   }
 };

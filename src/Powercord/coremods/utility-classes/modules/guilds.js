@@ -4,17 +4,32 @@
  * https://powercord.dev/porkord-license
  */
 
-const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
-const { getModule } = require('powercord/webpack');
+const { React, getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 
 module.exports = async () => {
-  return () => void 0;
-  /* eslint-disable */
-  const guildClasses = await getModule([ 'blobContainer' ]);
-  const guildElement = (await waitFor(`.${guildClasses.blobContainer.split(' ')[0]}`)).parentElement;
-  const instance = getOwnerInstance(guildElement);
-  inject('pc-utilitycls-guilds', instance.__proto__, 'render', function (args, res) {
+  const DragSourceConnectedGuild = await getModule([ 'LurkingGuild' ]);
+  const { DecoratedComponent } = DragSourceConnectedGuild.default;
+
+  const owo = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentDispatcher.current;
+  const ogUseState = owo.useState;
+  const ogUseLayoutEffect = owo.useLayoutEffect;
+  const ogUseContext = owo.useContext;
+  const ogUseRef = owo.useRef;
+
+  owo.useState = () => [ null, () => void 0 ];
+  owo.useLayoutEffect = () => null;
+  owo.useRef = () => ({});
+  owo.useContext = () => ({});
+
+  const Guild = new DecoratedComponent({ guildId: null }).type;
+
+  owo.useState = ogUseState;
+  owo.useLayoutEffect = ogUseLayoutEffect;
+  owo.useContext = ogUseContext;
+  owo.useRef = ogUseRef;
+
+  inject('pc-utilitycls-guilds', Guild.prototype, 'render', function (_, res) {
     const { audio, badge: mentions, selected, unread, video } = this.props;
 
     const conditionals = {
@@ -33,9 +48,9 @@ module.exports = async () => {
 
     res.props['data-guild-name'] = this.props.guild.name;
     res.props['data-guild-id'] = this.props.guildId;
+
     return res;
   });
 
-  setImmediate(() => forceUpdateElement(`.${guildElement.className.split(' ')[0]}`, true));
   return () => uninject('pc-utilitycls-guilds');
 };

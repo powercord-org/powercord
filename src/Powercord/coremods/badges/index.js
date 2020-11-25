@@ -171,7 +171,7 @@ module.exports = async function () {
     if (modalClasses) {
       const modalHeader = document.querySelector(`.${modalClasses.topSectionNormal} header`);
       if (modalHeader) {
-        getOwnerInstance(modalHeader)._reactInternalFiber.return.stateNode.forceUpdate();
+        getOwnerInstance(modalHeader)._reactInternals.return.stateNode.forceUpdate();
       }
     }
   };
