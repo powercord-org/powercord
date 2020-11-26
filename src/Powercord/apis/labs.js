@@ -39,8 +39,8 @@ class LabsAPI extends API {
    * @param {String} experimentId
    * @returns {Boolean} Whether the experiment is enabled or not
    */
-  isExperimentEnabled (experimentId) {
-    return powercord.settings.get('labs', []).includes(experimentId);
+  isExperimentEnabled () {
+    return false;
   }
 
   /**

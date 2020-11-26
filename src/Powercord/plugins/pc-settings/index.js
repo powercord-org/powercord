@@ -24,7 +24,7 @@ module.exports = class Settings extends Plugin {
     this.patchSettingsContextMenu();
     this.patchSettingsComponent();
     this.patchExperiments();
-    }
+  }
 
   async pluginWillUnload () {
     powercord.api.settings.unregisterSettings('pc-general');

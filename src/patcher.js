@@ -7,16 +7,17 @@
 const Module = require('module');
 const { join, dirname } = require('path');
 const { existsSync, unlinkSync } = require('fs');
-const electron = require('electron');
-const PatchedBrowserWindow = require('./browserWindow');
-require('./updater');
-require('./ipc/main');
-
-const electronPath = require.resolve('electron');
-const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 
 // Restore the classic path; The updater relies on it and it makes Discord go corrupt
+const electronPath = require.resolve('electron');
+const discordPath = join(dirname(require.main.filename), '..', 'app.asar');
 require.main.filename = join(discordPath, 'app_bootstrap/index.js');
+
+const electron = require('electron');
+const PatchedBrowserWindow = require('./browserWindow');
+
+require('./updater');
+require('./ipc/main');
 
 console.log('Hello from Powercord!');
 
@@ -36,7 +37,7 @@ electron.app.once('ready', () => {
   // @todo: Whitelist a few domains instead of removing CSP altogether; See #386
   electron.session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
     Object.keys(responseHeaders)
-      .filter(k => (/^content-security-policy/i).test(k) || (/^x-frame-options/i).test(k))
+      .filter(k => (/^content-security-policy/i).test(k))
       .map(k => (delete responseHeaders[k]));
 
     done({ responseHeaders });
@@ -47,6 +48,9 @@ electron.app.once('ready', () => {
     if (details.url.startsWith('https://canary.discordapp.com/_powercord')) {
       // It should get restored to _powercord url later
       done({ redirectURL: 'https://canary.discordapp.com/app' });
+    } else if (details.url.startsWith('https://canary.discord.com/_powercord')) {
+      // It should get restored to _powercord url later
+      done({ redirectURL: 'https://canary.discord.com/app' });
     } else {
       done({});
     }
@@ -64,6 +68,7 @@ electron.app.name = discordPackage.name;
  * @see https://github.com/electron/electron/issues/19468
  */
 if (process.platform === 'win32') {
+  // todo: define if this is still necessary
   setImmediate(() => { // WTF: the app name doesn't get set instantly?
     const devToolsExtensions = join(electron.app.getPath('userData'), 'DevTools Extensions');
 
