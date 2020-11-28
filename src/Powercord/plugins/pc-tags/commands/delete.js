@@ -2,7 +2,7 @@ module.exports = {
   command: 'delete',
   description: 'Delete a tag',
   executor: (args, main) => {
-    if (!main.settings.get(args[0])) {
+    if (!main.settings.get(args[0] || args[0] == 'tag')) {
       return {
         send: false,
         result: {
