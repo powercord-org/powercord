@@ -36,7 +36,7 @@ module.exports = {
         type: 'rich',
         title: 'Successfully created tag',
         color: 0x00FF00,
-        fields: [{
+        fields: [ {
           name: 'Name',
           value: name,
           inline: false
@@ -44,27 +44,27 @@ module.exports = {
           name: 'Value',
           value,
           inline: false
-        }]
+        } ]
       }
     };
   },
   autocomplete: (args) => {
     if (args[1] === void 0) {
       return {
-        commands: [{
+        commands: [ {
           command: 'Enter a tag name...',
           instruction: true
-        }]
+        } ]
       };
     }
 
     if (args[2] === void 0) {
       return {
-        commands: [{
+        commands: [ {
           command: `Enter the content of "${args[0]}"...`,
           wildcard: true,
           instruction: true
-        }]
+        } ]
       };
     }
   }
