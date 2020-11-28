@@ -17,7 +17,7 @@ module.exports = {
 
     const name = args.shift().toLowerCase();
     const value = args.join(' ').replace(/\\n/g, '\n');
-    if (main.settings.get(name) || name == 'tag') {
+    if (main.settings.get(name) || name === 'tag') {
       return {
         send: false,
         result: {
