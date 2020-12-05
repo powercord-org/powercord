@@ -107,7 +107,7 @@
     "no-useless-concat": [ "error" ],
     "no-useless-escape": [ "error" ],
     "no-useless-return": [ "error" ],
-    "no-warning-comments": [ "error" ],
+    "no-warning-comments": [ "warn" ],
     "no-with": [ "error" ],
     "prefer-promise-reject-errors": ["error", {
       "allowEmptyReject": true
