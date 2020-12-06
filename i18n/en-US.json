@@ -148,7 +148,7 @@
   "POWERCORD_UPDATES_SKIP": "Skip Update",
   "POWERCORD_UPDATES_SKIP_MODAL": "Are you sure you want to skip this update? Powercord will wait for a newer version to get released before updating again.",
   "POWERCORD_UPDATES_SKIP_MODAL_TITLE": "Skip an Update",
-  "POWERCORD_UPDATES_TOAST_AVAILABLE_DESC": "Click \"Update\" to update now or \"Open Updater\" to find out more.",
+  "POWERCORD_UPDATES_TOAST_AVAILABLE_DESC": "Click \"Update Now\" to update now or \"Open Updater\" to find out more.",
   "POWERCORD_UPDATES_TOAST_AVAILABLE_HEADER": "Updates are available!",
   "POWERCORD_UPDATES_TOAST_FAILED": "Some updates failed to install…",
   "POWERCORD_UPDATES_UNSUPPORTED_DESC": "You're using an unsupported build of Discord ({releaseChannel}). Plugins and themes might not fully work on this build, and you may experience crashes.",
