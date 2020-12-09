@@ -17,7 +17,18 @@ module.exports = {
 
     const name = args.shift().toLowerCase();
     const value = args.join(' ').replace(/\\n/g, '\n');
-    if (main.settings.get(name) || name === 'tag') {
+
+    if (powercord.api.commands.find(c => c.command === name)) {
+      return {
+        send: false,
+        result: {
+          type: 'rich',
+          title: `Command "${name}" is already registered - enter a different name`
+        }
+      };
+    }
+
+    if (main.settings.get(name)) {
       return {
         send: false,
         result: {
