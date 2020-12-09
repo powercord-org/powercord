@@ -20,7 +20,6 @@ require('./ipc/main');
 
 console.log('Hello from Powercord!');
 
-require('./updater.win32');
 let _patched = false;
 const appSetAppUserModelId = electron.app.setAppUserModelId;
 function setAppUserModelId (...args) {
