@@ -80,7 +80,6 @@ class Powercord extends Updatable {
     if (isOverlay) { // eh
       // await sleep(250);
     }
-    await sleep(1e3);
 
     // Webpack & Modules
     await Webpack.init();

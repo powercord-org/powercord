@@ -8,10 +8,10 @@
 
 .powercord-codeblock-lang {
   color: var(--text-normal);
-  border-bottom: 1px solid rgba(0, 0, 0, .2);
+  border-bottom: 1px solid var(--background-modifier-accent);
   padding: 0 5px;
   margin-bottom: 6px;
-  font-size: 0.8em;
+  font-size: .8em;
   font-family: 'Raleway', sans-serif;
   font-weight: bold;
 }
@@ -26,7 +26,7 @@
 }
 
 .powercord-codeblock-table td:first-child {
-  border-right: 1px solid rgba(0, 0, 0, .2);
+  border-right: 1px solid var(--background-modifier-accent);
   padding-left: 5px;
   padding-right: 8px;
   user-select: none;
@@ -44,12 +44,12 @@
   line-height: 20px;
   padding: 0 10px;
   font-family: 'Raleway', sans-serif;
-  font-size: 0.8em;
+  font-size: .8em;
   text-transform: uppercase;
   font-weight: bold;
 
   margin: 3px;
-  background: rgba(0, 0, 0, .5);
+  background: var(--background-floating);
   position: absolute;
   right: 0 !important;
   bottom: 0 !important;
@@ -58,7 +58,7 @@
 }
 
 .powercord-codeblock-copy-btn.copied {
-  background-color: #00c853;
+  background-color: #43b581;
   opacity: 1;
 }
 

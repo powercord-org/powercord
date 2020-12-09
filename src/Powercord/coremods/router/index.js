@@ -44,7 +44,7 @@ async function injectViews () {
 async function injectSidebar () {
   const { panels } = await getModule([ 'panels' ]);
   const instance = getOwnerInstance(await waitFor(`.${panels}`));
-  inject('pc-router-sidebar', instance._reactInternals.type.prototype, 'render', (_, res) => {
+  inject('pc-router-sidebar', (instance._reactInternals || instance._reactInternalFiber).type.prototype, 'render', (_, res) => {
     const renderer = res.props.children;
     res.props.children = (props) => {
       const rendered = renderer(props);
@@ -68,7 +68,7 @@ async function forceRouterUpdate () {
   // Views
   const { app } = getAllModules([ 'app' ]).find(m => Object.keys(m).length === 1);
   const viewsInstance = getOwnerInstance(await waitFor(`.${app}`));
-  findInTree(viewsInstance._reactInternals, n => n && n.historyUnlisten, { walkable: [ 'child', 'stateNode' ] }).forceUpdate();
+  findInTree(viewsInstance._reactInternals || viewsInstance._reactInternalFiber, n => n && n.historyUnlisten, { walkable: [ 'child', 'stateNode' ] }).forceUpdate();
 
   // Routes
   const { container } = await getModule([ 'container', 'downloadProgressCircle' ]);
