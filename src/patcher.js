@@ -16,10 +16,29 @@ require.main.filename = join(discordPath, 'app_bootstrap/index.js');
 const electron = require('electron');
 const PatchedBrowserWindow = require('./browserWindow');
 
-require('./updater');
 require('./ipc/main');
 
 console.log('Hello from Powercord!');
+
+require('./updater.win32');
+let _patched = false;
+const appSetAppUserModelId = electron.app.setAppUserModelId;
+function setAppUserModelId (...args) {
+  /*
+   * once this has been called, we can assume squirrelUpdate is safe to require
+   * as everything that needs to be initialized has been initialized
+   * see: https://github.com/powercord-org/powercord/issues/405
+   * see: https://github.com/powercord-org/powercord/issues/382
+   */
+
+  appSetAppUserModelId.apply(this, args);
+  if (!_patched) {
+    _patched = true;
+    require('./updater.win32');
+  }
+}
+
+electron.app.setAppUserModelId = setAppUserModelId;
 
 const electronExports = new Proxy(electron, {
   get (target, prop) {
