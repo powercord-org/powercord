@@ -292,8 +292,8 @@ module.exports = class EmojiUtility extends Plugin {
 
       features.push({
         type: 'submenu',
-        name: 'Clone',
-        hint: 'to',
+        name: 'Clone emote to:',
+        hint: '',
         onClick: () => onGuildClick(null),
         getItems: getCloneableGuilds
       });
@@ -432,8 +432,8 @@ module.exports = class EmojiUtility extends Plugin {
 
       features.push({
         type: 'submenu',
-        hint: 'in',
-        name: 'Create',
+        hint: '',
+        name: 'Create emote in:',
         onClick: () => onGuildClick(null),
         getItems: getCreateableGuilds
       });
