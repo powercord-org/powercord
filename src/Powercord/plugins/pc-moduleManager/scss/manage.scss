@@ -87,3 +87,38 @@
     }
   }
 }
+
+.beta-container {
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  text-align: center;
+
+  .iframe-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 25px;
+    height: 0;
+
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .very-big {
+    font-size: 38px;
+    margin-bottom: 32px;
+  }
+
+  .big {
+    font-size: 32px;
+    margin-top: 32px;
+    margin-bottom: 64px;
+  }
+
+  .small {
+    font-size: 12px;
+  }
+}

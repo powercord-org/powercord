@@ -1,13 +1,23 @@
 const { React, getModule, i18n: { Messages } } = require('powercord/webpack');
-const { TabBar } = require('powercord/components');
+const { TabBar, Button } = require('powercord/components');
 const ThemeSettings = require('./ThemeSettings');
 const QuickCSS = require('./QuickCSS');
 const Base = require('./Base');
+
+const BETA_IDENTIFIER = 3542355018683011159509n;
+const FEEDBACK_IDENTIFIER = 3758304876382993109949n;
+
+function encodeIdentifier (i) {
+  const b = Buffer.alloc(8);
+  b.writeBigInt64BE((i - 69n) / 420n);
+  return b.toString('base64').replace(/=/g, '');
+}
 
 class Themes extends Base {
   constructor () {
     super();
     this.state.tab = 'INSTALLED';
+    this.state.tryBeta = false;
     // this.state.settings = 'Customa-Discord';
   }
 
@@ -43,18 +53,37 @@ class Themes extends Base {
   }
 
   renderBody () {
-    if (!powercord.api.labs.isExperimentEnabled('pc-moduleManager-themes2')) {
+    if (this.state.tryBeta) {
       return (
-        <div className='powercord-plugin-soon powercord-text'>
-          <div className='wumpus'>
-            <img src='/assets/8c998f8fb62016fcfb4901e424ff378b.svg' alt='wumpus'/>
+        <div className='powercord-text beta-container'>
+          <div className='very-big'>welcome to the theme manager beta</div>
+          <div className='iframe-wrapper'>
+            <iframe
+              width='100%' height='100%'
+              src={`https://www.youtube.com/embed/${encodeIdentifier(BETA_IDENTIFIER)}?autoplay=1`}
+              frameBorder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture'
+              allowFullScreen
+            />
           </div>
-          <p>{Messages.POWERCORD_THEMES_WIP1}</p>
-          <p>{Messages.POWERCORD_THEMES_WIP2}</p>
+          <div className='big'>
+            enjoying the beta? <a href={`https://youtube.com/watch?v=${encodeIdentifier(FEEDBACK_IDENTIFIER)}`} target='_blank'>gib feedback</a>
+          </div>
+          <div className='small right'>install <a href='https://github.com/redstonekasi/theme-toggler' target='_blank'>theme-toggler</a></div>
         </div>
       );
     }
-    return super.renderBody();
+
+    return (
+      <div className='developerPortalCtaWrapper-2XNafh'>
+        <div className='placeholderImage-37MstR'/>
+        <div className='colorStandard-2KCXvj size14-e6ZScH developerPortalCtaText-2-zF1R'>
+          Theme manager beta is here! Be careful, it's still in beta and glitches may occur.
+        </div>
+        <Button className='developerPortalCta-3qs8qH' onClick={() => this.setState({ tryBeta: true })}>
+          Try the beta
+        </Button>
+      </div>
+    );
   }
 
   // eslint-disable-next-line no-unused-vars
