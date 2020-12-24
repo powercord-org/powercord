@@ -57,15 +57,29 @@ class BaseProduct extends React.PureComponent {
             </Clickable>
           </Tooltip>}
           <div className='buttons'>
-            {typeof this.props.onUninstall === 'function' &&
-            <Button
-              onClick={() => this.onUninstall()}
-              color={Button.Colors.RED}
-              look={Button.Looks.FILLED}
-              size={Button.Sizes.SMALL}
-            >
-              {Messages.APPLICATION_CONTEXT_MENU_UNINSTALL}
-            </Button>}
+            {typeof this.props.onUninstall === 'function' && !this.props.product.entityID.startsWith('pc-') ?
+               <Button
+                  onClick={() => this.props.onUninstall()}
+                  disabled={this.props.product.entityID.startsWith('pc-')}
+                  color={Button.Colors.RED}
+                  look={Button.Looks.FILLED}
+                  size={Button.Sizes.SMALL}
+               >
+                  {Messages.APPLICATION_CONTEXT_MENU_UNINSTALL}
+               </Button>
+            :
+            <Tooltip text="You can't uninstall built-in plugins">
+               <Button
+                  onClick={() => { }}
+                  disabled={true}
+                  color={Button.Colors.RED}
+                  look={Button.Looks.FILLED}
+                  size={Button.Sizes.SMALL}
+               >
+                  {Messages.APPLICATION_CONTEXT_MENU_UNINSTALL}
+               </Button>
+            </Tooltip>
+            }
           </div>
         </div>
       </>

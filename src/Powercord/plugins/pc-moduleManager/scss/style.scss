@@ -27,6 +27,14 @@
   }
 }
 
+.buttons > button {
+   margin-left: 12px;
+}
+
+.buttons > svg {
+   margin-left: 6px;
+}
+
 .powercord-plugin-soon {
   display: flex;
   flex-direction: column;

@@ -1,7 +1,8 @@
-const { join } = require('path');
+const { join, resolve } = require('path');
 const { readdirSync, existsSync } = require('fs');
 const { readFile, lstat } = require('fs').promises;
 
+const { rmdirRf } = require('powercord/util');
 const { Theme } = require('powercord/entities');
 const { SETTINGS_FOLDER } = require('powercord/constants');
 
@@ -137,6 +138,14 @@ module.exports = class StyleManager {
 
     theme.remove();
     this.themes.delete(themeID);
+  }
+
+  async uninstall (themeID) {
+    if(!themeID) throw new Error('No theme provided')
+    let theme = powercord.styleManager.get(themeID);
+    if(!theme) throw new Error('Invalid theme provided')
+    await this.unmount(themeID);
+    await rmdirRf(resolve(theme.entityPath));
   }
 
   // Start/Stop
