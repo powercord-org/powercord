@@ -43,7 +43,6 @@ let coremods;
  * @property {StyleManager} styleManager
  * @property {PluginManager} pluginManager
  * @property {APIManager} apiManager
- * @property {APIManager} account
  * @property {GitInfos} gitInfos
  * @property {Object|null} account
  * @property {Boolean} initialized
@@ -211,14 +210,8 @@ class Powercord extends Updatable {
         return console.error('%c[Powercord]', 'color: #7289da', `An error occurred while fetching your account: ${resp.statusCode} - ${resp.statusText}`, resp.body);
       }
 
-      this.account = {
-        ...resp.body,
-        ...resp.body.connections
-      };
-
+      this.account = resp.body;
       this.account.token = token;
-
-      delete this.account.connections;
     } else {
       this.account = null;
     }

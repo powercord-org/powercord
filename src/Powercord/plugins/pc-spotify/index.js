@@ -177,7 +177,7 @@ class Spotify extends Plugin {
       if (this._libraryTimeout) {
         clearTimeout(this._libraryTimeout);
       }
-      if (!state.item.is_local && powercord.account && powercord.account.spotify) {
+      if (!state.item.is_local && powercord.account && powercord.account.accounts.spotify) {
         this._libraryTimeout = setTimeout(() => {
           SpotifyAPI.checkLibrary(state.item.id).then(r => playerStoreActions.updateCurrentLibraryState(
             r.body[0]

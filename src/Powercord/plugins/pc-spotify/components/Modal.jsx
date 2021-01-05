@@ -155,7 +155,7 @@ class Modal extends React.PureComponent {
       return null;
     }
 
-    const hasCoolFeatures = powercord.account && powercord.account.spotify;
+    const hasCoolFeatures = powercord.account && powercord.account.accounts.spotify;
     return (
       <div className='spotify-extra-controls'>
         {hasCoolFeatures && this.renderAddToLibrary()}

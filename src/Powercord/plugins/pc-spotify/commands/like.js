@@ -6,7 +6,7 @@ module.exports = {
   description: 'Like the current playing song',
   category: 'Spotify',
   async executor () {
-    if (!powercord.account || !powercord.account.spotify) {
+    if (!powercord.account || !powercord.account.accounts.spotify) {
       return {
         send: false,
         result: 'You need a Powercord account and connected Spotify account to use this feature!'

@@ -21,7 +21,7 @@ class ContextMenu extends React.PureComponent {
   }
 
   componentDidMount () {
-    if (powercord.account && powercord.account.spotify) {
+    if (powercord.account && powercord.account.accounts.spotify) {
       if (!this.props.songsLoaded) {
         songsStoreActions.loadSongs();
       }
@@ -73,7 +73,7 @@ class ContextMenu extends React.PureComponent {
   }
 
   renderSongs () {
-    const hasCoolFeatures = powercord.account && powercord.account.spotify;
+    const hasCoolFeatures = powercord.account && powercord.account.accounts.spotify;
 
     return (
       <Menu.MenuGroup>
@@ -139,7 +139,7 @@ class ContextMenu extends React.PureComponent {
   }
 
   renderPlaybackSettings () {
-    if (!powercord.account || !powercord.account.spotify) {
+    if (!powercord.account || !powercord.account.accounts.spotify) {
       return null;
     }
 
@@ -203,7 +203,7 @@ class ContextMenu extends React.PureComponent {
   }
 
   renderSave () {
-    if (!powercord.account || !powercord.account.spotify) {
+    if (!powercord.account || !powercord.account.accounts.spotify) {
       return null;
     }
 
