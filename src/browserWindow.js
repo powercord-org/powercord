@@ -30,10 +30,20 @@ class PatchedBrowserWindow extends BrowserWindow {
       originalPreload = opts.webPreferences.preload;
       // opts.webPreferences.preload = join(__dirname, './preload.js');
     } else if (opts.webPreferences && opts.webPreferences.preload) {
-      // Discord Client
       originalPreload = opts.webPreferences.preload;
-      opts.webPreferences.preload = join(__dirname, './preload.js');
-      opts.webPreferences.contextIsolation = false;
+      if (originalPreload.endsWith('splashScreenPreload.js')) {
+        /**
+         * Splash Screen on macOS (Host 0.0.262+) - I expect this to change on other platforms too!
+         * @todo: Figure out a way to theme the splash screen again, as modifying the preload script
+         * prevents Discord from launching (i.e. bricks current install, unless unplugged)
+         */
+
+        // opts.webPreferences.preload = join(__dirname, './preloadSplash.js');
+      } else {
+        // Discord Client
+        opts.webPreferences.preload = join(__dirname, './preload.js');
+        opts.webPreferences.contextIsolation = false;
+      }
 
       if (transparency) {
         opts.transparent = true;

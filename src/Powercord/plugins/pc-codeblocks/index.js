@@ -55,7 +55,7 @@ module.exports = class Codeblocks extends Plugin {
   }
 
   renderCodeblock (lang, lines) {
-    if (typeof hljs.getLanguage !== 'undefined') {
+    if (hljs && typeof hljs.getLanguage === 'function') {
       lang = hljs.getLanguage(lang);
     }
 
