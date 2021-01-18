@@ -31,18 +31,13 @@ class PatchedBrowserWindow extends BrowserWindow {
       // opts.webPreferences.preload = join(__dirname, './preload.js');
     } else if (opts.webPreferences && opts.webPreferences.preload) {
       originalPreload = opts.webPreferences.preload;
-      if (originalPreload.endsWith('splashScreenPreload.js')) {
-        /**
-         * Splash Screen on macOS (Host 0.0.262+) - I expect this to change on other platforms too!
-         * @todo: Figure out a way to theme the splash screen again, as modifying the preload script
-         * prevents Discord from launching (i.e. bricks current install, unless unplugged)
-         */
-
-        // opts.webPreferences.preload = join(__dirname, './preloadSplash.js');
-      } else {
+      if (opts.webPreferences.nativeWindowOpen) {
         // Discord Client
         opts.webPreferences.preload = join(__dirname, './preload.js');
         opts.webPreferences.contextIsolation = false;
+      } else {
+        // Splash Screen on macOS (Host 0.0.262+) & Windows (Host 0.0.293 / 1.0.17+)
+        opts.webPreferences.preload = join(__dirname, './preloadSplash.js');
       }
 
       if (transparency) {
@@ -74,7 +69,7 @@ class PatchedBrowserWindow extends BrowserWindow {
     console.log(url);
     if (url.match(/^https:\/\/canary\.discord(app)?\.com\/_powercord\//)) {
       this.webContents._powercordOgUrl = url;
-      return ogLoadUrl('https://canary.discordapp.com/app', opts);
+      return ogLoadUrl('https://canary.discord.com/app', opts);
     }
     return ogLoadUrl(url, opts);
   }

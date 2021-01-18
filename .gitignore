@@ -11,7 +11,6 @@ src/Powercord/plugins/*
 !src/Powercord/plugins/pc-*
 
 src/Powercord/coremods/react-devtools/ext
-src/Powercord/plugins/pc-styleManager/themes/*
 src/Powercord/themes/*
 !src/Powercord/themes/.exists
 

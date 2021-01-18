@@ -102,6 +102,11 @@ class Powercord extends Updatable {
       }
     });
 
+    // Patch bootstrap logic
+    if (process.platform === 'win32' && DiscordNative.nativeModules.canBootstrapNewUpdater) {
+      this.patchBootstrapUpdater();
+    }
+
     this.emit('loaded');
   }
 
@@ -166,6 +171,18 @@ class Powercord extends Updatable {
         });
       }
     };
+  }
+
+  async patchBootstrapUpdater () {
+    const { inject } = require('../../injectors/main');
+    const injector = require(`../../injectors/${process.platform}`);
+
+    await DiscordNative.nativeModules.ensureModule('discord_updater_bootstrap');
+
+    const BootstrapUpdater = DiscordNative.nativeModules.requireModule('discord_updater_bootstrap');
+    BootstrapUpdater.finishBootstrap = (({ finishBootstrap }) => () => {
+      inject(injector).then(() => finishBootstrap());
+    })(BootstrapUpdater);
   }
 
   async fetchAccount () {
