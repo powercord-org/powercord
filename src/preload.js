@@ -32,6 +32,10 @@ Object.defineProperty(window, '_', {
   get: () => webFrame.top.context.window._
 });
 
+Object.defineProperty(window, 'platform', {
+  get: () => webFrame.top.context.window.platform
+});
+
 console.log('[Powercord] Loading Powercord');
 
 // Add Powercord's modules
