@@ -9,7 +9,7 @@ const modules = [
   require('./modules/avatars'),
   require('./modules/folders'),
   require('./modules/guildHeader'),
-  require('./modules/guilds'),
+  // todo: this causes a hard crash on boot -- require('./modules/guilds'),
   require('./modules/messages'),
   require('./modules/tabBar')
 ];

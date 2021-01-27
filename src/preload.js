@@ -6,12 +6,31 @@
 
 require('../polyfills');
 
-const { ipcRenderer, contextBridge } = require('electron');
+const { ipcRenderer, webFrame } = require('electron');
 const { join } = require('path');
 const { existsSync, mkdirSync, open, write } = require('fs');
 const { LOGS_FOLDER } = require('./fake_node_modules/powercord/constants');
-contextBridge.exposeInMainWorld = () => void 0; // Prevent Discord from using this
 require('./ipc/renderer');
+
+Object.defineProperty(window, 'webpackJsonp', {
+  get: () => webFrame.top.context.window.webpackJsonp
+});
+
+Object.defineProperty(window, 'GLOBAL_ENV', {
+  get: () => webFrame.top.context.window.GLOBAL_ENV
+});
+
+Object.defineProperty(window, 'DiscordSentry', {
+  get: () => webFrame.top.context.window.DiscordSentry
+});
+
+Object.defineProperty(window, '__SENTRY__', {
+  get: () => webFrame.top.context.window.__SENTRY__
+});
+
+Object.defineProperty(window, '_', {
+  get: () => webFrame.top.context.window._
+});
 
 console.log('[Powercord] Loading Powercord');
 
@@ -59,8 +78,8 @@ if (debugLogs) {
       error: 'ERROR'
     };
     for (const key of Object.keys(levels)) {
-      const ogFunction = console[key].bind(console);
-      console[key] = (...args) => {
+      const ogFunction = webFrame.top.context.console[key].bind(console);
+      webFrame.top.context.console[key] = (...args) => {
         const cleaned = [];
         for (let i = 0; i < args.length; i++) {
           const part = args[i];
@@ -76,7 +95,7 @@ if (debugLogs) {
           }
         }
         write(fd, `[${getDate()}] [CONSOLE] [${levels[key]}] ${cleaned.join(' ')}\n`, 'utf8', () => void 0);
-        ogFunction.call(console, ...args);
+        ogFunction.call(webFrame.top.context.console, ...args);
       };
     }
 
