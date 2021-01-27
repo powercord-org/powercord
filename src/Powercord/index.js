@@ -162,7 +162,7 @@ class Powercord extends Updatable {
   patchWebSocket () {
     const _this = this;
 
-    webFrame.top.context.window.WebSocket = class PatchedWebSocket extends webFrame.top.context.window.WebSocket {
+    window.WebSocket = class PatchedWebSocket extends window.WebSocket {
       constructor (url) {
         super(url);
 
