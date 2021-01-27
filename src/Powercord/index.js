@@ -1,5 +1,5 @@
 const { join } = require('path');
-const { shell: { openExternal } } = require('electron');
+const { shell: { openExternal }, webFrame } = require('electron');
 const { get } = require('powercord/http');
 const { sleep } = require('powercord/util');
 const Webpack = require('powercord/webpack');
@@ -162,7 +162,7 @@ class Powercord extends Updatable {
   patchWebSocket () {
     const _this = this;
 
-    window.WebSocket = class PatchedWebSocket extends window.WebSocket {
+    webFrame.top.context.window.WebSocket = class PatchedWebSocket extends webFrame.top.context.window.WebSocket {
       constructor (url) {
         super(url);
 
