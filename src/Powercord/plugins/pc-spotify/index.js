@@ -38,6 +38,9 @@ class Spotify extends Plugin {
   }
 
   startPlugin () {
+    return; // Please shut the f up
+
+    /* eslint-disable */
     this.loadStylesheet('style.scss');
     this._injectModal();
     this._patchAutoPause();
@@ -61,6 +64,9 @@ class Spotify extends Plugin {
   }
 
   pluginWillUnload () {
+    return; // Please shut the f up
+
+    /* eslint-disable */
     uninject('pc-spotify-modal');
     this._patchAutoPause(true);
     powercord.off('webSocketMessage:dealer.spotify.com', this._handleSpotifyMessage);

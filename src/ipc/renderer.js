@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, webFrame } = require('electron');
 
 if (!ipcRenderer) {
   throw new Error('Don\'t require stuff you shouldn\'t silly.');
