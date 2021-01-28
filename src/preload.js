@@ -95,14 +95,16 @@ Object.defineProperty(window, 'platform', {
   get: () => webFrame.top.context.window.platform
 });
 
-const realQuerySelector = document.querySelector.bind(document);
-const realQuerySelectorAll = document.querySelectorAll.bind(document);
-
 let pointer = 0;
-function fetchInternal () {
-  this.dataset.powercordReactInstancePointer = ++pointer;
+function fetchRealElement (element) {
+  element.dataset.powercordReactInstancePointer = ++pointer;
   const realNode = webFrame.top.context.document.querySelector(`[data-powercord-react-instance-pointer="${pointer}"]`);
   realNode.removeAttribute('data-powercord-react-instance-pointer');
+  return realNode
+}
+
+function fetchInternal () {
+  const realNode = fetchRealElement(this);
   const key = Object.keys(realNode).find(key => key.startsWith('__reactInternalInstance') || key.startsWith('__reactFiber'));
   this.__reactInternalInstance$ = realNode[key];
   this.__reactFiber$ = realNode[key];
@@ -110,32 +112,61 @@ function fetchInternal () {
   return realNode[key];
 }
 
+function fetchInternalRoot () {
+  const realNode = fetchRealElement(this);
+  this._reactRootContainer = realNode._reactRootContainer;
+  return realNode._reactRootContainer;
+}
+
 function wrapElement (node) {
-  if (node && !node.__reactInternalInstance$) {
-    node.__reactInternalInstance$ = null;
-    node.__reactFiber$ = null;
-    Object.defineProperty(node, '__reactInternalInstance$', {
-      get: fetchInternal,
-      configurable: true
-    });
-    Object.defineProperty(node, '__reactFiber$', {
-      get: fetchInternal,
-      configurable: true
-    });
+  if (node) {
+    if (node.id === 'app-mount' && !node._reactRootContainer) {
+      node._reactRootContainer = null;
+      Object.defineProperty(node, '_reactRootContainer', {
+        get: fetchInternalRoot,
+        configurable: true
+      });
+    } else if (node.id !== 'app-mount' && !node.__reactInternalInstance$) {
+      node.__reactInternalInstance$ = null;
+      node.__reactFiber$ = null;
+      Object.defineProperty(node, '__reactInternalInstance$', {
+        get: fetchInternal,
+        configurable: true
+      });
+      Object.defineProperty(node, '__reactFiber$', {
+        get: fetchInternal,
+        configurable: true
+      });
+    }
   }
 }
 
-document.querySelector = (q) => {
-  const node = realQuerySelector(q);
-  wrapElement(node);
-  return node;
-};
+const getFunctions = [
+  [ 'querySelector', false ],
+  [ 'querySelectorAll', true ],
+  [ 'getElementById', false ],
+  [ 'getElementByClassName', true ],
+  [ 'getElementByName', true ],
+  [ 'getElementsByTagName', true ],
+  [ 'getElementsByTagNameNS', true ]
+]
 
-document.querySelectorAll = (q) => {
-  const nodes = Array.from(realQuerySelectorAll(q));
-  nodes.forEach((node) => wrapElement(node));
-  return nodes;
-};
+for (const [ getMethod, isCollection ] of getFunctions) {
+  const realGetter = document[getMethod].bind(document);
+  if (isCollection) {
+    document[getMethod] = (...args) => {
+      const nodes = Array.from(realGetter(...args));
+      nodes.forEach((node) => wrapElement(node));
+      return nodes;
+    }
+  } else {
+    document[getMethod] = (...args) => {
+      const node = realGetter(...args);
+      wrapElement(node);
+      return node;
+    }
+  }
+}
 
 // --
 // I am not responsible for the rapid decease in the amount of alive brain previous code may have caused
