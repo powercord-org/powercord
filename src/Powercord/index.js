@@ -1,5 +1,5 @@
 const { join } = require('path');
-const { shell: { openExternal }, webFrame } = require('electron');
+const { shell: { openExternal } } = require('electron');
 const { get } = require('powercord/http');
 const { sleep } = require('powercord/util');
 const Webpack = require('powercord/webpack');

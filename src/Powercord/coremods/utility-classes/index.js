@@ -9,7 +9,7 @@ const modules = [
   require('./modules/avatars'),
   require('./modules/folders'),
   require('./modules/guildHeader'),
-  // todo: this causes a hard crash on boot -- require('./modules/guilds'),
+  require('./modules/guilds'),
   require('./modules/messages'),
   require('./modules/tabBar')
 ];
@@ -17,9 +17,13 @@ const modules = [
 module.exports = function () {
   const callbacks = [];
   modules.forEach(async mod => {
-    const callback = await mod();
-    if (typeof callback === 'function') {
-      callbacks.push(callback);
+    try {
+      const callback = await mod();
+      if (typeof callback === 'function') {
+        callbacks.push(callback);
+      }
+    } catch (e) {
+      console.error('An error occured while initializing coremods', e);
     }
   });
 

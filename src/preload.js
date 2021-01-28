@@ -12,6 +12,25 @@ const { existsSync, mkdirSync, open, write } = require('fs');
 const { LOGS_FOLDER } = require('./fake_node_modules/powercord/constants');
 require('./ipc/renderer');
 
+// --
+// Begin some catastrophically stupid shit to make Powercord survive with context isolation
+// --
+
+class BetterResizeObserver extends ResizeObserver {
+  constructor (fn) {
+    super((...args) => fn(...args));
+  }
+}
+
+class BetterMutationObserver extends MutationObserver {
+  constructor (fn) {
+    super((...args) => fn(...args));
+  }
+}
+
+Object.defineProperty(window, 'ResizeObserver', { get: () => BetterResizeObserver });
+Object.defineProperty(window, 'MutationObserver', { get: () => BetterMutationObserver });
+
 Object.defineProperty(window, 'webpackJsonp', {
   get: () => webFrame.top.context.window.webpackJsonp
 });
@@ -35,6 +54,52 @@ Object.defineProperty(window, '_', {
 Object.defineProperty(window, 'platform', {
   get: () => webFrame.top.context.window.platform
 });
+
+const realQuerySelector = document.querySelector.bind(document);
+const realQuerySelectorAll = document.querySelectorAll.bind(document);
+
+let pointer = 0;
+function fetchInternal () {
+  this.dataset.powercordReactInstancePointer = ++pointer;
+  const realNode = webFrame.top.context.document.querySelector(`[data-powercord-react-instance-pointer="${pointer}"]`);
+  realNode.removeAttribute('data-powercord-react-instance-pointer');
+  const key = Object.keys(realNode).find(key => key.startsWith('__reactInternalInstance') || key.startsWith('__reactFiber'));
+  this.__reactInternalInstance$ = realNode[key];
+  this.__reactFiber$ = realNode[key];
+
+  return realNode[key];
+}
+
+function wrapElement (node) {
+  if (node && !node.__reactInternalInstance$) {
+    node.__reactInternalInstance$ = null;
+    node.__reactFiber$ = null;
+    Object.defineProperty(node, '__reactInternalInstance$', {
+      get: fetchInternal,
+      configurable: true
+    });
+    Object.defineProperty(node, '__reactFiber$', {
+      get: fetchInternal,
+      configurable: true
+    });
+  }
+}
+
+document.querySelector = (q) => {
+  const node = realQuerySelector(q);
+  wrapElement(node);
+  return node;
+};
+
+document.querySelectorAll = (q) => {
+  const nodes = Array.from(realQuerySelectorAll(q));
+  nodes.forEach((node) => wrapElement(node));
+  return nodes;
+};
+
+// --
+// I am not responsible for the rapid decease in the amount of alive brain previous code may have caused
+// --
 
 console.log('[Powercord] Loading Powercord');
 
