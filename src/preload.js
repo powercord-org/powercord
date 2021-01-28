@@ -145,8 +145,8 @@ const getFunctions = [
   [ 'querySelector', false ],
   [ 'querySelectorAll', true ],
   [ 'getElementById', false ],
-  [ 'getElementByClassName', true ],
-  [ 'getElementByName', true ],
+  [ 'getElementsByClassName', true ],
+  [ 'getElementsByName', true ],
   [ 'getElementsByTagName', true ],
   [ 'getElementsByTagNameNS', true ]
 ]
