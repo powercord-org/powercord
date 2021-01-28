@@ -28,8 +28,40 @@ class BetterMutationObserver extends MutationObserver {
   }
 }
 
-Object.defineProperty(window, 'ResizeObserver', { get: () => BetterResizeObserver });
-Object.defineProperty(window, 'MutationObserver', { get: () => BetterMutationObserver });
+window.ResizeObserver = BetterResizeObserver;
+window.MutationObserver = BetterMutationObserver;
+
+function rebindAllEventTargets () {
+  function rebindEventTarget (target) {
+    const realAddEventListener = target.addEventListener;
+    const realRemoveEventListener = target.removeEventListener;
+
+    target.addEventListener = function (type, fn, ...args) {
+      this.__listener__fnStore = this.__listener__fnStore || new WeakMap();
+      function listener (...args) {
+        fn.apply(this, args);
+      }
+
+      this.__listener__fnStore.set(fn, listener);
+      realAddEventListener.call(this, type, listener, ...args);
+    };
+
+    target.removeEventListener = function (type, fn, ...args) {
+      this.__listener__fnStore = this.__listener__fnStore || new WeakMap();
+      const listener = this.__listener__fnStore.get(fn);
+
+      realRemoveEventListener.call(this, type, listener, ...args);
+      this.__listener__fnStore.delete(fn);
+    };
+  }
+
+  rebindEventTarget(window);
+  rebindEventTarget(document);
+  rebindEventTarget(Element.prototype);
+}
+
+rebindAllEventTargets();
+webFrame.executeJavaScript(`(${rebindAllEventTargets.toString().replace('rebindAllEventTargets', '')}())`);
 
 Object.defineProperty(window, 'webpackJsonp', {
   get: () => webFrame.top.context.window.webpackJsonp
