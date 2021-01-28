@@ -12,30 +12,21 @@ module.exports = async () => {
   const { DecoratedComponent } = DragSourceConnectedGuild.default;
 
   const owo = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentDispatcher.current;
-  const ogUseMemo = owo.useMemo;
   const ogUseState = owo.useState;
-  const ogUseCallback = owo.useCallback;
-  const ogUseContext = owo.useContext;
-  const ogUseEffect = owo.useEffect;
   const ogUseLayoutEffect = owo.useLayoutEffect;
+  const ogUseContext = owo.useContext;
   const ogUseRef = owo.useRef;
 
-  owo.useMemo = (f) => f();
-  owo.useState = (v) => [ v, () => void 0 ];
-  owo.useCallback = (v) => v;
-  owo.useContext = (ctx) => ctx._currentValue;
-  owo.useEffect = () => null;
+  owo.useState = () => [ null, () => void 0 ];
   owo.useLayoutEffect = () => null;
   owo.useRef = () => ({});
+  owo.useContext = () => ({});
 
   const Guild = new DecoratedComponent({ guildId: null }).type;
 
-  owo.useMemo = ogUseMemo;
   owo.useState = ogUseState;
-  owo.useCallback = ogUseCallback;
-  owo.useContext = ogUseContext;
-  owo.useEffect = ogUseEffect;
   owo.useLayoutEffect = ogUseLayoutEffect;
+  owo.useContext = ogUseContext;
   owo.useRef = ogUseRef;
 
   inject('pc-utilitycls-guilds', Guild.prototype, 'render', function (_, res) {

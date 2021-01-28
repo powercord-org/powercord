@@ -34,6 +34,7 @@ class PatchedBrowserWindow extends BrowserWindow {
       if (opts.webPreferences.nativeWindowOpen) {
         // Discord Client
         opts.webPreferences.preload = join(__dirname, './preload.js');
+        opts.webPreferences.contextIsolation = false;
       } else {
         // Splash Screen on macOS (Host 0.0.262+) & Windows (Host 0.0.293 / 1.0.17+)
         opts.webPreferences.preload = join(__dirname, './preloadSplash.js');

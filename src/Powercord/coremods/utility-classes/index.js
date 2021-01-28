@@ -17,13 +17,9 @@ const modules = [
 module.exports = function () {
   const callbacks = [];
   modules.forEach(async mod => {
-    try {
-      const callback = await mod();
-      if (typeof callback === 'function') {
-        callbacks.push(callback);
-      }
-    } catch (e) {
-      console.error('An error occured while initializing coremods', e);
+    const callback = await mod();
+    if (typeof callback === 'function') {
+      callbacks.push(callback);
     }
   });
 
