@@ -37,21 +37,29 @@ function rebindAllEventTargets () {
     const realRemoveEventListener = target.removeEventListener;
 
     target.addEventListener = function (type, fn, ...args) {
-      this.__listener__fnStore = this.__listener__fnStore || new WeakMap();
+      this.__listenerStore = this.__listenerStore || new Map();
+      if (!this.__listenerStore.has(type)) {
+        this.__listenerStore.set(type, new WeakMap());
+      }
+
       function listener (...args) {
         fn.apply(this, args);
       }
 
-      this.__listener__fnStore.set(fn, listener);
+      this.__listenerStore.get(type).set(fn, listener);
       realAddEventListener.call(this, type, listener, ...args);
     };
 
     target.removeEventListener = function (type, fn, ...args) {
-      this.__listener__fnStore = this.__listener__fnStore || new WeakMap();
-      const listener = this.__listener__fnStore.get(fn);
+      this.__listenerStore = this.__listenerStore || new Map();
+      if (!this.__listenerStore.has(type)) {
+        this.__listenerStore.set(type, new WeakMap());
+      }
 
+      const map = this.__listenerStore.get(type);
+      const listener = map.get(fn);
       realRemoveEventListener.call(this, type, listener, ...args);
-      this.__listener__fnStore.delete(fn);
+      map.delete(fn);
     };
   }
 
