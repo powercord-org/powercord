@@ -100,7 +100,7 @@ function fetchRealElement (element) {
   element.dataset.powercordReactInstancePointer = ++pointer;
   const realNode = webFrame.top.context.document.querySelector(`[data-powercord-react-instance-pointer="${pointer}"]`);
   realNode.removeAttribute('data-powercord-react-instance-pointer');
-  return realNode
+  return realNode;
 }
 
 function fetchInternal () {
@@ -149,7 +149,7 @@ const getFunctions = [
   [ 'getElementsByName', true ],
   [ 'getElementsByTagName', true ],
   [ 'getElementsByTagNameNS', true ]
-]
+];
 
 for (const [ getMethod, isCollection ] of getFunctions) {
   const realGetter = document[getMethod].bind(document);
@@ -158,13 +158,13 @@ for (const [ getMethod, isCollection ] of getFunctions) {
       const nodes = Array.from(realGetter(...args));
       nodes.forEach((node) => wrapElement(node));
       return nodes;
-    }
+    };
   } else {
     document[getMethod] = (...args) => {
       const node = realGetter(...args);
       wrapElement(node);
       return node;
-    }
+    };
   }
 }
 

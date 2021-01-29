@@ -80,46 +80,46 @@ class Base extends React.Component {
     return null;
   }
 
-  renderItems(items){
-    const [PC, noPC] = this._partition(items, p => p.entityID.startsWith('pc-'))
+  renderItems (items) {
+    const [ PC, noPC ] = this._partition(items, p => p.entityID.startsWith('pc-'));
     return <>
       {this.renderPCCategory(PC)}
       {noPC.map(item => this.renderItem(item))}
-    </>
+    </>;
   }
 
-  renderPCCategory(items){
-    return(
-        <Category
-            name={Messages.POWERCORD_PLUGINS_CORE}
-            description={Messages.POWERCORD_SETTINGS_ADVANCED_DESC}
-            opened={this.state.PCPluginsCategoryOpen}
-            onChange={() =>
-                this.setState({
-                  PCPluginsCategoryOpen: !this.state.PCPluginsCategoryOpen
-                })
-            }
-        >
-          {this.renderEnableAllButton(items)}
-          {items.map(item => this.renderItem(item))}
-        </Category>
-    )
-  }
-
-  renderEnableAllButton(items){
-    const needEnable = items.filter(p => !p.ready)
+  renderPCCategory (items) {
     return (
-        <ButtonItem
-            button={(needEnable.length) ?  Messages.POWERCORD_PLUGINS_ENABLE_ALL_PC_GO : Messages.POWERCORD_PLUGINS_ALL_ENABLED}
-            success={!needEnable.length}
-            disabled={!needEnable.length}
-            onClick={async () => {
-              await needEnable.forEach(p => this._toggle(p.entityID, true))
-              this.forceUpdate();
-            }}
-        >{Messages.POWERCORD_PLUGINS_ENABLE_ALL_PC}
-        </ButtonItem>
-    )
+      <Category
+        name={Messages.POWERCORD_PLUGINS_CORE}
+        description={Messages.POWERCORD_SETTINGS_ADVANCED_DESC}
+        opened={this.state.PCPluginsCategoryOpen}
+        onChange={() =>
+          this.setState({
+            PCPluginsCategoryOpen: !this.state.PCPluginsCategoryOpen
+          })
+        }
+      >
+        {this.renderEnableAllButton(items)}
+        {items.map(item => this.renderItem(item))}
+      </Category>
+    );
+  }
+
+  renderEnableAllButton (items) {
+    const needEnable = items.filter(p => !p.ready);
+    return (
+      <ButtonItem
+        button={(needEnable.length) ? Messages.POWERCORD_PLUGINS_ENABLE_ALL_PC_GO : Messages.POWERCORD_PLUGINS_ALL_ENABLED}
+        success={!needEnable.length}
+        disabled={!needEnable.length}
+        onClick={async () => {
+          await needEnable.forEach(p => this._toggle(p.entityID, true));
+          this.forceUpdate();
+        }}
+      >{Messages.POWERCORD_PLUGINS_ENABLE_ALL_PC}
+      </ButtonItem>
+    );
   }
 
   getItems () {
@@ -182,14 +182,14 @@ class Base extends React.Component {
     });
   }
 
-  _partition(array, filter) {
-    let pass = []
-    let fail = [];
+  _partition (array, filter) {
+    const pass = [];
+    const fail = [];
 
     array.forEach((e) => {
-      (filter(e) ? pass : fail).push(e)
+      (filter(e) ? pass : fail).push(e);
     });
-    return [pass, fail];
+    return [ pass, fail ];
   }
 }
 
