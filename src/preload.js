@@ -28,8 +28,32 @@ class BetterMutationObserver extends MutationObserver {
   }
 }
 
+const genericProxyWrapper = {
+  get (target, prop) {
+    return target[prop]
+  },
+  set (target, prop, value) {
+    if (typeof value === 'function') {
+      target[prop] = (...args) => value(...args)
+    } else {
+      target[prop] = value
+    }
+  }
+}
+
+class BetterXHR extends XMLHttpRequest {
+  constructor () {
+    return new Proxy(super(), genericProxyWrapper)
+  }
+
+  get upload () {
+    return new Proxy(super.upload, genericProxyWrapper)
+  }
+}
+
 window.ResizeObserver = BetterResizeObserver;
 window.MutationObserver = BetterMutationObserver;
+window.XMLHttpRequest = BetterXHR;
 
 function rebindAllEventTargets () {
   function rebindEventTarget (target) {
@@ -66,6 +90,7 @@ function rebindAllEventTargets () {
   rebindEventTarget(window);
   rebindEventTarget(document);
   rebindEventTarget(Element.prototype);
+  rebindEventTarget(XMLHttpRequestEventTarget.prototype);
 }
 
 rebindAllEventTargets();
