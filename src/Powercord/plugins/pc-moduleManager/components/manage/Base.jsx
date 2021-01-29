@@ -91,7 +91,7 @@ class Base extends React.Component {
   renderPCCategory(items){
     return(
         <Category
-            name="Core"
+            name={Messages.POWERCORD_PLUGINS_CORE}
             description={Messages.POWERCORD_SETTINGS_ADVANCED_DESC}
             opened={this.state.PCPluginsCategoryOpen}
             onChange={() =>
@@ -110,14 +110,14 @@ class Base extends React.Component {
     const needEnable = items.filter(p => !p.ready)
     return (
         <ButtonItem
-            button={(needEnable.length) ?  'Go' : 'All enabled'}
+            button={(needEnable.length) ?  Messages.POWERCORD_PLUGINS_ENABLE_ALL_PC_GO : Messages.POWERCORD_PLUGINS_ALL_ENABLED}
             success={!needEnable.length}
             disabled={!needEnable.length}
             onClick={async () => {
               await needEnable.forEach(p => this._toggle(p.entityID, true))
               this.forceUpdate();
             }}
-        >{'Enable all Powercord plugins'}
+        >{Messages.POWERCORD_PLUGINS_ENABLE_ALL_PC}
         </ButtonItem>
     )
   }
