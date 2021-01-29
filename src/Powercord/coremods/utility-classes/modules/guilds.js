@@ -19,6 +19,7 @@ module.exports = async () => {
   const ogUseEffect = owo.useEffect;
   const ogUseLayoutEffect = owo.useLayoutEffect;
   const ogUseRef = owo.useRef;
+  const ogUseReducer = owo.useReducer;
 
   owo.useMemo = (f) => f();
   owo.useState = (v) => [ v, () => void 0 ];
@@ -27,6 +28,7 @@ module.exports = async () => {
   owo.useEffect = () => null;
   owo.useLayoutEffect = () => null;
   owo.useRef = () => ({});
+  owo.useReducer = () => ({});
 
   const Guild = new DecoratedComponent({ guildId: null }).type;
 
@@ -37,6 +39,7 @@ module.exports = async () => {
   owo.useEffect = ogUseEffect;
   owo.useLayoutEffect = ogUseLayoutEffect;
   owo.useRef = ogUseRef;
+  owo.useReducer = ogUseReducer;
 
   inject('pc-utilitycls-guilds', Guild.prototype, 'render', function (_, res) {
     const { audio, badge: mentions, selected, unread, video } = this.props;
