@@ -2,13 +2,14 @@ const { join } = require('path');
 const { shell } = require('electron');
 const { React, getModule, contextMenu, i18n: { Messages } } = require('powercord/webpack');
 const { Button, Tooltip, ContextMenu, Divider, Icons: { Overflow } } = require('powercord/components');
-const { TextInput } = require('powercord/components/settings');
+const { TextInput, Category, ButtonItem } = require('powercord/components/settings');
 
 class Base extends React.Component {
   constructor () {
     super();
     this.state = {
       key: `${this.constructor.name.toUpperCase()}`,
+      PCPluginsCategoryOpen: false,
       search: ''
     };
   }
@@ -56,7 +57,7 @@ class Base extends React.Component {
             <p>{Messages.GIFT_CONFIRMATION_HEADER_FAIL}</p>
             <p>{Messages.SEARCH_NO_RESULTS}</p>
           </div>
-          : items.map(item => this.renderItem(item))}
+          : this.renderItems(items)}
       </div>
     );
   }
@@ -77,6 +78,48 @@ class Base extends React.Component {
 
   renderItem () {
     return null;
+  }
+
+  renderItems(items){
+    const [PC, noPC] = this._partition(items, p => p.entityID.startsWith('pc-'))
+    return <>
+      {this.renderPCCategory(PC)}
+      {noPC.map(item => this.renderItem(item))}
+    </>
+  }
+
+  renderPCCategory(items){
+    return(
+        <Category
+            name="Core"
+            description={Messages.POWERCORD_SETTINGS_ADVANCED_DESC}
+            opened={this.state.PCPluginsCategoryOpen}
+            onChange={() =>
+                this.setState({
+                  PCPluginsCategoryOpen: !this.state.PCPluginsCategoryOpen
+                })
+            }
+        >
+          {this.renderEnableAllButton(items)}
+          {items.map(item => this.renderItem(item))}
+        </Category>
+    )
+  }
+
+  renderEnableAllButton(items){
+    const needEnable = items.filter(p => !p.ready)
+    return (
+        <ButtonItem
+            button={(needEnable.length) ?  'Go' : 'All enabled'}
+            success={!needEnable.length}
+            disabled={!needEnable.length}
+            onClick={async () => {
+              await needEnable.forEach(p => this._toggle(p.entityID, true))
+              this.forceUpdate();
+            }}
+        >{'Enable all Powercord plugins'}
+        </ButtonItem>
+    )
   }
 
   getItems () {
@@ -137,6 +180,16 @@ class Base extends React.Component {
 
       return 0;
     });
+  }
+
+  _partition(array, filter) {
+    let pass = []
+    let fail = [];
+
+    array.forEach((e) => {
+      (filter(e) ? pass : fail).push(e)
+    });
+    return [pass, fail];
   }
 }
 
