@@ -38,14 +38,12 @@ class Spotify extends Plugin {
   }
 
   startPlugin () {
-    return; // Please shut the f up
 
     /* eslint-disable */
     this.loadStylesheet('style.scss');
     this._injectModal();
     this._patchAutoPause();
     spotify.fetchIsSpotifyProtocolRegistered();
-    powercord.on('webSocketMessage:dealer.spotify.com', this._handleSpotifyMessage);
     SpotifyAPI.getPlayer().then(player => this._handlePlayerState(player));
     powercord.api.i18n.loadAllStrings(i18n);
     playerStoreActions.fetchDevices();
@@ -61,10 +59,11 @@ class Spotify extends Plugin {
     });
 
     Object.values(commands).forEach(cmd => powercord.api.commands.registerCommand(cmd));
+    function updateState(that) {SpotifyAPI.getPlayer().then(player => that._handlePlayerState(player))}
+    setInterval(updateState, 1000, this)
   }
 
   pluginWillUnload () {
-    return; // Please shut the f up
 
     /* eslint-disable */
     uninject('pc-spotify-modal');
