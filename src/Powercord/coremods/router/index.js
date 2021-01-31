@@ -5,13 +5,13 @@
  */
 
 const { inject, uninject } = require('powercord/injector');
-const { React, getModule, getAllModules, getModuleByDisplayName } = require('powercord/webpack');
+const { React, Router, getModule, getAllModules, getModuleByDisplayName } = require('powercord/webpack');
 const { findInTree, findInReactTree, getOwnerInstance, waitFor } = require('powercord/util');
 
 async function injectRouter () {
   const { container } = await getModule([ 'container', 'downloadProgressCircle' ]);
   const RouteRenderer = getOwnerInstance(await waitFor(`.${container.split(' ')[0]}`));
-  inject('pc-router-routes', RouteRenderer.__proto__, 'render', (_, res) => {
+  inject('pc-router-routes', RouteRenderer.props.children, 'type', (_, res) => {
     const { children: routes } = findInReactTree(res, m => Array.isArray(m.children) && m.children.length > 5);
     routes.push(
       ...powercord.api.router.routes.map(route => ({
@@ -42,9 +42,7 @@ async function injectViews () {
 }
 
 async function injectSidebar () {
-  const { panels } = await getModule([ 'panels' ]);
-  const instance = getOwnerInstance(await waitFor(`.${panels}`));
-  inject('pc-router-sidebar', (instance._reactInternals || instance._reactInternalFiber).type.prototype, 'render', (_, res) => {
+  inject('pc-router-sidebar', Router.Route.prototype, 'render', (_, res) => {
     const renderer = res.props.children;
     res.props.children = (props) => {
       const rendered = renderer(props);

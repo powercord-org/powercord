@@ -13,7 +13,7 @@ const AnnouncementContainer = require('./components/AnnouncementContainer');
 module.exports = class Notices extends Plugin {
   startPlugin () {
     this.loadStylesheet('style.scss');
-    // this._patchAnnouncements();
+    this._patchAnnouncements();
     this._patchToasts();
 
     const injectedFile = resolve(__dirname, '..', '..', '..', '__injected.txt');
@@ -35,7 +35,7 @@ module.exports = class Notices extends Plugin {
   async _patchAnnouncements () {
     const { base } = await getModule([ 'base', 'container' ]);
     const instance = getOwnerInstance(await waitFor(`.${base.split(' ')[0]}`));
-    inject('pc-notices-announcements', instance.__proto__, 'render', (_, res) => {
+    inject('pc-notices-announcements', instance.props.children, 'type', (_, res) => {
       res.props.children[1].props.children.unshift(React.createElement(AnnouncementContainer));
       return res;
     });

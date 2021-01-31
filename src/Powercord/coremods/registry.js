@@ -6,7 +6,7 @@
 
 module.exports = [
   require('./no-track'),
-  // require('./router'),
+  require('./router'),
   require('./dev-lands'),
   require('./store'),
   require('./badges'),

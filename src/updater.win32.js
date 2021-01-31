@@ -32,7 +32,7 @@ if (process.platform === 'win32') { // Should be the only possible case, but we 
         });
       }
 
-      console.log('[Powercord] Host is already injected with Powercord.');
+      console.log(`[Powercord] Host "${buildInfo.version}" is already injected with Powercord.`);
     };
   } else {
     const hostUpdaterScript = join(require.main.filename, '..', 'hostUpdater.js');
