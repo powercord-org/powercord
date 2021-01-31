@@ -11,13 +11,13 @@ module.exports = async function monkeypatchMessages () {
 
   messages.sendMessage = (sendMessage => async (id, message, ...params) => {
     if (!message.content.startsWith(powercord.api.commands.prefix)) {
-      return sendMessage(id, message, ...params);
+      return sendMessage(id, message, ...params).catch(() => void 0);
     }
 
     const [ cmd, ...args ] = message.content.slice(powercord.api.commands.prefix.length).split(' ');
     const command = powercord.api.commands.find(c => [ c.command.toLowerCase(), ...(c.aliases?.map(alias => alias.toLowerCase()) || []) ].includes(cmd.toLowerCase()));
     if (!command) {
-      return sendMessage(id, message, ...params);
+      return sendMessage(id, message, ...params).catch(() => void 0);
     }
 
     const result = await command.executor(args, this);
@@ -53,6 +53,6 @@ module.exports = async function monkeypatchMessages () {
       return (messages.receiveMessage(receivedMessage.channel_id, receivedMessage), delete BOT_AVATARS[result.avatar_url]);
     }
 
-    return sendMessage(id, message, ...params);
+    return sendMessage(id, message, ...params).catch(() => void 0);
   })(this.oldSendMessage = messages.sendMessage);
 };
