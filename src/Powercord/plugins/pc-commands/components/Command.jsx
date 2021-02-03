@@ -8,7 +8,10 @@ module.exports = class Command extends Autocomplete.Command {
     const res = super.renderContent();
     res.props.children[0] = React.createElement(Text, {
       children: this.props.prefix ? this.props.prefix : powercord.api.commands.prefix,
-      style: { color: '#72767d' }
+      style: {
+        color: '#72767d',
+        marginRight: 2.5
+      }
     });
 
     return res;

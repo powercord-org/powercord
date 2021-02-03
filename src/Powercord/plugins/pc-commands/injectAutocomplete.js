@@ -86,9 +86,7 @@ module.exports = async function injectAutocomplete () {
       } else if (commands[index].instruction) {
         value = '';
       } else {
-        value = commands && commands[index] && currentText.split(' ').pop() !== commands[index].command
-          ? commands[index].command
-          : '';
+        value = commands[index].command;
       }
       const currentTextSplit = currentText.split(' ');
       return `${currentTextSplit.slice(0, currentTextSplit.length - 1).join(' ')} ${value}`;
@@ -124,7 +122,7 @@ module.exports = async function injectAutocomplete () {
 
   const _this = this;
   const ChannelEditorContainer = await getModuleByDisplayName('ChannelEditorContainer');
-  inject('pc-commands-textArea', ChannelEditorContainer.prototype, 'render', function (_, res) {
+  inject('pc-commands-textarea', ChannelEditorContainer.prototype, 'render', function (_, res) {
     _this.instance = this;
     return res;
   });
@@ -142,9 +140,13 @@ module.exports = async function injectAutocomplete () {
   }))(this.oldStartTyping = typing.startTyping);
 
   const PlainTextArea = await getModuleByDisplayName('PlainTextArea');
-  inject('pc-commands-plainAutocomplete', PlainTextArea.prototype, 'getCurrentWord', function (_, res) {
+  inject('pc-commands-plain-autocomplete', PlainTextArea.prototype, 'getCurrentWord', function (_, res) {
     const { value } = this.props;
     if (new RegExp(`^\\${powercord.api.commands.prefix}\\S+ `).test(value)) {
+      if ((/^@|#|:/).test(res.word)) {
+        return res;
+      }
+
       return {
         word: value,
         isAtStart: true
@@ -154,10 +156,14 @@ module.exports = async function injectAutocomplete () {
   });
 
   const SlateChannelTextArea = await getModuleByDisplayName('SlateChannelTextArea');
-  inject('pc-commands-slateAutocomplete', SlateChannelTextArea.prototype, 'getCurrentWord', function (_, res) {
+  inject('pc-commands-slate-autocomplete', SlateChannelTextArea.prototype, 'getCurrentWord', function (_, res) {
     const { value } = this.editorRef;
     const { selection, document } = value;
     if (new RegExp(`^\\${powercord.api.commands.prefix}\\S+ `).test(document.text)) {
+      if ((/^@|#|:/).test(res.word)) {
+        return res;
+      }
+
       const node = document.getNode(selection.start.key);
       if (node) {
         return {

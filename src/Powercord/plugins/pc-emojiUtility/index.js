@@ -523,7 +523,7 @@ module.exports = class EmojiUtility extends Plugin {
      */
 
     const { AUTOCOMPLETE_OPTIONS: AutocompleteTypes } = await getModule([ 'AUTOCOMPLETE_OPTIONS' ]);
-    inject('pc-emojiUtility-hideEmojisComplete', AutocompleteTypes.EMOJIS, 'queryResults', (args, res) => {
+    inject('pc-emojiUtility-hideEmojisComplete', AutocompleteTypes.EMOJIS_AND_STICKERS, 'queryResults', (args, res) => {
       res.emojis = res.emojis.filter(emoji => !this.getHiddenGuilds().includes(emoji.guildId));
       return res;
     });

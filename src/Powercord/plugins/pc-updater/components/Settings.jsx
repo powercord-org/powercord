@@ -5,7 +5,7 @@ const { open: openModal, close: closeModal } = require('powercord/modal');
 const { Confirm } = require('powercord/components/modal');
 const { REPO_URL, CACHE_FOLDER } = require('powercord/constants');
 const { clipboard } = require('electron');
-const { readdirSync, existsSync } = require('fs');
+const { readdirSync, existsSync, lstatSync } = require('fs');
 
 const Icons = require('./Icons');
 const Update = require('./Update');
@@ -311,10 +311,12 @@ module.exports = class UpdaterSettings extends React.PureComponent {
   }
 
   // --- DEBUG STUFF (Intentionally left english-only)
-  renderDebugInfo (moment) {
+  renderDebugInfo () {
     const { getRegisteredExperiments, getExperimentOverrides } = getModule([ 'initialize', 'getExperimentOverrides' ], false);
     const { apiManager: { apis }, api: { commands: { commands }, settings: { store: settingsStore } } } = powercord;
     const superProperties = getModule([ 'getSuperPropertiesBase64' ], false).getSuperProperties();
+    const unauthorizedPlugins = Array.from(powercord.pluginManager.plugins.values()).filter(plugin =>
+      plugin.__shortCircuit).map(plugin => plugin.manifest.name);
     const plugins = powercord.pluginManager.getPlugins().filter(plugin =>
       !powercord.pluginManager.get(plugin).isInternal && powercord.pluginManager.isEnabled(plugin)
     );
@@ -335,7 +337,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
     };
 
     const cachedFiles = (existsSync(CACHE_FOLDER) && readdirSync(CACHE_FOLDER)
-      .map(d => readdirSync(`${CACHE_FOLDER}/${d}`))
+      .map(d => lstatSync(`${CACHE_FOLDER}/${d}`).isDirectory() && readdirSync(`${CACHE_FOLDER}/${d}`))
       .flat().length) || 'n/a';
 
     const createPathReveal = (title, path) =>
@@ -423,12 +425,20 @@ module.exports = class UpdaterSettings extends React.PureComponent {
                 {this.state.pluginsRevealed ? 'Show less' : 'Show more'}
               </a>}
             </div>
+            {unauthorizedPlugins.length > 0 && <div className='full-column'>
+              Unauthorized Plugins:&#10;
+              {unauthorizedPlugins.join(', ')}
+            </div>}
+            {window.bdplugins && <div className='full-column'>
+              BetterDiscord Plugins:&#10;
+              {Object.keys(window.bdplugins).join(', ')}
+            </div>}
           </div>
         </code>
         <Button
           size={Button.Sizes.SMALL}
           color={this.state.copied ? Button.Colors.GREEN : Button.Colors.BRAND}
-          onClick={() => this.handleDebugInfoCopy(moment, plugins)}
+          onClick={() => this.handleDebugInfoCopy(plugins)}
         >
           <FontAwesome icon={this.state.copied ? 'clipboard-check' : 'clipboard'}/> {this.state.copied ? 'Copied!' : 'Copy'}
         </Button>
@@ -436,16 +446,17 @@ module.exports = class UpdaterSettings extends React.PureComponent {
     />;
   }
 
-  handleDebugInfoCopy (moment, plugins) {
+  handleDebugInfoCopy (plugins) {
     const extract = document.querySelector('.debug-info > code')
       .innerText.replace(/([A-Z/ ]+) (?=\s(?!C:\\).*?:)/g, '\n[$1]').replace(/(.*?):\s(.*.+)/g, '$1="$2"').replace(/[ -](\w*(?=.*=))/g, '$1');
 
     this.setState({ copied: true });
     clipboard.writeText(
       `\`\`\`ini
-      # Debugging Information | Result created: ${moment().calendar()}
+      # Debugging Information | Result created: ${new Date().toUTCString()}
       ${extract.substring(0, extract.indexOf('\nPlugins', extract.indexOf('\nPlugins') + 1))}
       Plugins="${plugins.join(', ')}"
+      ${window.bdplugins && `BDPlugins="${Object.keys(window.bdplugins).join(', ')}"`}
       \`\`\``.replace(/ {6}|n\/a/g, '').replace(/(?![0-9]{1,3}) \/ (?=[0-9]{1,3})/g, '/')
     );
     setTimeout(() => this.setState({ copied: false }), 2500);
