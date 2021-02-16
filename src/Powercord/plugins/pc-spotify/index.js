@@ -1,5 +1,5 @@
 const { Plugin } = require('powercord/entities');
-const { React, getModule, spotify } = require('powercord/webpack');
+const { React, getModule, spotify, spotifySocket } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 const { waitFor, getOwnerInstance, findInTree, sleep } = require('powercord/util');
 const playerStoreActions = require('./playerStore/actions');
@@ -66,6 +66,7 @@ class Spotify extends Plugin {
     this._patchAutoPause(true);
     Object.values(commands).forEach(cmd => powercord.api.commands.unregisterCommand(cmd.command));
     powercord.api.settings.unregisterSettings('pc-spotify');
+    spotifySocket.getActiveSocketAndDevice()?.socket.socket.close();
     songsStoreActions.purgeSongs();
 
     const { container } = getModule([ 'container', 'usernameContainer' ], false);
@@ -77,6 +78,7 @@ class Spotify extends Plugin {
   async _injectSocket () {
     const { SpotifySocket } = await getModule([ 'SpotifySocket' ]);
     inject('pc-spotify-socket', SpotifySocket.prototype, 'handleMessage', ([ e ]) => this._handleSpotifyMessage(e));
+    spotifySocket.getActiveSocketAndDevice()?.socket.socket.close();
   }
 
   async _injectModal () {
