@@ -16,6 +16,20 @@ require('./ipc/renderer');
 // Begin some catastrophically stupid shit to make Powercord survive with context isolation
 // --
 
+const genericProxyWrapper = {
+  get (target, prop) {
+    return target[prop];
+  },
+  set (target, prop, value) {
+    if (typeof value === 'function') {
+      target[prop] = (...args) => value(...args);
+    } else {
+      target[prop] = value;
+    }
+    return true;
+  }
+};
+
 class BetterResizeObserver extends ResizeObserver {
   constructor (fn) {
     super((...args) => fn(...args));
@@ -27,19 +41,6 @@ class BetterMutationObserver extends MutationObserver {
     super((...args) => fn(...args));
   }
 }
-
-const genericProxyWrapper = {
-  get (target, prop) {
-    return target[prop];
-  },
-  set (target, prop, value) {
-    if (typeof value === 'function') {
-      target[prop] = (...args) => value(...args);
-    } else {
-      target[prop] = value;
-    }
-  }
-};
 
 class BetterXHR extends XMLHttpRequest {
   constructor () {
@@ -56,7 +57,31 @@ window.ResizeObserver = BetterResizeObserver;
 window.MutationObserver = BetterMutationObserver;
 window.XMLHttpRequest = BetterXHR;
 
-function rebindAllEventTargets () {
+function wrapFunctions () {
+  class BetterWS extends WebSocket {
+    constructor (url, protocols) {
+      super(url, protocols);
+    }
+
+    set onclose (fn) {
+      super.onclose = (...args) => fn(...args)
+    }
+
+    set onerror (fn) {
+      super.onerror = (...args) => fn(...args)
+    }
+
+    set onmessage (fn) {
+      super.onmessage = (...args) => fn(...args)
+    }
+
+    set onopen (fn) {
+      super.onopen = (...args) => fn(...args)
+    }
+  }
+
+  window.WebSocket = BetterWS;
+
   function rebindEventTarget (target) {
     const realAddEventListener = target.addEventListener;
     const realRemoveEventListener = target.removeEventListener;
@@ -92,10 +117,11 @@ function rebindAllEventTargets () {
   rebindEventTarget(document);
   rebindEventTarget(Element.prototype);
   rebindEventTarget(XMLHttpRequestEventTarget.prototype);
+  rebindEventTarget(WebSocket.prototype);
 }
 
-rebindAllEventTargets();
-webFrame.executeJavaScript(`(${rebindAllEventTargets.toString().replace('rebindAllEventTargets', '')}())`);
+wrapFunctions();
+webFrame.executeJavaScript(`(${wrapFunctions.toString().replace('wrapFunctions', '')}())`);
 
 Object.defineProperty(window, 'webpackJsonp', {
   get: () => webFrame.top.context.window.webpackJsonp

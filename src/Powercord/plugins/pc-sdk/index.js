@@ -3,7 +3,7 @@ const { PopoutWindow, Tooltip, ContextMenu, Icons: { CodeBraces } } = require('p
 const { inject, uninject } = require('powercord/injector');
 const { getOwnerInstance, waitFor } = require('powercord/util');
 const { Plugin } = require('powercord/entities');
-const SdkWindow = require('./components/SdkWindow');
+// const SdkWindow = require('./components/SdkWindow');
 
 module.exports = class SDK extends Plugin {
   constructor () {
@@ -12,6 +12,9 @@ module.exports = class SDK extends Plugin {
   }
 
   async startPlugin () {
+    return; // shhhh
+
+    /* eslint-disable */
     powercord.api.labs.registerExperiment({
       id: 'pc-sdk',
       name: 'Sandbox Development Kit',
@@ -27,6 +30,9 @@ module.exports = class SDK extends Plugin {
   }
 
   pluginWillUnload () {
+    return; // shhhh
+
+    /* eslint-disable */
     uninject('pc-sdk-icon');
     powercord.api.settings.store.removeChangeListener(this._storeListener);
     powercord.api.labs.unregisterExperiment('pc-sdk');
@@ -91,7 +97,7 @@ module.exports = class SDK extends Plugin {
       React.createElement(PopoutWindow, {
         windowKey: key,
         title: 'SDK'
-      }, React.createElement(SdkWindow))
+      }, 'no' /* React.createElement(SdkWindow) */)
     );
     popoutModule.setAlwaysOnTop('DISCORD_POWERCORD_SANDBOX', true);
   }

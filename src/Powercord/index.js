@@ -63,8 +63,7 @@ class Powercord extends Updatable {
     this.apiManager = new APIManager();
     this.account = null;
     this.isLinking = false;
-    this.hookRPCServer();
-    this.patchWebSocket();
+    // this.hookRPCServer();
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.init());
@@ -156,20 +155,6 @@ class Powercord extends Updatable {
     discordRpc.RPCWebSocket.http.createServer = function () {
       _this.rpcServer = createServer();
       return _this.rpcServer;
-    };
-  }
-
-  patchWebSocket () {
-    const _this = this;
-
-    window.WebSocket = class PatchedWebSocket extends window.WebSocket {
-      constructor (url) {
-        super(url);
-
-        this.addEventListener('message', (data) => {
-          _this.emit(`webSocketMessage:${data.origin.slice(6)}`, data);
-        });
-      }
     };
   }
 

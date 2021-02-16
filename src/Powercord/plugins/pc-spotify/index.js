@@ -38,14 +38,11 @@ class Spotify extends Plugin {
   }
 
   startPlugin () {
-    return; // Please shut the f up
-
-    /* eslint-disable */
     this.loadStylesheet('style.scss');
+    this._injectSocket();
     this._injectModal();
     this._patchAutoPause();
     spotify.fetchIsSpotifyProtocolRegistered();
-    powercord.on('webSocketMessage:dealer.spotify.com', this._handleSpotifyMessage);
     SpotifyAPI.getPlayer().then(player => this._handlePlayerState(player));
     powercord.api.i18n.loadAllStrings(i18n);
     playerStoreActions.fetchDevices();
@@ -64,12 +61,10 @@ class Spotify extends Plugin {
   }
 
   pluginWillUnload () {
-    return; // Please shut the f up
-
-    /* eslint-disable */
+    uninject('pc-spotify-socket');
     uninject('pc-spotify-modal');
+    this._applySocketChanges();
     this._patchAutoPause(true);
-    powercord.off('webSocketMessage:dealer.spotify.com', this._handleSpotifyMessage);
     Object.values(commands).forEach(cmd => powercord.api.commands.unregisterCommand(cmd.command));
     powercord.api.settings.unregisterSettings('pc-spotify');
     songsStoreActions.purgeSongs();
@@ -78,6 +73,11 @@ class Spotify extends Plugin {
     const accountContainer = document.querySelector(`section > .${container}`);
     const instance = getOwnerInstance(accountContainer);
     instance.forceUpdate();
+  }
+
+  async _injectSocket () {
+    const { SpotifySocket } = await getModule([ 'SpotifySocket' ]);
+    inject('pc-spotify-socket', SpotifySocket.prototype, 'handleMessage', ([ e ]) => this._handleSpotifyMessage(e));
   }
 
   async _injectModal () {

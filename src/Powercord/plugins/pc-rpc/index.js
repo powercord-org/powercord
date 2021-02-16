@@ -5,6 +5,9 @@ const { inject, uninject } = require('powercord/injector');
 
 module.exports = class RPC extends Plugin {
   async startPlugin () {
+    return; // shhhh
+
+    /* eslint-disable */
     this.handlers = await getModule([ 'INVITE_BROWSER' ]);
     this._patchHTTPServer();
     this._patchWebSocketServer();
@@ -18,6 +21,9 @@ module.exports = class RPC extends Plugin {
   }
 
   pluginWillUnload () {
+    return; // shhhh
+
+    /* eslint-disable */
     uninject('pc-rpc-ws');
     uninject('pc-rpc-ws-promise');
 
