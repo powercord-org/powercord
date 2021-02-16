@@ -15,12 +15,6 @@ const Settings = require('./components/Settings');
 const Modal = require('./components/Modal');
 
 class Spotify extends Plugin {
-  constructor () {
-    super();
-
-    this._handleSpotifyMessage = this._handleSpotifyMessage.bind(this);
-  }
-
   get color () {
     return '#1ed860';
   }
@@ -38,14 +32,19 @@ class Spotify extends Plugin {
   }
 
   startPlugin () {
+    powercord.api.i18n.loadAllStrings(i18n);
     this.loadStylesheet('style.scss');
     this._injectSocket();
     this._injectModal();
     this._patchAutoPause();
     spotify.fetchIsSpotifyProtocolRegistered();
-    SpotifyAPI.getPlayer().then(player => this._handlePlayerState(player));
-    powercord.api.i18n.loadAllStrings(i18n);
-    playerStoreActions.fetchDevices();
+
+    SpotifyAPI.getPlayer()
+      .then((player) => this._handlePlayerState(player))
+      .catch((e) => this.error('Failed to get player', e));
+
+    playerStoreActions.fetchDevices()
+      .catch((e) => this.error('Failed to fetch devices', e));
 
     powercord.api.settings.registerSettings('pc-spotify', {
       category: this.entityID,
