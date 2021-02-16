@@ -58,27 +58,25 @@ window.MutationObserver = BetterMutationObserver;
 window.XMLHttpRequest = BetterXHR;
 
 function wrapFunctions () {
+  /* eslint-disable accessor-pairs */
   class BetterWS extends WebSocket {
-    constructor (url, protocols) {
-      super(url, protocols);
-    }
-
     set onclose (fn) {
-      super.onclose = (...args) => fn(...args)
+      super.onclose = (...args) => fn(...args);
     }
 
     set onerror (fn) {
-      super.onerror = (...args) => fn(...args)
+      super.onerror = (...args) => fn(...args);
     }
 
     set onmessage (fn) {
-      super.onmessage = (...args) => fn(...args)
+      super.onmessage = (...args) => fn(...args);
     }
 
     set onopen (fn) {
-      super.onopen = (...args) => fn(...args)
+      super.onopen = (...args) => fn(...args);
     }
   }
+  /* eslint-enable accessor-pairs */
 
   window.WebSocket = BetterWS;
 
