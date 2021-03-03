@@ -24,7 +24,6 @@ module.exports = async () => {
   }
 
   ipcRenderer.invoke('POWERCORD_WINDOW_IS_MAXIMIZED').then(isMaximized => {
-    console.log(isMaximized);
     if (isMaximized) {
       document.body.classList.add('maximized');
     } else {

@@ -51,7 +51,7 @@ module.exports = class ClickableEdits extends Plugin {
       return res;
     };
 
-    const Message = await getModule(m => m.default && m.default.displayName === 'Message');
+    const Message = await getModule(m => (m.__powercordOriginal_default || m.default)?.toString().includes('childrenRepliedMessage'));
     inject('clickableEdits-message', Message, 'default', renderMessage);
     Message.default.displayName = 'Message';
 

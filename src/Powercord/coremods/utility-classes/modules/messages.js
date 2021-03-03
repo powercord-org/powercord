@@ -10,7 +10,7 @@ const { inject, uninject } = require('powercord/injector');
 
 module.exports = async () => {
   const userStore = await getModule([ 'getCurrentUser' ]);
-  const Message = await getModule(m => m.default && m.default.displayName === 'Message');
+  const Message = await getModule(m => (m.__powercordOriginal_default || m.default)?.toString().includes('childrenRepliedMessage'));
   inject('pc-utilitycls-messages', Message, 'default', (_, res) => {
     const msg = findInReactTree(res, n => n.message);
     if (!msg) {

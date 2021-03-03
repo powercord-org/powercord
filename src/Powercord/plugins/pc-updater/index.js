@@ -315,6 +315,7 @@ module.exports = class Updater extends Plugin {
         renderFooter () {
           const footer = super.renderFooter();
           footer.props.children = React.createElement('span', {
+            style: { color: 'var(--text-normal)' },
             dangerouslySetInnerHTML: {
               __html: changelog.footer
             }

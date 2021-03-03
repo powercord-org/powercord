@@ -337,7 +337,8 @@ module.exports = class UpdaterSettings extends React.PureComponent {
     };
 
     const cachedFiles = (existsSync(CACHE_FOLDER) && readdirSync(CACHE_FOLDER)
-      .map(d => lstatSync(`${CACHE_FOLDER}/${d}`).isDirectory() && readdirSync(`${CACHE_FOLDER}/${d}`))
+      .filter(d => lstatSync(`${CACHE_FOLDER}/${d}`).isDirectory())
+      .map(d => readdirSync(`${CACHE_FOLDER}/${d}`))
       .flat().length) || 'n/a';
 
     const createPathReveal = (title, path) =>
@@ -455,8 +456,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
       `\`\`\`ini
       # Debugging Information | Result created: ${new Date().toUTCString()}
       ${extract.substring(0, extract.indexOf('\nPlugins', extract.indexOf('\nPlugins') + 1))}
-      Plugins="${plugins.join(', ')}"
-      ${window.bdplugins && `BDPlugins="${Object.keys(window.bdplugins).join(', ')}"`}
+      Plugins="${plugins.join(', ')}"${window.bdplugins ? `\nBDPlugins="${Object.keys(window.bdplugins).join(', ')}"` : ''}
       \`\`\``.replace(/ {6}|n\/a/g, '').replace(/(?![0-9]{1,3}) \/ (?=[0-9]{1,3})/g, '/')
     );
     setTimeout(() => this.setState({ copied: false }), 2500);
