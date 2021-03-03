@@ -62,7 +62,7 @@ class Spotify extends Plugin {
   pluginWillUnload () {
     uninject('pc-spotify-socket');
     uninject('pc-spotify-modal');
-    this._applySocketChanges();
+    //this._applySocketChanges();
     this._patchAutoPause(true);
     Object.values(commands).forEach(cmd => powercord.api.commands.unregisterCommand(cmd.command));
     powercord.api.settings.unregisterSettings('pc-spotify');
