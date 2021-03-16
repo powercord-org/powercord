@@ -588,12 +588,9 @@ module.exports = class EmojiUtility extends Plugin {
 
         const foundEmojis = emojis.filter(emoji => emoji.name.toLowerCase().includes(argument));
         if (foundEmojis.length > 0) {
-          const emojisAsString = foundEmojis.map(emoji => this.getFullEmoji(emoji)).join(' ');
+          let emojisAsString = foundEmojis.map(emoji => this.getFullEmoji(emoji)).join(' ');
           if (emojisAsString.length > 2000) {
-            return {
-              send: false,
-              result: `That is more than 2000 characters, let me send that locally instead!\n${emojisAsString}`
-            };
+            emojisAsString = emojisAsString.match(/.{0,1999}>/)[0];
           }
 
           if (!this.getCurrentUser().premiumType > 0) {
