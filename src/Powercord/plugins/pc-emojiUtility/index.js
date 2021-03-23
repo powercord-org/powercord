@@ -588,11 +588,7 @@ module.exports = class EmojiUtility extends Plugin {
 
         const foundEmojis = emojis.filter(emoji => emoji.name.toLowerCase().includes(argument));
         if (foundEmojis.length > 0) {
-          let emojisAsString = foundEmojis.map(emoji => this.getFullEmoji(emoji)).join(' ');
-          if (emojisAsString.length > 2000) {
-            emojisAsString = emojisAsString.match(/.{0,1999}>/)[0];
-          }
-
+          const emojisAsString = foundEmojis.map(emoji => this.getFullEmoji(emoji)).join(' ');
           if (!this.getCurrentUser().premiumType > 0) {
             return {
               send: false,
@@ -602,7 +598,7 @@ module.exports = class EmojiUtility extends Plugin {
 
           return {
             send: true,
-            result: emojisAsString
+            result: emojisAsString.length <= 2000 ? emojiAsString : emojisAsString.match(/.{0,1999}>/)[0]
           };
         }
 
