@@ -21,7 +21,7 @@ module.exports = async function monkeypatchMessages () {
     }
 
     const result = await command.executor(args, this);
-    if (!result) {
+    if (!result || !result.result) {
       return;
     }
 
