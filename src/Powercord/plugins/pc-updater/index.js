@@ -73,7 +73,7 @@ module.exports = class Updater extends Plugin {
     const disabled = this.settings.get('entities_disabled', []).map(e => e.id);
     const skipped = this.settings.get('entities_skipped', []);
     const plugins = [ ...powercord.pluginManager.plugins.values() ].filter(p => !p.isInternal);
-    const themes = [ ...powercord.styleManager.themes.values() ].filter(t => t.isTheme);
+    const themes = [ ...powercord.styleManager.themes.values() ];
 
     const entities = plugins.concat(themes).filter(e => !disabled.includes(e.updateIdentifier) && e.isUpdatable());
     if (!disabled.includes(powercord.updateIdentifier)) {
@@ -97,8 +97,8 @@ module.exports = class Updater extends Plugin {
             }
             updates.push({
               id: entity.updateIdentifier,
-              name: entity.constructor.name,
-              icon: entity.__proto__.__proto__.constructor.name.replace('Updatable', 'Powercord'),
+              name: entity.manifest?.name ?? 'Powercord',
+              icon: entity.constructor.name,
               commits,
               repo
             });
