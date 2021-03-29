@@ -107,17 +107,14 @@ class Base extends React.Component {
   }
 
   renderEnableAllButton (items) {
-    const needEnable = items.filter(p => !p.ready);
     return (
       <ButtonItem
-        button={(needEnable.length) ? Messages.POWERCORD_PLUGINS_ENABLE_ALL_PC_GO : Messages.POWERCORD_PLUGINS_ALL_ENABLED}
-        success={!needEnable.length}
-        disabled={!needEnable.length}
+        button={Messages.POWERCORD_PLUGINS_ENABLE_ALL_GO}
         onClick={async () => {
-          await needEnable.forEach(p => this._toggle(p.entityID, true));
+          await items.forEach(p => this._toggle(p.entityID, true));
           this.forceUpdate();
         }}
-      >{Messages.POWERCORD_PLUGINS_ENABLE_ALL_PC}
+      >{Messages.POWERCORD_PLUGINS_ENABLE_ALL}
       </ButtonItem>
     );
   }
