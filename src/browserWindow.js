@@ -16,7 +16,7 @@ try {
   transparency = settings.transparentWindow;
   frame = settings.windowFrame;
   ewp = settings.experimentalWebPlatform;
-} catch (e) { console.error(e) }
+} catch (e) { }
 
 class PatchedBrowserWindow extends BrowserWindow {
   // noinspection JSAnnotator - Make JetBrains happy
