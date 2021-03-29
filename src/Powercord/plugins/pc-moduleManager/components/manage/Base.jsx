@@ -182,14 +182,13 @@ class Base extends React.Component {
     });
   }
 
-  _partition (array, filter) {
-    const pass = [];
-    const fail = [];
-
-    array.forEach((e) => {
-      (filter(e) ? pass : fail).push(e);
-    });
-    return [ pass, fail ];
+  _partition (array, check) {
+    return array.reduce(([ pass, fail ], elem) => {
+      if (check(elem)) {
+        return [ [ ...pass, elem ], fail ];
+      }
+      return [ pass, [ ...fail, elem ] ];
+    }, [ [], [] ]);
   }
 }
 
