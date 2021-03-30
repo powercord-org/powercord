@@ -98,7 +98,9 @@ module.exports = class Updater extends Plugin {
             updates.push({
               id: entity.updateIdentifier,
               name: entity.manifest?.name ?? 'Powercord',
-              icon: entity.constructor.name,
+              icon: entity.constructor.name === 'Theme' || entity.constructor.name === 'Powercord'
+                ? entity.constructor.name
+                : 'Plugin',
               commits,
               repo
             });
