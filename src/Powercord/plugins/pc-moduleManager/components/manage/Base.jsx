@@ -134,17 +134,20 @@ class Base extends React.Component {
   }
 
   _sortItems (items, type) {
+    const disabledPlugins = powercord.settings.get('disabledPlugins', []);
+    const { disabledThemes } = powercord.styleManager;
+
     if (this.state.show === 'Enabled') {
       if (type === 'plugin') {
-        items = items.filter(p => powercord.pluginManager.isEnabled(p.entityID));
+        items = items.filter(p => !disabledPlugins.includes(p.entityID));
       } else if (type === 'theme') {
-        items = items.filter(p => powercord.styleManager.isEnabled(p.entityID));
+        items = items.filter(p => !disabledThemes.includes(p.entityID));
       }
     } else if (this.state.show === 'Disabled') {
       if (type === 'plugin') {
-        items = items.filter(p => !powercord.pluginManager.isEnabled(p.entityID));
+        items = items.filter(p => disabledPlugins.includes(p.entityID));
       } else if (type === 'theme') {
-        items = items.filter(p => !powercord.styleManager.isEnabled(p.entityID));
+        items = items.filter(p => disabledThemes.includes(p.entityID));
       }
     }
 
