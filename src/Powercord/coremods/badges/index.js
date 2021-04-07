@@ -42,7 +42,7 @@ function fetchBadges () {
   }
 
   const baseUrl = powercord.settings.get('backendURL', WEBSITE);
-  get(`${baseUrl}/api/v2/users/${this.props.user.id}`)
+  get(`${baseUrl}/api/v2/users/${this.props.user.id}?legacy=true`)
     .then(res => this.setState({ __pcBadges: res.body.badges }))
     .catch(() => this.setState({ __pcBadges: null }));
 }
