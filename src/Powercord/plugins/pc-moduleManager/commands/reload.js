@@ -1,24 +1,24 @@
 module.exports = {
-  command: 'disable',
-  description: 'Allows you to disable a selected plugin from the given list.',
+  command: 'reload',
+  description: 'Allows you to reload a selected plugin from the given list.',
   usage: '{c} [ plugin ID ]',
-  executor (args) {
+  async executor (args) {
     let result;
 
     if (powercord.pluginManager.plugins.has(args[0])) {
       if (args[0] === 'pc-commands') {
-        result = `->> ERROR: You cannot unload this plugin as it depends on delivering these commands!
-            (Tried to unload ${args[0]})`;
+        result = `->> ERROR: You cannot reload this plugin as it depends on delivering these commands!
+            (Tried to reload ${args[0]})`;
       } else if (!powercord.pluginManager.isEnabled(args[0])) {
-        result = `->> ERROR: Tried to unload a non-loaded plugin!
+        result = `->> ERROR: Tried to reload a non-loaded plugin!
             (${args[0]})`;
       } else {
-        powercord.pluginManager.disable(args[0]);
-        result = `+>> SUCCESS: Plugin unloaded!
+        await powercord.pluginManager.remount(args[0]);
+        result = `+>> SUCCESS: Plugin reloaded!
             (${args[0]})`;
       }
     } else {
-      result = `->> ERROR: Tried to disable a non-installed plugin!
+      result = `->> ERROR: Tried to reload a non-installed plugin!
           (${args[0]})`;
     }
 
