@@ -225,7 +225,7 @@ module.exports = class EmojiUtility extends Plugin {
     /* Default settings */
     this.settings.set('useEmbeds', this.settings.get('useEmbeds', false));
     this.settings.set('displayLink', this.settings.get('displayLink', true));
-    this.settings.set('createGuildFolder', this.settings.get('createGuildFolder', true));
+    this.settings.set('createGuildFolders', this.settings.get('createGuildFolders', true));
     this.settings.set('includeIdForSavedEmojis', this.settings.get('includeIdForSavedEmojis', true));
     this.settings.set('defaultCloneIdUseCurrent', this.settings.get('defaultCloneIdUseCurrent', false));
 
