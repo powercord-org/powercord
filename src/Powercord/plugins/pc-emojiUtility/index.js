@@ -225,7 +225,7 @@ module.exports = class EmojiUtility extends Plugin {
     /* Default settings */
     this.settings.set('useEmbeds', this.settings.get('useEmbeds', false));
     this.settings.set('displayLink', this.settings.get('displayLink', true));
-    this.settings.set('createGuildFolder', this.settings.get('createGuildFolder', true));
+    this.settings.set('createGuildFolders', this.settings.get('createGuildFolders', true));
     this.settings.set('includeIdForSavedEmojis', this.settings.get('includeIdForSavedEmojis', true));
     this.settings.set('defaultCloneIdUseCurrent', this.settings.get('defaultCloneIdUseCurrent', false));
 
@@ -619,7 +619,7 @@ module.exports = class EmojiUtility extends Plugin {
       description: 'Save emotes to a specified directory',
       usage: '{c} [--server | emote]',
       executor: async (args) => {
-        let filePath = this.settings.get('filePath')
+        let filePath = this.settings.get('filePath');
         if (!filePath) {
           return this.replyError('Please set your save directory in the settings');
         }
@@ -631,13 +631,17 @@ module.exports = class EmojiUtility extends Plugin {
         let foundEmojis, notFoundEmojis;
         if (args.includes('--server')) {
           const { guild_id } = this.getChannel(this.getChannelId());
-          if (!guild_id) return this.replyError('The --server flag can not be used in dms');
+          if (!guild_id) {
+            return this.replyError('The --server flag can not be used in dms');
+          }
 
           if (this.settings.get('createGuildFolders')) {
             const guild = this.getGuildByIdOrName(guild_id);
 
             filePath = join(filePath, guild.name);
-            if (!existsSync(filePath)) mkdirSync(filePath);
+            if (!existsSync(filePath)) {
+              mkdirSync(filePath);
+            }
           }
 
           foundEmojis = this.getEmojis(guild_id);
