@@ -1,0 +1,24 @@
+.PluginDownloaderApply {
+    color: var(--text-muted);
+    border-right: 1px var(--background-accent) solid;
+  
+    div {
+      margin: 0 8px;
+      white-space: nowrap;
+      font-size: 14px;
+      padding: 3px 5px;
+      transition: background-color .1s;
+    }
+  
+    &:not(.applied) {
+      color: var(--text-normal);
+  
+      div {
+        cursor: pointer;
+  
+        &:hover {
+          background-color: var(--interactive-muted);
+        }
+      }
+    }
+  }

@@ -1,0 +1,7 @@
+{
+  "name": "Plugin Downloader",
+  "version": "0.0.1",
+  "description": "Download a plugin from a URL",
+  "author": "Olykir",
+  "license": "MIT"
+}
