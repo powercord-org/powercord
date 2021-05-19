@@ -48,13 +48,13 @@ module.exports = class Codeblocks extends Plugin {
 
       delete codeElement.props.dangerouslySetInnerHTML;
 
-      codeElement.props.children = this.renderCodeblock(lang, lines);
+      codeElement.props.children = this.renderCodeblock(lang, lines, Boolean(codeElement.props.dangerouslySetInnerHTML));
 
       return codeblock;
     };
   }
 
-  renderCodeblock (lang, lines) {
+  renderCodeblock (lang, lines, dangerous) {
     if (hljs && typeof hljs.getLanguage === 'function') {
       lang = hljs.getLanguage(lang);
     }
@@ -64,7 +64,7 @@ module.exports = class Codeblocks extends Plugin {
       React.createElement('table', { className: 'powercord-codeblock-table' },
         ...lines.map((line, i) => React.createElement('tr', null,
           React.createElement('td', null, i + 1),
-          React.createElement('td', lang ? { dangerouslySetInnerHTML: { __html: line } } : { children: line })
+          React.createElement('td', lang && dangerous ? { dangerouslySetInnerHTML: { __html: line } } : { children: line })
         ))
       ),
       React.createElement('button', {
