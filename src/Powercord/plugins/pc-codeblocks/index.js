@@ -46,9 +46,10 @@ module.exports = class Codeblocks extends Plugin {
           .split('\n')
         : codeElement.props.children.split('\n');
 
+      const isSanitized = Boolean(codeElement.props.dangerouslySetInnerHTML);
       delete codeElement.props.dangerouslySetInnerHTML;
 
-      codeElement.props.children = this.renderCodeblock(lang, lines, Boolean(codeElement.props.dangerouslySetInnerHTML));
+      codeElement.props.children = this.renderCodeblock(lang, lines, isSanitized);
 
       return codeblock;
     };
