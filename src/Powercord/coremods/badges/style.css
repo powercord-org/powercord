@@ -11,8 +11,8 @@
 }
 
 /* White badges */
-.header-QKLPzZ .powercord-badge > div {
-  color: #fff;
+div[class^=topSection]:not(.topSectionNormal-2-vo2m) .header-QKLPzZ .powercord-badge {
+  color: #fff !important;
 }
 
 .header-QKLPzZ .powercord-badge-cutie img:first-child {
@@ -24,7 +24,7 @@
 }
 
 /* Colored badges */
-.topSectionNormal-2-vo2m .header-QKLPzZ .powercord-badge > div {
+.topSectionNormal-2-vo2m .header-QKLPzZ .powercord-badge {
   color: inherit;
 }
 
@@ -53,6 +53,7 @@
 .tooltip-2QfLtc .rowGuildName-2wU3B_ .powercord-badge-cutie {
   width: 20px;
   height: 20px;
+  margin-right: 4px;
 }
 
 /* Powercord Cutie */
