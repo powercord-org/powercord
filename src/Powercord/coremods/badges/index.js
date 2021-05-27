@@ -12,7 +12,7 @@ const { WEBSITE } = require('powercord/constants');
 const { Flex } = require('powercord/components');
 const { get } = require('powercord/http');
 
-const { loadStyle, unloadStyle } = require('../util');
+const { loadStyle, unloadStyle, wrapInHooks } = require('../util');
 const Badges = require('./Badges');
 
 const cache = { _guilds: {} };
@@ -25,15 +25,21 @@ async function getUserProfileBody () {
   return DecoratedUserProfileBody.prototype.render.call({ props: { forwardedRef: null } }).type;
 }
 
+async function getUserPopOut () {
+  const userStore = await getModule([ 'getCurrentUser' ]);
+  const fnUserPopOut = await getModuleByDisplayName('ConnectedUserPopout');
+
+  const ogGetCurrentUser = userStore.getCurrentUser;
+  userStore.getCurrentUser = () => ({ id: '0' });
+  const res = wrapInHooks(() => fnUserPopOut({ user: { isNonUserBot: () => void 0 } }).type)();
+  userStore.getCurrentUser = ogGetCurrentUser;
+  return res;
+}
+
 function hasBadge (badges) {
-  return badges.developer ||
-    badges.staff ||
-    badges.support ||
-    badges.contributor ||
-    badges.translator ||
-    badges.hunter ||
-    badges.early ||
-    (badges.custom && badges.custom.name && badges.custom.icon);
+  return (
+    badges.developer || badges.staff || badges.support || badges.contributor || badges.translator || badges.hunter || badges.early || (badges.custom && badges.custom.name && badges.custom.icon)
+  );
 }
 
 function fetchBadges () {
@@ -50,12 +56,88 @@ function fetchBadges () {
 async function injectUsers () {
   const UserProfileBody = await getUserProfileBody();
   const { profileBadges } = await getModule([ 'profileBadges' ]);
+  const UserPopOut = await getUserPopOut();
 
   inject('pc-badges-users-fetch', UserProfileBody.prototype, 'componentDidMount', fetchBadges);
   inject('pc-badges-users-update', UserProfileBody.prototype, 'componentDidUpdate', function ([ prevProps ]) {
     if (this.props.user.id !== prevProps.user.id) {
       fetchBadges.call(this);
     }
+  });
+
+  inject('pc-badges-popout-fetch', UserPopOut.prototype, 'componentDidMount', fetchBadges);
+  inject('pc-badges-popout-update', UserPopOut.prototype, 'componentDidUpdate', function ([ prevProps ]) {
+    if (this.props.user.id !== prevProps.user.id) {
+      fetchBadges.call(this);
+    }
+  });
+
+  inject('pc-badges-popout-render', UserPopOut.prototype, 'render', function (_, res) {
+    const renderer = res.props.children.props.children[0].type;
+
+    res.props.children.props.children[0].type = (props) => {
+      const res = renderer(props);
+
+      const renderer2 = res.props.children[1].props.children[0].type;
+
+      res.props.children[1].props.children[0].type = (props) => {
+        const res = renderer2(props);
+        if (this?.state?.__pcBadges && hasBadge(this?.state?.__pcBadges)) {
+          if (!res) {
+            // There's no container if the user have no flags
+            return React.createElement(
+              Flex,
+              {
+                className: profileBadges,
+                basis: 'auto',
+                grow: 1,
+                shrink: 1
+              },
+              []
+            );
+          }
+
+          const render = (Component, key, props = {}) =>
+            React.createElement(Component, {
+              key: `pc-${key}`,
+              color: this.state.__pcBadges.custom && this.state.__pcBadges.custom.color,
+              isPopOut: true,
+              ...props
+            });
+
+          if (this.state.__pcBadges.custom && this.state.__pcBadges.custom.name && this.state.__pcBadges.custom.icon) {
+            res.props.children.push(render(Badges.Custom, 'cutie', this.state.__pcBadges.custom));
+          }
+          if (this.state.__pcBadges.developer) {
+            res.props.children.push(render(Badges.Developer, 'developer'));
+          }
+          if (this.state.__pcBadges.staff) {
+            res.props.children.push(render(Badges.Staff, 'staff'));
+          }
+          if (this.state.__pcBadges.support) {
+            res.props.children.push(render(Badges.Support, 'support'));
+          }
+          if (this.state.__pcBadges.contributor) {
+            res.props.children.push(render(Badges.Contributor, 'contributor'));
+          }
+          if (this.state.__pcBadges.translator) {
+            res.props.children.push(render(Badges.Translator, 'translator'));
+          }
+          if (this.state.__pcBadges.hunter) {
+            res.props.children.push(render(Badges.BugHunter, 'hunter'));
+          }
+          if (this.state.__pcBadges.early) {
+            res.props.children.push(render(Badges.EarlyUser, 'early'));
+          }
+        }
+
+        return res;
+      };
+
+      return res;
+    };
+
+    return res;
   });
 
   inject('pc-badges-users-render', UserProfileBody.prototype, 'renderBadges', function (_, res) {
@@ -65,21 +147,24 @@ async function injectUsers () {
       if (this.state.__pcBadges && hasBadge(this.state.__pcBadges)) {
         if (!res) {
           // There's no container if the user have no flags
-          return React.createElement(Flex, {
-            className: profileBadges,
-            basis: 'auto',
-            grow: 1,
-            shrink: 1
-          }, []);
+          return React.createElement(
+            Flex,
+            {
+              className: profileBadges,
+              basis: 'auto',
+              grow: 1,
+              shrink: 1
+            },
+            []
+          );
         }
 
-        const render = (Component, key, props = {}) => (
+        const render = (Component, key, props = {}) =>
           React.createElement(Component, {
             key: `pc-${key}`,
             color: this.state.__pcBadges.custom && this.state.__pcBadges.custom.color,
             ...props
-          })
-        );
+          });
 
         if (this.state.__pcBadges.custom && this.state.__pcBadges.custom.name && this.state.__pcBadges.custom.icon) {
           res.props.children.push(render(Badges.Custom, 'cutie', this.state.__pcBadges.custom));
@@ -160,6 +245,9 @@ module.exports = async function () {
     uninject('pc-badges-users-render');
     uninject('pc-badges-users-update');
     uninject('pc-badges-users-fetch');
+    uninject('pc-badges-popout-render');
+    uninject('pc-badges-popout-update');
+    uninject('pc-badges-popout-fetch');
     uninject('pc-badges-guilds-header');
     uninject('pc-badges-guilds-tooltip');
 

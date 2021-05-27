@@ -5,6 +5,7 @@
  */
 
 const { createElement } = require('powercord/util');
+const { React } = require('powercord/webpack');
 const { resolveCompiler } = require('powercord/compilers');
 
 module.exports = {
@@ -18,8 +19,38 @@ module.exports = {
 
     document.head.appendChild(style);
     const compiler = resolveCompiler(file);
-    compiler.compile().then(css => (style.innerHTML = css));
+    compiler.compile().then((css) => (style.innerHTML = css));
     return id;
+  },
+
+  wrapInHooks (fn) {
+    return function (...args) {
+      const owo = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentDispatcher.current;
+      const ogUseMemo = owo.useMemo;
+      const ogUseState = owo.useState;
+      const ogUseEffect = owo.useEffect;
+      const ogUseLayoutEffect = owo.useLayoutEffect;
+      const ogUseRef = owo.useRef;
+      const ogUseCallback = owo.useCallback;
+
+      owo.useMemo = (f) => f();
+      owo.useState = (v) => [ v, () => void 0 ];
+      owo.useEffect = () => null;
+      owo.useLayoutEffect = () => null;
+      owo.useRef = () => ({});
+      owo.useCallback = (c) => c;
+
+      const res = fn(...args);
+
+      owo.useMemo = ogUseMemo;
+      owo.useState = ogUseState;
+      owo.useEffect = ogUseEffect;
+      owo.useLayoutEffect = ogUseLayoutEffect;
+      owo.useRef = ogUseRef;
+      owo.useCallback = ogUseCallback;
+
+      return res;
+    };
   },
 
   unloadStyle (id) {
