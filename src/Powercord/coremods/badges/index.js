@@ -37,9 +37,14 @@ async function getUserPopOut () {
 }
 
 function hasBadge (badges) {
-  return (
-    badges.developer || badges.staff || badges.support || badges.contributor || badges.translator || badges.hunter || badges.early || (badges.custom && badges.custom.name && badges.custom.icon)
-  );
+  return badges.developer ||
+    badges.staff ||
+    badges.support ||
+    badges.contributor ||
+    badges.translator ||
+    badges.hunter ||
+    badges.early ||
+    (badges.custom && badges.custom.name && badges.custom.icon);
 }
 
 function fetchBadges () {
@@ -85,25 +90,22 @@ async function injectUsers () {
         if (this?.state?.__pcBadges && hasBadge(this?.state?.__pcBadges)) {
           if (!res) {
             // There's no container if the user have no flags
-            return React.createElement(
-              Flex,
-              {
-                className: profileBadges,
-                basis: 'auto',
-                grow: 1,
-                shrink: 1
-              },
-              []
-            );
+            return React.createElement(Flex, {
+              className: profileBadges,
+              basis: 'auto',
+              grow: 1,
+              shrink: 1
+            }, []);
           }
 
-          const render = (Component, key, props = {}) =>
+          const render = (Component, key, props = {}) => (
             React.createElement(Component, {
               key: `pc-${key}`,
               color: this.state.__pcBadges.custom && this.state.__pcBadges.custom.color,
               isPopOut: true,
               ...props
-            });
+            })
+          );
 
           if (this.state.__pcBadges.custom && this.state.__pcBadges.custom.name && this.state.__pcBadges.custom.icon) {
             res.props.children.push(render(Badges.Custom, 'cutie', this.state.__pcBadges.custom));
@@ -147,24 +149,21 @@ async function injectUsers () {
       if (this.state.__pcBadges && hasBadge(this.state.__pcBadges)) {
         if (!res) {
           // There's no container if the user have no flags
-          return React.createElement(
-            Flex,
-            {
-              className: profileBadges,
-              basis: 'auto',
-              grow: 1,
-              shrink: 1
-            },
-            []
-          );
+          return React.createElement(Flex, {
+            className: profileBadges,
+            basis: 'auto',
+            grow: 1,
+            shrink: 1
+          }, []);
         }
 
-        const render = (Component, key, props = {}) =>
+        const render = (Component, key, props = {}) => (
           React.createElement(Component, {
             key: `pc-${key}`,
             color: this.state.__pcBadges.custom && this.state.__pcBadges.custom.color,
             ...props
-          });
+          })
+        );
 
         if (this.state.__pcBadges.custom && this.state.__pcBadges.custom.name && this.state.__pcBadges.custom.icon) {
           res.props.children.push(render(Badges.Custom, 'cutie', this.state.__pcBadges.custom));
