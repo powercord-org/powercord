@@ -3,7 +3,7 @@ const { existsSync } = require('fs');
 const { unlink } = require('fs').promises;
 const { Plugin } = require('powercord/entities');
 const { React, getModule, getModuleByDisplayName, constants: { Routes } } = require('powercord/webpack');
-const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
+const { forceUpdateElement, getOwnerInstance, waitFor, findInReactTree } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { GUILD_ID, DISCORD_INVITE } = require('powercord/constants');
 
@@ -36,7 +36,8 @@ module.exports = class Notices extends Plugin {
     const { base } = await getModule([ 'base', 'container' ]);
     const instance = getOwnerInstance(await waitFor(`.${base.split(' ')[0]}`));
     inject('pc-notices-announcements', instance.props.children, 'type', (_, res) => {
-      res.props.children[1].props.children.unshift(React.createElement(AnnouncementContainer));
+      const { children } = findInReactTree(res, ({ className }) => className === base);
+      children.unshift(React.createElement(AnnouncementContainer));
       return res;
     });
 
