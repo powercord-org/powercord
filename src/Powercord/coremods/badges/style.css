@@ -24,11 +24,11 @@ div[class^=topSection]:not(.topSectionNormal-2-vo2m) .header-QKLPzZ .powercord-b
 }
 
 /* White popout badges */
-.profileBadges-1dm1_q .powercord-badge-cutie img:first-child {
+.profileBadges-3cJaE1 .powercord-badge-cutie img:first-child {
   display: none;
 }
 
-.profileBadges-1dm1_q .powercord-badge-cutie img:last-child {
+.profileBadges-3cJaE1 .powercord-badge-cutie img:last-child {
   display: block;
 }
 
@@ -47,15 +47,15 @@ div[class^=topSection]:not(.topSectionNormal-2-vo2m) .header-QKLPzZ .powercord-b
 
 /* Colored popout badges */
 
-.headerTop-2y3V6H .profileBadges-1dm1_q .powercord-badge {
+.headerTop-2y3V6H .profileBadges-3cJaE1 .powercord-badge {
   color: inherit;
 }
 
-.headerTop-2y3V6H .profileBadges-1dm1_q .powercord-badge-cutie img:last-child {
+.headerTop-2y3V6H .profileBadges-3cJaE1 .powercord-badge-cutie img:last-child {
   display: none;
 }
 
-.headerTop-2y3V6H .profileBadges-1dm1_q .powercord-badge-cutie img:first-child {
+.headerTop-2y3V6H .profileBadges-3cJaE1 .powercord-badge-cutie img:first-child {
   display: block;
 }
 
