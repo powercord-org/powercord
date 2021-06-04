@@ -9,7 +9,7 @@ require('./env_check')(); // Perform checks
 require('../polyfills'); // And then do stuff
 
 const { join } = require('path');
-const { writeFile } = require('fs').promises;
+const { readFile, writeFile } = require('fs').promises;
 const { BasicMessages } = require('./log');
 const main = require('./main.js');
 
@@ -27,12 +27,21 @@ try {
   }
 }
 
+// [Cynthia] Please do not laugh. I beg you.
+async function patchSass () {
+  const sassPath = require.resolve('sass');
+  const sassCode = await readFile(sassPath, 'utf8')
+  await writeFile(sassPath, sassCode.replace(/self\.location/g, 'self.__$location'))
+}
+
 (async () => {
   if (process.argv[2] === 'inject') {
     if (await main.inject(platformModule)) {
       if (!process.argv.includes('--no-welcome-message')) {
         await writeFile(join(__dirname, '../src/__injected.txt'), 'hey cutie');
       }
+
+      await patchSass();
 
       // @todo: prompt to (re)start automatically
       console.log(BasicMessages.PLUG_SUCCESS, '\n');
