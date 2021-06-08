@@ -58,7 +58,6 @@ module.exports = class Connections extends Plugin {
         }
 
         res.props.children.props.children.push(React.createElement(ProfileConnections, { id: props.user.id }));
-        console.log(res);
         return res;
       }
 
