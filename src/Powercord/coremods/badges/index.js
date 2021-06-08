@@ -9,7 +9,6 @@ const { React, getModule, getModuleByDisplayName } = require('powercord/webpack'
 const { forceUpdateElement, getOwnerInstance } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { WEBSITE } = require('powercord/constants');
-const { Flex } = require('powercord/components');
 const { get } = require('powercord/http');
 
 const { loadStyle, unloadStyle } = require('../util');
@@ -17,43 +16,13 @@ const Badges = require('./Badges');
 
 const cache = { _guilds: {} };
 
-async function getUserProfileBody () {
-  const UserProfile = await getModuleByDisplayName('UserProfile');
-  const VeryVeryDecoratedUserProfileBody = UserProfile.prototype.render().type;
-  const VeryDecoratedUserProfileBody = VeryVeryDecoratedUserProfileBody.prototype.render.call({ memoizedGetStateFromStores: () => void 0 }).type;
-  const DecoratedUserProfileBody = VeryDecoratedUserProfileBody.render().type;
-  return DecoratedUserProfileBody.prototype.render.call({ props: { forwardedRef: null } }).type;
-}
-
-function hasBadge (badges) {
-  return badges.developer ||
-    badges.staff ||
-    badges.support ||
-    badges.contributor ||
-    badges.translator ||
-    badges.hunter ||
-    badges.early ||
-    (badges.custom && badges.custom.name && badges.custom.icon);
-}
-
-function fetchBadges () {
-  if (cache[this.props.id]) {
-    this.setState({ __pcBadges: this.props.user.id });
-  }
-
-  const baseUrl = powercord.settings.get('backendURL', WEBSITE);
-  get(`${baseUrl}/api/v2/users/${this.props.user.id}?legacy=true`)
-    .then(res => this.setState({ __pcBadges: res.body.badges }))
-    .catch(() => this.setState({ __pcBadges: null }));
-}
-
 async function injectUsers () {
-  const UserProfileBadgeList = await getModule((m) => m.default?.displayName === 'UserProfileBadgeList')
+  const UserProfileBadgeList = await getModule((m) => m.default?.displayName === 'UserProfileBadgeList');
   inject('pc-badges-users', UserProfileBadgeList, 'default', ([ props ], res) => {
     const [ badges, setBadges ] = React.useState(null);
     React.useState(() => {
       const baseUrl = powercord.settings.get('backendURL', WEBSITE);
-      get(`${baseUrl}/api/v2/users/${props.user.id}?legacy=true`).then(res => setBadges(res.body.badges))
+      get(`${baseUrl}/api/v2/users/${props.user.id}?legacy=true`).then(res => setBadges(res.body.badges));
     }, []);
 
     if (!badges) {
@@ -94,75 +63,9 @@ async function injectUsers () {
     }
 
     return res;
-  })
-
-  UserProfileBadgeList.default.displayName = 'UserProfileBadgeList'
-}
-
-async function injectUserss () {
-  const UserProfileBody = await getUserProfileBody();
-  const { profileBadges } = await getModule([ 'profileBadges' ]);
-
-  inject('pc-badges-users-fetch', UserProfileBody.prototype, 'componentDidMount', fetchBadges);
-  inject('pc-badges-users-update', UserProfileBody.prototype, 'componentDidUpdate', function ([ prevProps ]) {
-    if (this.props.user.id !== prevProps.user.id) {
-      fetchBadges.call(this);
-    }
   });
 
-  inject('pc-badges-users-render', UserProfileBody.prototype, 'renderBadges', function (_, res) {
-    const renderer = res.type;
-    res.type = (props) => {
-      const res = renderer(props);
-      if (badges && hasBadge(badges)) {
-        if (!res) {
-          // There's no container if the user have no flags
-          return React.createElement(Flex, {
-            className: profileBadges,
-            basis: 'auto',
-            grow: 1,
-            shrink: 1
-          }, []);
-        }
-
-        const render = (Component, key, props = {}) => (
-          React.createElement(Component, {
-            key: `pc-${key}`,
-            color: badges.custom && badges.custom.color,
-            ...props
-          })
-        );
-
-        if (badges.custom && badges.custom.name && badges.custom.icon) {
-          res.props.children.push(render(Badges.Custom, 'cutie', badges.custom));
-        }
-        if (badges.developer) {
-          res.props.children.push(render(Badges.Developer, 'developer'));
-        }
-        if (badges.staff) {
-          res.props.children.push(render(Badges.Staff, 'staff'));
-        }
-        if (badges.support) {
-          res.props.children.push(render(Badges.Support, 'support'));
-        }
-        if (badges.contributor) {
-          res.props.children.push(render(Badges.Contributor, 'contributor'));
-        }
-        if (badges.translator) {
-          res.props.children.push(render(Badges.Translator, 'translator'));
-        }
-        if (badges.hunter) {
-          res.props.children.push(render(Badges.BugHunter, 'hunter'));
-        }
-        if (badges.early) {
-          res.props.children.push(render(Badges.EarlyUser, 'early'));
-        }
-      }
-      return res;
-    };
-
-    return res;
-  });
+  UserProfileBadgeList.default.displayName = 'UserProfileBadgeList';
 }
 
 async function injectGuilds () {
