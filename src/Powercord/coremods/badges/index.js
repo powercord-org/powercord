@@ -48,6 +48,58 @@ function fetchBadges () {
 }
 
 async function injectUsers () {
+  const UserProfileBadgeList = await getModule((m) => m.default?.displayName === 'UserProfileBadgeList')
+  inject('pc-badges-users', UserProfileBadgeList, 'default', ([ props ], res) => {
+    const [ badges, setBadges ] = React.useState(null);
+    React.useState(() => {
+      const baseUrl = powercord.settings.get('backendURL', WEBSITE);
+      get(`${baseUrl}/api/v2/users/${props.user.id}?legacy=true`).then(res => setBadges(res.body.badges))
+    }, []);
+
+    if (!badges) {
+      return res;
+    }
+
+    const render = (Component, key, props = {}) => (
+      React.createElement(Component, {
+        key: `pc-${key}`,
+        color: badges.custom && badges.custom.color,
+        ...props
+      })
+    );
+
+    if (badges.custom && badges.custom.name && badges.custom.icon) {
+      res.props.children.push(render(Badges.Custom, 'cutie', badges.custom));
+    }
+    if (badges.developer) {
+      res.props.children.push(render(Badges.Developer, 'developer'));
+    }
+    if (badges.staff) {
+      res.props.children.push(render(Badges.Staff, 'staff'));
+    }
+    if (badges.support) {
+      res.props.children.push(render(Badges.Support, 'support'));
+    }
+    if (badges.contributor) {
+      res.props.children.push(render(Badges.Contributor, 'contributor'));
+    }
+    if (badges.translator) {
+      res.props.children.push(render(Badges.Translator, 'translator'));
+    }
+    if (badges.hunter) {
+      res.props.children.push(render(Badges.BugHunter, 'hunter'));
+    }
+    if (badges.early) {
+      res.props.children.push(render(Badges.EarlyUser, 'early'));
+    }
+
+    return res;
+  })
+
+  UserProfileBadgeList.default.displayName = 'UserProfileBadgeList'
+}
+
+async function injectUserss () {
   const UserProfileBody = await getUserProfileBody();
   const { profileBadges } = await getModule([ 'profileBadges' ]);
 
@@ -62,7 +114,7 @@ async function injectUsers () {
     const renderer = res.type;
     res.type = (props) => {
       const res = renderer(props);
-      if (this.state.__pcBadges && hasBadge(this.state.__pcBadges)) {
+      if (badges && hasBadge(badges)) {
         if (!res) {
           // There's no container if the user have no flags
           return React.createElement(Flex, {
@@ -76,33 +128,33 @@ async function injectUsers () {
         const render = (Component, key, props = {}) => (
           React.createElement(Component, {
             key: `pc-${key}`,
-            color: this.state.__pcBadges.custom && this.state.__pcBadges.custom.color,
+            color: badges.custom && badges.custom.color,
             ...props
           })
         );
 
-        if (this.state.__pcBadges.custom && this.state.__pcBadges.custom.name && this.state.__pcBadges.custom.icon) {
-          res.props.children.push(render(Badges.Custom, 'cutie', this.state.__pcBadges.custom));
+        if (badges.custom && badges.custom.name && badges.custom.icon) {
+          res.props.children.push(render(Badges.Custom, 'cutie', badges.custom));
         }
-        if (this.state.__pcBadges.developer) {
+        if (badges.developer) {
           res.props.children.push(render(Badges.Developer, 'developer'));
         }
-        if (this.state.__pcBadges.staff) {
+        if (badges.staff) {
           res.props.children.push(render(Badges.Staff, 'staff'));
         }
-        if (this.state.__pcBadges.support) {
+        if (badges.support) {
           res.props.children.push(render(Badges.Support, 'support'));
         }
-        if (this.state.__pcBadges.contributor) {
+        if (badges.contributor) {
           res.props.children.push(render(Badges.Contributor, 'contributor'));
         }
-        if (this.state.__pcBadges.translator) {
+        if (badges.translator) {
           res.props.children.push(render(Badges.Translator, 'translator'));
         }
-        if (this.state.__pcBadges.hunter) {
+        if (badges.hunter) {
           res.props.children.push(render(Badges.BugHunter, 'hunter'));
         }
-        if (this.state.__pcBadges.early) {
+        if (badges.early) {
           res.props.children.push(render(Badges.EarlyUser, 'early'));
         }
       }
