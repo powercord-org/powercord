@@ -53,7 +53,8 @@ div[class^=topSection]:not(.topSectionNormal-2-vo2m) .header-QKLPzZ .powercord-b
   top: 1px;
 }
 
-.header-2V-4Sw .powercord-badge .powercord-badge-cutie {
+.header-2V-4Sw .powercord-badge .powercord-badge-cutie,
+.header-2V-4Sw .powercord-badge .powercord-badge-cutie img {
   width: 18px;
   height: 18px;
 }

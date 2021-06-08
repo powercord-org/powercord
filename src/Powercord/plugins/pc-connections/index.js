@@ -1,5 +1,5 @@
 const { Plugin } = require('powercord/entities');
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 const { WEBSITE } = require('powercord/constants');
 
@@ -15,11 +15,12 @@ module.exports = class Connections extends Plugin {
 
   async startPlugin () {
     this.classes = {
-      ...await getModule([ 'headerInfo', 'nameTag' ]),
+      ...await getModule([ 'userInfoSection' ]),
       ...await getModule([ 'modal', 'inner' ]),
-      ...await getModule([ 'connection', 'integration' ])
+      ...await getModule([ 'connectedAccount' ])
     };
 
+    this.loadStylesheet('style.css');
     this.patchSettingsConnections();
     this.patchUserConnections();
   }
@@ -45,47 +46,25 @@ module.exports = class Connections extends Plugin {
   }
 
   async patchUserConnections () {
-    const _this = this;
-    const UserInfoProfileSection = await this._fetchUserConnectionModule();
-    // @todo: remove empty line when there aren't connections
-    inject('pc-connections-profile', UserInfoProfileSection.prototype, 'renderConnectedAccounts', function (_, res) {
-      if (typeof res === 'object') {
-        const { children: connectedAccounts } = res.props.children.props;
-        connectedAccounts.push(React.createElement(ProfileConnections, {
-          id: this.props.user.id
-        }));
-      } else {
-        return React.createElement('div', { className: _this.classes.userInfoSection },
-          React.createElement('div', { className: _this.classes.connectedAccounts }, React.createElement(ProfileConnections, {
-            id: this.props.user.id
-          }))
-        );
+    const UserInfoBase = await getModule((m) => m.default?.displayName == 'UserInfoBase');
+    inject('pc-connections-profile', UserInfoBase, 'default', ([ props ], res) => {
+      const ogType = res.props.children[1].type;
+      res.props.children[1].type = (p) => {
+        let res = ogType(p);
+        if (!res) {
+          res = React.createElement('div', { className: `${this.classes.userInfoSection} pc-connections` },
+            React.createElement('div', { className: this.classes.connectedAccounts, children: [] })
+          );
+        }
+
+        res.props.children.props.children.push(React.createElement(ProfileConnections, { id: props.user.id }));
+        console.log(res);
+        return res;
       }
 
       return res;
     });
-  }
 
-  async _fetchUserConnectionModule () {
-    // BEAUTIFUL, ABSOLUTELY BEAUTIFUL I LOVE INJECTING INTO DISCORD.
-    const UserProfile = await getModuleByDisplayName('UserProfile');
-    // noinspection JSPotentiallyInvalidConstructorUsage
-    const setp1 = React.createElement(UserProfile)
-      .type.prototype.render()
-      .type.prototype.render.call({ memoizedGetStateFromStores: () => ({}) })
-      .type.render()
-      .type.prototype.render.call({ props: {} }).type;
-    // noinspection JSPotentiallyInvalidConstructorUsage
-    return setp1.prototype.render.call({
-      ...setp1.prototype,
-      props: {
-        user: {
-          getAvatarURL: () => void 0,
-          hasFlag: () => void 0
-        }
-      },
-      state: {}
-    }).props.children.props.children[1].props.children
-      .type.prototype.render.call({ memoizedGetStateFromStores: () => ({}) }).type;
+    UserInfoBase.default.displayName = 'UserInfoBase'
   }
 };

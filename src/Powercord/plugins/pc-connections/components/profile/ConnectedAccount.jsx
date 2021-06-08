@@ -3,10 +3,9 @@ const { Icons: { ExternalLink } } = require('powercord/components');
 
 const Verified = require('../Verified');
 
-let components, classes;
+let classes;
 setImmediate(async () => {
-  components = { Flex: await getModuleByDisplayName('Flex') };
-  classes = { ...await getModule([ 'connectedAccount', 'headerInfo' ]) };
+  classes = { ...await getModule([ 'connectedAccount' ]) };
 });
 
 module.exports = class ConnectedAccount extends React.Component {
@@ -17,10 +16,9 @@ module.exports = class ConnectedAccount extends React.Component {
   }
 
   render () {
-    const { Flex } = components;
     const { props: { account }, connection } = this;
 
-    return <Flex align={Flex.Align.CENTER} grow={0} className={classes.connectedAccount}>
+    return <div className={classes.connectedAccount}>
       <img
         alt={Messages.IMG_ALT_LOGO.format({ name: connection.name })}
         className={classes.connectedAccountIcon}
@@ -29,15 +27,13 @@ module.exports = class ConnectedAccount extends React.Component {
       <div className={classes.connectedAccountNameInner}>
         <div className={classes.connectedAccountName}>{account.name}
         </div>
-        {account.verified &&
-          <Verified className={classes.connectedAccountVerifiedIcon}/>
-        }
+        {account.verified && <Verified className={classes.connectedAccountVerifiedIcon}/>}
       </div>
       {typeof connection.getPlatformUserUrl === 'function' &&
         <a href={connection.getPlatformUserUrl(account)} target='_blank'>
           <ExternalLink className={classes.connectedAccountOpenIcon}/>
         </a>
       }
-    </Flex>;
+    </div>;
   }
 };

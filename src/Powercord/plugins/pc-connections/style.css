@@ -1,0 +1,14 @@
+.pc-connections .connectedAccounts-QlRa4m:empty::before {
+  /* Rate this hack, from 0 (genius) to 10 (absolute genius) */
+  content: '';
+  display: block;
+  background-color: var(--background-secondary);
+  width: 100%;
+  height: 4px;
+  margin-top: -2px;
+}
+
+.userInfoSection-q_35fn + .userInfoSection-q_35fn + .pc-connections {
+  border-top-width: 0;
+  padding-top: 0;
+}
