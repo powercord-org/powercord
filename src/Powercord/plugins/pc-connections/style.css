@@ -1,11 +1,16 @@
+.pc-connections .connectedAccounts-QlRa4m:empty {
+  position: relative;
+}
+
 .pc-connections .connectedAccounts-QlRa4m:empty::before {
   /* Rate this hack, from 0 (genius) to 10 (absolute genius) */
   content: '';
   display: block;
-  background-color: var(--background-secondary);
+  position: absolute;
+  background-color: var(--background-floating);
   width: 100%;
   height: 4px;
-  margin-top: -2px;
+  top: 2px;
 }
 
 .userInfoSection-q_35fn + .userInfoSection-q_35fn + .pc-connections {
