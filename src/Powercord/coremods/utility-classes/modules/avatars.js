@@ -13,7 +13,7 @@ module.exports = async () => {
   inject('pc-utilitycls-avatar', Avatar, 'default', (args, res) => {
     const avatar = args[0].src || void 0;
     if (avatar && avatar.includes('/avatars')) {
-      [ , res.props['data-user-id'] ] = avatar.match(/\/avatars\/(\d+)/);
+      [ , res.props['data-user-id'] ] = avatar.match(/\/(?:avatars|users)\/(\d+)/);
     }
 
     return res;
