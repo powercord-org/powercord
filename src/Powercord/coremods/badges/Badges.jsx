@@ -15,17 +15,17 @@ const DonateModal = require('./DonateModal');
 const Base = React.memo(({ color, tooltip, tooltipPosition, onClick, className, children }) => {
   const { profileBadge22 } = getModule([ 'profileBadge22' ], false);
   return (
-    <Tooltip text={tooltip} position={tooltipPosition || 'top' }>
-      <Clickable onClick={onClick || (() => void 0)}>
+    <Clickable onClick={onClick || (() => void 0)} className='powercord-badge-wrapper'>
+      <Tooltip text={tooltip} position={tooltipPosition || 'top' } spacing={24}>
         <div className={`${profileBadge22} powercord-badge ${className}`} style={{ color: `#${color || '7289da'}` }}>
           {children}
         </div>
-      </Clickable>
-    </Tooltip>
+      </Tooltip>
+    </Clickable>
   );
 });
 
-const Custom = React.memo(({ name, icon, white, tooltipPosition }) => (
+const Custom = React.memo(({ name, icon, tooltipPosition }) => (
   <Base
     tooltipPosition={tooltipPosition}
     onClick={() => openModal(DonateModal)}
@@ -33,7 +33,6 @@ const Custom = React.memo(({ name, icon, white, tooltipPosition }) => (
     tooltip={name}
   >
     <img src={icon} alt='Custom badge'/>
-    {white && <img src={white} alt='Custom badge'/>}
   </Base>
 ));
 
