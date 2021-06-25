@@ -61,6 +61,8 @@ module.exports = async function injectAutocomplete () {
         }
         return { results: autocompleteRows };
       }
+
+      return { results: {} };
     },
     renderResults: (result, selected, channel, guild, value, props, onHover, onClick) => {
       if (result && result.commands) {
