@@ -43,8 +43,8 @@ module.exports = async function injectAutocomplete () {
 
   const { AUTOCOMPLETE_OPTIONS: AutocompleteTypes, AUTOCOMPLETE_PRIORITY: AutocompletePriority } = await getModule([ 'AUTOCOMPLETE_OPTIONS' ]);
   if (!AutocompletePriority.includes('POWERCORD')) {
-    AutocompletePriority.push('POWERCORD')
-    AutocompletePriority.push('POWERCORD_AUTOCOMPLETE')
+    AutocompletePriority.unshift('POWERCORD_AUTOCOMPLETE')
+    AutocompletePriority.unshift('POWERCORD')
   }
 
   AutocompleteTypes.POWERCORD_AUTOCOMPLETE = {
