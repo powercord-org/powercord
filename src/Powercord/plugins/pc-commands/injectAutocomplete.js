@@ -1,22 +1,15 @@
 const { React, i18n: { Messages }, getModuleByDisplayName, getModule, typing } = require('powercord/webpack');
 const { AdvancedScrollerThin } = require('powercord/components');
-const { getOwnerInstance } = require('powercord/util');
 const { inject } = require('powercord/injector');
 
 const Title = require('./components/Title');
 const Command = require('./components/Command');
 
 module.exports = async function injectAutocomplete () {
-  this.classes = {
-    ...await getModule([ 'channelTextArea', 'inner' ])
-  };
-
+  const messages = await getModule([ 'sendMessage', 'editMessage' ]);
   function renderHeader (value, formatHeader, customHeader) {
     const title = value.length > 0 ? Messages.COMMANDS_MATCHING.format({ prefix: formatHeader(value) }) : Messages.COMMANDS;
-
-    return React.createElement(Title, {
-      title: customHeader || [ 'Powercord ', title ]
-    }, 'autocomplete-title-Commands');
+    return React.createElement(Title, { title: customHeader || [ 'Powercord ', title ] }, 'autocomplete-title-Commands');
   }
 
   function renderCommandResults (value, selected, commands, onHover, onClick, formatCommand, formatHeader, customHeader) {
@@ -38,7 +31,7 @@ module.exports = async function injectAutocomplete () {
   }
 
   function getMatchingCommand (c) {
-    return [ c.command.toLowerCase(), ...(c.aliases?.map(alias => alias.toLowerCase()) || []) ];
+    return [ c.command.toLowerCase(), ...(c.aliases?.map((alias) => alias.toLowerCase()) || []) ];
   }
 
   const { AUTOCOMPLETE_OPTIONS: AutocompleteTypes, AUTOCOMPLETE_PRIORITY: AutocompletePriority } = await getModule([ 'AUTOCOMPLETE_OPTIONS' ]);
@@ -49,7 +42,7 @@ module.exports = async function injectAutocomplete () {
 
   AutocompleteTypes.POWERCORD_AUTOCOMPLETE = {
     get sentinel () { return powercord.api.commands.prefix },
-    matches: (_channel, _guild, value) => value.includes(' ') && powercord.api.commands.find(c => (getMatchingCommand(c)).includes(value.split(' ')[0])),
+    matches: (_channel, _guild, value, start) => start && value.includes(' ') && powercord.api.commands.find(c => (getMatchingCommand(c)).includes(value.split(' ')[0])),
     queryResults: (_channel, _guild, value) => {
       const currentCommand = powercord.api.commands.find(c => (getMatchingCommand(c)).includes(value.split(' ')[0]));
       if (currentCommand.autocomplete) {
@@ -64,7 +57,7 @@ module.exports = async function injectAutocomplete () {
 
       return { results: {} };
     },
-    renderResults: (result, selected, channel, guild, value, props, onHover, onClick) => {
+    renderResults: (result, selected, _channel, _guild, value, _props, onHover, onClick) => {
       if (result && result.commands) {
         const { commands } = result;
         const customHeader = Array.isArray(commands.__header) ? commands.__header : [ commands.__header ];
@@ -79,7 +72,19 @@ module.exports = async function injectAutocomplete () {
         }), () => void 0, customHeader);
       }
     },
-    onSelect: (result, selected, _, props) => {
+    onSelect: (result, selected, isEnter, props) => {
+      if (result.commands[selected].instruction) {
+        if (isEnter) {
+          const msg = `${powercord.api.commands.prefix}${result.value}`
+          messages.sendMessage('0', { content: msg })
+          this.instance.clearValue()
+          return {}
+        } else if (!result.value.endsWith(' ')) {
+          props.insertText(`${powercord.api.commands.prefix}${result.value}`)
+        }
+
+        return {}
+      }
       const value = result.value.split(' ').slice(0, -1).join(' ')
       props.insertText(`${powercord.api.commands.prefix}${value} ${result.commands[selected].command}`)
       return {}
@@ -88,7 +93,7 @@ module.exports = async function injectAutocomplete () {
 
   AutocompleteTypes.POWERCORD = {
     get sentinel () { return powercord.api.commands.prefix },
-    matches: (_channel, _guild, value) => powercord.api.commands.filter(c => (getMatchingCommand(c)).some(commandName => commandName.includes(value))).length,
+    matches: (_channel, _guild, value, start) => start && powercord.api.commands.filter(c => (getMatchingCommand(c)).some(commandName => commandName.includes(value))).length,
     queryResults: (_channel, _guild, value) => ({
       results: {
         commands: powercord.api.commands.filter(c => (getMatchingCommand(c)).some(commandName => commandName.includes(value)))
