@@ -78,7 +78,6 @@ module.exports = async function injectAutocomplete () {
           const msg = `${powercord.api.commands.prefix}${result.value}`
           messages.sendMessage('0', { content: msg })
           this.instance.clearValue()
-          return {}
         } else if (!result.value.endsWith(' ')) {
           props.insertText(`${powercord.api.commands.prefix}${result.value}`)
         }

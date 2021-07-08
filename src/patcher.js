@@ -16,11 +16,6 @@ require.main.filename = join(discordPath, 'app_bootstrap/index.js');
 const electron = require('electron');
 const PatchedBrowserWindow = require('./browserWindow');
 
-// [Cynthia] Please do not laugh. I beg you.
-const sassPath = require.resolve('sass');
-const sassCode = readFileSync(sassPath, 'utf8');
-writeFileSync(sassPath, sassCode.replace(/self\.location/g, 'self.__$location'));
-
 require('./ipc/main');
 
 console.log('Hello from Powercord!');
