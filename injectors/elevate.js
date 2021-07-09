@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2020 aetheryx & Bowser65
+ * Copyright (c) 2021 aetheryx & Bowser65
  * All Rights Reserved. Licensed under the Porkord License
  * https://powercord.dev/porkord-license
  */
