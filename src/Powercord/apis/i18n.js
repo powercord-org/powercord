@@ -26,12 +26,14 @@ module.exports = class I18nAPI extends API {
   }
 
   addPowercordStrings () {
-    Object.assign(i18n._proxyContext.messages, this.messages[this.locale]);
-    Object.assign(i18n._proxyContext.defaultMessages, this.messages['en-US']);
+    const i18nContextProvider = i18n._provider?._context || i18n._proxyContext;
+
+    Object.assign(i18nContextProvider.messages, this.messages[this.locale]);
+    Object.assign(i18nContextProvider.defaultMessages, this.messages['en-US']);
 
     // begone annoying warning
     [ 'messages', 'defaultMessages' ].forEach(obj => {
-      Object.keys(i18n._proxyContext[obj]).filter(key => key.startsWith('SELF_XSS')).forEach(key => delete i18n._proxyContext[obj][key]);
+      Object.keys(i18nContextProvider[obj]).filter(key => key.startsWith('SELF_XSS')).forEach(key => delete i18nContextProvider[obj][key]);
     });
   }
 
