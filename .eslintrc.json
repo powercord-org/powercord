@@ -4,7 +4,8 @@
     "webpackJsonp": true,
     "DiscordNative": false,
     "PowercordNative": false,
-    "GLOBAL_ENV": true
+    "GLOBAL_ENV": true,
+    "BigInt": false
   },
   "parserOptions": {
     "ecmaVersion": 2020,

@@ -187,9 +187,8 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   hasPermission (guildId, permission) {
-    const permissions = this.getGuildPermissions(guildId);
-
-    return permissions && (permissions & permission) !== 0;
+    const permissions = this.getGuildPermissions(guildId)?.data;
+    return permissions && (permissions & permission.data) !== 0n;
   }
 
   createFakeEmoji (id, name, url) {
@@ -241,7 +240,7 @@ module.exports = class EmojiUtility extends Plugin {
           }
 
           if (guild) {
-            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
+            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS)) {
               return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
             }
           } else {
@@ -275,7 +274,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCloneableGuilds = () => {
         const items = [];
-        const clonableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+        const clonableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS));
 
         for (const guild of clonableGuilds) {
           items.push({
@@ -367,7 +366,7 @@ module.exports = class EmojiUtility extends Plugin {
           }
 
           if (guild) {
-            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
+            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS)) {
               return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
             }
           } else {
@@ -415,7 +414,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCreateableGuilds = () => {
         const items = [];
-        const createableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS));
+        const createableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS));
 
         for (const guild of createableGuilds) {
           items.push({
@@ -719,7 +718,7 @@ module.exports = class EmojiUtility extends Plugin {
         const emoji = Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis).find(e => e.id === matcher[2]);
         if (emoji) {
           try {
-            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS)) {
+            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS)) {
               return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
             }
 
