@@ -51,8 +51,8 @@ module.exports = async function injectAutocomplete () {
           autocompleteRows.value = value
           autocompleteRows.commands.__header = [ autocompleteRows.header ];
           delete autocompleteRows.header;
+          return { results: autocompleteRows };
         }
-        return { results: autocompleteRows };
       }
 
       return { results: {} };
