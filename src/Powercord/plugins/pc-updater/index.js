@@ -60,10 +60,10 @@ module.exports = class Updater extends Plugin {
 
   async checkForUpdates (allConcurrent = false) {
     if (
-      this.settings.set('disabled', false) ||
-      this.settings.set('paused', false) ||
-      this.settings.set('checking', false) ||
-      this.settings.set('updating', false)
+      this.settings.get('disabled', false) ||
+      this.settings.get('paused', false) ||
+      this.settings.get('checking', false) ||
+      this.settings.get('updating', false)
     ) {
       return;
     }

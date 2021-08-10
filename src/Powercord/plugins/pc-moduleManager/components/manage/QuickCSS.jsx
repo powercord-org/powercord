@@ -80,6 +80,7 @@ class QuickCSS extends React.PureComponent {
               <span>CodeMirror v{require('codemirror').version}</span>
             </div>
             {!this.props.popout && <div className='powercord-quickcss-resizer' onMouseDown={this._handleResizeBegin}/>}
+            <p>Psst! you can resize the QuickCSS editor if you want! Grab, the bottom of the editor and resize it however you like.</p>
           </>}
       </div>
     );
@@ -103,7 +104,7 @@ class QuickCSS extends React.PureComponent {
             value={getSetting('cm-lineNumbers', true)}
             onChange={v => {
               toggleSetting('cm-lineNumbers', true);
-              this.state.cm.setOption('lineNumbers', v.target.checked);
+              this.state.cm.setOption('lineNumbers', v);
             }}
           >
             {Messages.POWERCORD_QUICKCSS_SETTINGS_LINES}
@@ -112,10 +113,10 @@ class QuickCSS extends React.PureComponent {
             value={getSetting('cm-codeFolding', true)}
             onChange={v => {
               toggleSetting('cm-codeFolding', true);
-              if (!v.target.checked) {
+              if (!v) {
                 this.state.cm.execCommand('unfoldAll');
               }
-              this.state.cm.setOption('foldGutter', v.target.checked);
+              this.state.cm.setOption('foldGutter', v);
             }}
           >
             {Messages.POWERCORD_QUICKCSS_SETTINGS_FOLDING}
@@ -125,7 +126,7 @@ class QuickCSS extends React.PureComponent {
             note={Messages.POWERCORD_QUICKCSS_SETTINGS_MATCH_BRACKETS_DESC}
             onChange={v => {
               toggleSetting('cm-matchBrackets', true);
-              this.state.cm.setOption('matchBrackets', v.target.checked);
+              this.state.cm.setOption('matchBrackets', v);
             }}
           >
             {Messages.POWERCORD_QUICKCSS_SETTINGS_MATCH_BRACKETS}
@@ -135,7 +136,7 @@ class QuickCSS extends React.PureComponent {
             note={Messages.POWERCORD_QUICKCSS_SETTINGS_CLOSE_BRACKETS_DESC}
             onChange={v => {
               toggleSetting('cm-closeBrackets', true);
-              this.state.cm.setOption('autoCloseBrackets', v.target.checked);
+              this.state.cm.setOption('autoCloseBrackets', v);
             }}
           >
             {Messages.POWERCORD_QUICKCSS_SETTINGS_CLOSE_BRACKETS}
@@ -144,7 +145,7 @@ class QuickCSS extends React.PureComponent {
             value={getSetting('cm-wrap', false)}
             onChange={v => {
               toggleSetting('cm-wrap', false);
-              this.state.cm.setOption('lineWrapping', v.target.checked);
+              this.state.cm.setOption('lineWrapping', v);
             }}
           >
             {Messages.POWERCORD_QUICKCSS_SETTINGS_WRAP}
@@ -153,7 +154,7 @@ class QuickCSS extends React.PureComponent {
             value={getSetting('cm-tabs', false)}
             onChange={v => {
               toggleSetting('cm-tabs', false);
-              this.state.cm.setOption('indentWithTabs', v.target.checked);
+              this.state.cm.setOption('indentWithTabs', v);
             }}
           >
             {Messages.POWERCORD_QUICKCSS_SETTINGS_TABS}

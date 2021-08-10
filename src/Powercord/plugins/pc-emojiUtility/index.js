@@ -59,7 +59,6 @@ module.exports = class EmojiUtility extends Plugin {
     await this.import('getCurrentUser');
     await this.import('createBotMessage');
     await this.import('receiveMessage');
-    await this.import('getSelectedChannelState');
     await this.import([ 'getLastSelectedChannelId' ], 'getChannelId');
     await this.import('queryEmojiResults');
   }
@@ -73,7 +72,7 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   getGuildRoute (guildId) {
-    const selectedChannelId = this.getSelectedChannelState()[guildId];
+    const selectedChannelId = this.getChannelId(guildId);
 
     /* eslint-disable new-cap */
     return selectedChannelId
@@ -187,8 +186,8 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   hasPermission (guildId, permission) {
-    const permissions = this.getGuildPermissions(guildId)?.data;
-    return permissions && (permissions & permission.data) !== 0n;
+    const permissions = this.getGuildPermissions({ id: guildId });
+    return permissions && (permissions & permission) !== 0n;
   }
 
   createFakeEmoji (id, name, url) {

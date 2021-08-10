@@ -55,6 +55,7 @@
   }
 
   &-editor {
+    height: calc(100% - 72px);
     position: relative;
     flex: 1;
 

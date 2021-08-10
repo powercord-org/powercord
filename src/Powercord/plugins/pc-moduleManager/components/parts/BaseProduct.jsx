@@ -56,7 +56,7 @@ class BaseProduct extends React.PureComponent {
               <Gear/>
             </Clickable>
           </Tooltip>}
-          <div className='buttons'>
+          {/* <div className='buttons'>
             {typeof this.props.onUninstall === 'function' &&
             <Button
               onClick={() => this.onUninstall()}
@@ -66,7 +66,7 @@ class BaseProduct extends React.PureComponent {
             >
               {Messages.APPLICATION_CONTEXT_MENU_UNINSTALL}
             </Button>}
-          </div>
+          </div> */}
         </div>
       </>
     );
