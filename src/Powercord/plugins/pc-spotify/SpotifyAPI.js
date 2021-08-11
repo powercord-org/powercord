@@ -10,6 +10,8 @@ const revokedMessages = {
   ACCESS_DENIED: 'Powercord is no longer able to connect to your Spotify account. Therefore, it has been automatically unlinked.'
 };
 
+let usedCached = false;
+
 module.exports = {
   accessToken: null,
 
@@ -39,13 +41,16 @@ module.exports = {
     }
 
     console.debug('%c[SpotifyAPI]', 'color: #1ed860', 'No Spotify account linked to Powercord; Falling back to Discord\'s token');
-    const spotifyMdl = await getModule([ 'getActiveSocketAndDevice' ]);
-    const active = spotifyMdl.getActiveSocketAndDevice();
-    if (active && active.socket && active.socket.accessToken) {
-      return active.socket.accessToken;
+    if (!usedCached) {
+      const spotifyMdl = await getModule([ 'getActiveSocketAndDevice' ]);
+      const active = spotifyMdl.getActiveSocketAndDevice();
+      if (active && active.socket && active.socket.accessToken) {
+        usedCached = true;
+        return active.socket.accessToken;
+      }
     }
 
-    // @todo: Can we safely remove this?
+    usedCached = false;
     const spotifyUserID = await http.get(Endpoints.CONNECTIONS)
       .then(res =>
         res.body.find(connection =>
