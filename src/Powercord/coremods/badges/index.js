@@ -20,9 +20,13 @@ async function injectUsers () {
   const UserProfileBadgeList = await getModule((m) => m.default?.displayName === 'UserProfileBadgeList');
   inject('pc-badges-users', UserProfileBadgeList, 'default', ([ props ], res) => {
     const [ badges, setBadges ] = React.useState(null);
-    React.useState(() => {
-      const baseUrl = powercord.settings.get('backendURL', WEBSITE);
-      get(`${baseUrl}/api/v2/users/${props.user.id}?legacy=true`).then(res => setBadges(res.body.badges));
+    React.useEffect(() => {
+      if (!cache[props.user.id]) {
+        const baseUrl = powercord.settings.get('backendURL', WEBSITE);
+        cache[props.user.id] = get(`${baseUrl}/api/v2/users/${props.user.id}`).then((res) => res.body.badges);
+      }
+
+      cache[props.user.id].then((b) => setBadges(b));
     }, []);
 
     if (!badges) {
