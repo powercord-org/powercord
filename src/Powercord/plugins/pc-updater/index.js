@@ -87,27 +87,31 @@ module.exports = class Updater extends Plugin {
     await Promise.all(Array(parallel).fill(null).map(async () => {
       let entity;
       while ((entity = entities.shift())) {
-        const repo = await entity.getGitRepo();
-        if (repo) {
-          const shouldUpdate = await entity._checkForUpdates();
-          if (shouldUpdate) {
-            const commits = await entity._getUpdateCommits();
-            if (commits[0] && skipped[entity.updateIdentifier] === commits[0].id) {
-              return;
+        try {
+          const repo = await entity.getGitRepo();
+          if (repo) {
+            const shouldUpdate = await entity._checkForUpdates();
+            if (shouldUpdate) {
+              const commits = await entity._getUpdateCommits();
+              if (commits[0] && skipped[entity.updateIdentifier] === commits[0].id) {
+                return;
+              }
+              updates.push({
+                id: entity.updateIdentifier,
+                name: entity.manifest?.name ?? 'Powercord',
+                icon: entity.constructor.name === 'Theme' || entity.constructor.name === 'Powercord'
+                  ? entity.constructor.name
+                  : 'Plugin',
+                commits,
+                repo
+              });
             }
-            updates.push({
-              id: entity.updateIdentifier,
-              name: entity.manifest?.name ?? 'Powercord',
-              icon: entity.constructor.name === 'Theme' || entity.constructor.name === 'Powercord'
-                ? entity.constructor.name
-                : 'Plugin',
-              commits,
-              repo
-            });
           }
+        } catch (e) {
+          console.error('An error occurred while checking for updates for %s', entity.manifest?.name ?? 'Powercord', e);
+        } finally {
+          this.settings.set('checking_progress', [ ++done, entitiesLength ]);
         }
-        done++;
-        this.settings.set('checking_progress', [ done, entitiesLength ]);
       }
     }));
 

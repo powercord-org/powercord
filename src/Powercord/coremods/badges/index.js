@@ -23,7 +23,16 @@ async function injectUsers () {
     React.useEffect(() => {
       if (!cache[props.user.id]) {
         const baseUrl = powercord.settings.get('backendURL', WEBSITE);
-        cache[props.user.id] = get(`${baseUrl}/api/v2/users/${props.user.id}`).then((res) => res.body.badges);
+        cache[props.user.id] = get(`${baseUrl}/api/v2/users/${props.user.id}`)
+          .catch((e) => e)
+          .then((res) => {
+            if (res.statusCode === 200 || res.statusCode === 404) {
+              return res.body.badges || {};
+            }
+
+            delete cache[props.user.id];
+            return {};
+          });
       }
 
       cache[props.user.id].then((b) => setBadges(b));
