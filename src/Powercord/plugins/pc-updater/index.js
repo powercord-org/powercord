@@ -23,8 +23,11 @@ module.exports = class Updater extends Plugin {
   async startPlugin () {
     this.settings.set('paused', false);
     this.settings.set('failed', false);
+    this.settings.set('checking', false);
     this.settings.set('updating', false);
     this.settings.set('awaiting_reload', false);
+    this.settings.set('checking_progress', null);
+
     this.loadStylesheet('style.scss');
     powercord.api.settings.registerSettings('pc-updater', {
       category: this.entityID,
@@ -39,18 +42,14 @@ module.exports = class Updater extends Plugin {
     }
 
     this._interval = setInterval(this.checkForUpdates.bind(this), minutes * 60 * 1000);
-    this.checkForUpdates();
+    setTimeout(() => {
+      this.checkForUpdates();
+    }, 10e3);
 
     const lastChangelog = this.settings.get('last_changelog', '');
     if (changelog.id !== lastChangelog) {
       this.openChangeLogs();
     }
-
-    setTimeout(() => {
-      if (powercord.gitInfos.branch === 'v2-dev') {
-        this.changeBranch('v2');
-      }
-    }, 10e3);
   }
 
   pluginWillUnload () {
@@ -94,7 +93,7 @@ module.exports = class Updater extends Plugin {
             if (shouldUpdate) {
               const commits = await entity._getUpdateCommits();
               if (commits[0] && skipped[entity.updateIdentifier] === commits[0].id) {
-                return;
+                continue;
               }
               updates.push({
                 id: entity.updateIdentifier,
