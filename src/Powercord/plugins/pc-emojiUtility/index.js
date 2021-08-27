@@ -187,7 +187,7 @@ module.exports = class EmojiUtility extends Plugin {
 
   hasPermission (guildId, permission) {
     const permissions = this.getGuildPermissions({ id: guildId });
-    return permissions && (permissions & permission) !== 0n;
+    return permissions.data && (permissions.data & permission.data) !== 0n;
   }
 
   createFakeEmoji (id, name, url) {

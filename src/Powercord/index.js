@@ -82,6 +82,7 @@ class Powercord extends Updatable {
     // Webpack & Modules
     await Webpack.init();
     await Promise.all(modules.map(mdl => mdl()));
+    this.emit('initializing');
 
     // Start
     await this.startup();

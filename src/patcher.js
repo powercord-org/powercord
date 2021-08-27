@@ -6,7 +6,7 @@
 
 const Module = require('module');
 const { join, dirname } = require('path');
-const { existsSync, unlinkSync, readFileSync, writeFileSync } = require('fs');
+const { existsSync, unlinkSync } = require('fs');
 
 // Restore the classic path; The updater relies on it and it makes Discord go corrupt
 const electronPath = require.resolve('electron');
