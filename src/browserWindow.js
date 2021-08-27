@@ -57,8 +57,8 @@ class PatchedBrowserWindow extends BrowserWindow {
       configurable: true
     });
 
-    win.on('maximize', () => win.webContents.send('POWERCORD_WINDOW_MAXIMIZE'));
-    win.on('unmaximize', () => win.webContents.send('POWERCORD_WINDOW_UNMAXIMIZE'));
+    // win.on('maximize', () => win.webContents.send('POWERCORD_WINDOW_MAXIMIZE'));
+    // win.on('unmaximize', () => win.webContents.send('POWERCORD_WINDOW_UNMAXIMIZE'));
 
     win.webContents._powercordPreload = originalPreload;
     return win;
