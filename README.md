@@ -1,5 +1,9 @@
-# Powercord
-Powercord is a lightweight client mod focused on simplicity and performance.  
+<p align="center" style="margin-bottom: 0px !important;">
+  <img width="200" src="https://powercord.dev/assets/powercord.1eb41971.svg" alt="Powercord Plug logo | Copyright © 2018 Katlyn Lorimer, All Rights Reserved." align="center">
+</p>
+<h1 align="center" style="margin-top: 0px;">Powercord</h1>
+<h1 align="center" style="margin-top: 0px;">Powercord is a lightweight client mod focused on simplicity and performance.  </h1>
+
 As of right now, Powercord is in *very* early stages of development, so feel free to join [this server](https://discord.gg/gs4ZMbBfCh) for any questions.
 
 # Installation
