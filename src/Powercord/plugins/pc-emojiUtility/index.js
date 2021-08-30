@@ -16,7 +16,7 @@ const {
 /* const { CDN_HOST } = window.GLOBAL_ENV; */
 
 const { ContextMenu } = require('powercord/components');
-const { getOwnerInstance } = require('powercord/util');
+// const { getOwnerInstance } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { open: openModal } = require('powercord/modal');
 
@@ -187,7 +187,7 @@ module.exports = class EmojiUtility extends Plugin {
 
   hasPermission (guildId, permission) {
     const permissions = this.getGuildPermissions({ id: guildId });
-    return permissions.data && (permissions.data & permission.data) !== 0n;
+    return permissions && (permissions & permission) !== 0n;
   }
 
   createFakeEmoji (id, name, url) {
@@ -351,7 +351,7 @@ module.exports = class EmojiUtility extends Plugin {
     };
 
     const getCreateableFeatures = (target) => {
-      const url = getOwnerInstance(target).props.href || target.src;
+      const url = /* getOwnerInstance(target).props.href || */ target.src;
 
       const onGuildClick = (guild) => {
         if (!guild) {
