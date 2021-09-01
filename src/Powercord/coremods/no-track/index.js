@@ -4,6 +4,7 @@
  * https://powercord.dev/porkord-license
  */
 
+// todo: rewrite using webFrame evaluation?
 const { getModule } = require('powercord/webpack');
 
 module.exports = async function () {
