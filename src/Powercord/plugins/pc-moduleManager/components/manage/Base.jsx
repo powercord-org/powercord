@@ -8,7 +8,7 @@ class Base extends React.Component {
   constructor () {
     super();
     this.state = {
-      key: `${this.constructor.name.toUpperCase()}`,
+      key: this.constructor.name.toUpperCase(),
       search: ''
     };
   }

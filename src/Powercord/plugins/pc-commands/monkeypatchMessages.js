@@ -20,12 +20,16 @@ module.exports = async function monkeypatchMessages () {
       return sendMessage(id, message, ...params).catch(() => void 0);
     }
 
-    let result
+    let result;
     try {
       result = await command.executor(args, this);
     } catch (e) {
-      result = { send: false, result: `An error occurred while executing the command: ${e.message}.\nCheck the console for more details.` }
-      console.error('An error occurred while executing command %s: %o', command.command, e)
+      result = {
+        send: false,
+        result: `An error occurred while executing the command: ${e.message}.\nCheck the console for more details.`
+      };
+
+      console.error('An error occurred while executing command %s: %o', command.command, e);
     }
 
     if (!result || !result.result) {
