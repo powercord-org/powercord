@@ -16,8 +16,12 @@ function encodeIdentifier (i) {
 class Themes extends Base {
   constructor () {
     super();
-    this.state.tab = 'INSTALLED';
-    this.state.tryBeta = false;
+    this.state = {
+      ...this.state,
+      tab: 'INSTALLED',
+      tryBeta: false
+    };
+
     // this.state.settings = 'Customa-Discord';
   }
 
