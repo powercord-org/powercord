@@ -1,5 +1,5 @@
-const { React, getModule, constants: { Routes }, i18n: { Messages } } = require('powercord/webpack');
-const { Tooltip, Button, Clickable, Divider, Icons: { Discord, Gear } } = require('powercord/components');
+const { React, getModule, constants: { Routes } } = require('powercord/webpack');
+const { Tooltip, Clickable, Divider, Icons: { Discord, Gear } } = require('powercord/components');
 
 const Details = require('./Details');
 const Permissions = require('./Permissions');

@@ -1,4 +1,4 @@
-const { React, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
+const { React, getModule, i18n: { Messages } } = require('powercord/webpack');
 const { Icons: { ExternalLink } } = require('powercord/components');
 
 const Verified = require('../Verified');

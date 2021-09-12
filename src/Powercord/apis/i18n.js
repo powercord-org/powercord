@@ -32,9 +32,17 @@ module.exports = class I18nAPI extends API {
     Object.assign(i18nContextProvider.defaultMessages, this.messages['en-US']);
 
     // begone annoying warning
-    [ 'messages', 'defaultMessages' ].forEach(obj => {
-      Object.keys(i18nContextProvider[obj]).filter(key => key.startsWith('SELF_XSS')).forEach(key => delete i18nContextProvider[obj][key]);
-    });
+    delete i18nContextProvider.messages.SELF_XSS_HEADER;
+    delete i18nContextProvider.messages.SELF_XSS_LINE_1;
+    delete i18nContextProvider.messages.SELF_XSS_LINE_2;
+    delete i18nContextProvider.messages.SELF_XSS_LINE_3;
+    delete i18nContextProvider.messages.SELF_XSS_LINE_4;
+
+    delete i18nContextProvider.defaultMessages.SELF_XSS_HEADER;
+    delete i18nContextProvider.defaultMessages.SELF_XSS_LINE_1;
+    delete i18nContextProvider.defaultMessages.SELF_XSS_LINE_2;
+    delete i18nContextProvider.defaultMessages.SELF_XSS_LINE_3;
+    delete i18nContextProvider.defaultMessages.SELF_XSS_LINE_4;
   }
 
   loadAllStrings (strings) {
@@ -50,6 +58,7 @@ module.exports = class I18nAPI extends API {
         ...strings
       };
     }
+
     this.addPowercordStrings();
   }
 };

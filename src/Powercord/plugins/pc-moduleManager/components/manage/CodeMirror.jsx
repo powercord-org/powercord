@@ -62,6 +62,7 @@ class CodeMirrorComponent extends React.PureComponent {
         'Shift-Ctrl--': (cm) => this.props.getSetting('cm-codeFolding', true) && cm.execCommand('foldAll')
       }
     });
+
     this.props.onReady(cm);
     this.setState({ cm });
   }

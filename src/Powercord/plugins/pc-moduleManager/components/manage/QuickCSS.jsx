@@ -25,64 +25,66 @@ class QuickCSS extends React.PureComponent {
 
   render () {
     return (
-      <div
-        className={[ 'powercord-quickcss', this.props.popout && 'popout', !this.props.popout && this.props.guestWindow && 'popped-out' ].filter(Boolean).join(' ')}
-        style={{ '--editor-height': `${this.props.getSetting('cm-height', 350)}px` }}
-        ref={this.ref}
-      >
-        {!this.props.popout && this.props.guestWindow
-          ? <div className='powercord-quickcss-popped'>{Messages.POWERCORD_QUICKCSS_POPPED_OUT}</div>
-          : <>
-            <div className='powercord-quickcss-header'>
-              <Tooltip text={Messages.SETTINGS} position='right'>
-                <Clickable onClick={() => this.setState({ cmSettings: true })} className='button'>
-                  <Gear/>
-                </Clickable>
-              </Tooltip>
-              <div>
-                {this.props.popout &&
-                <Tooltip
-                  text={this.props.windowOnTop ? Messages.POPOUT_REMOVE_FROM_TOP : Messages.POPOUT_STAY_ON_TOP}
-                  position='left'
-                >
-                  <Clickable
-                    onClick={async () => {
-                      const popoutModule = await getModule([ 'setAlwaysOnTop', 'open' ]);
-                      popoutModule.setAlwaysOnTop('DISCORD_POWERCORD_QUICKCSS', !this.props.windowOnTop);
-                    }}
-                    className='button'
-                  >
-                    {this.props.windowOnTop ? <Unpin/> : <Pin/>}
-                  </Clickable>
-                </Tooltip>}
-                <Tooltip text={this.props.popout ? Messages.CLOSE_WINDOW : Messages.POPOUT_PLAYER} position='left'>
-                  <Clickable
-                    onClick={() => this.props.popout
-                      ? getModule([ 'setAlwaysOnTop', 'open' ], false).close('DISCORD_POWERCORD_QUICKCSS')
-                      : this.props.openPopout()}
-                    className='button'
-                  >
-                    {this.props.popout ? <Close/> : <ExternalLink/>}
+      <>
+        <div
+          className={[ 'powercord-quickcss', this.props.popout && 'popout', !this.props.popout && this.props.guestWindow && 'popped-out' ].filter(Boolean).join(' ')}
+          style={{ '--editor-height': `${this.props.getSetting('cm-height', 350)}px` }}
+          ref={this.ref}
+        >
+          {!this.props.popout && this.props.guestWindow
+            ? <div className='powercord-quickcss-popped'>{Messages.POWERCORD_QUICKCSS_POPPED_OUT}</div>
+            : <>
+              <div className='powercord-quickcss-header'>
+                <Tooltip text={Messages.SETTINGS} position='right'>
+                  <Clickable onClick={() => this.setState({ cmSettings: true })} className='button'>
+                    <Gear/>
                   </Clickable>
                 </Tooltip>
+                <div>
+                  {this.props.popout &&
+                  <Tooltip
+                    text={this.props.windowOnTop ? Messages.POPOUT_REMOVE_FROM_TOP : Messages.POPOUT_STAY_ON_TOP}
+                    position='left'
+                  >
+                    <Clickable
+                      onClick={async () => {
+                        const popoutModule = await getModule([ 'setAlwaysOnTop', 'open' ]);
+                        popoutModule.setAlwaysOnTop('DISCORD_POWERCORD_QUICKCSS', !this.props.windowOnTop);
+                      }}
+                      className='button'
+                    >
+                      {this.props.windowOnTop ? <Unpin/> : <Pin/>}
+                    </Clickable>
+                  </Tooltip>}
+                  <Tooltip text={this.props.popout ? Messages.CLOSE_WINDOW : Messages.POPOUT_PLAYER} position='left'>
+                    <Clickable
+                      onClick={() => this.props.popout
+                        ? getModule([ 'setAlwaysOnTop', 'open' ], false).close('DISCORD_POWERCORD_QUICKCSS')
+                        : this.props.openPopout()}
+                      className='button'
+                    >
+                      {this.props.popout ? <Close/> : <ExternalLink/>}
+                    </Clickable>
+                  </Tooltip>
+                </div>
               </div>
-            </div>
-            <div className='powercord-quickcss-editor'>
-              {this.state.cmSettings && this.renderSettings()}
-              <CodeMirror
-                popout={this.props.popout}
-                onReady={this.setupCodeMirror.bind(this)}
-                getSetting={this.props.getSetting}
-              />
-            </div>
-            <div className='powercord-quickcss-footer'>
-              <span>{Messages.POWERCORD_QUICKCSS_AUTOCOMPLETE}</span>
-              <span>CodeMirror v{require('codemirror').version}</span>
-            </div>
-            {!this.props.popout && <div className='powercord-quickcss-resizer' onMouseDown={this._handleResizeBegin}/>}
-            <p>Psst! you can resize the QuickCSS editor if you want! Grab, the bottom of the editor and resize it however you like.</p>
-          </>}
-      </div>
+              <div className='powercord-quickcss-editor'>
+                {this.state.cmSettings && this.renderSettings()}
+                <CodeMirror
+                  popout={this.props.popout}
+                  onReady={(cm) => this.setupCodeMirror(cm)}
+                  getSetting={this.props.getSetting}
+                />
+              </div>
+              <div className='powercord-quickcss-footer'>
+                <span>{Messages.POWERCORD_QUICKCSS_AUTOCOMPLETE}</span>
+                <span>CodeMirror v{require('codemirror').version}</span>
+              </div>
+              {!this.props.popout && <div className='powercord-quickcss-resizer' onMouseDown={this._handleResizeBegin}/>}
+            </>}
+        </div>
+        {!this.props.popout && <p className='powercord-text'>Psst! you can resize the QuickCSS editor if you want! Grab, the bottom of the editor and resize it however you like.</p>}
+      </>
     );
   }
 
@@ -181,17 +183,17 @@ class QuickCSS extends React.PureComponent {
   }
 
   setupCodeMirror (cm) {
-    cm.on('change', this._handleCodeMirrorUpdate);
+    cm.on('change', () => this._handleCodeMirrorUpdate(cm.getValue()));
     cm.setValue(powercord.pluginManager.get('pc-moduleManager')._quickCSS);
     if (this.props.popout) {
       setTimeout(() => cm.refresh(), 100);
     }
+
     this.setState({ cm });
   }
 
-  _handleCodeMirrorUpdate (cm) {
-    // noinspection JSIgnoredPromiseFromCall
-    powercord.pluginManager.get('pc-moduleManager')._saveQuickCSS(cm.getValue());
+  _handleCodeMirrorUpdate (newValue) {
+    powercord.pluginManager.get('pc-moduleManager')._saveQuickCSS(newValue);
   }
 
   _handleResizeBegin () {

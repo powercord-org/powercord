@@ -1,4 +1,4 @@
-const { React, getModule, i18n: { Messages, chosenLocale: currentLocale } } = require('powercord/webpack');
+const { React, getModule, i18n: { Messages, _chosenLocale: currentLocale } } = require('powercord/webpack');
 const { Button, FormNotice, FormTitle, Tooltip, Icons: { FontAwesome } } = require('powercord/components');
 const { SwitchItem, TextInput, Category, ButtonItem } = require('powercord/components/settings');
 const { open: openModal, close: closeModal } = require('powercord/modal');
@@ -357,7 +357,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
           <b>System / Discord </b>
           <div className='row'>
             <div className='column'>Locale:&#10;{currentLocale}</div>
-            <div className='column'>OS:&#10;{(window.platform.os).toString()}</div>
+            <div className='column'>OS:&#10;{window.platform.os.family}{window.platform.os.architecture === 64 ? ' 64-bit' : ''}</div>
             <div className='column'>Architecture:&#10;{superProperties.os_arch}</div>
             {process.platform === 'linux' && (
               <div className='column'>Distro:&#10;{superProperties.distro || 'n/a'}</div>
