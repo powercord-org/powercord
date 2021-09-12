@@ -24,6 +24,16 @@ async function inject () {
 
   window.__SENTRY__.hub.getClient().close();
   window.__SENTRY__.hub.getScope().clear();
+
+  // a bit unrelated but shut up flux
+  window.__$$DoNotTrackCache.oldConsoleLog = console.log;
+  console.log = (...args) => {
+    if (args[0].includes('[Flux]')) {
+      return;
+    }
+
+    window.__$$DoNotTrackCache.oldConsoleLog.call(console, ...args);
+  };
 }
 
 function uninject () {
@@ -35,6 +45,8 @@ function uninject () {
   Reporter.submitLiveCrashReport = window.__$$DoNotTrackCache.oldSubmitLiveCrashReport;
   window.__SENTRY__.hub.addBreadcrumb = window.__$$DoNotTrackCache.oldAddBreadcrumb;
   AnalyticsMaker.AnalyticsActionHandlers.handleTrack = window.__$$DoNotTrackCache.oldHandleTrack;
+  console.log = window.__$$DoNotTrackCache.oldConsoleLog;
+
   delete window.__$$DoNotTrackCache;
 }
 
