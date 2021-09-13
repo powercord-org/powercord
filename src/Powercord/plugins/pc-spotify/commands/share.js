@@ -18,7 +18,7 @@ module.exports = {
 
       if (result.tracks.items.length > 1) {
         return openModal(() => React.createElement(ShareModal, {
-          tracks: result.tracks,
+          tracks: result.tracks.items,
           query
         }));
       } else if (closestTrack) {
