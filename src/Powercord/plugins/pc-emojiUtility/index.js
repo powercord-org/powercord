@@ -428,6 +428,7 @@ module.exports = class EmojiUtility extends Plugin {
           items.push({
             type: 'button',
             name: guild.name,
+            id: `guild___${guild.id}`,
             onClick: () => onGuildClick(guild)
           });
         }
@@ -441,6 +442,7 @@ module.exports = class EmojiUtility extends Plugin {
         type: 'submenu',
         hint: 'in',
         name: 'Create',
+        id: 'emoji-utility-create',
         onClick: () => onGuildClick(null),
         getItems: getCreateableGuilds
       });
