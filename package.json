@@ -12,7 +12,6 @@
     "inject": "node injectors/index.js inject --no-exit-codes",
     "uninject": "node injectors/index.js uninject --no-exit-codes",
     "update": "node injectors/fkill.js npm run unplug && git pull && npm i && npm run plug"
-
   },
   "repository": "https://github.com/powercord-org/powercord.git",
   "author": "aetheryx",
