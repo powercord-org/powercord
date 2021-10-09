@@ -25,7 +25,8 @@
     "sass": "^1.35.2",
     "stylus": "^0.54.8",
     "sucrase": "^3.15.0",
-    "unzip-crx": "^0.2.0"
+    "unzip-crx": "^0.2.0",
+    "fkill":"7.2.1"
   },
   "devDependencies": {
     "eslint": "^7.8.1",
