@@ -52,7 +52,7 @@ module.exports = class GeneralSettings extends React.Component {
           opened={getSetting('advancedSettings', false)}
           onChange={() => toggleSetting('advancedSettings')}
         >
-          <SwitchItem
+          {/* <SwitchItem
             note={Messages.POWERCORD_SETTINGS_DEBUG_LOGS_DESC}
             value={getSetting('debugLogs', false)}
             onChange={() => {
@@ -76,7 +76,7 @@ module.exports = class GeneralSettings extends React.Component {
               onChange={() => toggleSetting('openOverlayDevTools')}
             >
               {Messages.POWERCORD_SETTINGS_OVERLAY}
-            </SwitchItem>}
+            </SwitchItem>} */}
           <SwitchItem
             note={Messages.POWERCORD_SETTINGS_KEEP_TOKEN_DESC}
             value={getSetting('hideToken', true)}

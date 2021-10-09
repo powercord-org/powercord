@@ -38,12 +38,8 @@ class Modal extends React.PureComponent {
     return (
       <div
         className={[ 'powercord-spotify', (this.state.hover || this.state.seeking) && 'hover' ].filter(Boolean).join(' ')}
-        onMouseEnter={() => {
-          this.setState({ hover: true });
-        }}
-        onMouseLeave={() => {
-          this.setState({ hover: false });
-        }}
+        onMouseEnter={() => this.setState({ hover: true })}
+        onMouseLeave={() => this.setState({ hover: false })}
       >
         {this.renderFromBase(isPremium)}
         {isPremium && this.renderExtraControls()}
@@ -105,7 +101,7 @@ class Modal extends React.PureComponent {
           ),
           (
             <Tooltip text={this.renderNameComponent()} tooltipClassName='spotify-tooltip' delay={750}>
-              {this.renderNameComponent.bind(this)}
+              {(tooltipProps) => this.renderNameComponent(tooltipProps)}
             </Tooltip>
           ),
           {

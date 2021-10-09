@@ -31,7 +31,7 @@ module.exports = class Connections extends Plugin {
   }
 
   async patchSettingsConnections () {
-    const UserSettingsConnections = await getModule(m => m.default && m.default.displayName === 'UserSettingsConnections');
+    const UserSettingsConnections = await getModule(m => m.default?.displayName === 'UserSettingsConnections');
     inject('pc-connections-settings', UserSettingsConnections, 'default', (args, res) => {
       if (!res.props.children) {
         return res;
@@ -46,24 +46,27 @@ module.exports = class Connections extends Plugin {
   }
 
   async patchUserConnections () {
-    const UserInfoBase = await getModule((m) => m.default?.displayName == 'UserInfoBase');
+    const UserInfoBase = await getModule((m) => m.default?.displayName === 'UserInfoBase');
     inject('pc-connections-profile', UserInfoBase, 'default', ([ props ], res) => {
       const ogType = res.props.children[1].type;
       res.props.children[1].type = (p) => {
         let res = ogType(p);
         if (!res) {
           res = React.createElement('div', { className: `${this.classes.userInfoSection} pc-connections` },
-            React.createElement('div', { className: this.classes.connectedAccounts, children: [] })
+            React.createElement('div', {
+              className: this.classes.connectedAccounts,
+              children: []
+            })
           );
         }
 
         res.props.children.props.children.push(React.createElement(ProfileConnections, { id: props.user.id }));
         return res;
-      }
+      };
 
       return res;
     });
 
-    UserInfoBase.default.displayName = 'UserInfoBase'
+    UserInfoBase.default.displayName = 'UserInfoBase';
   }
 };

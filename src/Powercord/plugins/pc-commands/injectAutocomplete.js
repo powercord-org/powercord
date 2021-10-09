@@ -36,19 +36,21 @@ module.exports = async function injectAutocomplete () {
 
   const { AUTOCOMPLETE_OPTIONS: AutocompleteTypes, AUTOCOMPLETE_PRIORITY: AutocompletePriority } = await getModule([ 'AUTOCOMPLETE_OPTIONS' ]);
   if (!AutocompletePriority.includes('POWERCORD')) {
-    AutocompletePriority.unshift('POWERCORD_AUTOCOMPLETE')
-    AutocompletePriority.unshift('POWERCORD')
+    AutocompletePriority.unshift('POWERCORD_AUTOCOMPLETE');
+    AutocompletePriority.unshift('POWERCORD');
   }
 
   AutocompleteTypes.POWERCORD_AUTOCOMPLETE = {
-    get sentinel () { return powercord.api.commands.prefix },
+    get sentinel () {
+      return powercord.api.commands.prefix;
+    },
     matches: (_channel, _guild, value, start) => start && value.includes(' ') && powercord.api.commands.find(c => (getMatchingCommand(c)).includes(value.split(' ')[0])),
     queryResults: (_channel, _guild, value) => {
       const currentCommand = powercord.api.commands.find(c => (getMatchingCommand(c)).includes(value.split(' ')[0]));
       if (currentCommand.autocomplete) {
         const autocompleteRows = currentCommand.autocomplete(value.split(' ').slice(1));
         if (autocompleteRows) {
-          autocompleteRows.value = value
+          autocompleteRows.value = value;
           autocompleteRows.commands.__header = [ autocompleteRows.header ];
           delete autocompleteRows.header;
           return { results: autocompleteRows };
@@ -75,23 +77,25 @@ module.exports = async function injectAutocomplete () {
     onSelect: (result, selected, isEnter, props) => {
       if (result.commands[selected].instruction) {
         if (isEnter) {
-          const msg = `${powercord.api.commands.prefix}${result.value}`
-          messages.sendMessage('0', { content: msg })
-          this.instance.clearValue()
+          const msg = `${powercord.api.commands.prefix}${result.value}`;
+          messages.sendMessage('0', { content: msg });
+          this.instance.clearValue();
         } else if (!result.value.endsWith(' ')) {
-          props.insertText(`${powercord.api.commands.prefix}${result.value}`)
+          props.insertText(`${powercord.api.commands.prefix}${result.value}`);
         }
 
-        return {}
+        return {};
       }
-      const value = result.value.split(' ').slice(0, -1).join(' ')
-      props.insertText(`${powercord.api.commands.prefix}${value} ${result.commands[selected].command}`)
-      return {}
+      const value = result.value.split(' ').slice(0, -1).join(' ');
+      props.insertText(`${powercord.api.commands.prefix}${value} ${result.commands[selected].command}`);
+      return {};
     }
   };
 
   AutocompleteTypes.POWERCORD = {
-    get sentinel () { return powercord.api.commands.prefix },
+    get sentinel () {
+      return powercord.api.commands.prefix;
+    },
     matches: (_channel, _guild, value, start) => start && powercord.api.commands.filter(c => (getMatchingCommand(c)).some(commandName => commandName.includes(value))).length,
     queryResults: (_channel, _guild, value) => ({
       results: {
@@ -110,8 +114,8 @@ module.exports = async function injectAutocomplete () {
       }
     },
     onSelect: (result, selected, _, props) => {
-      props.insertText(`${powercord.api.commands.prefix}${result.commands[selected].command}`)
-      return {}
+      props.insertText(`${powercord.api.commands.prefix}${result.commands[selected].command}`);
+      return {};
     }
   };
 

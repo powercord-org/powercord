@@ -21,7 +21,9 @@ class Plugins extends Base {
   }
 
   getItems () {
-    return this._sortItems([ ...powercord.pluginManager.plugins.values() ]);
+    const dont = [ 'pc-commands', 'pc-connections', 'pc-docs', 'pc-i18n', 'pc-moduleManager', 'pc-notices', 'pc-rpc', 'pc-sdk', 'pc-settings', 'pc-updater' ];
+    const plugins = Array.from(powercord.pluginManager.plugins.values()).filter((p) => !dont.includes(p.entityID));
+    return this._sortItems(plugins);
   }
 
   fetchMissing () { // @todo: better impl + i18n

@@ -30,11 +30,6 @@ module.exports = class I18nAPI extends API {
 
     Object.assign(i18nContextProvider.messages, this.messages[this.locale]);
     Object.assign(i18nContextProvider.defaultMessages, this.messages['en-US']);
-
-    // begone annoying warning
-    [ 'messages', 'defaultMessages' ].forEach(obj => {
-      Object.keys(i18nContextProvider[obj]).filter(key => key.startsWith('SELF_XSS')).forEach(key => delete i18nContextProvider[obj][key]);
-    });
   }
 
   loadAllStrings (strings) {
@@ -50,6 +45,7 @@ module.exports = class I18nAPI extends API {
         ...strings
       };
     }
+
     this.addPowercordStrings();
   }
 };
