@@ -5,7 +5,7 @@
  */
 
 const { webFrame } = require('electron');
-global.NEW_BACKEND = false // !process.versions.electron.startsWith('13');
+global.NEW_BACKEND = !process.versions.electron.startsWith('13');
 
 require('../polyfills');
 
