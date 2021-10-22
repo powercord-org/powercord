@@ -5,7 +5,7 @@
  */
 
 const { webFrame } = require('electron');
-global.NEW_BACKEND = !('context' in require('electron').webFrame.top);
+global.NEW_BACKEND = false // !process.versions.electron.startsWith('13');
 
 require('../polyfills');
 
@@ -181,8 +181,8 @@ if (global.NEW_BACKEND) {
   wrapFunctions();
   webFrame.executeJavaScript(`(${wrapFunctions.toString().replace('wrapFunctions', '')}())`);
 
-  Object.defineProperty(window, 'webpackJsonp', {
-    get: () => webFrame.top.context.window.webpackJsonp
+  Object.defineProperty(window, 'webpackChunkdiscord_app', {
+    get: () => webFrame.top.context.window.webpackChunkdiscord_app
   });
 
   Object.defineProperty(window, 'GLOBAL_ENV', {
