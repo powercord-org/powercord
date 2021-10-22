@@ -9,7 +9,7 @@ require('./env_check')(); // Perform checks
 require('../polyfills'); // And then do stuff
 
 const { join } = require('path');
-const { readFile, writeFile } = require('fs').promises;
+const { writeFile } = require('fs').promises;
 const { BasicMessages } = require('./log');
 const main = require('./main.js');
 
@@ -50,7 +50,7 @@ try {
   }
 })().catch(e => {
   if (e.code === 'EACCES') {
-    // todo: this was linux only (?) so I assume this is now safe to delete
+    // @todo: this was linux only (?) so I assume this is now safe to delete
     console.log(process.argv[2] === 'inject' ? BasicMessages.PLUG_FAILED : BasicMessages.UNPLUG_FAILED, '\n');
     console.log('Powercord wasn\'t able to inject itself due to missing permissions.', '\n');
     console.log('Try again with elevated permissions.');
