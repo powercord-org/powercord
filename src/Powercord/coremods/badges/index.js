@@ -82,17 +82,22 @@ async function injectUsers () {
 }
 
 async function injectGuilds () {
-  const GuildHeader = await getModuleByDisplayName('GuildHeader');
+  const GuildHeader = await getModule([ 'AnimatedBanner', 'default' ]);
   const GuildBadge = await getModuleByDisplayName('GuildBadge');
 
-  inject('pc-badges-guilds-header', GuildHeader.prototype, 'renderHeader', function (_, res) {
-    if (cache._guilds[this.props.guild.id]) {
-      res.props.children.unshift(
-        React.createElement(Badges.Custom, {
-          ...cache._guilds[this.props.guild.id],
-          tooltipPosition: 'bottom'
-        })
-      );
+  inject('pc-badges-guilds-header', GuildHeader.default, 'type', ([ props ], res) => {
+    if (cache._guilds[props.guild.id]) {
+      const ogType = res.props.children[0].props.children[0].type;
+      res.props.children[0].props.children[0].type = (props) => {
+        const res = ogType(props);
+        res.props.children.unshift(
+          React.createElement(Badges.Custom, {
+            ...cache._guilds[props.guild.id],
+            tooltipPosition: 'bottom'
+          })
+        );
+        return res;
+      };
     }
     return res;
   });

@@ -5,13 +5,13 @@
  */
 
 const { forceUpdateElement } = require('powercord/util');
-const { getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 
 module.exports = async () => {
-  const GuildHeader = await getModuleByDisplayName('GuildHeader');
-  inject('pc-utilitycls-guildHeader', GuildHeader.prototype, 'renderHeader', function (args, res) {
-    res.props['data-guild-id'] = this.props.guild.id;
+  const GuildHeader = await getModule([ 'AnimatedBanner', 'default' ]);
+  inject('pc-utilitycls-guildHeader', GuildHeader.default, 'type', ([ props ], res) => {
+    res.props.children[0].props['data-guild-id'] = props.guild.id;
     return res;
   });
 

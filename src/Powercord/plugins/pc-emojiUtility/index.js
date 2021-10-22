@@ -53,10 +53,10 @@ module.exports = class EmojiUtility extends Plugin {
     await this.import('getGuilds');
     await this.import('getFlattenedGuilds');
     await this.import('uploadEmoji');
-    await this.import('getChannel');
+    await this.import([ 'getChannel', 'getDMFromUserId' ]);
     await this.import('getGuildPermissions');
     await this.import('transitionTo');
-    await this.import('getCurrentUser');
+    await this.import([ 'getCurrentUser', 'getUser' ]);
     await this.import('createBotMessage');
     await this.import('receiveMessage');
     await this.import([ 'getLastSelectedChannelId' ], 'getChannelId');
