@@ -27,7 +27,7 @@ module.exports = class PluginManager {
     return !powercord.settings.get('disabledPlugins', []).includes(plugin);
   }
 
-  // Mount/load/enable/install shit
+  // Mount/load/enable/install 
   mount (pluginID) {
     let manifest;
     try {
