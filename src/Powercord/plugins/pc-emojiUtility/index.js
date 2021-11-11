@@ -38,12 +38,18 @@ const colors = {
 };
 
 module.exports = class EmojiUtility extends Plugin {
-  async import (filter, functionName = filter) {
+  async import (filter, functionNames = filter) {
     if (typeof filter === 'string') {
       filter = [ filter ];
     }
+    if (typeof functionNames === 'string') {
+      functionNames = [ functionNames ];
+    }
 
-    this[functionName] = (await getModule(filter))[functionName];
+	  const module = await getModule(filter);
+    for (let i = 0; i < filter.length; i++) {
+	    this[functionNames[i]] = module[filter[i]];
+    }
   }
 
   async doImport () {
