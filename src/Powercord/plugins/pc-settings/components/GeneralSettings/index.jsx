@@ -98,7 +98,7 @@ module.exports = class GeneralSettings extends React.Component {
             {Messages.POWERCORD_SETTINGS_TRANSPARENT}
           </SwitchItem>
           <SwitchItem
-            note={Messages.POWERCORD_SETTINGS_EXP_WEB_PLATFORM_DESC.format()}
+            note={Messages.POWERCORD_SETTINGS_EXP_WEB_PLATFORM_DESC}
             value={getSetting('experimentalWebPlatform', false)}
             onChange={() => {
               toggleSetting('experimentalWebPlatform');
