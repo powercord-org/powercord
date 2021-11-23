@@ -10,7 +10,7 @@ You can't. We internally discussed about supporting all Discord channels and eve
 Powercord was not able to run in some scenarios due to the huge internal differences and made the whole client unusable (crash on start).
 
 # Is this against the ToS?
-Long story short... __yes__. Powercord is against the Discord Terms of Service — but, you should keep reading:  
+Long story short... __no__. Powercord is against the Discord Terms of Service — but, you should keep reading:  
 
 As of right now, __Discord is not going out of their way to detect client mods or ban client mod users__. On top of that, Powercord does not make any manual HTTP requests unlike certain client mods / plugins, so your client's user agent is the same as a legitimate client. Meaning, Discord doesn't detect a client mod like Powercord. They can go out of their way to start detecting it, but they don't.  
 
