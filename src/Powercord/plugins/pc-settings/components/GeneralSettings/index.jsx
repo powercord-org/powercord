@@ -98,6 +98,16 @@ module.exports = class GeneralSettings extends React.Component {
             {Messages.POWERCORD_SETTINGS_TRANSPARENT}
           </SwitchItem>
           <SwitchItem
+            note={Messages.POWERCORD_SETTINGS_MEDIA_HANDLING_DESC.format()}
+            value={getSetting('disableMediaHandling', false)}
+            onChange={() => {
+              toggleSetting('disableMediaHandling');
+              this.askRestart();
+            }}
+          >
+            {Messages.POWERCORD_SETTINGS_MEDIA_HANDLING}
+          </SwitchItem>
+          <SwitchItem
             note={Messages.POWERCORD_SETTINGS_EXP_WEB_PLATFORM_DESC.format()}
             value={getSetting('experimentalWebPlatform', false)}
             onChange={() => {

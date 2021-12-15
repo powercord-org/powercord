@@ -79,6 +79,8 @@
   "POWERCORD_SETTINGS_EXP_WEB_PLATFORM_DESC": "Enables Chromium's experimental Web Platform features that are in development, such as CSS \"backdrop-filter\". Since features are in development you may encounter issues and APIs may change at any time. **Requires restart**.",
   "POWERCORD_SETTINGS_KEEP_TOKEN": "Keep token stored",
   "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Prevents Discord from removing your token from localStorage, reducing the numbers of unwanted logouts.",
+  "POWERCORD_SETTINGS_MEDIA_HANDLING": "Disable Media Handling",
+  "POWERCORD_SETTINGS_MEDIA_HANDLING_DESC": "Prevents Discord from handling your media keys and from starting a media session. **Requires restart**.",
   "POWERCORD_SETTINGS_NO_CLYDE": "Eradicate Clyde",
   "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Replaces [Clyde]({discordiaUrl}) in Powercord commands with a mixed range of avatars and usernames selected by plug-in developers - fallbacks to \"Powercord\" by default.",
   "POWERCORD_SETTINGS_OVERLAY": "Overlay DevTools",

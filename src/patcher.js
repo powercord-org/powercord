@@ -20,6 +20,25 @@ require('./ipc/main');
 
 console.log('Hello from Powercord!');
 
+let disableMediaHandling = false;
+try {
+  settings = require(join(__dirname, '../settings/pc-general.json'));
+  disableMediaHandling = settings.disableMediaHandling;
+} catch (e) {}
+
+if (disableMediaHandling) {
+  const oldAppendSwitch = electron.app.commandLine.appendSwitch;
+  electron.app.commandLine.appendSwitch = function (name, value) {
+    if (name === 'disable-features') {
+      const disabledFeatures = value.split(',')
+      if (!disabledFeatures.includes('HardwareMediaKeyHandling')) disabledFeatures.push('HardwareMediaKeyHandling');
+      if (!disabledFeatures.includes('MediaSessionService')) disabledFeatures.push('MediaSessionService');
+      return oldAppendSwitch.call(this, name, disabledFeatures.join(','));
+    }
+    oldAppendSwitch.apply(this, arguments);
+  }
+}
+
 let _patched = false;
 const appSetAppUserModelId = electron.app.setAppUserModelId;
 function setAppUserModelId (...args) {
