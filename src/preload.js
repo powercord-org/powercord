@@ -5,7 +5,7 @@
  */
 
 const { webFrame } = require('electron');
-global.NEW_BACKEND = !process.versions.electron.startsWith('13');
+global.NEW_BACKEND = !process.versions.electron.startsWith('13') && process.contextIsolated;
 
 require('../polyfills');
 
@@ -75,7 +75,7 @@ if (global.NEW_BACKEND) {
       };
     }
   }
-} else {
+} else if (process.contextIsolated) {
   const genericProxyWrapper = {
     get (target, prop) {
       return target[prop];

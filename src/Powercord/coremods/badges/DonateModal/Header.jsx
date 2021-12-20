@@ -3,9 +3,9 @@ const { AsyncComponent, Icons: { PowercordCutie } } = require('powercord/compone
 const { close: closeModal } = require('powercord/modal');
 
 module.exports = AsyncComponent.from((async () => {
-  const PremiumGuildModalHeader = await getModuleByDisplayName('PremiumGuildModalHeader');
+  const GuildBoostingModalsHeader = await getModuleByDisplayName('GuildBoostingModalsHeader');
   return () => {
-    const res = React.createElement(PremiumGuildModalHeader, { onClose: closeModal });
+    const res = React.createElement(GuildBoostingModalsHeader, { onClose: closeModal });
 
     const renderer = res.type;
     res.type = (props) => {

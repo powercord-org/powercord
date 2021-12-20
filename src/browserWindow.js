@@ -34,6 +34,7 @@ class PatchedBrowserWindow extends BrowserWindow {
       if (opts.webPreferences.nativeWindowOpen) {
         // Discord Client
         opts.webPreferences.preload = join(__dirname, './preload.js');
+        opts.webPreferences.contextIsolation = false; // shrug
       } else {
         // Splash Screen on macOS (Host 0.0.262+) & Windows (Host 0.0.293 / 1.0.17+)
         opts.webPreferences.preload = join(__dirname, './preloadSplash.js');
@@ -57,8 +58,8 @@ class PatchedBrowserWindow extends BrowserWindow {
       configurable: true
     });
 
-    // win.on('maximize', () => win.webContents.send('POWERCORD_WINDOW_MAXIMIZE'));
-    // win.on('unmaximize', () => win.webContents.send('POWERCORD_WINDOW_UNMAXIMIZE'));
+    win.on('maximize', () => void win.webContents.send('POWERCORD_WINDOW_MAXIMIZE'));
+    win.on('unmaximize', () => void win.webContents.send('POWERCORD_WINDOW_UNMAXIMIZE'));
 
     win.webContents._powercordPreload = originalPreload;
     return win;
