@@ -1,6 +1,46 @@
 {
+  "SPOTIFY_SETTINGS_SQUARE_COVERS": "Squared covers",
+  "SPOTIFY_SETTINGS_SQUARE_COVERS_DESCRIPTION": "Shows covers in a square shape instead of a rounded one.",
+
+  "SPOTIFY_SETTINGS_NO_AUTO_PAUSE": "No auto pause",
+  "SPOTIFY_SETTINGS_NO_AUTO_PAUSE_DESCRIPTION": "Prevents Discord from automatically pausing Spotify playback if you're sending voice for more than 30 seconds.",
+
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS": "Show advanced controls",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_HOVER": "Hover",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_HOVER_DESCRIPTION": "Advanced controls will be shown only on hover",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_ALWAYS": "Always",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_ALWAYS_DESCRIPTION": "Advanced controls will be shown always",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_OFF": "Don't show",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_OFF_DESCRIPTION": "Don't show advanced controls. These controls are available in the context menu.",
+
+  "SPOTIFY_NOT_SEEING_CONTROLS": "Not seeing controls?",
   "SPOTIFY_NOT_PREMIUM": "You are not Spotify Premium.",
+
+  "SPOTIFY_CONTROLS_REPEAT": "Repeat",
+  "SPOTIFY_CONTROLS_REPEAT_TRACK": "Repeat Track",
+  "SPOTIFY_CONTROLS_REPEAT_OFF": "No Repeat",
+  "SPOTIFY_CONTROLS_SHUFFLE": "Shuffle",
+  "SPOTIFY_CONTROLS_VOLUME": "Volume",
+  "SPOTIFY_CONTROLS_SAVE_TO_PLAYLIST": "Save to Playlist",
+
+  "SPOTIFY_PLAYLISTS": "Playlists",
+  "SPOTIFY_ALBUMS": "Albums",
+  "SPOTIFY_TOP_SONGS": "Top Songs",
+  "SPOTIFY_SONGS": "Songs",
+  "SPOTIFY_DEVICES": "Devices",
+
+  "SPOTIFY_CONTROLS_OPEN_SPOTIFY": "Open in Spotify",
+  "SPOTIFY_CONTROLS_SEND_ALBUM": "Send Album URL to Channel",
+  "SPOTIFY_CONTROLS_SEND_SONG": "Send Song URL to Channel",
+  "SPOTIFY_CONTROLS_COPY_ALBUM": "Copy Album URL",
+  "SPOTIFY_CONTROLS_COPY_SONG": "Copy Song URL",
+
   "SPOTIFY_ADD_LIKED_SONGS": "Save to Liked Songs",
   "SPOTIFY_REMOVE_LIKED_SONGS": "Remove from Liked Songs",
-  "SPOTIFY_CANT_LIKE_LOCAL": "You can't add a local song to your Liked Songs"
+  "SPOTIFY_CANT_LIKE_LOCAL": "You can't add a local song to your Liked Songs",
+
+  "SPOTIFY_PAYUP_TITLE": "Spotify Premium Required",
+  "SPOTIFY_PAYUP_TEXT_1": "To control your Spotify playback we use Spotify's \"Connect Web\" API, which is unfortunately locked to\nSpotify Premium users. In order for you to control Spotify's playback you'll need to get a Premium\nsubscription.",
+  "SPOTIFY_PAYUP_TEXT_2": "If you do happen to have a Spotify Premium subscription but you're still not seeing the buttons show up,\nit might happen that Spotify is reporting inaccurate data about your Premium status and alters the\navailability of the buttons. Try changing the playback in any way (play, pause, change track, ...) to\ntrigger and update and let us get accurate data from Spotify.",
+  "SPOTIFY_PAYUP_TEXT_3": "If this still did not fix it, make sure you're not in a private session as we've received a few reports\nsaying this causes your Premium subscription status to not be properly sent to us. Also make sure you do\nhave your Spotify account linked to your Discord account (You can tell Discord to not show it on your\nprofile and not show the song you're listening to in your status, if you don't want to)"
 }
