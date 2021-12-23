@@ -7,7 +7,7 @@
 
   "SPOTIFY_SETTINGS_SHOW_CONTROLS": "Показывать расширенное управление",
   "SPOTIFY_SETTINGS_SHOW_CONTROLS_HOVER": "При наведении",
-  "SPOTIFY_SETTINGS_SHOW_CONTROLS_HOVER_DESCRIPTION": "Расширенное управление будет видно при наведении",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_HOVER_DESCRIPTION": "Расширенное управление (перемешивание, повтор и другие функции) будет видно при наведении",
   "SPOTIFY_SETTINGS_SHOW_CONTROLS_ALWAYS": "Всегда",
   "SPOTIFY_SETTINGS_SHOW_CONTROLS_ALWAYS_DESCRIPTION": "Расширенное управление будет видно всегда",
   "SPOTIFY_SETTINGS_SHOW_CONTROLS_OFF": "Не показывать",

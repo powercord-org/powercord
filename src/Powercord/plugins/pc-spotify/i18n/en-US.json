@@ -7,7 +7,7 @@
 
   "SPOTIFY_SETTINGS_SHOW_CONTROLS": "Show advanced controls",
   "SPOTIFY_SETTINGS_SHOW_CONTROLS_HOVER": "Hover",
-  "SPOTIFY_SETTINGS_SHOW_CONTROLS_HOVER_DESCRIPTION": "Advanced controls will be shown only on hover",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_HOVER_DESCRIPTION": "Advanced controls (shuffle, repeat and other controls) will be shown only on hover",
   "SPOTIFY_SETTINGS_SHOW_CONTROLS_ALWAYS": "Always",
   "SPOTIFY_SETTINGS_SHOW_CONTROLS_ALWAYS_DESCRIPTION": "Advanced controls will be shown always",
   "SPOTIFY_SETTINGS_SHOW_CONTROLS_OFF": "Don't show",
