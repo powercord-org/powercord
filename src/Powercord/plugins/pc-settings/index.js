@@ -50,6 +50,10 @@ module.exports = class Settings extends Plugin {
   async patchSettingsComponent () {
     const SettingsView = await getModuleByDisplayName('SettingsView');
     inject('pc-settings-items', SettingsView.prototype, 'getPredicateSections', (_, sections) => {
+      if (sections.length < 10) {
+        return sections;
+      }
+
       const changelog = sections.find(c => c.section === 'changelog');
       if (changelog) {
         const settingsSections = Object.keys(powercord.api.settings.tabs).map(s => this._makeSection(s));
