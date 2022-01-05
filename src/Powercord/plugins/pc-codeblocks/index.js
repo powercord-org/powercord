@@ -94,6 +94,6 @@ module.exports = class Codeblocks extends Plugin {
   }
 
   _forceUpdate () {
-    document.querySelectorAll('[id^="chat-messages-"]').forEach(e => getReactInstance(e).memoizedProps.onMouseMove());
+    document.querySelectorAll('[id^="chat-messages-"] > div').forEach(e => getReactInstance(e).memoizedProps.onMouseMove());
   }
 };
