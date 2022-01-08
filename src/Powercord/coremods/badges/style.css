@@ -4,7 +4,7 @@
  * https://powercord.dev/porkord-license
  */
 
-.profileBadge-2niAfJ:not(img):before {
+.profileBadge-12r2Nm:not(img):before {
   content: none;
 }
 
@@ -23,13 +23,13 @@
   object-fit: contain;
 }
 
-.topSection-y3p-_D .profileBadge22-LJmn9o, .profile-3qfB4q .profileBadge22-LJmn9o {
+.topSection-13QKHs .profileBadge22-3GAYRy, .profile-3qfB4q .profileBadge22-3GAYRy {
   width: 24px;
   height: 24px;
 }
 
 /* Guild badges */
-.header-2V-4Sw .powercord-badge {
+.header-3OsQeK .powercord-badge {
   width: 18px;
   height: 18px;
   margin-right: 4px;
@@ -38,13 +38,13 @@
   top: 1px;
 }
 
-.header-2V-4Sw .powercord-badge.powercord-badge-cutie,
-.header-2V-4Sw .powercord-badge.powercord-badge-cutie img {
+.header-3OsQeK .powercord-badge.powercord-badge-cutie,
+.header-3OsQeK .powercord-badge.powercord-badge-cutie img {
   width: 18px;
   height: 18px;
 }
 
-.tooltip-2QfLtc .rowGuildName-2wU3B_ .powercord-badge-cutie {
+.tooltip-14MtrL .rowGuildName-21wur6 .powercord-badge-cutie {
   width: 20px;
   height: 20px;
   margin-right: 4px;

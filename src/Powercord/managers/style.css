@@ -26,6 +26,13 @@
 }
 
 /* Fix for the guilds scroller going crazy */
-.guilds-1SWlCJ .scroller-2TZvBN {
+.guilds-2JjMmN .scroller-3X7KbA {
   contain: none !important;
+}
+
+/* Modals */
+.powercord-fake-modal-container {
+  width: auto !important;
+  max-width: initial !important;
+  min-height: initial !important;
 }
