@@ -5,7 +5,7 @@
  */
 
 const { join } = require('path');
-const { existsSync } = require('fs');
+const { existsSync, readFileSync, writeFileSync } = require('fs');
 const { execSync } = require('child_process');
 const readline = require('readline');
 const { BasicMessages, AnsiEscapes } = require('./log');
@@ -21,8 +21,9 @@ const KnownLinuxPaths = Object.freeze([
   `${homedir}/.local/bin/DiscordCanary` // https://github.com/powercord-org/powercord/pull/370
 ]);
 
+const installDirFile = __dirname + '/../.installdir';
 
-exports.getAppDir = async () => {
+async function findAppDir() {
   const discordProcess = execSync('ps x')
     .toString()
     .split('\n')
@@ -57,4 +58,14 @@ exports.getAppDir = async () => {
   const discordPath = discordProcess[4].split('/');
   discordPath.splice(discordPath.length - 1, 1);
   return join('/', ...discordPath, 'resources', 'app');
+}
+
+exports.getAppDir = async () => {
+  if (existsSync(installDirFile)) {
+    return readFileSync(installDirFile, 'utf8');
+  } else {
+    let appDir = await findAppDir()
+    writeFileSync(installDirFile, appDir);
+    return appDir;
+  }
 };
