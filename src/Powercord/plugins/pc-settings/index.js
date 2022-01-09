@@ -99,7 +99,7 @@ module.exports = class Settings extends Plugin {
       if (debugInfo) {
         debugInfo.element = ((_element) => function () {
           const res = _element();
-          if (res.props.children && res.props.children.length === 3) {
+          if (res.props.children && res.props.children.length === 4) {
             res.props.children.push(
               Object.assign({}, res.props.children[0], {
                 props: Object.assign({}, res.props.children[0].props, {

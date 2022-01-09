@@ -37,7 +37,7 @@ class Base extends React.Component {
       <div className='buttons'>
         {powercord.api.labs.isExperimentEnabled('pc-moduleManager-store')
           ? <Button onClick={() => this.goToStore()}>{Messages[`POWERCORD_${this.state.key}_EXPLORE`]}</Button>
-          : <Tooltip text={Messages.COMING_SOON}>
+          : <Tooltip text={Messages.APPLICATION_STORE_COMING_SOON}>
             <Button disabled>{Messages[`POWERCORD_${this.state.key}_EXPLORE`]}</Button>
           </Tooltip>}
         <Overflow onClick={e => this.openOverflowMenu(e)} onContextMenu={e => this.openOverflowMenu(e)}/>

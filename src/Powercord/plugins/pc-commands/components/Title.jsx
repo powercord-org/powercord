@@ -1,15 +1,15 @@
-const { React } = require('powercord/webpack');
+const { getModuleByDisplayName } = require('powercord/webpack');
 
-module.exports = class Title extends React.Component {
+const Autocomplete = getModuleByDisplayName('Autocomplete', false);
+
+module.exports = class Title extends Autocomplete.Title {
   render () {
+    const res = super.render();
+
     if (!this.props.title[0]) {
       return <div style={{ padding: '4px' }}/>;
     }
 
-    return (
-      <div class='base-1pYU8j'>
-        <h3 class='contentTitle-2tG_sM base-1x0h_U size12-3cLvbJ'>{this.props.title}</h3>
-      </div>
-    );
+    return res;
   }
 };
