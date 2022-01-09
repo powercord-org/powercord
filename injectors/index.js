@@ -4,7 +4,6 @@
  * https://powercord.dev/porkord-license
  */
 
-require('./elevate');
 require('./env_check')(); // Perform checks
 require('../polyfills'); // And then do stuff
 
@@ -50,10 +49,14 @@ try {
   }
 })().catch(e => {
   if (e.code === 'EACCES') {
-    // todo: this was linux only (?) so I assume this is now safe to delete
-    console.log(process.argv[2] === 'inject' ? BasicMessages.PLUG_FAILED : BasicMessages.UNPLUG_FAILED, '\n');
-    console.log('Powercord wasn\'t able to inject itself due to missing permissions.', '\n');
-    console.log('Try again with elevated permissions.');
+    if (process.platform === 'linux' && !process.argv.includes('--sudo')) {
+      console.log(`${AnsiEscapes.YELLOW}Powercord wasn't able to inject itself due to missing permissions, attempting to re-run as sudo..${AnsiEscapes.RESET}`, '\n');
+      require('./elevate');
+    } else {
+      console.log(process.argv[2] === 'inject' ? BasicMessages.PLUG_FAILED : BasicMessages.UNPLUG_FAILED, '\n');
+      console.log('Powercord wasn\'t able to inject itself due to missing permissions.', '\n');
+      console.log('Try again with elevated permissions.');
+    }
   } else {
     console.error('fucky wucky', e);
   }
