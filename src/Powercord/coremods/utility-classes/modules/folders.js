@@ -32,5 +32,6 @@ module.exports = async () => {
     return res;
   });
 
+  FolderItem.default.displayName = 'FolderItem';
   return () => uninject('pc-utilitycls-folders');
 };
