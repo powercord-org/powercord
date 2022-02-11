@@ -243,7 +243,7 @@ module.exports = class EmojiUtility extends Plugin {
           }
 
           if (guild) {
-            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS)) {
+            if (!this.hasPermission(guild.id, Permissions.MANAGE_GUILD_EXPRESSIONS)) {
               return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
             }
           } else {
@@ -277,7 +277,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCloneableGuilds = () => {
         const items = [];
-        const clonableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS));
+        const clonableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_GUILD_EXPRESSIONS));
 
         for (const guild of clonableGuilds) {
           items.push({
@@ -369,7 +369,7 @@ module.exports = class EmojiUtility extends Plugin {
           }
 
           if (guild) {
-            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS)) {
+            if (!this.hasPermission(guild.id, Permissions.MANAGE_GUILD_EXPRESSIONS)) {
               return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
             }
           } else {
@@ -417,7 +417,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCreateableGuilds = () => {
         const items = [];
-        const createableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS));
+        const createableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_GUILD_EXPRESSIONS));
 
         for (const guild of createableGuilds) {
           items.push({
@@ -721,7 +721,7 @@ module.exports = class EmojiUtility extends Plugin {
         const emoji = Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis).find(e => e.id === matcher[2]);
         if (emoji) {
           try {
-            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS)) {
+            if (!this.hasPermission(guild.id, Permissions.MANAGE_GUILD_EXPRESSIONS)) {
               return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
             }
 
@@ -764,36 +764,67 @@ module.exports = class EmojiUtility extends Plugin {
     uninject('pc-emojiUtility-hideEmojisPickerRm');
     uninject('pc-emojiUtility-hideEmojisPickerMount');
     uninject('pc-emojiUtility-hideEmojisComplete');
+    uninject('pc-emojiUtility-emojiContext');
+    uninject('copy-emoji-lazy-contextmenu');
   }
 
-  async _injectContextMenu (cloneSubMenu, createSubMenu) {
-    const { imageWrapper } = await getModule([ 'imageWrapper' ]);
-    const { MenuSeparator } = await getModule([ 'MenuGroup' ]);
-    const mdl = await getModule(m => m.default && m.default.displayName === 'MessageContextMenu');
-    inject('pc-emojiUtility-emojiContext', mdl, 'default', ([ { target } ], res) => {
-      if (target.classList.contains('emoji')) {
-        const matcher = target.src.match(this.getEmojiUrlRegex());
-        if (matcher) {
-          let emoji = this.getEmojiById(matcher[1]);
-          if (emoji) {
-            emoji.fake = false;
-          } else {
-            emoji = this.createFakeEmoji(matcher[1], target.alt.substring(1, target.alt.length - 1), target.src);
-          }
+  //Credits to https://github.com/12944qwerty/copy-server-icon/blob/master/index.js
 
+  async _injectContextMenu (cloneSubMenu, createSubMenu) {
+    const { imageWrapper } = await getModule(['imageWrapper']);
+    const { MenuSeparator } = await getModule(['MenuGroup']);
+    this.lazyPatchContextMenu('MessageContextMenu', async (mdl) => {
+      inject('pc-emojiUtility-emojiContext', mdl, 'default', ([{ target }], res) => {
+        if (target.classList.contains('emoji')) {
+          const matcher = target.src.match(this.getEmojiUrlRegex());
+          if (matcher) {
+            let emoji = this.getEmojiById(matcher[1]);
+            if (emoji) {
+              emoji.fake = false;
+            } else {
+              emoji = this.createFakeEmoji(matcher[1], target.alt.substring(1, target.alt.length - 1), target.src);
+            }
+            emoji.url = emoji.url.replace(".webp", ".png");
+            res.props.children.push(
+              React.createElement(MenuSeparator),
+              ...ContextMenu.renderRawItems(cloneSubMenu(emoji))
+            );
+          }
+        } else if (target.tagName.toLowerCase() === 'img' && target.parentElement.classList.contains(imageWrapper)) {
           res.props.children.push(
             React.createElement(MenuSeparator),
-            ...ContextMenu.renderRawItems(cloneSubMenu(emoji))
+            ...ContextMenu.renderRawItems(createSubMenu(target))
           );
         }
-      } else if (target.tagName.toLowerCase() === 'img' && target.parentElement.classList.contains(imageWrapper)) {
-        res.props.children.push(
-          React.createElement(MenuSeparator),
-          ...ContextMenu.renderRawItems(createSubMenu(target))
-        );
-      }
-      return res;
-    });
-    mdl.default.displayName = 'MessageContextMenu';
+        return res;
+      });
+      mdl.default.displayName = 'MessageContextMenu';
+    })
+  }
+
+  async lazyPatchContextMenu(displayName, patch) {
+    const filter = m => m.default && m.default.displayName === displayName
+    const m = getModule(filter, false)
+    if (m) patch(m)
+    else {
+      const module = getModule(['openContextMenuLazy'], false)
+      inject('copy-emoji-lazy-contextmenu', module, 'openContextMenuLazy', args => {
+        const lazyRender = args[1]
+        args[1] = async () => {
+          const render = await lazyRender(args[0])
+
+          return (config) => {
+            const menu = render(config)
+            if (menu?.type?.displayName === displayName && patch) {
+              uninject('copy-emoji-lazy-contextmenu')
+              patch(getModule(filter, false))
+              patch = false
+            }
+            return menu
+          }
+        }
+        return args
+      }, true)
+    }
   }
 };
