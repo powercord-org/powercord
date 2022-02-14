@@ -126,7 +126,7 @@
   "POWERCORD_UPDATES_OPTS_AUTO_DESC": "Powercord dapat mengunduh dan menginstal pembaruan di latar belakang tanpa terlalu mengganggu Anda. Perhatikan bahwa pembaruan akan memerlukan tindakan pengguna jika memuat ulang diperlukan, atau jika ada konflik.",
   "POWERCORD_UPDATES_OPTS_CHANGE_LOGS": "Buka Log Perubahan",
   "POWERCORD_UPDATES_OPTS_CHANGE_LOGS_DESC": "Ketinggalan log perubahan, atau ingin melihatnya lagi?",
-  "POWERCORD_UPDATES_OPTS_CONCURRENCY": "Perbarui Batas Konkurensi",
+  "POWERCORD_UPDATES_OPTS_CONCURRENCY": "Batas Konkurensi Pembaruan",
   "POWERCORD_UPDATES_OPTS_CONCURRENCY_DESC": "Berapa banyak tugas bersamaan yang akan dijalankan Powercord di latar belakang untuk memeriksa pembaruan. Minimal 1. Jika tidak yakin, tinggalkan 2.",
   "POWERCORD_UPDATES_OPTS_DEBUG": "Informasi Debug",
   "POWERCORD_UPDATES_OPTS_DEBUG_DESC": "Hal-hal yang mungkin berguna bagi Anda untuk memecahkan masalah atau melenturkan beberapa statistik.",
