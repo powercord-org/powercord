@@ -65,7 +65,7 @@
   "POWERCORD_REFRESH_ACCOUNTS": "Segarkan akun",
   "POWERCORD_SETTINGS_ADVANCED_DESC": "Jangan sentuh apapun disini jika anda tidak tahu apa yang sedang anda lakukan. Hal yang tidak terduga bisa terjadi kepada kucingmu.",
   "POWERCORD_SETTINGS_BACKEND": "URL Backend",
-  "POWERCORD_SETTINGS_BACKEND_DESC": "URL yang digunakan untuk mengambil beberapa aset dan untuk menanyakan REST API Powercord.",
+  "POWERCORD_SETTINGS_BACKEND_DESC": "URL yang digunakan untuk mengambil beberapa aset dan untuk berkomunikasi dengan REST API Powercord.",
   "POWERCORD_SETTINGS_CACHE_CLEARED": "Cache dibersihkan!",
   "POWERCORD_SETTINGS_CACHE_DISCORD": "Bersihkan cache Discord",
   "POWERCORD_SETTINGS_CACHE_DISCORD_DESC": "Menghapus semua yang tersimpan di folder cache Discord. Ini akan membuat Discord terasa lebih lambat untuk sementara, karena semua data harus diambil lagi.",
