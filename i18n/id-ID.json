@@ -23,7 +23,7 @@
   "POWERCORD_I18N_CONTRIBUTE": "Psst! Ingin membantu menerjemahkan Powercord? Pergi ke [Weblate]({weblateUrl}) kami!",
   "POWERCORD_I18N_TRANSLATED_OVERRIDES": "{overrides,number} menimpa terjemahan Discord",
   "POWERCORD_I18N_TRANSLATED_PERCENTAGE": "Powercord: {translated,number}% diterjemahkan",
-  "POWERCORD_LINKING_ERRORED": "Terjadi kesalahan. Cek console untuk, dan tolong [laportkan itu]({newIssueUrl}) jika terjadi lagi.",
+  "POWERCORD_LINKING_ERRORED": "Terjadi kesalahan. Cek console untuk, dan tolong [laporkan itu]({newIssueUrl}) jika terjadi lagi.",
   "POWERCORD_LINKING_TIMED_OUT": "Waktu penautan habis :( Mungkin coba lagi?",
   "POWERCORD_LINKING_UNLINKED": "Anda belum menautkan akun Anda.",
   "POWERCORD_LINKING_WAITING": "Menautkan akun anda...",
