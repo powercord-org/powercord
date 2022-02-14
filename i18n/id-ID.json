@@ -44,7 +44,7 @@
   "POWERCORD_PLUGINS_PERMISSIONS_KEYPRESSES": "Baca penekanan tombol",
   "POWERCORD_PLUGINS_PERMISSIONS_USE_EUD": "Mendapatkan dan menggunakan data anda",
   "POWERCORD_PLUGINS_SEARCH": "Cari plugin…",
-  "POWERCORD_PLUGINS_UNINSTALL": "Copot Pemasangan {pluginCount, plural, =1 {plugin} other {plugins}}",
+  "POWERCORD_PLUGINS_UNINSTALL": "Copot pemasangan {pluginCount, plural, =1 {plugin} other {plugin}}",
   "POWERCORD_PLUGINS_UNINSTALL_SURE": "Apakah anda yakin untuk mencopot pemasangan {pluginCount, plural, =1 {this plugin} other {these plugins}}?",
   "POWERCORD_PLUGINS_VERSION": "Versi",
   "POWERCORD_PRODUCT_LOOKING": "Apa yang sedang Anda cari?",
