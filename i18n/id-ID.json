@@ -48,7 +48,7 @@
   "POWERCORD_PLUGINS_UNINSTALL_SURE": "Apakah anda yakin untuk mencopot pemasangan {pluginCount, plural, =1 {this plugin} other {these plugins}}?",
   "POWERCORD_PLUGINS_VERSION": "Versi",
   "POWERCORD_PRODUCT_LOOKING": "Apa yang sedang Anda cari?",
-  "POWERCORD_QUICKCSS": "CSS Cepar",
+  "POWERCORD_QUICKCSS": "CSS Cepat",
   "POWERCORD_QUICKCSS_AUTOCOMPLETE": "Ctrl+Spasi untuk melengkapi otomatis",
   "POWERCORD_QUICKCSS_POPPED_OUT": "Editor muncul",
   "POWERCORD_QUICKCSS_SETTINGS": "Pengaturan CodeMirror",
