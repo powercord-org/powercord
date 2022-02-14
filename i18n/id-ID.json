@@ -39,7 +39,7 @@
   "POWERCORD_PLUGINS_LICENSE": "Lisensi",
   "POWERCORD_PLUGINS_LOAD_MISSING": "Muat plugin yang hilang",
   "POWERCORD_PLUGINS_OPEN_FOLDER": "Buka folder plugin",
-  "POWERCORD_PLUGINS_PERMISSIONS_API": "Lakukan permintaan ke layanan jarak jauh",
+  "POWERCORD_PLUGINS_PERMISSIONS_API": "Lakukan permintaan ke layanan luar",
   "POWERCORD_PLUGINS_PERMISSIONS_FS": "Baca dan tulis file di komputer anda",
   "POWERCORD_PLUGINS_PERMISSIONS_KEYPRESSES": "Baca penekanan tombol",
   "POWERCORD_PLUGINS_PERMISSIONS_USE_EUD": "Mendapatkan dan menggunakan data anda",
