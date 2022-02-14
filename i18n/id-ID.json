@@ -50,7 +50,7 @@
   "POWERCORD_PRODUCT_LOOKING": "Apa yang sedang Anda cari?",
   "POWERCORD_QUICKCSS": "CSS Cepat",
   "POWERCORD_QUICKCSS_AUTOCOMPLETE": "Ctrl+Spasi untuk melengkapi otomatis",
-  "POWERCORD_QUICKCSS_POPPED_OUT": "Editor muncul",
+  "POWERCORD_QUICKCSS_POPPED_OUT": "Editor telah muncul di jendela baru",
   "POWERCORD_QUICKCSS_SETTINGS": "Pengaturan CodeMirror",
   "POWERCORD_QUICKCSS_SETTINGS_CLOSE_BRACKETS": "Tanda kurung tutup otomatis",
   "POWERCORD_QUICKCSS_SETTINGS_CLOSE_BRACKETS_DESC": "Akan menutup tanda kurung dan tanda kutip secara otomatis saat diketik.",
