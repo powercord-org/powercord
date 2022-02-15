@@ -77,15 +77,13 @@ class Themes extends Base {
       );
     }
 
-    const { developerPortalCtaWrapper, developerPortalCta, developerPortalCtaText, placeholderImage } = getModule([ 'developerPortalCtaWrapper' ], false);
-
     return (
-      <div className={developerPortalCtaWrapper}>
-        <div className={placeholderImage}/>
-        <div className={`colorStandard-2KCXvj size14-e6ZScH ${developerPortalCtaText}`}>
+      <div className='developerPortalCtaWrapper-2PniQs'>
+        <div className='placeholderImage-17g3fb desaturate-_Twf3u'/>
+        <div className='colorStandard-21JIj7 size14-3fJ-ot developerPortalCtaText-3k7ne7'>
           Theme manager beta is here! Be careful, it's still in beta and glitches may occur.
         </div>
-        <Button className={developerPortalCta} onClick={() => this.setState({ tryBeta: true })}>
+        <Button className='developerPortalCta-3QrlHn' onClick={() => this.setState({ tryBeta: true })}>
           Try the beta
         </Button>
       </div>

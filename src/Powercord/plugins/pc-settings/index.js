@@ -22,12 +22,12 @@ module.exports = class Settings extends Plugin {
     await this.loadStylesheet('scss/style.scss');
 
     // Force load
-    document.body.classList.add('__powercord-no-settings-anmation');
+    document.body.classList.add('__powercord-no-settings-animation');
     const layers = await getModule([ 'popLayer' ], false);
     const opener = await getModule([ 'open', 'updateAccount' ], false);
     opener.open();
     layers.popLayer();
-    setTimeout(() => document.body.classList.remove('__powercord-no-settings-anmation'), 1e3);
+    setTimeout(() => document.body.classList.remove('__powercord-no-settings-animation'), 1e3);
 
     // this.patchSettingsContextMenu();
     this.patchSettingsComponent();
