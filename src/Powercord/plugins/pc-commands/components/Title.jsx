@@ -1,4 +1,4 @@
-const { getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModuleByDisplayName } = require('powercord/webpack');
 
 const Autocomplete = getModuleByDisplayName('Autocomplete', false);
 
