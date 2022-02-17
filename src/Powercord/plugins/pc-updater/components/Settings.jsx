@@ -365,7 +365,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
             <div className='column'>Release Channel:&#10;{superProperties.release_channel}</div>
             <div className='column'>App Version:&#10;{superProperties.client_version}</div>
             <div className='column'>Build Number:&#10;{superProperties.client_build_number}</div>
-            <div className='column'>Build ID:&#10;{window.GLOBAL_ENV.SENTRY_TAGS.buildId}</div>
+            <div className='column'>Build ID:&#10;{window.GLOBAL_ENV.SENTRY_TAGS.buildId.slice(0, 7)}</div>
             <div className='column'>Experiments:&#10;{experimentOverrides} / {availableExperiments}</div>
           </div>
 

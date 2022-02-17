@@ -4,8 +4,6 @@ const { React, getModule, contextMenu, i18n: { Messages } } = require('powercord
 const { Button, Tooltip, ContextMenu, Divider, Icons: { Overflow } } = require('powercord/components');
 const { TextInput } = require('powercord/components/settings');
 
-const { emptyStateImage } = getModule([ 'emptyStateImage', 'emptyStateSubtext' ], false);
-
 class Base extends React.Component {
   constructor () {
     super();
@@ -39,7 +37,7 @@ class Base extends React.Component {
       <div className='buttons'>
         {powercord.api.labs.isExperimentEnabled('pc-moduleManager-store')
           ? <Button onClick={() => this.goToStore()}>{Messages[`POWERCORD_${this.state.key}_EXPLORE`]}</Button>
-          : <Tooltip text={Messages.COMING_SOON}>
+          : <Tooltip text={Messages.APPLICATION_STORE_COMING_SOON}>
             <Button disabled>{Messages[`POWERCORD_${this.state.key}_EXPLORE`]}</Button>
           </Tooltip>}
         <Overflow onClick={e => this.openOverflowMenu(e)} onContextMenu={e => this.openOverflowMenu(e)}/>
@@ -54,7 +52,7 @@ class Base extends React.Component {
         {this.renderSearch()}
         {items.length === 0
           ? <div className='empty'>
-            <div className={emptyStateImage}/>
+            <div className='emptyStateImage-2lOKoR'/>
             <p>{Messages.GIFT_CONFIRMATION_HEADER_FAIL}</p>
             <p>{Messages.SEARCH_NO_RESULTS}</p>
           </div>

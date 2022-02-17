@@ -186,3 +186,15 @@
     filter: brightness(0.6);
   }
 }
+
+// funny
+.__powercord-no-settings-animation {
+  .layer-86YKbF {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .layer-86YKbF + .layer-86YKbF {
+    display: none;
+  }
+}

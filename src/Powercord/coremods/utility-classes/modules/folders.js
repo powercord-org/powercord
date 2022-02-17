@@ -8,21 +8,18 @@ const { getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
 
 module.exports = async () => {
-  const GuildFolder = await getModule(m => m.default && (
-    (m.default.type?.render?.toString().includes('defaultFolderName')) ||
-    (m.default.type?.__powercordOriginal_render?.toString().includes('defaultFolderName'))
-  ), false);
+  const FolderItem = await getModule(m => m.default?.displayName === 'FolderItem', false);
 
-  inject('pc-utilitycls-folders', GuildFolder.default.type, 'render', (args, res) => {
-    const { audio, badge: mentions, selected, expanded, unread, video, folderName } = args[0];
+  inject('pc-utilitycls-folders', FolderItem, 'default', (args, res) => {
+    const { mentionCount, selected, expanded, unread, folderNode, mediaState } = args[0];
 
     const conditionals = {
       unread,
       selected,
       expanded,
-      audio,
-      video,
-      mentioned: mentions > 0
+      audio: mediaState.audio,
+      video: mediaState.video,
+      mentioned: mentionCount > 0
     };
 
     Object.keys(conditionals).forEach(key => {
@@ -31,9 +28,10 @@ module.exports = async () => {
       }
     });
 
-    res.props['data-folder-name'] = folderName;
+    res.props['data-folder-name'] = folderNode.name;
     return res;
   });
 
+  FolderItem.default.displayName = 'FolderItem';
   return () => uninject('pc-utilitycls-folders');
 };

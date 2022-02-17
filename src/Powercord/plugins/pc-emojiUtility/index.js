@@ -16,7 +16,7 @@ const {
 /* const { CDN_HOST } = window.GLOBAL_ENV; */
 
 const { ContextMenu } = require('powercord/components');
-const { getOwnerInstance } = require('powercord/util');
+const { getOwnerInstance, injectContextMenu } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { open: openModal } = require('powercord/modal');
 
@@ -68,7 +68,7 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   getEmojiUrlRegex () {
-    return /https:\/\/cdn.discordapp.com\/emojis\/(\d+)/;
+    return /https:\/\/cdn\.discordapp\.com\/emojis\/(\d+)/;
   }
 
   getGuildRoute (guildId) {
@@ -243,7 +243,7 @@ module.exports = class EmojiUtility extends Plugin {
           }
 
           if (guild) {
-            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS)) {
+            if (!this.hasPermission(guild.id, Permissions.MANAGE_GUILD_EXPRESSIONS)) {
               return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
             }
           } else {
@@ -277,7 +277,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCloneableGuilds = () => {
         const items = [];
-        const clonableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS));
+        const clonableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_GUILD_EXPRESSIONS));
 
         for (const guild of clonableGuilds) {
           items.push({
@@ -369,7 +369,7 @@ module.exports = class EmojiUtility extends Plugin {
           }
 
           if (guild) {
-            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS)) {
+            if (!this.hasPermission(guild.id, Permissions.MANAGE_GUILD_EXPRESSIONS)) {
               return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
             }
           } else {
@@ -417,7 +417,7 @@ module.exports = class EmojiUtility extends Plugin {
 
       const getCreateableGuilds = () => {
         const items = [];
-        const createableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS));
+        const createableGuilds = Object.values(this.getFlattenedGuilds()).filter(guild => this.hasPermission(guild.id, Permissions.MANAGE_GUILD_EXPRESSIONS));
 
         for (const guild of createableGuilds) {
           items.push({
@@ -721,7 +721,7 @@ module.exports = class EmojiUtility extends Plugin {
         const emoji = Object.values(this.emojiStore.getGuilds()).flatMap(g => g.emojis).find(e => e.id === matcher[2]);
         if (emoji) {
           try {
-            if (!this.hasPermission(guild.id, Permissions.MANAGE_EMOJIS_AND_STICKERS)) {
+            if (!this.hasPermission(guild.id, Permissions.MANAGE_GUILD_EXPRESSIONS)) {
               return this.replyError(`Missing permissions to upload emotes in **${guild.name}**`);
             }
 
@@ -769,8 +769,7 @@ module.exports = class EmojiUtility extends Plugin {
   async _injectContextMenu (cloneSubMenu, createSubMenu) {
     const { imageWrapper } = await getModule([ 'imageWrapper' ]);
     const { MenuSeparator } = await getModule([ 'MenuGroup' ]);
-    const mdl = await getModule(m => m.default && m.default.displayName === 'MessageContextMenu');
-    inject('pc-emojiUtility-emojiContext', mdl, 'default', ([ { target } ], res) => {
+    injectContextMenu('pc-emojiUtility-emojiContext', 'MessageContextMenu', ([ { target } ], res) => {
       if (target.classList.contains('emoji')) {
         const matcher = target.src.match(this.getEmojiUrlRegex());
         if (matcher) {
@@ -794,6 +793,5 @@ module.exports = class EmojiUtility extends Plugin {
       }
       return res;
     });
-    mdl.default.displayName = 'MessageContextMenu';
   }
 };

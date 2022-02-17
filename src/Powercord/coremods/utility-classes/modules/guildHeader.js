@@ -15,7 +15,7 @@ module.exports = async () => {
     return res;
   });
 
-  const className = (await getModule([ 'iconBackgroundTierNone', 'container' ])).header.split(' ')[0];
+  const className = (await getModule([ 'container', 'hasBanner' ])).header.split(' ')[0];
   setImmediate(() => forceUpdateElement(`.${className}`));
   return () => uninject('pc-utilitycls-guildHeader');
 };

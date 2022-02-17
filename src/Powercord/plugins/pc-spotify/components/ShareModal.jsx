@@ -35,7 +35,7 @@ module.exports = class ShareModal extends React.PureComponent {
   }
 
   async componentDidMount () {
-    this.setState({ tracks: await this.props.tracks });
+    this.setState({ tracks: await this.props.tracks.items });
   }
 
   render () {

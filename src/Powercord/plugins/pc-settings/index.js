@@ -12,16 +12,24 @@ const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
 const FormSection = AsyncComponent.from(getModuleByDisplayName('FormSection'));
 
 module.exports = class Settings extends Plugin {
-  startPlugin () {
-    this.loadStylesheet('scss/style.scss');
-
+  async startPlugin () {
     powercord.api.settings.registerSettings('pc-general', {
       category: 'pc-general',
       label: () => Messages.POWERCORD_GENERAL_SETTINGS,
       render: GeneralSettings
     });
 
-    this.patchSettingsContextMenu();
+    await this.loadStylesheet('scss/style.scss');
+
+    // Force load
+    document.body.classList.add('__powercord-no-settings-animation');
+    const layers = await getModule([ 'popLayer' ], false);
+    const opener = await getModule([ 'open', 'updateAccount' ], false);
+    opener.open();
+    layers.popLayer();
+    setTimeout(() => document.body.classList.remove('__powercord-no-settings-animation'), 1e3);
+
+    // this.patchSettingsContextMenu();
     this.patchSettingsComponent();
     this.patchExperiments();
   }
@@ -91,7 +99,7 @@ module.exports = class Settings extends Plugin {
       if (debugInfo) {
         debugInfo.element = ((_element) => function () {
           const res = _element();
-          if (res.props.children && res.props.children.length === 3) {
+          if (res.props.children && res.props.children.length === 4) {
             res.props.children.push(
               Object.assign({}, res.props.children[0], {
                 props: Object.assign({}, res.props.children[0].props, {

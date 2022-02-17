@@ -291,12 +291,13 @@ module.exports = class Updater extends Plugin {
 
       class ChangeLog extends DiscordChangeLog {
         constructor (props) {
-          props.onScroll = () => void 0;
-          props.track = () => void 0;
           super(props);
 
           this.oldRenderHeader = this.renderHeader;
           this.renderHeader = this.renderNewHeader.bind(this);
+
+          this.track = () => void 0;
+          this.handleScroll = () => void 0;
         }
 
         renderNewHeader () {

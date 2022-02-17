@@ -14,6 +14,8 @@ module.exports = class Connections extends Plugin {
   }
 
   async startPlugin () {
+    return; // not broken if inexistent
+    /* eslint-disable */
     this.classes = {
       ...await getModule([ 'userInfoSection' ]),
       ...await getModule([ 'modal', 'inner' ]),
@@ -23,11 +25,15 @@ module.exports = class Connections extends Plugin {
     this.loadStylesheet('style.css');
     this.patchSettingsConnections();
     this.patchUserConnections();
+    /* eslint-enable */
   }
 
   pluginWillUnload () {
+    return; // not broken if inexistent
+    /* eslint-disable */
     uninject('pc-connections-settings');
     uninject('pc-connections-profile');
+    /* eslint-enable */
   }
 
   async patchSettingsConnections () {
