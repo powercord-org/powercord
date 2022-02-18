@@ -279,6 +279,13 @@ if (global.NEW_BACKEND) {
   }
 }
 
+if (!global.NEW_BACKEND) {
+  // Electron 13 requires this because Discord's handler tries to access safeStorage and throws.
+  require('electron').ipcMain.on('DISCORD_SAFE_STORAGE_IS_ENCRYPTION_AVAILABLE', (event) => {
+    event.returnValue = false;
+  });
+}
+
 // Add Powercord's modules
 require('module').Module.globalPaths.push(join(__dirname, 'fake_node_modules'));
 
