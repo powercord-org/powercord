@@ -125,6 +125,7 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   async getImageEncoded (imageUrl) {
+    imageUrl = imageUrl.replace('.webp', '.png');
     const extension = this.getExtension(imageUrl);
     const { raw } = await get(imageUrl);
 
