@@ -39,6 +39,18 @@ function setAppUserModelId (...args) {
 
 electron.app.setAppUserModelId = setAppUserModelId;
 
+if (!electron.safeStorage) {
+  electron.safeStorage = {
+    isEncryptionAvailable: () => false,
+    encryptString: () => {
+      throw new Error('Unavailable');
+    },
+    decryptString: () => {
+      throw new Error('Unavailable');
+    }
+  };
+}
+
 const electronExports = new Proxy(electron, {
   get (target, prop) {
     switch (prop) {
