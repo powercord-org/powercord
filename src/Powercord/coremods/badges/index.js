@@ -113,8 +113,8 @@ async function injectGuilds () {
   const baseUrl = powercord.settings.get('backendURL', WEBSITE);
   get(`${baseUrl}/api/v2/guilds/badges`).then(async res => {
     cache._guilds = res.body;
-    const { container } = await getModule([ 'subscribeTooltipText' ]);
-    forceUpdateElement(`.${container}`);
+    // const { container } = await getModule([ 'subscribeTooltipText' ]);
+    // forceUpdateElement(`.${container}`);
   });
 }
 

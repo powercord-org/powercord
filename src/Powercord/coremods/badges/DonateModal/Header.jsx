@@ -1,3 +1,6 @@
+module.exports = () => null;
+
+/*
 const { React, getModule, getModuleByDisplayName, modal } = require('powercord/webpack');
 const { AsyncComponent, Icons: { PowercordCutie } } = require('powercord/components');
 const { close: closeModal } = require('powercord/modal');
@@ -34,3 +37,4 @@ module.exports = AsyncComponent.from((async () => {
     return res;
   };
 })());
+*/
