@@ -3,6 +3,7 @@ const { AsyncComponent, Menu } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
 const { WEBSITE } = require('powercord/constants');
 const { Plugin } = require('powercord/entities');
+const { sleep } = require('powercord/util');
 
 const ErrorBoundary = require('./components/ErrorBoundary');
 const GeneralSettings = require('./components/GeneralSettings');
@@ -22,12 +23,7 @@ module.exports = class Settings extends Plugin {
     await this.loadStylesheet('scss/style.scss');
 
     // Force load
-    document.body.classList.add('__powercord-no-settings-animation');
-    const layers = await getModule([ 'popLayer' ], false);
-    const opener = await getModule([ 'open', 'updateAccount' ], false);
-    opener.open();
-    layers.popLayer();
-    setTimeout(() => document.body.classList.remove('__powercord-no-settings-animation'), 1e3);
+    await this._forceLoadSettings();
 
     // this.patchSettingsContextMenu();
     this.patchSettingsComponent();
@@ -171,5 +167,15 @@ module.exports = class Settings extends Plugin {
 
       return res;
     });
+  }
+
+  async _forceLoadSettings () {
+    await sleep(5e3); // Everyone's favorite fix
+    document.body.classList.add('__powercord-no-settings-animation');
+    const layers = await getModule([ 'popLayer' ], false);
+    const opener = await getModule([ 'open', 'updateAccount' ], false);
+    opener.open();
+    layers.popLayer();
+    setTimeout(() => document.body.classList.remove('__powercord-no-settings-animation'), 1100);
   }
 };
