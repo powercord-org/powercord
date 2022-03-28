@@ -1,35 +1,51 @@
-const { React } = require('powercord/webpack');
-const { SwitchItem } = require('powercord/components/settings');
+const { React, i18n: { Messages } } = require('powercord/webpack');
+const { SwitchItem, RadioGroup } = require('powercord/components/settings');
 
 module.exports = React.memo(
-  ({ getSetting, toggleSetting, patch }) => (
+  ({ getSetting, toggleSetting, updateSetting, patch }) => (
     <div>
       <SwitchItem
-        note='Shows covers in a square shape instead of a rounded one.'
+        note={Messages.SPOTIFY_SETTINGS_SQUARE_COVERS_DESCRIPTION}
         value={getSetting('squareCovers', false)}
         onChange={() => toggleSetting('squareCovers')}
       >
-        Squared covers
+        {Messages.SPOTIFY_SETTINGS_SQUARE_COVERS}
       </SwitchItem>
 
       <SwitchItem
-        note='Adds shuffle, repeat and other controls to the Spotify modal. Increases the height if enabled, if not these controls are available in the context menu.'
-        value={getSetting('showControls', true)}
-        onChange={() => toggleSetting('showControls')}
-      >
-        Show advanced controls
-      </SwitchItem>
-
-      <SwitchItem
-        note={'Prevents Discord from automatically pausing Spotify playback if you\'re sending voice for more than 30 seconds.'}
+        note={Messages.SPOTIFY_SETTINGS_NO_AUTO_PAUSE_DESCRIPTION}
         value={getSetting('noAutoPause', true)}
         onChange={() => {
           patch(getSetting('noAutoPause', true));
           toggleSetting('noAutoPause');
         }}
       >
-        No auto pause
+        {Messages.SPOTIFY_SETTINGS_NO_AUTO_PAUSE}
       </SwitchItem>
+
+      <RadioGroup
+        onChange={e => updateSetting("showControls", e.value)}
+        value={getSetting("showControls", "hover")}
+        options={[
+          {
+            name: `${Messages.SPOTIFY_SETTINGS_SHOW_CONTROLS_HOVER}`,
+            desc: `${Messages.SPOTIFY_SETTINGS_SHOW_CONTROLS_HOVER_DESCRIPTION}`,
+            value: "hover"
+          },
+          {
+            name: `${Messages.SPOTIFY_SETTINGS_SHOW_CONTROLS_ALWAYS}`,
+            desc: `${Messages.SPOTIFY_SETTINGS_SHOW_CONTROLS_ALWAYS_DESCRIPTION}`,
+            value: "always"
+          },
+          {
+            name: `${Messages.SPOTIFY_SETTINGS_SHOW_CONTROLS_OFF}`,
+            desc: `${Messages.SPOTIFY_SETTINGS_SHOW_CONTROLS_OFF_DESCRIPTION}`,
+            value: "off"
+          }
+        ]}
+        >
+        {Messages.SPOTIFY_SETTINGS_SHOW_CONTROLS}
+      </RadioGroup>
     </div>
   )
 );

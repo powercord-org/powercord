@@ -1,0 +1,46 @@
+{
+  "SPOTIFY_SETTINGS_SQUARE_COVERS": "Квадратные обложки",
+  "SPOTIFY_SETTINGS_SQUARE_COVERS_DESCRIPTION": "Использовать квадратные обложки вместо круглых.",
+
+  "SPOTIFY_SETTINGS_NO_AUTO_PAUSE": "Отключить автоматическую паузу",
+  "SPOTIFY_SETTINGS_NO_AUTO_PAUSE_DESCRIPTION": "Предотвращает автоматическую паузу воспроизведения Spotify, если вы говорите более 30 секунд.",
+
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS": "Показывать расширенное управление",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_HOVER": "При наведении",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_HOVER_DESCRIPTION": "Расширенное управление (перемешивание, повтор и другие функции) будет видно при наведении",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_ALWAYS": "Всегда",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_ALWAYS_DESCRIPTION": "Расширенное управление будет видно всегда",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_OFF": "Не показывать",
+  "SPOTIFY_SETTINGS_SHOW_CONTROLS_OFF_DESCRIPTION": "Не показывать расширенное управление. Оно будет доступно в контекстном меню.",
+
+  "SPOTIFY_NOT_SEEING_CONTROLS": "Не видите управление?",
+  "SPOTIFY_NOT_PREMIUM": "У вас нет Spotify Premium.",
+
+  "SPOTIFY_CONTROLS_REPEAT": "Повтор",
+  "SPOTIFY_CONTROLS_REPEAT_TRACK": "Повтор трека",
+  "SPOTIFY_CONTROLS_REPEAT_OFF": "Повтор отключен",
+  "SPOTIFY_CONTROLS_SHUFFLE": "Перемешать",
+  "SPOTIFY_CONTROLS_VOLUME": "Громкость",
+  "SPOTIFY_CONTROLS_SAVE_TO_PLAYLIST": "Добавить в плейлист",
+
+  "SPOTIFY_PLAYLISTS": "Плейлисты",
+  "SPOTIFY_ALBUMS": "Альбомы",
+  "SPOTIFY_TOP_SONGS": "Топ треков",
+  "SPOTIFY_SONGS": "Треки",
+  "SPOTIFY_DEVICES": "Устройства",
+
+  "SPOTIFY_CONTROLS_OPEN_SPOTIFY": "Открыть в Spotify",
+  "SPOTIFY_CONTROLS_SEND_ALBUM": "Отправить ссылку на альбом в канал",
+  "SPOTIFY_CONTROLS_SEND_SONG": "Отправить ссылку на трек в канал",
+  "SPOTIFY_CONTROLS_COPY_ALBUM": "Копировать ссылку на альбом",
+  "SPOTIFY_CONTROLS_COPY_SONG": "Копировать ссылку на трек",
+
+  "SPOTIFY_ADD_LIKED_SONGS": "Добавить в любимые треки",
+  "SPOTIFY_REMOVE_LIKED_SONGS": "Убрать из любимых треков",
+  "SPOTIFY_CANT_LIKE_LOCAL": "Нельзя добавлять локальный трек в любимые",
+
+  "SPOTIFY_PAYUP_TITLE": "Требуется Spotify Premium",
+  "SPOTIFY_PAYUP_TEXT_1": "Чтобы управлять воспроизведением Spotify, мы используем Spotify \"Connect Web\" API, который, к сожалению, доступен только пользователям Spotify Premium.\nЧтобы вы могли управлять воспроизведением Spotify, вам нужно получить подписку Premium.",
+  "SPOTIFY_PAYUP_TEXT_2": "Если у вас уже есть Spotify Premium, но вы всё ещё не видите кнопок управления, скорее всего, Spotify отправляет неверный статус Premium.\nПопробуйте управлять воспроизведением (воспроизведение, пауза, переключить трек, ...), чтобы обновить данные от Spotify.",
+  "SPOTIFY_PAYUP_TEXT_3": "Если это не исправило проблему, убедитесь, что вы не в приватной сессии. Мы получали сообщения\nо том, что это ломает отправляемый статус Premium. Также убедитесь, что вы привязали аккаунт Spotify к вашему аккаунту Discord.\nЕсли вы хотите, вы можете отключить отображение Spotify в профиле, чтобы никто не видел, что вы слушаете."
+}

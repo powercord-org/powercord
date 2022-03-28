@@ -37,7 +37,10 @@ class Modal extends React.PureComponent {
 
     return (
       <div
-        className={[ 'powercord-spotify', (this.state.hover || this.state.seeking) && 'hover' ].filter(Boolean).join(' ')}
+        className={[ 'powercord-spotify',
+          ((this.state.hover || this.state.seeking) && this.props.getSetting('showControls', 'hover') != 'off' ||
+          this.props.getSetting('showControls', 'hover') == 'always')
+          && 'hover'].filter(Boolean).join(' ')}
         onMouseEnter={() => this.setState({ hover: true })}
         onMouseLeave={() => this.setState({ hover: false })}
       >
@@ -147,7 +150,7 @@ class Modal extends React.PureComponent {
   }
 
   renderExtraControls () {
-    if (!this.props.getSetting('showControls', true)) {
+    if (this.props.getSetting('showControls', 'hover') == 'never') {
       return null;
     }
 
@@ -183,7 +186,7 @@ class Modal extends React.PureComponent {
       return this.renderButton(() => 'Cannot shuffle right now', 'random', () => void 0, true);
     }
     const { shuffle } = this.props.playerState;
-    return this.renderButton(() => 'Shuffle', 'random', () =>
+    return this.renderButton(() => Messages.SPOTIFY_CONTROLS_SHUFFLE, 'random', () =>
       SpotifyAPI.setShuffleState(!shuffle), false, shuffle ? 'active' : '');
   }
 
@@ -194,16 +197,16 @@ class Modal extends React.PureComponent {
 
     switch (this.props.playerState.repeat) {
       case playerStore.RepeatState.NO_REPEAT:
-        return this.renderButton(() => 'Repeat', 'sync', () => this.handleSetRepeat(), false);
+        return this.renderButton(() => Messages.SPOTIFY_CONTROLS_REPEAT, 'sync', () => this.handleSetRepeat(), false);
       case playerStore.RepeatState.REPEAT_CONTEXT:
-        return this.renderButton(() => 'Repeat Track', 'sync', () => this.handleSetRepeat(), false, 'active');
+        return this.renderButton(() => Messages.SPOTIFY_CONTROLS_REPEAT_TRACK, 'sync', () => this.handleSetRepeat(), false, 'active');
       case playerStore.RepeatState.REPEAT_TRACK:
-        return this.renderButton(() => 'No Repeat', 'undo', () => this.handleSetRepeat(), false, 'active');
+        return this.renderButton(() => Messages.SPOTIFY_CONTROLS_REPEAT_OFF, 'undo', () => this.handleSetRepeat(), false, 'active');
     }
   }
 
   renderAddToPlaylist () {
-    return this.renderButton(() => 'Save to Playlist', 'plus-circle', () => this.handleAddToPlaylist());
+    return this.renderButton(() => Messages.SPOTIFY_CONTROLS_SAVE_TO_PLAYLIST, 'plus-circle', () => this.handleAddToPlaylist());
   }
 
   renderButton (tooltipText, icon, onClick, disabled, className) {
@@ -227,7 +230,7 @@ class Modal extends React.PureComponent {
       ...this.props.base.props.children[2].props.children[0],
       props: {
         ...this.props.base.props.children[2].props.children[0].props,
-        tooltipText: 'Not seeing controls?',
+        tooltipText: Messages.SPOTIFY_NOT_SEEING_CONTROLS,
         icon: () => React.createElement(Icon, {
           name: 'Info',
           width: 20,

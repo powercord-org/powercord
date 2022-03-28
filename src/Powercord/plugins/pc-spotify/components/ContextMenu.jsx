@@ -55,7 +55,7 @@ class ContextMenu extends React.PureComponent {
   renderDevices () {
     return (
       <Menu.MenuGroup>
-        <Menu.MenuItem id='devices' label='Devices'>
+        <Menu.MenuItem id='devices' label={Messages.SPOTIFY_DEVICES}>
           {this.props.devices.sort(d => -Number(d.is_active)).map((device, i) => (
             <>
               <Menu.MenuItem
@@ -77,22 +77,22 @@ class ContextMenu extends React.PureComponent {
 
     return (
       <Menu.MenuGroup>
-        <Menu.MenuItem id='playlists' label='Playlists' disabled={!this.props.playlistsLoaded}>
+        <Menu.MenuItem id='playlists' label={Messages.SPOTIFY_PLAYLISTS} disabled={!this.props.playlistsLoaded}>
           {this.props.playlistsLoaded
             ? this._renderList(this.props.playlists)
             : null}
         </Menu.MenuItem>
-        {hasCoolFeatures && <Menu.MenuItem id='albums' label='Albums' disabled={!this.props.albumsLoaded}>
+        {hasCoolFeatures && <Menu.MenuItem id='albums' label={Messages.SPOTIFY_ALBUMS} disabled={!this.props.albumsLoaded}>
           {this.props.albumsLoaded
             ? this._renderList(this.props.albums)
             : null}
         </Menu.MenuItem>}
-        {hasCoolFeatures && <Menu.MenuItem id='top-songs' label='Top Songs' disabled={!this.props.topSongsLoaded}>
+        {hasCoolFeatures && <Menu.MenuItem id='top-songs' label={Messages.SPOTIFY_TOP_SONGS} disabled={!this.props.topSongsLoaded}>
           {this.props.topSongsLoaded
             ? this._renderSongs(this.props.topSongs)
             : null}
         </Menu.MenuItem>}
-        {hasCoolFeatures && <Menu.MenuItem id='songs' label='Songs' disabled={!this.props.songsLoaded}>
+        {hasCoolFeatures && <Menu.MenuItem id='songs' label={Messages.SPOTIFY_SONGS} disabled={!this.props.songsLoaded}>
           {this.props.songsLoaded
             ? this._renderSongs(this.props.songs)
             : null}
@@ -150,29 +150,29 @@ class ContextMenu extends React.PureComponent {
 
     return (
       <Menu.MenuGroup>
-        <Menu.MenuItem id='repeat' label='Repeat Mode' disabled={cannotAll}>
+        <Menu.MenuItem id='repeat' label={Messages.SPOTIFY_CONTROLS_REPEAT} disabled={cannotAll}>
           <Menu.MenuItem
             id={`off${isOff ? '-active' : ''}`}
-            label='No Repeat'
+            label={Messages.SPOTIFY_CONTROLS_REPEAT_OFF}
             action={() => SpotifyAPI.setRepeatState('off')}
             disabled={isOff}
           />
           <Menu.MenuItem
             id={`context${isContext ? '-active' : ''}`}
-            label='Repeat'
+            label={Messages.SPOTIFY_CONTROLS_REPEAT_TRACK}
             action={() => SpotifyAPI.setRepeatState('context')}
             disabled={isContext || !this.props.playerState.canRepeat}
           />
           <Menu.MenuItem
             id={`track${isTrack ? '-active' : ''}`}
-            label='Repeat Track'
+            label={Messages.SPOTIFY_CONTROLS_REPEAT}
             action={() => SpotifyAPI.setRepeatState('track')}
             disabled={isTrack || !this.props.playerState.canRepeatOne}
           />
         </Menu.MenuItem>
         <Menu.MenuCheckboxItem
           id='shuffle'
-          label='Shuffle'
+          label={Messages.SPOTIFY_CONTROLS_SHUFFLE}
           checked={this.props.playerState.shuffle}
           action={() => SpotifyAPI.setShuffleState(!this.props.playerState.shuffle)}
           disabled={!this.props.playerState.canShuffle}
@@ -187,7 +187,7 @@ class ContextMenu extends React.PureComponent {
       <Menu.MenuGroup>
         <Menu.MenuControlItem
           id='volume'
-          label='Volume'
+          label={Messages.SPOTIFY_CONTROLS_VOLUME}
           control={(props, ref) => (
             <Slider
               mini
@@ -224,7 +224,7 @@ class ContextMenu extends React.PureComponent {
           />}
         <Menu.MenuItem
           id='save-playlist'
-          label='Save to Playlist'
+          label={Messages.SPOTIFY_CONTROLS_SAVE_TO_PLAYLIST}
           action={() => openModal(() => React.createElement(AddToPlaylist, { track: this.props.currentTrack }))}
         />
       </Menu.MenuGroup>
@@ -236,7 +236,7 @@ class ContextMenu extends React.PureComponent {
       <Menu.MenuGroup>
         <Menu.MenuItem
           id='open-spotify'
-          label='Open in Spotify'
+          label={Messages.SPOTIFY_CONTROLS_OPEN_SPOTIFY}
           action={() => {
             const protocol = getModule([ 'isProtocolRegistered', '_dispatchToken' ], false).isProtocolRegistered();
             shell.openExternal(protocol ? this.props.currentTrack.uri : this.props.currentTrack.urls.track);
@@ -245,7 +245,7 @@ class ContextMenu extends React.PureComponent {
         <Menu.MenuItem
           id='send-album'
           disabled={!this.props.currentTrack.urls.album}
-          label='Send Album URL to Channel'
+          label={Messages.SPOTIFY_CONTROLS_SEND_ALBUM}
           action={() => messages.sendMessage(
             channels.getChannelId(),
             { content: this.props.currentTrack.urls.album }
@@ -253,7 +253,7 @@ class ContextMenu extends React.PureComponent {
         />
         <Menu.MenuItem
           id='send-song'
-          label='Send Song URL to Channel'
+          label={Messages.SPOTIFY_CONTROLS_SEND_SONG}
           action={() => messages.sendMessage(
             channels.getChannelId(),
             { content: this.props.currentTrack.urls.track }
@@ -262,12 +262,12 @@ class ContextMenu extends React.PureComponent {
         <Menu.MenuItem
           id='copy-album'
           disabled={!this.props.currentTrack.urls.album}
-          label='Copy Album URL'
+          label={Messages.SPOTIFY_CONTROLS_COPY_ALBUM}
           action={() => clipboard.writeText(this.props.currentTrack.urls.album)}
         />
         <Menu.MenuItem
           id='copy-song'
-          label='Copy Song URL'
+          label={Messages.SPOTIFY_CONTROLS_COPY_SONG}
           action={() => clipboard.writeText(this.props.currentTrack.urls.track)}
         />
       </Menu.MenuGroup>
