@@ -105,10 +105,10 @@ class Modal extends React.PureComponent {
             </Tooltip>
           ),
           {
-            ...this.props.base.props.children[2],
+            ...this.props.base.props.children[1],
             props: {
-              ...this.props.base.props.children[2].props,
-              className: `${this.props.base.props.children[2].props.className || ''} spotify-buttons`.trim(),
+              ...this.props.base.props.children[1].props,
+              className: `${this.props.base.props.children[1].props.className || ''} spotify-buttons`.trim(),
               children: isPremium
                 ? [
                   this.renderButton(() => Messages.PAGINATION_PREVIOUS, 'backward', () => SpotifyAPI.prev()),
@@ -126,16 +126,16 @@ class Modal extends React.PureComponent {
   }
 
   renderNameComponent (props = {}) {
-    const nameComponent = this.props.base.props.children[1].props.children({});
+    const nameComponent = this.props.base.props.children[0].props.children[1].props.children({});
     delete nameComponent.props.onMouseLeave;
     delete nameComponent.props.onMouseEnter;
     delete nameComponent.props.onClick;
 
-    [ nameComponent.props.className ] = nameComponent.props.className.split(' ');
+    // [ nameComponent.props.className ] = nameComponent.props.className.split(' ');
     Object.assign(nameComponent.props, props);
-    nameComponent.props.children[0].props.className = 'spotify-title';
-    nameComponent.props.children[0].props.children.props.children = this.props.currentTrack.name;
-    nameComponent.props.children[1] = (
+    nameComponent.props.children.props.children[0].props.className = 'spotify-title';
+    nameComponent.props.children.props.children[0].props.children.props.children = this.props.currentTrack.name;
+    nameComponent.props.children.props.children[1] = (
       <PanelSubtext className='spotify-artist'>
         {Messages.USER_ACTIVITY_LISTENING_ARTISTS.format({
           artists: this.props.currentTrack.artists,
@@ -208,9 +208,9 @@ class Modal extends React.PureComponent {
 
   renderButton (tooltipText, icon, onClick, disabled, className) {
     return {
-      ...this.props.base.props.children[2].props.children[0],
+      ...this.props.base.props.children[1].props.children[0],
       props: {
-        ...this.props.base.props.children[2].props.children[0].props,
+        ...this.props.base.props.children[1].props.children[0].props,
         icon: () => React.createElement(FontAwesome, {
           className,
           icon
@@ -224,9 +224,9 @@ class Modal extends React.PureComponent {
 
   renderInfoPremium () {
     return {
-      ...this.props.base.props.children[2].props.children[0],
+      ...this.props.base.props.children[1].props.children[0],
       props: {
-        ...this.props.base.props.children[2].props.children[0].props,
+        ...this.props.base.props.children[1].props.children[0].props,
         tooltipText: 'Not seeing controls?',
         icon: () => React.createElement(Icon, {
           name: 'Info',
