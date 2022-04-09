@@ -55,6 +55,10 @@ const electronExports = new Proxy(electron, {
   get (target, prop) {
     switch (prop) {
       case 'BrowserWindow': return PatchedBrowserWindow;
+
+      // Trick Babel's polyfill thing into not touching Electron's exported object with its logic
+      case 'default': return electronExports;
+      case '__esModule': return true;
       default: return target[prop];
     }
   }
