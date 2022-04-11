@@ -87,10 +87,11 @@ async function injectGuilds () {
 
   inject('pc-badges-guilds-header', GuildHeader.default, 'type', ([ props ], res) => {
     if (cache._guilds[props.guild.id]) {
-      res.props.children[0].props.children[0].props.children.unshift(
+      res.props.children[0].props.children[0].props.children[0].props.children.unshift(
         React.createElement(Badges.Custom, {
           ...cache._guilds[props.guild.id],
-          tooltipPosition: 'bottom'
+          tooltipPosition: 'bottom',
+          gap: false
         })
       );
     }

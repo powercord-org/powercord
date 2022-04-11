@@ -59,7 +59,7 @@ module.exports = async function injectAutocomplete () {
 
       return { results: {} };
     },
-    renderResults: (result, selected, _channel, _guild, value, _props, onHover, onClick) => {
+    renderResults: ({ results: result, selectedIndex: selected, query: value, onHover: onHover, onClick: onClick }) => {
       if (result && result.commands) {
         const { commands } = result;
         const customHeader = Array.isArray(commands.__header) ? commands.__header : [ commands.__header ];
@@ -81,13 +81,13 @@ module.exports = async function injectAutocomplete () {
           messages.sendMessage('0', { content: msg });
           this.instance.clearValue();
         } else if (!result.value.endsWith(' ')) {
-          props.insertText(`${powercord.api.commands.prefix}${result.value}`);
+          props.insertText(result.value);
         }
 
         return {};
       }
-      const value = result.value.split(' ').slice(0, -1).join(' ');
-      props.insertText(`${powercord.api.commands.prefix}${value} ${result.commands[selected].command}`);
+
+      props.insertText(result.commands[selected].command);
       return {};
     }
   };
@@ -102,7 +102,7 @@ module.exports = async function injectAutocomplete () {
         commands: powercord.api.commands.filter(c => (getMatchingCommand(c)).some(commandName => commandName.includes(value)))
       }
     }),
-    renderResults: (result, selected, _channel, _guild, value, _props, onHover, onClick) => {
+    renderResults: ({ results: result, selectedIndex: selected, query: value, onHover: onHover, onClick: onClick }) => {
       if (result && result.commands) {
         return renderCommandResults(value, selected, result.commands, onHover, onClick, c => ({
           key: `powercord-${c.command}`,
@@ -138,38 +138,16 @@ module.exports = async function injectAutocomplete () {
     }
   }))(this.oldStartTyping = typing.startTyping);
 
-  const PlainTextArea = await getModuleByDisplayName('PlainTextArea');
-  inject('pc-commands-plain-autocomplete', PlainTextArea.prototype, 'getCurrentWord', function (_, res) {
-    const { value } = this.props;
-    if (new RegExp(`^\\${powercord.api.commands.prefix}\\S+ `).test(value)) {
+  inject('pc-commands-slate-autocomplete', ChannelEditorContainer.prototype, 'getCurrentWord', function (_, res) {
+    if (new RegExp(`^\\${powercord.api.commands.prefix}\\S+ `).test(this.props.textValue)) {
       if ((/^@|#|:/).test(res.word)) {
         return res;
       }
 
       return {
-        word: value,
+        word: this.props.textValue,
         isAtStart: true
       };
-    }
-    return res;
-  });
-
-  const SlateChannelTextArea = await getModuleByDisplayName('SlateChannelTextArea');
-  inject('pc-commands-slate-autocomplete', SlateChannelTextArea.prototype, 'getCurrentWord', function (_, res) {
-    const { value } = this.editorRef;
-    const { selection, document } = value;
-    if (new RegExp(`^\\${powercord.api.commands.prefix}\\S+ `).test(document.text)) {
-      if ((/^@|#|:/).test(res.word)) {
-        return res;
-      }
-
-      const node = document.getNode(selection.start.key);
-      if (node) {
-        return {
-          word: node.text.substring(0, selection.start.offset),
-          isAtStart: true
-        };
-      }
     }
     return res;
   });

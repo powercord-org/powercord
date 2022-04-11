@@ -74,9 +74,9 @@ async function forceRouterUpdate () {
 }
 
 module.exports = async function () {
-  await injectRouter();
-  await injectViews();
-  await injectSidebar();
+  injectRouter();
+  injectViews();
+  injectSidebar();
 
   powercord.api.router.on('routeAdded', forceRouterUpdate);
   powercord.api.router.on('routeRemoved', forceRouterUpdate);

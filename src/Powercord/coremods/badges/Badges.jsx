@@ -12,11 +12,11 @@ const { React, getModule, i18n: { Messages } } = require('powercord/webpack');
 const { WEBSITE, I18N_WEBSITE, DISCORD_INVITE, REPO_URL } = require('powercord/constants');
 const DonateModal = require('./DonateModal');
 
-const Base = React.memo(({ color, tooltip, tooltipPosition, onClick, className, children }) => {
+const Base = React.memo(({ color, tooltip, tooltipPosition, onClick, className, children, gap }) => {
   const { profileBadge22 } = getModule([ 'profileBadge22' ], false);
   return (
     <Clickable onClick={onClick || (() => void 0)} className='powercord-badge-wrapper'>
-      <Tooltip text={tooltip} position={tooltipPosition || 'top' } spacing={24}>
+      <Tooltip text={tooltip} position={tooltipPosition || 'top' } spacing={gap === false ? 0 : 24}>
         <div className={`${profileBadge22} powercord-badge ${className}`} style={{ color: `#${color || '7289da'}` }}>
           {children}
         </div>
@@ -25,12 +25,13 @@ const Base = React.memo(({ color, tooltip, tooltipPosition, onClick, className, 
   );
 });
 
-const Custom = React.memo(({ name, icon, tooltipPosition }) => (
+const Custom = React.memo(({ name, icon, tooltipPosition, gap }) => (
   <Base
     tooltipPosition={tooltipPosition}
     onClick={() => openModal(DonateModal)}
     className='powercord-badge-cutie'
     tooltip={name}
+    gap={gap}
   >
     <img src={icon} alt='Custom badge'/>
   </Base>
