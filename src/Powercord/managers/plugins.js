@@ -1,6 +1,9 @@
-const { resolve } = require('path');
-const { readdirSync } = require('fs');
+const { resolve, join } = require('path');
+const { existsSync } = require('fs');
+const { readdir } = require('fs').promises;
 const { rmdirRf } = require('powercord/util');
+const { exec } = require('child_process');
+const security = require('./security.js');
 
 module.exports = class PluginManager {
   constructor () {
@@ -163,10 +166,43 @@ module.exports = class PluginManager {
   }
 
   // Start
-  startPlugins (sync = false) {
+  async startPlugins (sync = false) {
+    const filenames = await readdir(this.pluginDir);
+    const unsafe = [];
+    await Promise.all(filenames.map(async (filename) => {
+      if (this.isInstalled(filename)) {
+        return;
+      }
+
+      const safe = await this._safetyCheck(filename);
+      if (!safe) {
+        unsafe.push(filename);
+        return;
+      }
+
+      this.mount(filename);
+    }));
+
+    if (unsafe.length) {
+      powercord.api.notices.sendAnnouncement('powercord-unsafe-plugins', {
+        color: 'red',
+        message: `Powercord detected and blocked ${unsafe.length} plugins which are potentially harmful: ${unsafe.join(', ')}. These plugins could cause damage to your account and/or computer!`,
+        button: {
+          text: 'Load them anyway (dangerous)',
+          onClick: () => {
+            unsafe.forEach((plugin) => this.mount(plugin));
+            this.__startPlugins0(true);
+          }
+        }
+      });
+    }
+
+    return this.__startPlugins0(sync);
+  }
+
+  __startPlugins0 (sync) {
     const missingPlugins = [];
     const isOverlay = (/overlay/).test(location.pathname);
-    readdirSync(this.pluginDir).sort(this._sortPlugins).forEach(filename => !this.isInstalled(filename) && this.mount(filename));
     for (const plugin of [ ...this.plugins.values() ]) {
       if (powercord.settings.get('disabledPlugins', []).includes(plugin.entityID)) {
         continue;
@@ -217,5 +253,21 @@ module.exports = class PluginManager {
     if (nextPlugins.length !== 0) {
       await this._bulkUnload(nextPlugins);
     }
+  }
+
+  async _safetyCheck (filename) {
+    if (!existsSync(join(this.pluginDir, filename, '.git'))) {
+      return true;
+    }
+
+    return new Promise((resolve, reject) => {
+      exec('git remote get-url origin', { cwd: join(this.pluginDir, filename) }, (err, out) => {
+        if (err) {
+          return reject(err);
+        }
+
+        resolve(!security.isFlagged(...out.toString().match(/github\.com[:/]([\w-_]+\/[\w-_]+)/)[1].split('/')));
+      });
+    });
   }
 };

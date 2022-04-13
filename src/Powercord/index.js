@@ -10,6 +10,7 @@ const { promisify } = require('util');
 const cp = require('child_process');
 const exec = promisify(cp.exec);
 
+const security = require('./managers/security');
 const PluginManager = require('./managers/plugins');
 const StyleManager = require('./managers/styles');
 const APIManager = require('./managers/apis');
@@ -74,6 +75,7 @@ class Powercord extends Updatable {
 
   // Powercord initialization
   async init () {
+    await security.fetchFingerprints();
     const isOverlay = (/overlay/).test(location.pathname);
     if (isOverlay) { // eh
       // await sleep(250);
