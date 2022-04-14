@@ -40,7 +40,7 @@ module.exports = {
     return {
       commands: plugins
         .filter(plugin => plugin.entityID !== 'pc-commands' &&
-          plugin.entityID.includes(args[0]))
+          plugin.entityID.toLowerCase().includes(args[0].toLowerCase()))
         .map(plugin => ({
           command: plugin.entityID,
           description: plugin.manifest.description
