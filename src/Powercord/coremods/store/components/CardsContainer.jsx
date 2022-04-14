@@ -1,9 +1,3 @@
-/**
- * Copyright (c) 2018-2020 aetheryx & Bowser65
- * All Rights Reserved. Licensed under the Porkord License
- * https://powercord.dev/porkord-license
- */
-
 const { React, getModule } = require('powercord/webpack');
 
 const COUNTS = [ [ 1696, 20 ], [ 1432, 16 ], [ 1168, 12 ], [ 0, 8 ] ]; // yoinked from Discord's source code

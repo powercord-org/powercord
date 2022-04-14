@@ -1,9 +1,3 @@
-/**
- * Copyright (c) 2018-2020 aetheryx & Bowser65
- * All Rights Reserved. Licensed under the Porkord License
- * https://powercord.dev/porkord-license
- */
-
 const { join } = require('path');
 const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
 const { forceUpdateElement, getOwnerInstance } = require('powercord/util');

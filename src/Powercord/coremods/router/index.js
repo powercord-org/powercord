@@ -1,9 +1,3 @@
-/**
- * Copyright (c) 2018-2020 aetheryx & Bowser65
- * All Rights Reserved. Licensed under the Porkord License
- * https://powercord.dev/porkord-license
- */
-
 const { inject, uninject } = require('powercord/injector');
 const { React, getModule, getAllModules, getModuleByDisplayName } = require('powercord/webpack');
 const { findInTree, findInReactTree, getOwnerInstance, waitFor } = require('powercord/util');

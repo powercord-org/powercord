@@ -1,9 +1,3 @@
-/**
- * Copyright (c) 2018-2020 aetheryx & Bowser65
- * All Rights Reserved. Licensed under the Porkord License
- * https://powercord.dev/porkord-license
- */
-
 const rmdirRf = require('../src/fake_node_modules/powercord/util/rmdirRf');
 const { existsSync } = require('fs');
 const { mkdir, writeFile } = require('fs').promises;
