@@ -35,7 +35,7 @@ module.exports = class Notices extends Plugin {
   async _patchAnnouncements () {
     const { base } = await getModule([ 'base', 'container' ]);
     const instance = getOwnerInstance(await waitFor(`.${base.split(' ')[0]}`));
-    inject('pc-notices-announcements', instance.props.children[0], 'type', (_, res) => {
+    inject('pc-notices-announcements', instance.props.children, 'type', (_, res) => {
       const { children } = findInReactTree(res, ({ className }) => className === base);
       children.unshift(React.createElement(AnnouncementContainer));
       return res;

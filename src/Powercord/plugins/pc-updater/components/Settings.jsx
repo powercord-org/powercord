@@ -30,7 +30,6 @@ module.exports = class UpdaterSettings extends React.PureComponent {
     const disabled = this.props.getSetting('disabled', false);
     const paused = this.props.getSetting('paused', false);
     const failed = this.props.getSetting('failed', false);
-    const threats = this.props.getSetting('threats_count', 0);
 
     const updates = this.props.getSetting('updates', []);
     const disabledEntities = this.props.getSetting('entities_disabled', []);
@@ -96,9 +95,6 @@ module.exports = class UpdaterSettings extends React.PureComponent {
           </div>
         </div>
       </div>
-      {!!threats && <div className='threats'>
-        {threats} plugins have been flagged as potentially harmful and will not be updated. <a href='https://github.com/powercord-org/powercord/wiki/Why-are-some-plugins-blocked-from-loading-or-updating%3F' target='_blank'>Learn more</a>
-      </div>}
       <div className='buttons'>
         {disabled || paused
           ? <Button

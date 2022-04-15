@@ -9,7 +9,6 @@ const cp = require('child_process');
 const exec = promisify(cp.exec);
 
 const Settings = require('./components/Settings.jsx');
-const security = require('../../managers/security.js');
 
 const changelog = require('../../../../changelogs.json');
 
@@ -47,10 +46,10 @@ module.exports = class Updater extends Plugin {
       this.checkForUpdates();
     }, 10e3);
 
-    // const lastChangelog = this.settings.get('last_changelog', '');
-    // if (changelog.id !== lastChangelog) {
-    //   this.openChangeLogs();
-    // }
+    const lastChangelog = this.settings.get('last_changelog', '');
+    if (changelog.id !== lastChangelog) {
+      this.openChangeLogs();
+    }
   }
 
   pluginWillUnload () {
@@ -70,9 +69,6 @@ module.exports = class Updater extends Plugin {
 
     this.settings.set('checking', true);
     this.settings.set('checking_progress', [ 0, 0 ]);
-    this.settings.set('threats_count', 0);
-
-    let threats_count = 0;
     const disabled = this.settings.get('entities_disabled', []).map(e => e.id);
     const skipped = this.settings.get('entities_skipped', []);
     const plugins = [ ...powercord.pluginManager.plugins.values() ].filter(p => !p.isInternal);
@@ -93,11 +89,6 @@ module.exports = class Updater extends Plugin {
         try {
           const repo = await entity.getGitRepo();
           if (repo) {
-            if (security.isFlagged(...repo.split('/'))) {
-              this.settings.set('threats_count', ++threats_count);
-              continue;
-            }
-
             const shouldUpdate = await entity._checkForUpdates();
             if (shouldUpdate) {
               const commits = await entity._getUpdateCommits();
