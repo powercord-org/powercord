@@ -5,7 +5,7 @@ const { findInTree, findInReactTree, getOwnerInstance, waitFor } = require('powe
 async function injectRouter () {
   const { container } = await getModule([ 'container', 'downloadProgressCircle' ]);
   const RouteRenderer = getOwnerInstance(await waitFor(`.${container.split(' ')[0]}`));
-  inject('pc-router-routes', RouteRenderer.props.children, 'type', (_, res) => {
+  inject('pc-router-routes', RouteRenderer.props.children[0], 'type', (_, res) => {
     const { children: routes } = findInReactTree(res, m => Array.isArray(m.children) && m.children.length > 5);
     routes.push(
       ...powercord.api.router.routes.map(route => ({
@@ -22,8 +22,8 @@ async function injectRouter () {
 }
 
 async function injectViews () {
-  const FluxifiedViews = await getModuleByDisplayName('FluxContainer(ViewsWithMainInterface)');
-  const Views = FluxifiedViews.prototype.render.call({ memoizedGetStateFromStores: () => ({}) }).type;
+  const FluxifiedViews = await getModuleByDisplayName('ForwardRef(FluxContainer(App))');
+  const Views = FluxifiedViews.render.call({ memoizedGetStateFromStores: () => ({}) }).type;
 
   inject('pc-router-views', Views.prototype, 'render', (args, res) => {
     const routes = findInTree(res, n => Array.isArray(n) && n[0] && n[0].key && n[0].props.path && n[0].props.render);
@@ -38,7 +38,7 @@ async function injectViews () {
 async function injectSidebar () {
   const { panels } = await getModule([ 'panels' ]);
   const instance = getOwnerInstance(await waitFor(`.${panels}`));
-  inject('pc-router-sidebar', instance.props.children, 'type', (_, res) => {
+  inject('pc-router-sidebar', instance.props.children[0], 'type', (_, res) => {
     const content = findInReactTree(res, n => n.props?.className?.startsWith('content-'));
     const className = content?.props?.children[0]?.props?.className;
     if (className && className.startsWith('sidebar-') && window.location.pathname.startsWith('/_powercord')) {
