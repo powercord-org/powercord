@@ -11,7 +11,7 @@ const totalStrCount = Object.keys(strings['en-US']).length;
 
 module.exports = class I18n extends Plugin {
   async startPlugin () {
-    const FluxSettingsLocale = await getModuleByDisplayName('FluxContainer(UserSettingsLocale)');
+    const FluxSettingsLocale = await getModuleByDisplayName('FluxContainer(UserSettingsLocale)', true, true);
     // noinspection JSPotentiallyInvalidConstructorUsage
     const SettingsLocale = React.createElement(FluxSettingsLocale)
       .type.prototype.render.call({ memoizedGetStateFromStores: () => ({}) });
