@@ -294,7 +294,7 @@ if (preload) {
 setTimeout(() => DiscordNative.window.setDevtoolsCallbacks(null, null), 5e3);
 
 /*
-todo: rewrite these
+@todo: rewrite these
 // Debug logging
 let debugLogs = false;
 try {
