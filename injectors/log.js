@@ -13,7 +13,15 @@ const BasicMessages = Object.freeze({
   UNPLUG_SUCCESS: `${AnsiEscapes.BOLD}${AnsiEscapes.GREEN}Powercord has been successfully unplugged${AnsiEscapes.RESET}`
 });
 
+const PlatformNames = Object.freeze({
+  stable: 'Discord',
+  ptb: 'Discord PTB',
+  canary: 'Discord Canary',
+  dev: 'Discord Development'
+});
+
 module.exports = {
   AnsiEscapes,
-  BasicMessages
+  BasicMessages,
+  PlatformNames
 };
