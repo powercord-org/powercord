@@ -28,14 +28,14 @@ module.exports = {
       };
     }
 
-    if(!value || !(/\w/).test(value)) {
+    if (!value || !(/\w/).test(value)) {
       return {
         send: false,
         result: {
-          type: "rich",
-          title: "Cannot create a tag with an empty value"
+          type: 'rich',
+          title: 'Cannot create a tag with an empty value'
         }
-      }
+      };
     }
 
     if (powercord.api.commands.find(c => c.command === name)) {
