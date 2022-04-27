@@ -17,6 +17,6 @@ function tryToElevate(command) {
     process.exit(0)
   } else if (error.code !== 'ENOENT') {
     console.error(error)
-    process.exit(1)
+    process.exit(process.argv.includes('--no-exit-codes') ? 0 : 1)
   }
 }
