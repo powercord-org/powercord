@@ -1,6 +1,7 @@
-const { join } = require('path');
+const { join, resolve } = require('path');
 const { readdirSync, existsSync } = require('fs');
 const { readFile, lstat } = require('fs').promises;
+const { rmdirRf } = require('powercord/util');
 
 const { Theme } = require('powercord/entities');
 const { SETTINGS_FOLDER } = require('powercord/constants');
@@ -137,6 +138,16 @@ module.exports = class StyleManager {
 
     theme.remove();
     this.themes.delete(themeID);
+  }
+
+  // noinspection JSUnusedLocalSymbols - Install
+  async install (themeID) { // eslint-disable-line no-unused-vars
+    throw new Error('no');
+  }
+
+  async uninstall (themeID) {
+    await this.unmount(themeID);
+    await rmdirRf(resolve(this.themesDir, themeID));
   }
 
   // Start/Stop
