@@ -1,18 +1,21 @@
 const { React, getModule, i18n: { Messages } } = require('powercord/webpack');
-const { TabBar, Button } = require('powercord/components');
+const { TabBar } = require('powercord/components');
+const { open: openModal, close: closeModal } = require('powercord/modal');
+const { Confirm } = require('powercord/components/modal');
+
 const ThemeSettings = require('./ThemeSettings');
 const QuickCSS = require('./QuickCSS');
 const Base = require('./Base');
-const InstalledProduct = require("../parts/InstalledProduct");
+const InstalledProduct = require('../parts/InstalledProduct');
 
-const BETA_IDENTIFIER = 3542355018683011159509n;
-const FEEDBACK_IDENTIFIER = 3758304876382993109949n;
+// const BETA_IDENTIFIER = 3542355018683011159509n;
+// const FEEDBACK_IDENTIFIER = 3758304876382993109949n;
 
-function encodeIdentifier (i) {
-  const b = Buffer.alloc(8);
-  b.writeBigInt64BE((i - 69n) / 420n);
-  return b.toString('base64').replace(/=/g, '');
-}
+// function encodeIdentifier (i) {
+//   const b = Buffer.alloc(8);
+//   b.writeBigInt64BE((i - 69n) / 420n);
+//   return b.toString('base64').replace(/=/g, '');
+// }
 
 class Themes extends Base {
   constructor () {
@@ -109,7 +112,7 @@ class Themes extends Base {
     );
   }
 
-  _toggle(themeID, enabled) {
+  _toggle (themeID, enabled) {
     if (!enabled) {
       powercord.styleManager.disable(themeID);
     } else {
@@ -124,6 +127,37 @@ class Themes extends Base {
 
   getItems () {
     return this._sortItems([ ...powercord.styleManager.themes.values() ]);
+  }
+
+  _uninstall (themeID) {
+    const themes = [ themeID ];
+    openModal(() => (
+      <Confirm
+        red
+        header={Messages.POWERCORD_THEMES_UNINSTALL}
+        confirmText={Messages.POWERCORD_THEMES_UNINSTALL}
+        cancelText={Messages.CANCEL}
+        onCancel={closeModal}
+        onConfirm={async () => {
+          await Promise.all([ ...themes.map(async (theme) => {
+            try {
+              await powercord.styleManager.uninstall(theme);
+            } catch (err) {
+              console.error(err);
+            }
+          }) ]);
+          closeModal();
+          this.forceUpdate();
+        }}
+      >
+        <div className='powercord-products-modal'>
+          <span>{Messages.POWERCORD_THEMES_UNINSTALL_SURE}</span>
+          <ul>
+            {themes.map(p => <li key={p}>{powercord.styleManager.get(p)?.manifest?.name}</li>)}
+          </ul>
+        </div>
+      </Confirm>
+    ));
   }
 }
 

@@ -91,17 +91,21 @@ class Plugins extends Base {
         cancelText={Messages.CANCEL}
         onCancel={closeModal}
         onConfirm={async () => {
-          for (const plugin of plugins) {
-            await powercord.pluginManager.uninstall(plugin);
-          }
-          this.forceUpdate();
+          await Promise.all([ ...plugins.map(async (plugin) => {
+            try {
+              await powercord.pluginManager.uninstall(plugin);
+            } catch (err) {
+              console.error(err);
+            }
+          }) ]);
           closeModal();
+          this.forceUpdate();
         }}
       >
         <div className='powercord-products-modal'>
           <span>{Messages.POWERCORD_PLUGINS_UNINSTALL_SURE.format({ pluginCount: plugins.length })}</span>
           <ul>
-            {plugins.map(p => <li key={p.id}>{powercord.pluginManager.get(p).manifest.name}</li>)}
+            {plugins.map(p => <li key={p.id}>{powercord.pluginManager.get(p)?.manifest?.name}</li>)}
           </ul>
         </div>
       </Confirm>
