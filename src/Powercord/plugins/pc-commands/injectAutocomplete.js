@@ -74,20 +74,20 @@ module.exports = async function injectAutocomplete () {
         }), () => void 0, customHeader);
       }
     },
-    onSelect: (result, selected, isEnter, props) => {
-      if (result.commands[selected].instruction) {
+    onSelect: ({ results, index, isEnter, options }) => {
+      if (results.commands[index].instruction) {
         if (isEnter) {
-          const msg = `${powercord.api.commands.prefix}${result.value}`;
+          const msg = `${powercord.api.commands.prefix}${results.value}`;
           messages.sendMessage('0', { content: msg });
           this.instance.clearValue();
-        } else if (!result.value.endsWith(' ')) {
-          props.insertText(result.value);
+        } else if (!results.value.endsWith(' ')) {
+          options.insertText(results.value);
         }
 
         return {};
       }
 
-      props.insertText(result.commands[selected].command);
+      options.insertText(results.commands[index].command);
       return {};
     }
   };
@@ -113,8 +113,8 @@ module.exports = async function injectAutocomplete () {
         }), (value) => `${powercord.api.commands.prefix}${value}`);
       }
     },
-    onSelect: (result, selected, _, props) => {
-      props.insertText(`${powercord.api.commands.prefix}${result.commands[selected].command}`);
+    onSelect: ({ results, index, options }) => {
+      options.insertText(`${powercord.api.commands.prefix}${results.commands[index].command}`);
       return {};
     }
   };
