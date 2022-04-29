@@ -1,5 +1,5 @@
-const { React, getModule, constants: { Routes } } = require('powercord/webpack');
-const { Tooltip, Clickable, Divider, Icons: { Discord, Gear } } = require('powercord/components');
+const { React, getModule, constants: { Routes }, i18n: { Messages } } = require('powercord/webpack');
+const { Tooltip, Clickable, Divider, Button, Icons: { Discord, Gear } } = require('powercord/components');
 
 const Details = require('./Details');
 const Permissions = require('./Permissions');
@@ -56,17 +56,17 @@ class BaseProduct extends React.PureComponent {
               <Gear/>
             </Clickable>
           </Tooltip>}
-          {/* <div className='buttons'>
+          <div className='buttons'>
             {typeof this.props.onUninstall === 'function' &&
             <Button
-              onClick={() => this.onUninstall()}
+              onClick={() => this.props.onUninstall()}
               color={Button.Colors.RED}
               look={Button.Looks.FILLED}
               size={Button.Sizes.SMALL}
             >
               {Messages.APPLICATION_CONTEXT_MENU_UNINSTALL}
             </Button>}
-          </div> */}
+          </div>
         </div>
       </>
     );
