@@ -139,13 +139,14 @@ class Themes extends Base {
         cancelText={Messages.CANCEL}
         onCancel={closeModal}
         onConfirm={async () => {
-          await Promise.all([ ...themes.map(async (theme) => {
+          for (const [ i, theme ] of themes.entries()) {
+            themes.splice(i, 1);
             try {
               await powercord.styleManager.uninstall(theme);
             } catch (err) {
               console.error(err);
             }
-          }) ]);
+          }
           closeModal();
           this.forceUpdate();
         }}
