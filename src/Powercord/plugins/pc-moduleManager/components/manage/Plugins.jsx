@@ -91,13 +91,14 @@ class Plugins extends Base {
         cancelText={Messages.CANCEL}
         onCancel={closeModal}
         onConfirm={async () => {
-          await Promise.all([ ...plugins.map(async (plugin) => {
+          for (const [ i, plugin ] of plugins.entries()) {
+            plugins.splice(i, 1);
             try {
               await powercord.pluginManager.uninstall(plugin);
             } catch (err) {
               console.error(err);
             }
-          }) ]);
+          }
           closeModal();
           this.forceUpdate();
         }}
