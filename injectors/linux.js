@@ -43,14 +43,14 @@ exports.getAppDir = async () => {
         process.exit(process.argv.includes('--no-exit-codes') ? 0 : 1);
       }
     }
-    if(discordPaths.length > 0) {
+    if(discordPaths.length > 1) {
       console.log(`${AnsiEscapes.YELLOW}It seems like you have multiple canary instances. ${AnsiEscapes.RESET}`, '\n');
       console.log('Please provide the path of your preffered Discord Canary installation folder');
       discordPaths[0] = await askPath();
 
     }
     
-    return discordPaths[0];
+    return join(discordPaths[0],'resources','app');
   }
   readlineInterface.close();
 
