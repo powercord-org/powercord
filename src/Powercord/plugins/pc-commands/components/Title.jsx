@@ -1,15 +1,19 @@
 const { React, getModuleByDisplayName } = require('powercord/webpack');
+const { AsyncComponent } = require('powercord/components');
 
-const Autocomplete = getModuleByDisplayName('Autocomplete', false);
+module.exports = AsyncComponent.from(
+  (async () => {
+    const Autocomplete = await getModuleByDisplayName('Autocomplete');
 
-module.exports = class Title extends Autocomplete.Title {
-  render () {
-    const res = super.render();
+    return (props) => {
+      const res = Autocomplete?.Title?.(props);
+      const EmptyContainer = <div style={{ padding: '4px' }}/>;
 
-    if (!this.props.title[0]) {
-      return <div style={{ padding: '4px' }}/>;
-    }
+      if (Array.isArray(props?.title) && !props.title[0]) {
+        return EmptyContainer;
+      }
 
-    return res;
-  }
-};
+      return res || EmptyContainer;
+    };
+  })()
+);
