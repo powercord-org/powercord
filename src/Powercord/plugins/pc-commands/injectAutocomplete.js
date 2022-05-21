@@ -31,7 +31,12 @@ module.exports = async function injectAutocomplete () {
   }
 
   function getMatchingCommand (c) {
-    return [ c.command.toLowerCase(), ...(c.aliases?.map((alias) => alias.toLowerCase()) || []) ];
+    try {
+      return [ c.command.toLowerCase(), ...(c.aliases?.map((alias) => alias.toLowerCase()) || []) ];
+    } catch (e) {
+      console.error('%c[Powercord:Plugin:pc-commands]', 'color: #7289da', e);
+      return [];
+    }
   }
 
   const { AUTOCOMPLETE_OPTIONS: AutocompleteTypes, AUTOCOMPLETE_PRIORITY: AutocompletePriority } = await getModule([ 'AUTOCOMPLETE_OPTIONS' ]);
