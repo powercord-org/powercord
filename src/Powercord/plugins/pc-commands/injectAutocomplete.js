@@ -30,11 +30,12 @@ module.exports = async function injectAutocomplete () {
     );
   }
 
+  const _this = this;
   function getMatchingCommand (c) {
-    try {
+    try { 
       return [ c.command.toLowerCase(), ...(c.aliases?.map((alias) => alias.toLowerCase()) || []) ];
     } catch (e) {
-      console.error('%c[Powercord:Plugin:pc-commands]', 'color: #7289da', e);
+      _this.warn("Plugin Command is missing key `command`", c, e);
       return [];
     }
   }
@@ -124,7 +125,6 @@ module.exports = async function injectAutocomplete () {
     }
   };
 
-  const _this = this;
   const ChannelEditorContainer = await getModuleByDisplayName('ChannelEditorContainer');
   inject('pc-commands-textarea', ChannelEditorContainer.prototype, 'render', function (_, res) {
     _this.instance = this;
