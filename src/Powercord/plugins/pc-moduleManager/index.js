@@ -149,8 +149,8 @@ module.exports = class ModuleManager extends Plugin {
           }
         } else {
           get(`https://github.com/${username}/${repoName}/raw/HEAD/powercord_manifest.json`).then((r) => {
-            typeCache.set(`${username}/${repoName}`, { isTheme: true });
             if (r?.statusCode === 302) {
+              typeCache.set(`${username}/${repoName}`, { isTheme: true });
               res.props.children.splice(4, 0, React.createElement(menu.MenuItem, {
                 name: 'Install Theme',
                 seperate: true,
@@ -163,8 +163,8 @@ module.exports = class ModuleManager extends Plugin {
 
 
           get(`https://github.com/${username}/${repoName}/raw/HEAD/manifest.json`).then((r) => {
-            typeCache.set(`${username}/${repoName}`, { isPlugin: true });
             if (r?.statusCode === 302) {
+              typeCache.set(`${username}/${repoName}`, { isPlugin: true });
               res.props.children.splice(
                 4,
                 0,
