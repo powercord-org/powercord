@@ -22,7 +22,7 @@ const { injectContextMenu } = require('powercord/util');
 
 // @todo: give a look to why quickcss.css file shits itself
 module.exports = class ModuleManager extends Plugin {
-  async startPlugin () {
+  async startPlugin() {
     powercord.api.i18n.loadAllStrings(i18n);
     Object.values(commands).forEach(cmd => powercord.api.commands.registerCommand(cmd));
 
@@ -76,7 +76,7 @@ module.exports = class ModuleManager extends Plugin {
     }
   }
 
-  pluginWillUnload () {
+  pluginWillUnload() {
     document.querySelector('#powercord-quickcss').remove();
     powercord.api.settings.unregisterSettings('pc-moduleManager-plugins');
     powercord.api.settings.unregisterSettings('pc-moduleManager-themes');
@@ -90,11 +90,11 @@ module.exports = class ModuleManager extends Plugin {
     document.querySelectorAll('.powercord-snippet-apply').forEach(e => e.style.display = 'none');
   }
 
-  async _installerInjectPopover () {
+  async _installerInjectPopover() {
     const MiniPopover = await getModule(m => m.default && m.default.displayName === 'MiniPopover');
     inject('pc-installer-popover', MiniPopover, 'default', (args, res) => {
       const props = findInReactTree(res, r => r && r.message && r.setPopout);
-      if (!props || ![ '755005710323941386', '755005584322854972' ].includes(props.channel?.id)) {
+      if (!props || !['755005710323941386', '755005584322854972'].includes(props.channel?.id)) {
         return res;
       }
       this.log('Popover injected');
@@ -110,33 +110,23 @@ module.exports = class ModuleManager extends Plugin {
     MiniPopover.default.displayName = 'MiniPopover';
   }
 
-  async _installerInjectCtxMenu () {
-    const menu = await getModule([ 'MenuItem' ]);
-    injectContextMenu('pc-installer-ctx-menu', 'MessageContextMenu', ([ { target } ], res) => {
+  async _installerInjectCtxMenu() {
+    const menu = await getModule(['MenuItem']);
+
+    const typeCache = new Map(); // { isTheme: false, isPlugin: false}
+
+    injectContextMenu('pc-installer-ctx-menu', 'MessageContextMenu', ([{ target }], res) => {
       if (!target || !target?.href || !target?.tagName || target.tagName.toLowerCase() !== 'a') {
         return res;
       }
 
       const parsedUrl = new URL(target.href);
       const isGithub = parsedUrl.hostname.split('.').slice(-2).join('.') === 'github.com';
-      const [ , username, repoName ] = parsedUrl.pathname.split('/');
+      const [, username, repoName] = parsedUrl.pathname.split('/');
 
       if (isGithub && username && repoName) {
-        get(`https://github.com/${username}/${repoName}/raw/HEAD/powercord_manifest.json`).then((r) => {
-          if (r?.statusCode === 302) {
-            res.props.children.splice(4, 0, React.createElement(menu.MenuItem, {
-              name: 'Install Theme',
-              seperate: true,
-              id: 'DownloaderContextLink',
-              label: 'Install Theme',
-              action: () => cloneRepo(target.href, powercord, 'theme')
-            }));
-          }
-        }).catch(null);
-
-
-        get(`https://github.com/${username}/${repoName}/raw/HEAD/manifest.json`).then((r) => {
-          if (r?.statusCode === 302) {
+        if (typeCache.get(`${username}/${repoName}`) !== undefined) {
+          if (typeCache.get(`${username}/${repoName}`).isPlugin) {
             res.props.children.splice(
               4,
               0,
@@ -148,21 +138,60 @@ module.exports = class ModuleManager extends Plugin {
                 action: () => cloneRepo(target.href, powercord, 'plugin')
               })
             );
+          } else if (typeCache.get(`${username}/${repoName}`).isTheme) {
+            res.props.children.splice(4, 0, React.createElement(menu.MenuItem, {
+              name: 'Install Theme',
+              seperate: true,
+              id: 'DownloaderContextLink',
+              label: 'Install Theme',
+              action: () => cloneRepo(target.href, powercord, 'theme')
+            }));
           }
-        }).catch(null);
+        } else {
+          get(`https://github.com/${username}/${repoName}/raw/HEAD/powercord_manifest.json`).then((r) => {
+            typeCache.set(`${username}/${repoName}`, { isTheme: true });
+            if (r?.statusCode === 302) {
+              res.props.children.splice(4, 0, React.createElement(menu.MenuItem, {
+                name: 'Install Theme',
+                seperate: true,
+                id: 'DownloaderContextLink',
+                label: 'Install Theme',
+                action: () => cloneRepo(target.href, powercord, 'theme')
+              }));
+            }
+          }).catch(null);
+
+
+          get(`https://github.com/${username}/${repoName}/raw/HEAD/manifest.json`).then((r) => {
+            typeCache.set(`${username}/${repoName}`, { isPlugin: true });
+            if (r?.statusCode === 302) {
+              res.props.children.splice(
+                4,
+                0,
+                React.createElement(menu.MenuItem, {
+                  name: 'Install Plugin',
+                  seperate: true,
+                  id: 'InstallerContextLink',
+                  label: 'Install Plugin',
+                  action: () => cloneRepo(target.href, powercord, 'plugin')
+                })
+              );
+            }
+          }).catch(null);
+        }
       }
 
       return res;
     });
   }
 
-  async lazyPatchCtxMenu (displayName, patch) {
+  async lazyPatchCtxMenu(displayName, patch) {
     const filter = m => m.default && m.default.displayName === displayName;
     const m = getModule(filter, false);
     if (m) {
       patch(m);
     } else {
-      const module = getModule([ 'openContextMenuLazy' ], false);
+      const module = getModule(['openContextMenuLazy'], false);
       inject('pc-installer-lazy-contextmenu', module, 'openContextMenuLazy', args => {
         const lazyRender = args[1];
         args[1] = async () => {
@@ -180,12 +209,12 @@ module.exports = class ModuleManager extends Plugin {
         };
         return args;
       },
-      true
+        true
       );
     }
   }
 
-  async _injectSnippets () {
+  async _injectSnippets() {
     const MiniPopover = await getModule(m => m.default && m.default.displayName === 'MiniPopover');
     inject('pc-moduleManager-snippets', MiniPopover, 'default', (args, res) => {
       const props = findInReactTree(res, r => r && r.message && r.setPopout);
@@ -204,7 +233,7 @@ module.exports = class ModuleManager extends Plugin {
     MiniPopover.default.displayName = 'MiniPopover';
   }
 
-  async _applySnippet (message) {
+  async _applySnippet(message) {
     let css = '\n\n/**\n';
     const line1 = Messages.POWERCORD_SNIPPET_LINE1.format({ date: new Date() });
     const line2 = Messages.POWERCORD_SNIPPET_LINE2.format({
@@ -235,7 +264,7 @@ module.exports = class ModuleManager extends Plugin {
     this._saveQuickCSS(this._quickCSS + css);
   }
 
-  async _fetchEntities (type) {
+  async _fetchEntities(type) {
     powercord.api.notices.closeToast('missing-entities-notify');
 
     const entityManager = powercord[type === 'plugins' ? 'pluginManager' : 'styleManager'];
@@ -253,11 +282,11 @@ module.exports = class ModuleManager extends Plugin {
             React.createElement('li', null, `– ${entity}`))
           )
         ),
-        buttons: [ {
+        buttons: [{
           text: 'OK',
           color: 'green',
           look: 'outlined'
-        } ],
+        }],
         type: 'success'
       };
     } else {
@@ -271,7 +300,7 @@ module.exports = class ModuleManager extends Plugin {
     powercord.api.notices.sendToast('missing-entities-notify', props);
   }
 
-  async _loadQuickCSS () {
+  async _loadQuickCSS() {
     this._quickCSSElement = document.createElement('style');
     this._quickCSSElement.id = 'powercord-quickcss';
     document.head.appendChild(this._quickCSSElement);
@@ -281,14 +310,14 @@ module.exports = class ModuleManager extends Plugin {
     }
   }
 
-  async _saveQuickCSS (css) {
+  async _saveQuickCSS(css) {
     this._quickCSS = css.trim();
     this._quickCSSElement.innerHTML = this._quickCSS;
     await writeFile(this._quickCSSFile, this._quickCSS);
   }
 
-  async _openQuickCSSPopout () {
-    const popoutModule = await getModule([ 'setAlwaysOnTop', 'open' ]);
+  async _openQuickCSSPopout() {
+    const popoutModule = await getModule(['setAlwaysOnTop', 'open']);
     popoutModule.open('DISCORD_POWERCORD_QUICKCSS', (key) => (
       React.createElement(PopoutWindow, {
         windowKey: key,
