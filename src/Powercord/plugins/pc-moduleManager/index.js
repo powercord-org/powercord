@@ -7,7 +7,7 @@ const { findInReactTree } = require('powercord/util');
 const { Plugin } = require('powercord/entities');
 const { SpecialChannels: { CSS_SNIPPETS } } = require('powercord/constants');
 const { join } = require('path');
-const { get } = require("powercord/http");
+const { get } = require('powercord/http');
 const commands = require('./commands');
 const deeplinks = require('./deeplinks');
 const i18n = require('./licenses/index');
@@ -18,6 +18,7 @@ const QuickCSS = require('./components/manage/QuickCSS');
 const SnippetButton = require('./components/SnippetButton');
 const InstallerButton = require('./components/installer/Button');
 const cloneRepo = require('./util/cloneRepo');
+const { injectContextMenu } = require('powercord/util');
 
 // @todo: give a look to why quickcss.css file shits itself
 module.exports = class ModuleManager extends Plugin {
@@ -110,54 +111,48 @@ module.exports = class ModuleManager extends Plugin {
   }
 
   async _installerInjectCtxMenu () {
-    await this.lazyPatchCtxMenu('MessageContextMenu', async (mod) => {
-      const menu = await getModule([ 'MenuItem' ]);
-
-      inject('pc-installer-ctx-menu', mod, 'default', ([ { target } ], res) => {
-        if (!target || !target?.href || !target?.tagName || target.tagName.toLowerCase() !== 'a') {
-          return res;
-        }
-        const parsedUrl = new URL(target.href);
-        const isGitHub = parsedUrl.hostname.split('.').slice(-2).join('.') === 'github.com';
-        const [ , username, reponame ] = parsedUrl.pathname.split('/');
-
-        if (isGitHub && username && reponame) {
-          get(`https://github.com/${username}/${reponame}/raw/HEAD/powercord_manifest.json`).then((r) => {
-            if (r?.statusCode === 302) {
-              res.props.children.splice(
-                4,
-                0,
-                React.createElement(menu.MenuItem, {
-                  name: 'Install Theme',
-                  seperate: true,
-                  id: 'DownloaderContextLink',
-                  label: 'Install Theme',
-                  action: () => cloneRepo(target.href, powercord, 'theme')
-                })
-              );
-            }
-          }).catch(null);
-          get(`https://github.com/${username}/${reponame}/raw/HEAD/manifest.json`).then((r) => {
-            if (r?.statusCode === 302) {
-              res.props.children.splice(
-                4,
-                0,
-                React.createElement(menu.MenuItem, {
-                  name: 'Install Plugin',
-                  seperate: true,
-                  id: 'InstallerContextLink',
-                  label: 'Install Plugin',
-                  action: () => cloneRepo(target.href, powercord, 'plugin')
-                })
-              );
-            }
-          }).catch(null);
-        }
-
+    const menu = await getModule([ 'MenuItem' ]);
+    injectContextMenu('pc-installer-ctx-menu', 'MessageContextMenu', ([ { target } ], res) => {
+      if (!target || !target?.href || !target?.tagName || target.tagName.toLowerCase() !== 'a') {
         return res;
-      });
+      }
 
-      mod.default.displayName = 'MessageContextMenu';
+      const parsedUrl = new URL(target.href);
+      const isGithub = parsedUrl.hostname.split('.').slice(-2).join('.') === 'github.com';
+      const [ , username, repoName ] = parsedUrl.pathname.split('/');
+
+      if (isGithub && username && repoName) {
+        get(`https://github.com/${username}/${repoName}/raw/HEAD/powercord_manifest.json`).then((r) => {
+          if (r?.statusCode === 302) {
+            res.props.children.splice(4, 0, React.createElement(menu.MenuItem, {
+              name: 'Install Theme',
+              seperate: true,
+              id: 'DownloaderContextLink',
+              label: 'Install Theme',
+              action: () => cloneRepo(target.href, powercord, 'theme')
+            }));
+          }
+        }).catch(null);
+
+
+        get(`https://github.com/${username}/${repoName}/raw/HEAD/manifest.json`).then((r) => {
+          if (r?.statusCode === 302) {
+            res.props.children.splice(
+              4,
+              0,
+              React.createElement(menu.MenuItem, {
+                name: 'Install Plugin',
+                seperate: true,
+                id: 'InstallerContextLink',
+                label: 'Install Plugin',
+                action: () => cloneRepo(target.href, powercord, 'plugin')
+              })
+            );
+          }
+        }).catch(null);
+      }
+
+      return res;
     });
   }
 
