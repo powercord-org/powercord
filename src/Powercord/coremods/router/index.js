@@ -22,10 +22,8 @@ async function injectRouter () {
 }
 
 async function injectViews () {
-  const FluxifiedViews = await getModuleByDisplayName('ForwardRef(FluxContainer(App))');
-  const Views = FluxifiedViews.render.call({ memoizedGetStateFromStores: () => ({}) }).type;
-
-  inject('pc-router-views', Views.prototype, 'render', (args, res) => {
+  const Views = await getModuleByDisplayName('ViewsWithMainInterface');
+  inject('pc-router-views', Views.prototype, 'render', (_, res) => {
     const routes = findInTree(res, n => Array.isArray(n) && n[0] && n[0].key && n[0].props.path && n[0].props.render);
 
     routes[routes.length - 1].props.path = [
