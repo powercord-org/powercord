@@ -90,7 +90,10 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   sendBotMessage (content) {
-    const receivedMessage = this.createBotMessage(this.getChannelId(), '');
+    const receivedMessage = this.createBotMessage({
+      channelId: this.getChannelId(),
+      content: ''
+    });
 
     if (typeof content === 'string') {
       receivedMessage.content = content;
