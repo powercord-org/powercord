@@ -79,7 +79,7 @@
   "POWERCORD_SETTINGS_KEEP_TOKEN": "Token'i saklı tut",
   "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Discord'un token'inizi localStorage'dan kaldırmasını engeller, istenmeyen çıkışların sayısını azaltır.",
   "POWERCORD_SETTINGS_NO_CLYDE": "Clyde'i Ortadan Kaldır",
-  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "[Clyde'i]({discordiaUrl}) eklenti geliştiricilerinin şeçtiği avatar ve isimlerle değiştirir - varsayılan olarak \"Powercord\" seçeneğine geri döner.",
+  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "[Clyde'i]({clydeUrl}) eklenti geliştiricilerinin şeçtiği avatar ve isimlerle değiştirir - varsayılan olarak \"Powercord\" seçeneğine geri döner.",
   "POWERCORD_SETTINGS_OVERLAY": "Overlay DevTools",
   "POWERCORD_SETTINGS_OVERLAY_DESC": "Discord'un oyun içi arayüzünde neler olduğunu kontrol etmenizi sağlayan bir DevTools penceresi açar.",
   "POWERCORD_SETTINGS_RESTART": "Bu ayarın etkili olması için Discord'u yeniden başlatmanızı gerektirir. Discord'u şimdi yeniden başlatmak istiyor musunuz?",

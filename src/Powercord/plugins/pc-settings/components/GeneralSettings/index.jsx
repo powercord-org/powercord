@@ -39,7 +39,7 @@ module.exports = class GeneralSettings extends React.Component {
           {Messages.POWERCORD_SETTINGS_SYNC}
         </SwitchItem>
         <SwitchItem
-          note={Messages.POWERCORD_SETTINGS_NO_CLYDE_DESC.format({ discordiaUrl: 'https://discordia.me/clyde' })}
+          note={Messages.POWERCORD_SETTINGS_NO_CLYDE_DESC.format({ clydeUrl: 'https://discord.fandom.com/wiki/Clyde#Bot' })}
           value={getSetting('replaceClyde', true)}
           onChange={() => toggleSetting('replaceClyde', true)}
         >
