@@ -73,9 +73,9 @@ electron.app.once('ready', () => {
 
   // @todo: make this be not shit
   electron.session.defaultSession.webRequest.onBeforeRequest((details, done) => {
-    const domainMatch = details.url.match(/^https:\/\/((?:canary|ptb)\.)?discord(app)?\.com/);
+    const domainMatch = details.url.match(/^https:\/\/(?:(?:canary|ptb)\.)?discord(?:app)?\.com/);
     if (domainMatch) {
-      const domain = domainMatch[1];
+      const domain = domainMatch[0];
       if (details.url.startsWith(`${domain}/_powercord`)) {
       // It should get restored to _powercord url later
         done({ redirectURL: `${domain}/app` });
