@@ -79,9 +79,6 @@ electron.app.once('ready', () => {
       if (details.url.startsWith(`${domain}/_powercord`)) {
       // It should get restored to _powercord url later
         done({ redirectURL: `${domain}/app` });
-      } else if (details.url.startsWith(`${domain}/_powercord`)) {
-      // It should get restored to _powercord url later
-        done({ redirectURL: `${domain}/app` });
       } else {
         done({});
       }
