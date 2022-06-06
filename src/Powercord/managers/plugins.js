@@ -140,6 +140,11 @@ module.exports = class PluginManager {
       throw new Error(`Tried to disable a non installed plugin (${pluginID})`);
     }
 
+    // Don't attempt to disable plugins twice
+    if (!this.isEnabled(pluginID)) {
+      return
+    }
+
     powercord.settings.set('disabledPlugins', [
       ...powercord.settings.get('disabledPlugins', []),
       pluginID
