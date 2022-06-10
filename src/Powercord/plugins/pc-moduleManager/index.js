@@ -208,36 +208,7 @@ module.exports = class ModuleManager extends Plugin {
       return res;
     });
   }
-
-  async lazyPatchCtxMenu (displayName, patch) {
-    const filter = m => m.default && m.default.displayName === displayName;
-    const m = getModule(filter, false);
-    if (m) {
-      patch(m);
-    } else {
-      const module = getModule([ 'openContextMenuLazy' ], false);
-      inject('pc-installer-lazy-contextmenu', module, 'openContextMenuLazy', args => {
-        const lazyRender = args[1];
-        args[1] = async () => {
-          const render = await lazyRender(args[0]);
-
-          return config => {
-            const menu = render(config);
-            if (menu?.type?.displayName === displayName && patch) {
-              uninject('pc-installer-lazy-contextmenu');
-              patch(getModule(filter, false));
-              patch = false;
-            }
-            return menu;
-          };
-        };
-        return args;
-      },
-      true
-      );
-    }
-  }
-
+  
   async _injectSnippets () {
     const MiniPopover = await getModule(m => m.default && m.default.displayName === 'MiniPopover');
     inject('pc-moduleManager-snippets', MiniPopover, 'default', (args, res) => {
