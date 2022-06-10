@@ -142,7 +142,7 @@ module.exports = class PluginManager {
 
     // Don't attempt to disable plugins twice
     if (!this.isEnabled(pluginID)) {
-      return
+      return;
     }
 
     powercord.settings.set('disabledPlugins', [
