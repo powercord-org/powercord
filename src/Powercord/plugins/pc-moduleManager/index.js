@@ -183,7 +183,7 @@ module.exports = class ModuleManager extends Plugin {
                 action: () => cloneRepo(target.href, powercord, 'theme')
               }));
             }
-          }).catch(null);
+          }).catch(() => {});
 
 
           get(`https://github.com/${username}/${repoName}/raw/HEAD/manifest.json`).then((r) => {
@@ -201,7 +201,7 @@ module.exports = class ModuleManager extends Plugin {
                 })
               );
             }
-          }).catch(null);
+          }).catch(() => {});
         }
       }
 
