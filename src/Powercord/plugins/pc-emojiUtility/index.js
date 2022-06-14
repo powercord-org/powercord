@@ -260,7 +260,12 @@ module.exports = class EmojiUtility extends Plugin {
         }
 
         try {
-          await this.uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
+          await this.uploadEmoji({
+            guildId: guild.id, 
+            image: await this.getImageEncoded(emoji.url), 
+            name: emoji.name,
+            roles: []
+          });
 
           this.replySuccess(`Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`);
         } catch (error) {
@@ -401,7 +406,12 @@ module.exports = class EmojiUtility extends Plugin {
             }
 
             try {
-              await this.uploadEmoji(guild.id, await this.getImageEncoded(url), name);
+              await this.uploadEmoji({
+                guildId: guild.id, 
+                image: await this.getImageEncoded(url), 
+                name: name,
+                roles: []
+              });
 
               this.replySuccess(`Created emote by the name of **${name}** in **${guild.name}**`);
             } catch (error) {
@@ -740,7 +750,12 @@ module.exports = class EmojiUtility extends Plugin {
               return this.replyError(`**${guild.name}** does not have any more emote slots`);
             }
 
-            await this.uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
+            await this.uploadEmoji({
+              guildId: guild.id, 
+              image: await this.getImageEncoded(emoji.url), 
+              name: emoji.name,
+              roles: []
+            });
 
             return this.replySuccess(`Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`);
           } catch (error) {
