@@ -25,7 +25,7 @@
       {
         "type": "CONTENTS",
         "list": [
-          "You can now inject into other Discord clients (Stable and PTB), although it is **__not recommended and unsupported__**, [more info](https://github.com/powercord-org/powercord#how-can-i-install-powercord-on-stable-or-ptb).",
+          "You can now inject into other Discord clients (Stable and PTB), although it is **__not recommended and unsupported__**. [More info](https://github.com/powercord-org/powercord#how-can-i-install-powercord-on-stable-or-ptb)."
           "Added **Indonesian** language.",
           "Fixed **pc-tags** creating empty tags and crashing.",
           "Fixed **pc-emoteUtility**. [#655](https://github.com/powercord-org/powercord/pull/655)"
