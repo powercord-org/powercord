@@ -1,4 +1,7 @@
 const { cloneRepo, getRepoInfo } = require('../util');
+const Modal = require('../components/ConfirmModal');
+const { React } = require('powercord/webpack');
+const { open: openModal, close: closeModal } = require('powercord/modal');
 
 module.exports = {
   command: 'install',
@@ -37,12 +40,27 @@ module.exports = {
       };
     }
 
-    cloneRepo(url, powercord, info.type);
+    openModal(() => React.createElement(Modal, {
+      red: true,
+      header: `Install ${info.type}`,
+      desc: `Are you sure you want to install the ${info.type} ${info.repoName}?`,
+      onConfirm: () => {
+        cloneRepo(url, powercord, info.type);
 
-    return {
-      send: false,
-      result: `Installing \`${info.repoName}\`...`
-    };
+        powercord.api.notices.sendToast(`PDPluginInstalling-${info.repoName}`, {
+          header: `Installing ${info.repoName}...`,
+          type: 'info',
+          timeout: 10e3,
+          buttons: [ {
+            text: 'Got It',
+            color: 'green',
+            size: 'medium',
+            look: 'outlined'
+          } ]
+        });
+      },
+      onCancel: () => closeModal()
+    }));
   }
 };
 
