@@ -18,9 +18,9 @@ const typeCache = new Map();
 /**
  *
  * @param {string} identifier username/reponame
- * @returns {Promise<'plugin'|'theme'|null>} Whether the URL is a plugin or theme repository, or null if it's neither
+ * @returns {'plugin'|'theme'|Promise<'plugin'|'theme'|null>} Whether the URL is a plugin or theme repository, or null if it's neither
  */
-async function getRepoType (identifier) {
+function getRepoType (identifier) {
   if (typeCache.has(identifier)) {
     return typeCache.get(identifier);
   }
@@ -43,19 +43,21 @@ async function getRepoType (identifier) {
   // Wait for either promise to resolve
   // If neither resolves, use null.
 
-  // @ts-ignore
-  const type = await Promise.any([ isPlugin, isTheme ]).catch(() => null);
+  return (async () => {
+    // @ts-ignore
+    const type = await Promise.any([ isPlugin, isTheme ]).catch(() => null);
 
-  typeCache.set(identifier, type);
-  return type;
+    typeCache.set(identifier, type);
+    return type;
+  })();
 }
 
 /**
  * Check if a URL is a plugin or theme repository
  * @param {string} url The URL to check
- * @returns {Promise<PluginInfo|null>}
+ * @returns {PluginInfo|Promise<PluginInfo|null>}
  */
-module.exports = async function getRepoInfo (url) {
+module.exports = function getRepoInfo (url) {
   let parsedUrl;
   try {
     parsedUrl = new URL(url);
@@ -69,18 +71,34 @@ module.exports = async function getRepoInfo (url) {
     return null;
   }
   const identifier = `${username}/${repoName}`;
-  const type = await getRepoType(identifier);
-  if (!type) {
-    return null;
-  }
 
+  /**
+   * @type {boolean}
+   */
   // @ts-ignore
-  const isInstalled = type === 'plugin' ? powercord.pluginManager.isInstalled(repoName) : powercord.styleManager.isInstalled(repoName);
+  const isInstalled = powercord.pluginManager.isInstalled(repoName) || powercord.styleManager.isInstalled(repoName);
 
-  return {
+  const data = {
     username,
     repoName,
-    type,
     isInstalled
+  };
+
+  const type = getRepoType(identifier);
+  if (type instanceof Promise) {
+    return (async () => {
+      const resolvedType = await type;
+      if (!resolvedType) {
+        return null;
+      }
+      return {
+        ...data,
+        type: resolvedType
+      };
+    })();
+  }
+  return {
+    ...data,
+    type
   };
 };
