@@ -55,7 +55,7 @@ async function getRepoType (identifier) {
  * @param {string} url The URL to check
  * @returns {Promise<PluginInfo|null>}
  */
-async function getRepoInfo (url) {
+module.exports = async function getRepoInfo (url) {
   let parsedUrl;
   try {
     parsedUrl = new URL(url);
@@ -83,6 +83,4 @@ async function getRepoInfo (url) {
     type,
     isInstalled
   };
-}
-
-module.exports = { getRepoInfo };
+};
