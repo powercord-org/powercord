@@ -42,7 +42,7 @@ module.exports = {
 
     return {
       send: false,
-	  result: `Installing \`${info.repoName}\`...`
+      result: `Installing \`${info.repoName}\`...`
     };
   }
 };
