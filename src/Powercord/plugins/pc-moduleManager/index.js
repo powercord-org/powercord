@@ -24,6 +24,7 @@ module.exports = class ModuleManager extends Plugin {
   async startPlugin () {
     powercord.api.i18n.loadAllStrings(i18n);
     Object.values(commands).forEach(cmd => powercord.api.commands.registerCommand(cmd));
+    this.Menu = getModule([ 'MenuItem' ], false);
 
     powercord.api.labs.registerExperiment({
       id: 'pc-moduleManager-themes2',
@@ -117,7 +118,9 @@ module.exports = class ModuleManager extends Plugin {
 
       const info = getRepoInfo(target.href);
       if (info instanceof Promise) {
-        info.then(info => this._addContextMenu(res, info, target.href));
+        info.then(info => {
+          res = this._addContextMenu(res, info, target.href);
+        });
       } else {
         this._addContextMenu(res, info, target.href);
       }
@@ -127,11 +130,10 @@ module.exports = class ModuleManager extends Plugin {
   }
 
   _addContextMenu (res, info, url) {
-    const menu = getModule([ 'MenuItem' ], false);
-
     if (!info) {
       return;
     }
+
     const { type, isInstalled } = info;
 
     const label = type === 'plugin' ? 'Plugin' : 'Theme';
@@ -140,7 +142,7 @@ module.exports = class ModuleManager extends Plugin {
       res.props.children.splice(
         4,
         0,
-        React.createElement(menu.MenuItem, {
+        React.createElement(this.Menu.MenuItem, {
           name: `${label} Installed`,
           seperate: true,
           id: 'InstallerContextLink',
@@ -152,7 +154,7 @@ module.exports = class ModuleManager extends Plugin {
       res.props.children.splice(
         4,
         0,
-        React.createElement(menu.MenuItem, {
+        React.createElement(this.Menu.MenuItem, {
           name: `Install ${label}`,
           seperate: true,
           id: 'InstallerContextLink',
@@ -161,6 +163,8 @@ module.exports = class ModuleManager extends Plugin {
         })
       );
     }
+
+    return res;
   }
 
   async _injectSnippets () {
