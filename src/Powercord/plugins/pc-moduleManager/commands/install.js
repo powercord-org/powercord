@@ -1,5 +1,4 @@
-const { getRepoInfo } = require('../getinfo');
-const cloneRepo = require('../util/cloneRepo');
+const { cloneRepo, getRepoInfo } = require('../util');
 
 module.exports = {
   command: 'install',

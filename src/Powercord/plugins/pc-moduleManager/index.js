@@ -16,9 +16,8 @@ const Themes = require('./components/manage/Themes');
 const QuickCSS = require('./components/manage/QuickCSS');
 const SnippetButton = require('./components/SnippetButton');
 const InstallerButton = require('./components/installer/Button');
-const cloneRepo = require('./util/cloneRepo');
+const { cloneRepo, getRepoInfo } = require('./util');
 const { injectContextMenu } = require('powercord/util');
-const { getRepoInfo } = require('./getinfo');
 
 // @todo: give a look to why quickcss.css file shits itself
 module.exports = class ModuleManager extends Plugin {
