@@ -110,50 +110,57 @@ module.exports = class ModuleManager extends Plugin {
   }
 
   async _installerInjectCtxMenu () {
-    const menu = await getModule([ 'MenuItem' ]);
-
     injectContextMenu('pc-installer-ctx-menu', 'MessageContextMenu', ([ { target } ], res) => {
       if (!target || !target?.href || !target?.tagName || target.tagName.toLowerCase() !== 'a') {
         return res;
       }
 
-      getRepoInfo(target.href).then(info => {
-        if (!info) {
-          return;
-        }
-        const { type, isInstalled } = info;
-
-        const label = type === 'plugin' ? 'Plugin' : 'Theme';
-
-        if (isInstalled) {
-          res.props.children.splice(
-            4,
-            0,
-            React.createElement(menu.MenuItem, {
-              name: `${label} Installed`,
-              seperate: true,
-              id: 'InstallerContextLink',
-              label: `${label} Installed`,
-              action: () => console.log('lol what it\'s already installed idiot')
-            })
-          );
-        } else {
-          res.props.children.splice(
-            4,
-            0,
-            React.createElement(menu.MenuItem, {
-              name: `Install ${label}`,
-              seperate: true,
-              id: 'InstallerContextLink',
-              label: `Install ${label}`,
-              action: () => cloneRepo(target.href, powercord, type)
-            })
-          );
-        }
-      });
+      const info = getRepoInfo(target.href);
+      if (info instanceof Promise) {
+        info.then(info => this._addContextMenu(res, info, target.href));
+      } else {
+        this._addContextMenu(res, info, target.href);
+      }
 
       return res;
     });
+  }
+
+  _addContextMenu (res, info, url) {
+    const menu = getModule([ 'MenuItem' ], false);
+
+    if (!info) {
+      return;
+    }
+    const { type, isInstalled } = info;
+
+    const label = type === 'plugin' ? 'Plugin' : 'Theme';
+
+    if (isInstalled) {
+      res.props.children.splice(
+        4,
+        0,
+        React.createElement(menu.MenuItem, {
+          name: `${label} Installed`,
+          seperate: true,
+          id: 'InstallerContextLink',
+          label: `${label} Installed`,
+          action: () => console.log('lol what it\'s already installed idiot')
+        })
+      );
+    } else {
+      res.props.children.splice(
+        4,
+        0,
+        React.createElement(menu.MenuItem, {
+          name: `Install ${label}`,
+          seperate: true,
+          id: 'InstallerContextLink',
+          label: `Install ${label}`,
+          action: () => cloneRepo(url, powercord, type)
+        })
+      );
+    }
   }
 
   async _injectSnippets () {
