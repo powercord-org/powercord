@@ -18,14 +18,9 @@ const typeCache = new Map();
 /**
  *
  * @param {string} identifier username/reponame
- * @returns {'plugin'|'theme'|Promise<'plugin'|'theme'|null>} Whether the URL is a plugin or theme repository, or null if it's neither
+ * @returns {Promise<'plugin'|'theme'|null>} Whether the URL is a plugin or theme repository, or null if it's neither
  */
-function getRepoType (identifier) {
-  if (typeCache.has(identifier)) {
-    return typeCache.get(identifier);
-  }
-
-
+async function getRepoType (identifier) {
   const isPlugin = get(`https://github.com/${identifier}/raw/HEAD/manifest.json`).then((r) => {
     if (r?.statusCode === 302) {
       return 'plugin';
@@ -43,13 +38,11 @@ function getRepoType (identifier) {
   // Wait for either promise to resolve
   // If neither resolves, use null.
 
-  return (async () => {
-    // @ts-ignore
-    const type = await Promise.any([ isPlugin, isTheme ]).catch(() => null);
+  // @ts-ignore
+  const type = await Promise.any([ isPlugin, isTheme ]).catch(() => null);
 
-    typeCache.set(identifier, type);
-    return type;
-  })();
+  typeCache.set(identifier, type);
+  return type;
 }
 
 /**
@@ -84,21 +77,15 @@ module.exports = function getRepoInfo (url) {
     isInstalled
   };
 
-  const type = getRepoType(identifier);
-  if (type instanceof Promise) {
-    return (async () => {
-      const resolvedType = await type;
-      if (!resolvedType) {
-        return null;
-      }
-      return {
-        ...data,
-        type: resolvedType
-      };
-    })();
+  if (typeCache.has(identifier)) {
+    return {
+      ...data,
+      type: typeCache.get(identifier)
+    };
   }
-  return {
+
+  return getRepoType(identifier).then(type => ({
     ...data,
     type
-  };
+  }));
 };
