@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "codemirror": "^5.57.0",
+    "electron-devtools-installer": "^3.2.0",
     "less": "^3.12.2",
     "node-watch": "^0.6.4",
     "sass": "^1.35.2",

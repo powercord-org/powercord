@@ -108,6 +108,16 @@ module.exports = class GeneralSettings extends React.Component {
             {Messages.POWERCORD_SETTINGS_EXP_WEB_PLATFORM}
           </SwitchItem>
           <SwitchItem
+            note={Messages.POWERCORD_SETTINGS_DEVELOPER_MODE_DESC.format()}
+            value={getSetting('developerMode', false)}
+            onChange={() => {
+              toggleSetting('developerMode');
+              this.askRestart();
+            }}
+          >
+            {Messages.POWERCORD_SETTINGS_DEVELOPER_MODE}
+          </SwitchItem>
+          <SwitchItem
             note={Messages.POWERCORD_SETTINGS_DISCORD_EXPERIMENTS_DESC.format()}
             value={getSetting('experiments', false)}
             onChange={async () => {
