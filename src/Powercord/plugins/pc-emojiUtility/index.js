@@ -90,7 +90,10 @@ module.exports = class EmojiUtility extends Plugin {
   }
 
   sendBotMessage (content) {
-    const receivedMessage = this.createBotMessage(this.getChannelId(), '');
+    const receivedMessage = this.createBotMessage({
+      channelId: this.getChannelId(),
+      content: ''
+    });
 
     if (typeof content === 'string') {
       receivedMessage.content = content;
@@ -257,7 +260,12 @@ module.exports = class EmojiUtility extends Plugin {
         }
 
         try {
-          await this.uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
+          await this.uploadEmoji({
+            guildId: guild.id, 
+            image: await this.getImageEncoded(emoji.url), 
+            name: emoji.name,
+            roles: []
+          });
 
           this.replySuccess(`Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`);
         } catch (error) {
@@ -284,6 +292,7 @@ module.exports = class EmojiUtility extends Plugin {
           items.push({
             type: 'button',
             name: guild.name,
+            id: `guild___${guild.id}`,
             onClick: () => onGuildClick(guild)
           });
         }
@@ -297,6 +306,7 @@ module.exports = class EmojiUtility extends Plugin {
         type: 'submenu',
         name: 'Clone',
         hint: 'to',
+        id: 'emoji-utility-clone',
         onClick: () => onGuildClick(null),
         getItems: getCloneableGuilds
       });
@@ -304,6 +314,7 @@ module.exports = class EmojiUtility extends Plugin {
       features.push({
         type: 'button',
         name: 'Save',
+        id: 'emoji-utility-save',
         onClick: async () => {
           if (!this.settings.get('filePath')) {
             this.replyError('Please set your save directory in the settings');
@@ -340,6 +351,7 @@ module.exports = class EmojiUtility extends Plugin {
         features.push({
           type: 'button',
           name: 'Go to server',
+          id: 'emoji-utility-go-to-server',
           onClick: () => {
             this.transitionTo(this.getGuildRoute(emoji.guildId));
           }
@@ -349,6 +361,7 @@ module.exports = class EmojiUtility extends Plugin {
       features.push({
         type: 'button',
         name: 'Copy Emote ID',
+        id: 'emoji-utility-copy-id',
         onClick: () => clipboard.writeText(emoji.id)
       });
 
@@ -393,7 +406,12 @@ module.exports = class EmojiUtility extends Plugin {
             }
 
             try {
-              await this.uploadEmoji(guild.id, await this.getImageEncoded(url), name);
+              await this.uploadEmoji({
+                guildId: guild.id, 
+                image: await this.getImageEncoded(url), 
+                name: name,
+                roles: []
+              });
 
               this.replySuccess(`Created emote by the name of **${name}** in **${guild.name}**`);
             } catch (error) {
@@ -424,6 +442,7 @@ module.exports = class EmojiUtility extends Plugin {
           items.push({
             type: 'button',
             name: guild.name,
+            id: `guild___${guild.id}`,
             onClick: () => onGuildClick(guild)
           });
         }
@@ -437,6 +456,7 @@ module.exports = class EmojiUtility extends Plugin {
         type: 'submenu',
         hint: 'in',
         name: 'Create',
+        id: 'emoji-utility-create',
         onClick: () => onGuildClick(null),
         getItems: getCreateableGuilds
       });
@@ -730,7 +750,12 @@ module.exports = class EmojiUtility extends Plugin {
               return this.replyError(`**${guild.name}** does not have any more emote slots`);
             }
 
-            await this.uploadEmoji(guild.id, await this.getImageEncoded(emoji.url), emoji.name);
+            await this.uploadEmoji({
+              guildId: guild.id, 
+              image: await this.getImageEncoded(emoji.url), 
+              name: emoji.name,
+              roles: []
+            });
 
             return this.replySuccess(`Cloned emote ${this.getFullEmoji(emoji)} to **${guild.name}**`);
           } catch (error) {

@@ -103,7 +103,7 @@
     "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Förhindrar Discord från att ta bort din token från localStorage, minska antalet oönskade utloggningar.",
     "POWERCORD_SETTINGS_KEEP_TOKEN": "Förvara token",
     "POWERCORD_SETTINGS_ADVANCED_DESC": "Ändra ingenting här om du inte vet vad du gör. Oväntade saker kan hända med din katt.",
-    "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Byter ut [Clyde]({discordiaURL}) i Powercord kommandon med ett blandat antal avatarer och användarnamn som valts av plugin-utvecklare. Kommer visa \"Powercord\" om inte innstält av plugin-utvecklaren.",
+    "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Byter ut [Clyde]({clydeUrl}) i Powercord kommandon med ett blandat antal avatarer och användarnamn som valts av plugin-utvecklare. Kommer visa \"Powercord\" om inte innstält av plugin-utvecklaren.",
     "POWERCORD_SETTINGS_NO_CLYDE": "Utrota Clyde",
     "POWERCORD_SETTINGS_SYNC_DESC": "Synkronisera alla dina Powercord inställningar mellan konton. Kräver ett Powercord konto!",
     "POWERCORD_SETTINGS_SYNC": "Inställnings-sync",

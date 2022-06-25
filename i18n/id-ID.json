@@ -80,7 +80,7 @@
   "POWERCORD_SETTINGS_KEEP_TOKEN": "Tetap Simpan Token",
   "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Mencegah Discord menghapus token Anda dari Penyimpanan lokal, mengurangi jumlah logout yang tidak diinginkan.",
   "POWERCORD_SETTINGS_NO_CLYDE": "Membasmi Clyde",
-  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Ganti [Clyde]({discordiaUrl}) di perintah Powercord dengan beragam avatar dan nama pengguna yang dipilih oleh pengembang plug-in - mundur ke \"Powercord\" secara default.",
+  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Ganti [Clyde]({clydeUrl}) di perintah Powercord dengan beragam avatar dan nama pengguna yang dipilih oleh pengembang plug-in - mundur ke \"Powercord\" secara default.",
   "POWERCORD_SETTINGS_OVERLAY": "Alat Dev Hamparan",
   "POWERCORD_SETTINGS_OVERLAY_DESC": "Membuka jendela DevTools yang memungkinkan Anda memeriksa apa yang terjadi dalam overlay dalam game Discord.",
   "POWERCORD_SETTINGS_RESTART": "Pengaturan ini mengharuskan Anda untuk memulai ulang Discord agar berlaku. Apakah Anda ingin memulai ulang Discord sekarang?",

@@ -2,6 +2,7 @@ const { shell } = require('electron');
 const { React, Flux, getModule, getModuleByDisplayName, contextMenu, i18n: { Messages } } = require('powercord/webpack');
 const { AsyncComponent, Icon, Icons: { FontAwesome } } = require('powercord/components');
 const { open: openModal } = require('powercord/modal');
+const { findInReactTree } = require('powercord/util');
 
 const { SPOTIFY_DEFAULT_IMAGE } = require('../constants');
 const SpotifyAPI = require('../SpotifyAPI');
@@ -126,16 +127,34 @@ class Modal extends React.PureComponent {
   }
 
   renderNameComponent (props = {}) {
-    const nameComponent = this.props.base.props.children[0].props.children[1].props.children({});
-    delete nameComponent.props.onMouseLeave;
-    delete nameComponent.props.onMouseEnter;
-    delete nameComponent.props.onClick;
+    let NameComponent = findInReactTree(this.props.base, (n) =>
+      n.props?.text === Messages.ACCOUNT_CLICK_TO_COPY && typeof n.props?.children === 'function'
+    )?.props?.children?.({});
 
-    // [ nameComponent.props.className ] = nameComponent.props.className.split(' ');
-    Object.assign(nameComponent.props, props);
-    nameComponent.props.children.props.children[0].props.className = 'spotify-title';
-    nameComponent.props.children.props.children[0].props.children.props.children = this.props.currentTrack.name;
-    nameComponent.props.children.props.children[1] = (
+    if (NameComponent) {
+      delete NameComponent.props.onClick;
+      delete NameComponent.props.onMouseEnter;
+      delete NameComponent.props.onMouseLeave;
+    } else {
+      const AvatarPopout = findInReactTree(this.props.base, (n) => typeof n.props?.children === 'function')?.props?.children?.({});
+      const AvatarWithUsername = findInReactTree(AvatarPopout, (n) => typeof n.props?.children === 'function')?.props?.children?.({});
+
+      NameComponent = AvatarWithUsername?.props?.children?.[1];
+    }
+
+    Object.assign(NameComponent.props, props);
+
+    const NameChildren = NameComponent.props.children;
+    const Title = NameChildren?.props?.children?.[0];
+    const Subtext = NameChildren?.props?.children?.[1];
+
+    if (!Title || !Subtext) {
+      return null;
+    }
+
+    Title.props.className = 'spotify-title';
+    Title.props.children.props.children = this.props.currentTrack.name;
+    NameChildren.props.children[1] = (
       <PanelSubtext className='spotify-artist'>
         {Messages.USER_ACTIVITY_LISTENING_ARTISTS.format({
           artists: this.props.currentTrack.artists,
@@ -143,7 +162,8 @@ class Modal extends React.PureComponent {
         })}
       </PanelSubtext>
     );
-    return nameComponent;
+
+    return NameComponent;
   }
 
   renderExtraControls () {

@@ -4,8 +4,8 @@ const { mkdir, writeFile } = require('fs').promises;
 const { join, sep } = require('path');
 const { AnsiEscapes } = require('./log');
 
-exports.inject = async ({ getAppDir }) => {
-  const appDir = await getAppDir();
+exports.inject = async ({ getAppDir }, platform) => {
+  const appDir = await getAppDir(platform);
   if (existsSync(appDir)) {
     /*
      * @todo: verify if there is nothing in discord_desktop_core as well
@@ -35,8 +35,8 @@ exports.inject = async ({ getAppDir }) => {
   return true;
 };
 
-exports.uninject = async ({ getAppDir }) => {
-  const appDir = await getAppDir();
+exports.uninject = async ({ getAppDir }, platform) => {
+  const appDir = await getAppDir(platform);
 
   if (!existsSync(appDir)) {
     console.log('There is nothing to unplug. You are already running Discord without mods.');

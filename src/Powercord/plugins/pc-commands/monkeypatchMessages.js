@@ -39,7 +39,10 @@ module.exports = async function monkeypatchMessages () {
     if (result.send) {
       message.content = result.result;
     } else {
-      const receivedMessage = createBotMessage(channels.getChannelId(), '');
+      const receivedMessage = createBotMessage({
+        channelId: channels.getChannelId(),
+        content: ''
+      });
 
       if (powercord.settings.get('replaceClyde', true)) {
         // noinspection JSPrimitiveTypeWrapperUsage

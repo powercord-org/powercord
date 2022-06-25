@@ -79,7 +79,7 @@
   "POWERCORD_SETTINGS_KEEP_TOKEN": "Mantener token almacenado",
   "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Evita que Discord elimine su token de localStorage, reduciendo el número de cierres de sesión no deseados.",
   "POWERCORD_SETTINGS_NO_CLYDE": "Erradicar Clyde",
-  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Reemplaza a [Clyde]({discordiaUrl}) en los comandos de Powercord con una gama mixta de avatares y nombres de usuario seleccionados por los desarrolladores de complementos; retrocede a \"Powercord\" de forma predeterminada.",
+  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Reemplaza a [Clyde]({clydeUrl}) en los comandos de Powercord con una gama mixta de avatares y nombres de usuario seleccionados por los desarrolladores de complementos; retrocede a \"Powercord\" de forma predeterminada.",
   "POWERCORD_SETTINGS_OVERLAY": "Herramientas de desarrollo de superposición",
   "POWERCORD_SETTINGS_OVERLAY_DESC": "Abre una ventana de DevTools que te permite inspeccionar lo que sucede dentro de la superposición en el juego de Discord.",
   "POWERCORD_SETTINGS_RESTART": "Esta configuración requiere que reinicies Discord para que surta efecto. ¿Quieres reiniciar Discord ahora?",
