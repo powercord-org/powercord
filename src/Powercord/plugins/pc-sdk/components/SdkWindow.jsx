@@ -1,11 +1,9 @@
-const { Flux, React, getModule, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack');
-const { AsyncComponent, Tooltip, HeaderBar, Clickable, Icons } = require('powercord/components');
+const { Flux, React, getModule, i18n: { Messages } } = require('powercord/webpack');
+const { Tooltip, HeaderBar, Clickable, Icons, AdvancedScrollerAuto } = require('powercord/components');
 const ForceUI = require('./ForceUI');
 const SplashScreen = require('./SplashScreen');
 const Settings = require('./Settings');
 const TitleBar = require('./TitleBar');
-
-const VerticalScroller = AsyncComponent.from(getModuleByDisplayName('VerticalScroller'));
 
 class SdkWindow extends React.PureComponent {
   constructor (props) {
@@ -19,13 +17,13 @@ class SdkWindow extends React.PureComponent {
         <TitleBar type='WINDOWS' windowKey={'DISCORD_POWERCORD_SANDBOX'} themeOverride={this.props.theme}/>
         {this.renderHeaderBar()}
         <div className='powercord-text powercord-sdk'>
-          <VerticalScroller _pass={{ ref: this.scrollerRef }}>
+          <AdvancedScrollerAuto ref={this.scrollerRef}>
             <div className='powercord-sdk-container'>
               <ForceUI/>
               <SplashScreen/>
               <Settings/>
             </div>
-          </VerticalScroller>
+          </AdvancedScrollerAuto>
         </div>
       </>
     );
@@ -68,6 +66,7 @@ class SdkWindow extends React.PureComponent {
     );
   }
 }
+
 
 module.exports = Flux.connectStoresAsync(
   [ getModule([ 'theme', 'locale' ]), getModule([ 'getWindow' ]) ],

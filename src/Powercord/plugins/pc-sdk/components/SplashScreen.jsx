@@ -1,6 +1,6 @@
 const { join, dirname } = require('path');
 const { format: formatUrl } = require('url');
-const { remote: { BrowserWindow } } = require('electron');
+const { BrowserWindow } = require('electron');
 const { React } = require('powercord/webpack');
 const { Flex, Button } = require('powercord/components');
 

@@ -8,6 +8,7 @@ const { rmdirRf } = require('powercord/util');
 
 const PassphraseModal = require('./PassphraseModal.jsx');
 const Account = require('./PowercordAccount');
+const Labs = require('../Labs');
 
 module.exports = class GeneralSettings extends React.Component {
   constructor (props) {
@@ -52,31 +53,6 @@ module.exports = class GeneralSettings extends React.Component {
           opened={getSetting('advancedSettings', false)}
           onChange={() => toggleSetting('advancedSettings')}
         >
-          {/* <SwitchItem
-            note={Messages.POWERCORD_SETTINGS_DEBUG_LOGS_DESC}
-            value={getSetting('debugLogs', false)}
-            onChange={() => {
-              toggleSetting('debugLogs');
-              this.askRestart();
-            }}
-          >
-            {Messages.POWERCORD_SETTINGS_DEBUG_LOGS}
-          </SwitchItem>
-          {powercord.api.labs.isExperimentEnabled('pc-sdk')
-            ? <SwitchItem
-              note={'Powercord\'s SDK is a toolkit made to make plugin and theme developer\'s life easier. Once enabled, you can access it through the icon at the top right hand corner of Discord.'}
-              value={getSetting('sdkEnabled', false)}
-              onChange={() => toggleSetting('sdkEnabled')}
-            >
-              Enable Powercord SDK
-            </SwitchItem>
-            : <SwitchItem
-              note={Messages.POWERCORD_SETTINGS_OVERLAY_DESC}
-              value={getSetting('openOverlayDevTools', false)}
-              onChange={() => toggleSetting('openOverlayDevTools')}
-            >
-              {Messages.POWERCORD_SETTINGS_OVERLAY}
-            </SwitchItem>} */}
           <SwitchItem
             note={Messages.POWERCORD_SETTINGS_KEEP_TOKEN_DESC}
             value={getSetting('hideToken', true)}
@@ -108,11 +84,20 @@ module.exports = class GeneralSettings extends React.Component {
             {Messages.POWERCORD_SETTINGS_EXP_WEB_PLATFORM}
           </SwitchItem>
           <SwitchItem
-            note={Messages.POWERCORD_SETTINGS_DEVELOPER_MODE_DESC.format()}
+            note={Messages.POWERCORD_SETTINGS_DEVELOPER_MODE_DESC}
             value={getSetting('developerMode', false)}
             onChange={() => {
+              if (getSetting('developerMode', false)) {
+                powercord.api.settings.unregisterSettings('pc-labs');
+              } else {
+                powercord.api.settings.registerSettings('pc-labs', {
+                  category: 'pc-labs',
+                  label: 'Powercord Labs',
+                  render: Labs
+                });
+              }
               toggleSetting('developerMode');
-              this.askRestart();
+              this.forceUpdate();
             }}
           >
             {Messages.POWERCORD_SETTINGS_DEVELOPER_MODE}

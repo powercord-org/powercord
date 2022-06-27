@@ -7,6 +7,7 @@ const { sleep } = require('powercord/util');
 
 const ErrorBoundary = require('./components/ErrorBoundary');
 const GeneralSettings = require('./components/GeneralSettings');
+const Labs = require('./components/Labs');
 // const Labs = require('./components/Labs');
 
 const FormTitle = AsyncComponent.from(getModuleByDisplayName('FormTitle'));
@@ -20,6 +21,14 @@ module.exports = class Settings extends Plugin {
       render: GeneralSettings
     });
 
+    if (powercord.settings.get('developerMode', false)) {
+      powercord.api.settings.registerSettings('pc-labs', {
+        category: 'pc-labs',
+        label: 'Powercord Labs',
+        render: Labs
+      });
+    }
+
     await this.loadStylesheet('scss/style.scss');
 
     // Force load
@@ -32,6 +41,7 @@ module.exports = class Settings extends Plugin {
 
   async pluginWillUnload () {
     powercord.api.settings.unregisterSettings('pc-general');
+    powercord.api.settings.unregisterSettings('pc-labs');
     uninject('pc-settings-items');
     uninject('pc-settings-actions');
     uninject('pc-settings-errorHandler');
