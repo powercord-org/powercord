@@ -21,25 +21,25 @@ const typeCache = new Map();
  * @returns {Promise<'plugin'|'theme'|null>} Whether the URL is a plugin or theme repository, or null if it's neither
  */
 async function getRepoType (identifier) {
-  const isTheme = get(`https://github.com/${identifier}/raw/HEAD/powercord_manifest.json`).then((r) => {
+  const isTheme = await get(`https://github.com/${identifier}/raw/HEAD/powercord_manifest.json`).then((r) => {
     if (r?.statusCode === 302) {
       return 'theme';
     }
-    throw null;
+    return null;
   }).catch(() => null);
 
 
-  const isPlugin = get(`https://github.com/${identifier}/raw/HEAD/manifest.json`).then((r) => {
+  const isPlugin = await get(`https://github.com/${identifier}/raw/HEAD/manifest.json`).then((r) => {
     if (r?.statusCode === 302) {
       return 'plugin';
     }
-    throw null;
+    return null;
   }).catch(() => null);
   // Wait for either promise to resolve
   // If neither resolves, use null.
 
   // @ts-ignore
-  const type = await Promise.any([ isTheme, isPlugin ]).catch(() => null);
+  const type = isTheme || isPlugin || null;
 
   typeCache.set(identifier, type);
   return type;
