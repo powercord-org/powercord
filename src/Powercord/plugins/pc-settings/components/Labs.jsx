@@ -31,6 +31,7 @@ class Labs extends React.Component {
   renderItem (experiment) {
     const enabled = powercord.api.labs.isExperimentEnabled(experiment.id);
     const date = new Date(experiment.date);
+
     // No i wont write proper css
     return (
       <div style={{ marginTop: '20px' }}>
@@ -43,6 +44,7 @@ class Labs extends React.Component {
             } else {
               powercord.api.labs.enableExperiment(experiment.id);
             }
+            this.forceUpdate();
           }}
         >
           <b>{date.getDate().toString().padStart(2, '0')}/{(date.getMonth() + 1).toString().padStart(2, '0')}/{date.getFullYear()}</b> {experiment.name}

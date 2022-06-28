@@ -1,5 +1,7 @@
 const { React, i18n: { Messages } } = require('powercord/webpack');
 const { SwitchItem } = require('powercord/components/settings');
+const { open: openModal, close: closeModal } = require('powercord/modal');
+const { Confirm } = require('powercord/components/modal');
 
 class Settings extends React.PureComponent {
   render () {
@@ -31,8 +33,11 @@ class Settings extends React.PureComponent {
             unusable without Powercord due to a <a href='https://github.com/electron/electron/issues/19468' target='_blank'>bug in Electron</a>.
             More details in our <a href='#'>troubleshooting guide</a>.
           </>}
-          value={this.props.getSetting('openOverlayDevTools', false)}
-          onChange={() => this.props.toggleSetting('openOverlayDevTools')}
+          value={this.props.getSetting('reactDevTools', false)}
+          onChange={() => {
+            this.props.toggleSetting('reactDevTools');
+            this.askRestart();
+          }}
         >
           Enable React DevTools
         </SwitchItem>
@@ -48,6 +53,21 @@ class Settings extends React.PureComponent {
       </div>
     );
   }
+
+  askRestart () {
+    openModal(() => <Confirm
+      red
+      header={Messages.ERRORS_RESTART_APP}
+      confirmText={Messages.BUNDLE_READY_RESTART}
+      cancelText={Messages.BUNDLE_READY_LATER}
+      onConfirm={() => DiscordNative.app.relaunch()}
+      onCancel={closeModal}
+    >
+      <div className='powercord-text'>
+        {Messages.POWERCORD_SETTINGS_RESTART}
+      </div>
+    </Confirm>);
+  }
 }
 
-module.exports = powercord.api.settings.connectStores('pc-general')(Settings);
+module.exports = Settings;

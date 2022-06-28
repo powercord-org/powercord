@@ -35,6 +35,8 @@
 
   &-container {
     padding: 20px;
+    overflow: hidden scroll;
+    height: 100%;
   }
 
   .category {

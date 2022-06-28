@@ -10,7 +10,8 @@ require.main.filename = join(discordPath, 'app_bootstrap/index.js');
 
 const electron = require('electron');
 const PatchedBrowserWindow = require('./browserWindow');
-const settings = require(join(__dirname, '../settings/pc-general.json'));
+const settings = require(join(__dirname, '../settings/pc-sdk.json'));
+// const settings = require(join(__dirname, '../settings/pc-sdk.json'));
 
 require('./ipc/main');
 
@@ -111,7 +112,7 @@ if (process.platform === 'win32') {
   });
 }
 
-if (settings?.developerMode) {
+if (settings?.reactDevTools) {
   electron.app.whenReady().then(() => {
     installExtension(REACT_DEVELOPER_TOOLS)
       .then((name) => console.log(`Added Extension:  ${name}`))
