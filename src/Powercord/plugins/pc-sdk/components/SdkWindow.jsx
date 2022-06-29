@@ -1,9 +1,11 @@
 const { Flux, React, getModule, i18n: { Messages } } = require('powercord/webpack');
-const { Tooltip, HeaderBar, Clickable, Icons, AdvancedScrollerAuto } = require('powercord/components');
+const { Tooltip, HeaderBar, Clickable, Icons } = require('powercord/components');
 const ForceUI = require('./ForceUI');
 const SplashScreen = require('./SplashScreen');
 const Settings = require('./Settings');
 const TitleBar = require('./TitleBar');
+
+const { AdvancedScrollerAuto } = getModule([ 'AdvancedScrollerAuto' ], false);
 
 class SdkWindow extends React.PureComponent {
   constructor (props) {
@@ -17,8 +19,8 @@ class SdkWindow extends React.PureComponent {
         <TitleBar type='WINDOWS' windowKey={'DISCORD_POWERCORD_SANDBOX'} themeOverride={this.props.theme}/>
         {this.renderHeaderBar()}
         <div className='powercord-text powercord-sdk'>
-          <AdvancedScrollerAuto ref={this.scrollerRef}>
-            <div className='powercord-sdk-container'>
+          <AdvancedScrollerAuto className='powercord-sdk-container powercord-sdk-scroller' ref={this.scrollerRef}>
+            <div>
               <ForceUI/>
               <SplashScreen/>
               <Settings/>
@@ -57,7 +59,10 @@ class SdkWindow extends React.PureComponent {
               return popoutModule.setAlwaysOnTop('DISCORD_POWERCORD_SANDBOX', !this.props.windowOnTop);
             }
             const el = this.props.guestWindow.document.getElementById(id);
-            this.scrollerRef.current.scrollIntoView(el);
+            this.scrollerRef.current.scrollTo({
+              to: el.offsetTop - 10,
+              animate: true
+            });
           }}
         >
           <Icon className={headerBarClasses.icon}/>
