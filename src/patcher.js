@@ -10,8 +10,12 @@ require.main.filename = join(discordPath, 'app_bootstrap/index.js');
 
 const electron = require('electron');
 const PatchedBrowserWindow = require('./browserWindow');
-const settings = require(join(__dirname, '../settings/pc-sdk.json'));
-// const settings = require(join(__dirname, '../settings/pc-sdk.json'));
+
+let settings = {};
+try {
+  settings = require(join(__dirname, '../settings/pc-sdk.json'));
+  // const settings = require(join(__dirname, '../settings/pc-sdk.json'));
+} catch (err) {}
 
 require('./ipc/main');
 

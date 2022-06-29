@@ -4,10 +4,9 @@ const { wrapInHooks } = require('powercord/util');
 
 module.exports = AsyncComponent.from((async () => {
   const titleBar = await getModule(m => typeof m === 'function' && m.toString().includes('PlatformTypes.WINDOWS') && m.toString().includes('PlatformTypes.OSX'));
+  const windows = wrapInHooks(() => titleBar({ type: 'WINDOWS' }))().type;
 
   return (props) => {
-    const windows = wrapInHooks(() => titleBar(props))().type;
-
     const res = windows(props);
     res.props.className += ' powercord-sdk-title';
     res.props.children[0].props.children = React.createElement(SdkWordmark, { height: 16 });

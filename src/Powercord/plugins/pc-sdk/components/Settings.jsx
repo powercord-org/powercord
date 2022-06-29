@@ -70,4 +70,4 @@ class Settings extends React.PureComponent {
   }
 }
 
-module.exports = Settings;
+module.exports = powercord.api.settings.connectStores('pc-sdk')(Settings);
