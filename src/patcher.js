@@ -11,10 +11,14 @@ require.main.filename = join(discordPath, 'app_bootstrap/index.js');
 const electron = require('electron');
 const PatchedBrowserWindow = require('./browserWindow');
 
-let settings = {};
+let pcSDK = {};
 try {
-  settings = require(join(__dirname, '../settings/pc-sdk.json'));
-  // const settings = require(join(__dirname, '../settings/pc-sdk.json'));
+  pcSDK = require(join(__dirname, '../settings/pc-sdk.json'));
+} catch (err) {}
+
+let pcGeneral = {};
+try {
+  pcGeneral = require(join(__dirname, '../settings/pc-general.json'));
 } catch (err) {}
 
 require('./ipc/main');
@@ -116,13 +120,14 @@ if (process.platform === 'win32') {
   });
 }
 
-if (settings?.reactDevTools) {
+if (pcGeneral?.labs.includes('pc-sdk') && pcSDK?.reactDevTools) {
   electron.app.whenReady().then(() => {
     installExtension(REACT_DEVELOPER_TOOLS)
       .then((name) => console.log(`Added Extension:  ${name}`))
       .catch((err) => console.log('An error occurred: ', err));
   });
 }
+
 // Load Discord
 console.log('Loading Discord');
 Module._load(join(discordPath, discordPackage.main), null, true);

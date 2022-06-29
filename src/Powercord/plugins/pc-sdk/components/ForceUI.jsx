@@ -1,5 +1,6 @@
 const { React, getModule } = require('powercord/webpack');
 const { ButtonItem } = require('powercord/components/settings');
+const { getOwnerInstance } = require('powercord/util');
 
 class ForceUI extends React.PureComponent {
   render () {
@@ -35,17 +36,36 @@ class ForceUI extends React.PureComponent {
     const everyoneMdl = getModule([ 'extractEveryoneRole' ], false);
     const ogExtractEveryoneRole = everyoneMdl.extractEveryoneRole;
     const ogShouldShowEveryoneGuard = everyoneMdl.shouldShowEveryoneGuard;
-    const discordTextarea = document.querySelector('form > div > div');
     const fakeChannel = {
       id: 'yes',
       permissionOverwrites: {},
-      getGuildId: () => 'yes'
+      getGuildId: () => 'yes',
+      isThread: () => false,
+      isForumPost: () => false
     };
-    everyoneMdl.extractEveryoneRole = () => '@everyone';
-    everyoneMdl.shouldShowEveryoneGuard = () => true;
-    applyChatRestrictions(discordTextarea, 'normal', 'yes', fakeChannel, true);
-    everyoneMdl.extractEveryoneRole = ogExtractEveryoneRole;
-    everyoneMdl.shouldShowEveryoneGuard = ogShouldShowEveryoneGuard;
+
+    try {
+      const discordTextarea = document.querySelector('form > div > div > div');
+      const instance = getOwnerInstance(discordTextarea);
+
+      const ChannelTextAreaForm = instance?._reactInternals?.return?.return;
+      if (ChannelTextAreaForm) {
+        everyoneMdl.extractEveryoneRole = () => '@everyone';
+        everyoneMdl.shouldShowEveryoneGuard = () => true;
+
+        applyChatRestrictions({
+          openWarningPopout: (e) => ChannelTextAreaForm.stateNode.setState({ contentWarningProps: e }),
+          type: ChannelTextAreaForm.memoizedProps.chatInputType,
+          content: 'yes',
+          channel: fakeChannel
+        });
+
+        everyoneMdl.extractEveryoneRole = ogExtractEveryoneRole;
+        everyoneMdl.shouldShowEveryoneGuard = ogShouldShowEveryoneGuard;
+      }
+    } catch (e) {
+      console.error('Failed to display everyone guard:', e);
+    }
   }
 }
 
