@@ -113,6 +113,6 @@ const VALID_PLATFORMS = [ 'stable', 'ptb', 'canary', 'dev', 'development' ];
     );
     console.log('Try again with elevated permissions.');
   } else {
-    console.error('fucky wucky', e);
+    console.error('An unknown error occured. Please try again.', e);
   }
 });
