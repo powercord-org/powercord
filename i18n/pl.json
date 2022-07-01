@@ -1,7 +1,7 @@
 {
   "POWERCORD_ACCOUNT": "Konto Powercord",
-  "POWERCORD_BADGES_CONTRIBUTOR": "Współautor Powercorda",
-  "POWERCORD_BADGES_DEVELOPER": "Programista Powercorda",
+  "POWERCORD_BADGES_CONTRIBUTOR": "Współzałożyciel Powercorda",
+  "POWERCORD_BADGES_DEVELOPER": "Developer Powercorda",
   "POWERCORD_BADGES_EARLY": "Wczesny użytkownik Powercorda",
   "POWERCORD_BADGES_HUNTER": "Łowca bugów Powercorda",
   "POWERCORD_BADGES_STAFF": "Personel Powercorda",
@@ -47,7 +47,7 @@
   "POWERCORD_PLUGINS_UNINSTALL_SURE": "Czy na pewno chcesz odinstalować {pluginCount, plural, =1 {ten plugin} other {te pluginy}}?",
   "POWERCORD_PLUGINS_VERSION": "Wersja",
   "POWERCORD_PRODUCT_LOOKING": "Czego szukasz?",
-  "POWERCORD_QUICKCSS": "Szybki CSS",
+  "POWERCORD_QUICKCSS": "CSS",
   "POWERCORD_QUICKCSS_AUTOCOMPLETE": "Ctrl+Spacja do autouzupełniania",
   "POWERCORD_QUICKCSS_POPPED_OUT": "Edytor otwarty w nowym oknie",
   "POWERCORD_QUICKCSS_SETTINGS": "Ustawienia CodeMirror",
@@ -157,7 +157,7 @@
   "POWERCORD_UPDATES_UPDATING_ITEM": "Aktualizowanie…",
   "POWERCORD_UPDATES_UPSTREAM": "Upstream:",
   "POWERCORD_UPDATES_UPSTREAM_OFFICIAL": "Oficjalny",
-  "POWERCORD_UPDATES_UP_TO_DATE": "Powercord jest aktualny.",
+  "POWERCORD_UPDATES_UP_TO_DATE": "Twój Powercord jest w tej chwili aktualny!",
   "POWERCORD_UPDATE_PASSPHRASE": "Zaktualizuj hasło",
   "POWERCORD_UPDATE_PASSPHRASE_MODAL1": "To hasło będzie używane do szyfrowania twoich danych przed wysłaniem ich do serwerów Powercorda. Zaleca się ustawienie hasła, ale możesz zostawić je puste, aby wysyłać niezaszyfrowane dane.",
   "POWERCORD_UPDATE_PASSPHRASE_MODAL2": "Jeżeli już używałeś synchronizacji na innych komputerach, wpisz hasło którego użyłeś. **Wpisanie innego hasło spowoduje nadpisanie poprzednich danych, więc uważaj**."
