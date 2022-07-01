@@ -78,14 +78,23 @@ module.exports = function getRepoInfo (url) {
   };
 
   if (typeCache.has(identifier)) {
+    const type = typeCache.get(identifier);
+    if (!type) {
+      return null;
+    }
     return {
       ...data,
-      type: typeCache.get(identifier)
+      type
     };
   }
 
-  return getRepoType(identifier).then(type => ({
-    ...data,
-    type
-  }));
+  return getRepoType(identifier).then(type => {
+    if (!type) {
+      return null;
+    }
+    return {
+      ...data,
+      type
+    };
+  });
 };
