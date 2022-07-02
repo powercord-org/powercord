@@ -15,7 +15,6 @@ module.exports = {
     if (url?.match(/^[\w-]+\/[\w-.]+$/)) {
       url = `https://github.com/${url}`;
     }
-    console.log(url);
     try {
       new URL(url);
     } catch (e) {
