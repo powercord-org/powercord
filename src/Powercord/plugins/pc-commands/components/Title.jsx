@@ -6,6 +6,7 @@ module.exports = AsyncComponent.from(
     const Autocomplete = await getModuleByDisplayName('Autocomplete');
 
     return (props) => {
+      // eslint-disable-next-line new-cap
       const res = Autocomplete?.Title?.(props);
       const EmptyContainer = <div style={{ padding: '4px' }}/>;
 
