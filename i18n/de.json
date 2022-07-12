@@ -79,7 +79,7 @@
   "POWERCORD_SETTINGS_KEEP_TOKEN": "Speichere deinen Discord (Anmelde) Token",
   "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Hindert Discord daran, deinen (Anmelde) Token aus dem localStorage zu löschen. Dadurch wirst du selterner ungewollt abgemeldet.",
   "POWERCORD_SETTINGS_NO_CLYDE": "Clyde auslöschen",
-  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Ersetzt [Clyde]({discordiaUrl}) in Powercord Befehlen mit einer Variation an Avataren und Nutzernamen, welche von Plugin-Entwicklern angegeben werden können - fällt standardmäßig auf \"Powercord\" zurück.",
+  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Ersetzt [Clyde]({clydeUrl}) in Powercord Befehlen mit einer Variation an Avataren und Nutzernamen, welche von Plugin-Entwicklern angegeben werden können - fällt standardmäßig auf \"Powercord\" zurück.",
   "POWERCORD_SETTINGS_OVERLAY": "Overlay DevTools",
   "POWERCORD_SETTINGS_OVERLAY_DESC": "Öffnet ein DevTools-Fenster, in dem du untersuchen kannst, was innerhalb des In-Game-Overlays von Discord geschieht.",
   "POWERCORD_SETTINGS_RESTART": "Diese Einstellung benötigt ein Neuladen des Discord-Clients um zu funktionieren. Möchtest du Discord jetzt neustarten?",

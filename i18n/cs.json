@@ -79,7 +79,7 @@
   "POWERCORD_SETTINGS_KEEP_TOKEN": "Nechat token uložený",
   "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Zabrání Discordu odstranění tvého tokenu z localStorage, což snižuje počet nevyžádaných odhlášení.",
   "POWERCORD_SETTINGS_NO_CLYDE": "Vyměnit Clyde",
-  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Zamění [Clyde]({discordiaUrl}) v příkazech Powercordu za bohatou nabídku avatarů a uživatelských jmen vybranou vývojáři plug-inů - ve výchozím nastavení \"Powercord\".",
+  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Zamění [Clyde]({clydeUrl}) v příkazech Powercordu za bohatou nabídku avatarů a uživatelských jmen vybranou vývojáři plug-inů - ve výchozím nastavení \"Powercord\".",
   "POWERCORD_SETTINGS_OVERLAY": "Nástroje pro vývojáře v překrytí",
   "POWERCORD_SETTINGS_OVERLAY_DESC": "Otevře okno s vývjoářskými nástroji, které ti umožní zjistit, co se děje v herním překrytí Discordu.",
   "POWERCORD_SETTINGS_RESTART": "Toto nastavení vyžaduje restart Discordu, aby se projevilo. Chceš restartovat Discord nyní?",

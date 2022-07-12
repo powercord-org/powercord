@@ -79,7 +79,7 @@
   "POWERCORD_SETTINGS_KEEP_TOKEN": "Хранить токен",
   "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Предотвращает Discord от удаления вашего токена из localStorage, уменьшая количество нежелательных выходов.",
   "POWERCORD_SETTINGS_NO_CLYDE": "Заменить Clyde",
-  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Изменяет вид [Clyde]({discordiaUrl}) в командах Powercord на один из выбранных разработчиками плагинов (по умолчанию \"Powercord\").",
+  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Изменяет вид [Clyde]({clydeUrl}) в командах Powercord на один из выбранных разработчиками плагинов (по умолчанию \"Powercord\").",
   "POWERCORD_SETTINGS_OVERLAY": "Инструменты разработчика для оверлея",
   "POWERCORD_SETTINGS_OVERLAY_DESC": "Открывает окно с инструментами разработчика в игровом оверлее.",
   "POWERCORD_SETTINGS_RESTART": "Этот параметр требует перезагрузки Discord, чтобы изменения вступили в силу. Вы хотите перезапустить Discord сейчас?",

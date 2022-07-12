@@ -79,7 +79,7 @@
   "POWERCORD_SETTINGS_KEEP_TOKEN": "Mantieni il token memorizzato",
   "POWERCORD_SETTINGS_KEEP_TOKEN_DESC": "Impedisce a Discord di rimuovere il tuo token dal localStorage, riducendo i numeri di logout non voluti.",
   "POWERCORD_SETTINGS_NO_CLYDE": "Eradica Clyde",
-  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Rimpiazza [Clyde]({discordiaUrl}) nei comandi Powercord con una gamma di avatar e nomi utente misti selezionati dagli sviluppatori di plug-in - ricade a \"Powercord\" come predefinito.",
+  "POWERCORD_SETTINGS_NO_CLYDE_DESC": "Rimpiazza [Clyde]({clydeUrl}) nei comandi Powercord con una gamma di avatar e nomi utente misti selezionati dagli sviluppatori di plug-in - ricade a \"Powercord\" come predefinito.",
   "POWERCORD_SETTINGS_OVERLAY": "DevTools Overlay",
   "POWERCORD_SETTINGS_OVERLAY_DESC": "Apre una finestra DevTools che permette di ispezionare cosa sta succedendo nel in-game overlay di Discord.",
   "POWERCORD_SETTINGS_RESTART": "Questa impostazione necessita un riavvio di Discord per avere effetto. Vuoi riavviare Discord ora?",

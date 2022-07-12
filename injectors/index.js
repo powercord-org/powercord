@@ -3,9 +3,26 @@ require('./env_check')(); // Perform checks
 require('../polyfills'); // And then do stuff
 
 const { join } = require('path');
-const { readFile, writeFile } = require('fs').promises;
-const { BasicMessages } = require('./log');
+const { writeFile } = require('fs').promises;
+const readline = require('readline');
+const { AnsiEscapes, BasicMessages } = require('./log');
 const main = require('./main.js');
+
+async function promptYesNo (question) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  return new Promise(resolve => {
+    rl.question(question, answer => {
+      rl.close();
+      resolve(
+        answer.toLowerCase() === 'y' || answer.toLowerCase() === 'yes'
+      );
+    });
+  });
+}
 
 let platformModule;
 try {
@@ -14,29 +31,68 @@ try {
   if (err.code === 'MODULE_NOT_FOUND') {
     console.log(BasicMessages.PLUG_FAILED, '\n');
     console.log('It seems like your platform is not supported yet.', '\n');
-    console.log('Feel free to open an issue about it, so we can add support for it!');
-    console.log(`Make sure to mention the platform you are on is "${process.platform}" in your issue ticket.`);
-    console.log('https://github.com/powercord-org/powercord/issues/new/choose');
+    console.log(
+      'Feel free to open an issue about it, so we can add support for it!'
+    );
+    console.log(
+      `Make sure to mention the platform you are on is "${process.platform}" in your issue ticket.`
+    );
+    console.log(
+      'https://github.com/powercord-org/powercord/issues/new/choose'
+    );
     process.exit(process.argv.includes('--no-exit-codes') ? 0 : 1);
   }
 }
 
+const VALID_PLATFORMS = [ 'stable', 'ptb', 'canary', 'dev', 'development' ];
+
 (async () => {
+  let platform = (
+    process.argv.find(x => VALID_PLATFORMS.includes(x.toLowerCase())) || 'canary'
+  ).toLowerCase();
+  if (platform === 'development') {
+    platform = 'dev';
+  }
+
+  if (platform !== 'canary' && process.argv[2] === 'inject') {
+    console.log(
+      `${AnsiEscapes.BOLD}${AnsiEscapes.YELLOW}WARNING: using non-canary versions of Discord is not supported.${AnsiEscapes.RESET}`
+    );
+    console.log(
+      `${AnsiEscapes.YELLOW}These versions may not work properly and support will not be given.${AnsiEscapes.RESET}`
+    );
+    const response = await promptYesNo(
+      'Are you sure you want to continue? [y/n]: '
+    );
+    if (!response) {
+      console.log('Aborting...');
+      process.exit(process.argv.includes('--no-exit-codes') ? 0 : 1);
+    }
+    console.log('Continuing...', '\n');
+  }
+
   if (process.argv[2] === 'inject') {
-    if (await main.inject(platformModule)) {
+    if (await main.inject(platformModule, platform)) {
       if (!process.argv.includes('--no-welcome-message')) {
-        await writeFile(join(__dirname, '../src/__injected.txt'), 'hey cutie');
+        await writeFile(
+          join(__dirname, '../src/__injected.txt'),
+          'hey cutie'
+        );
       }
 
       // @todo: prompt to (re)start automatically
       console.log(BasicMessages.PLUG_SUCCESS, '\n');
-      console.log('You now have to completely close the Discord client, from the system tray or through the task manager.');
+      console.log(
+        'You now have to completely close the Discord client, from the system tray or through the task manager.'
+      );
     }
   } else if (process.argv[2] === 'uninject') {
-    if (await main.uninject(platformModule)) {
+    if (await main.uninject(platformModule, platform)) {
       // @todo: prompt to (re)start automatically
       console.log(BasicMessages.UNPLUG_SUCCESS, '\n');
-      console.log('You now have to completely close the Discord client, from the system tray or through the task manager.');
+      console.log(
+        'You now have to completely close the Discord client, from the system tray or through the task manager.'
+      );
     }
   } else {
     console.log(`Unsupported argument "${process.argv[2]}", exiting.`);
@@ -45,8 +101,16 @@ try {
 })().catch(e => {
   if (e.code === 'EACCES') {
     // todo: this was linux only (?) so I assume this is now safe to delete
-    console.log(process.argv[2] === 'inject' ? BasicMessages.PLUG_FAILED : BasicMessages.UNPLUG_FAILED, '\n');
-    console.log('Powercord wasn\'t able to inject itself due to missing permissions.', '\n');
+    console.log(
+      process.argv[2] === 'inject'
+        ? BasicMessages.PLUG_FAILED
+        : BasicMessages.UNPLUG_FAILED,
+      '\n'
+    );
+    console.log(
+      'Powercord wasn\'t able to inject itself due to missing permissions.',
+      '\n'
+    );
     console.log('Try again with elevated permissions.');
   } else {
     console.error('fucky wucky', e);
