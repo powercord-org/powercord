@@ -1,3 +1,5 @@
+const { CORE_PLUGINS } = require('powercord/constants');
+
 module.exports = {
   command: 'disable',
   description: 'Allows you to disable a selected plugin/theme from the given list.',
@@ -5,30 +7,28 @@ module.exports = {
   executor (args) {
     let result;
 
-    if (powercord.pluginManager.plugins.has(args[0]) && powercord.styleManager.themes.has(args[0])) {
-      result = `->> ERROR: This name has been reserved by both a plugin and theme. You will have to manually disable whichever one you choose.
-          (${args[0]})`;
-    } else if (powercord.pluginManager.plugins.has(args[0])) {
-      if (!powercord.pluginManager.isEnabled(args[0])) {
-        result = `->> ERROR: Tried to unload an already unloaded plugin!
-            (${args[0]})`;
-      } else {
-        powercord.pluginManager.disable(args[0]);
-        result = `+>> SUCCESS: Plugin unloaded!
-            (${args[0]})`;
-      }
-    } else if (powercord.styleManager.themes.has(args[0])) {
-      if (!powercord.styleManager.isEnabled(args[0])) {
-        result = `->> ERROR: Tried to unload an already unloaded theme!
-            (${args[0]})`;
-      } else {
-        powercord.styleManager.disable(args[0]);
-        result = `+>> SUCCESS: Theme unloaded!
-            (${args[0]})`;
-      }
+    const isPlugin = powercord.pluginManager.plugins.has(args[0]);
+    const isTheme = powercord.styleManager.themes.has(args[0]);
+
+    if (!isPlugin && !isTheme) { // No match
+      result = `->> ERROR: Could not find plugin or theme matching that name.
+      (${args[0]})`;
+    } else if (isPlugin && isTheme) { // Duplicate name
+      result = `->> ERROR: This name is in use by both a plugin and theme. You will have to disable it from settings.
+      (${args[0]})`;
+    } else if (isPlugin && CORE_PLUGINS.includes(args[0])) { // Core internal plugin
+      result = `->> ERROR: This plugin provides core functionality and cannot be disabled.
+      (${args[0]})`;
     } else {
-      result = `->> ERROR: Tried to disable a non-installed theme or plugin!
-          (${args[0]})`;
+      const manager = isPlugin ? powercord.pluginManager : powercord.styleManager;
+      if (!manager.isEnabled(args[0])) {
+        result = `->> ERROR: Tried to disable an already disabled ${isPlugin ? 'plugin' : 'theme'}!
+        (${args[0]})`;
+      } else {
+        manager.disable(args[0]);
+        result = `+>> SUCCESS: ${isPlugin ? 'Plugin' : 'Theme'} disabled!
+        (${args[0]})`;
+      }
     }
 
     return {
@@ -39,6 +39,7 @@ module.exports = {
 
   autocomplete (args) {
     const plugins = powercord.pluginManager.getPlugins()
+      .filter(plugin => !CORE_PLUGINS.includes(plugin))
       .sort((a, b) => a - b)
       .map(plugin => powercord.pluginManager.plugins.get(plugin));
 
