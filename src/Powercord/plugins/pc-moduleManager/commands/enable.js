@@ -5,30 +5,25 @@ module.exports = {
   executor (args) {
     let result;
 
-    if (powercord.pluginManager.plugins.has(args[0]) && powercord.styleManager.themes.has(args[0])) {
-      result = `->> ERROR: This name has been reserved by both a plugin and theme. You will have to manually enable whichever one you choose.
-          (${args[0]})`;
-    } else if (powercord.pluginManager.plugins.has(args[0])) {
-      if (powercord.pluginManager.isEnabled(args[0])) {
-        result = `->> ERROR: Tried to load an already loaded plugin!
-            (${args[0]})`;
-      } else {
-        powercord.pluginManager.enable(args[0]);
-        result = `+>> SUCCESS: Plugin loaded!
-            (${args[0]})`;
-      }
-    } else if (powercord.styleManager.themes.has(args[0])) {
-      if (powercord.styleManager.isEnabled(args[0])) {
-        result = `->> ERROR: Tried to load an already loaded theme!
-            (${args[0]})`;
-      } else {
-        powercord.styleManager.enable(args[0]);
-        result = `+>> SUCCESS: Theme loaded!
-            (${args[0]})`;
-      }
+    const isPlugin = powercord.pluginManager.plugins.has(args[0]);
+    const isTheme = powercord.styleManager.themes.has(args[0]);
+
+    if (!isPlugin && !isTheme) { // No match
+      result = `->> ERROR: Could not find plugin or theme matching that name.
+      (${args[0]})`;
+    } else if (isPlugin && isTheme) { // Duplicate name
+      result = `->> ERROR: This name is in use by both a plugin and theme. You will have to enable it from settings.
+      (${args[0]})`;
     } else {
-      result = `->> ERROR: Tried to enable a non-installed theme or plugin!
-          (${args[0]})`;
+      const manager = isPlugin ? powercord.pluginManager : powercord.styleManager;
+      if (manager.isEnabled(args[0])) {
+        result = `->> ERROR: Tried to enable an already enabled ${isPlugin ? 'plugin' : 'theme'}!
+        (${args[0]})`;
+      } else {
+        manager.enable(args[0]);
+        result = `+>> SUCCESS: ${isPlugin ? 'Plugin' : 'Theme'} enabled!
+        (${args[0]})`;
+      }
     }
 
     return {
