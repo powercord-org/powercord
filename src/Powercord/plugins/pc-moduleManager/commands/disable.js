@@ -2,7 +2,7 @@ const { CORE_PLUGINS } = require('powercord/constants');
 
 module.exports = {
   command: 'disable',
-  description: 'Allows you to disable a selected plugin/theme from the given list.',
+  description: 'Disable a plugin/theme',
   usage: '{c} [ plugin/theme ID ]',
   executor (args) {
     let result;
@@ -38,33 +38,26 @@ module.exports = {
   },
 
   autocomplete (args) {
-    const plugins = powercord.pluginManager.getPlugins()
-      .filter(plugin => !CORE_PLUGINS.includes(plugin))
-      .sort((a, b) => a - b)
-      .map(plugin => powercord.pluginManager.plugins.get(plugin));
+    const plugins = Array.from(powercord.pluginManager.plugins.values())
+      .filter(plugin => !CORE_PLUGINS.includes(plugin) && plugin.entityID !== 'pc-commands' &&
+        plugin.entityID.toLowerCase().includes(args[0] && args[0].toLowerCase()) && powercord.pluginManager.isEnabled(plugin.entityID));
 
-    const themes = powercord.styleManager.getThemes()
-      .sort((a, b) => a - b)
-      .map(theme => powercord.styleManager.themes.get(theme));
+    const themes = Array.from(powercord.styleManager.themes.values())
+      .filter(theme => theme.entityID.toLowerCase().includes(args[0] && args[0].toLowerCase()) && powercord.styleManager.isEnabled(theme.entityID));
 
     if (args.length > 1) {
       return false;
     }
 
     return {
-      commands: [ ...plugins
-        .filter(plugin => plugin.entityID !== 'pc-commands' &&
-          plugin.entityID.toLowerCase().includes(args[0] && args[0].toLowerCase()) && powercord.pluginManager.isEnabled(plugin.entityID))
-        .map(plugin => ({
-          command: plugin.entityID,
-          description: plugin.manifest.description
-        })), ...themes
-        .filter(theme => theme.entityID.toLowerCase().includes(args[0] && args[0].toLowerCase()) && powercord.styleManager.isEnabled(theme.entityID))
-        .map(theme => ({
-          command: theme.entityID,
-          description: `Theme - ${theme.manifest.description}`
-        })) ],
-      header: 'powercord plugin list'
+      commands: [ ...plugins.map(plugin => ({
+        command: plugin.entityID,
+        description: `Plugin - ${plugin.manifest.description}`
+      })), ...themes.map(theme => ({
+        command: theme.entityID,
+        description: `Theme - ${theme.manifest.description}`
+      })) ],
+      header: 'powercord entities list'
     };
   }
 };

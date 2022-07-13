@@ -1,6 +1,6 @@
 module.exports = {
   command: 'enable',
-  description: 'Allows you to re-/enable a selected plugin/theme from the given list.',
+  description: 'Enable a plugin/theme',
   usage: '{c} [ plugin/theme ID ]',
   executor (args) {
     let result;
@@ -32,31 +32,25 @@ module.exports = {
     };
   },
   autocomplete (args) {
-    const plugins = powercord.pluginManager.getPlugins()
-      .sort((a, b) => a - b)
-      .map(plugin => powercord.pluginManager.plugins.get(plugin));
+    const plugins = Array.from(powercord.pluginManager.plugins.values())
+      .filter(plugin => plugin.entityID.toLowerCase().includes(args[0] && args[0].toLowerCase()) && !powercord.pluginManager.isEnabled(plugin.entityID));
 
-    const themes = powercord.styleManager.getThemes()
-      .sort((a, b) => a - b)
-      .map(theme => powercord.styleManager.themes.get(theme));
+    const themes = Array.from(powercord.styleManager.themes.values())
+      .filter(theme => theme.entityID.toLowerCase().includes(args[0] && args[0].toLowerCase()) && !powercord.styleManager.isEnabled(theme.entityID));
 
     if (args.length > 1) {
       return false;
     }
 
     return {
-      commands: [ ...plugins
-        .filter(plugin => plugin.entityID.toLowerCase().includes(args[0] && args[0].toLowerCase()) && !powercord.pluginManager.isEnabled(plugin.entityID))
-        .map(plugin => ({
-          command: plugin.entityID,
-          description: `Plugin - ${plugin.manifest.description}`
-        })), ...themes
-        .filter(theme => theme.entityID.toLowerCase().includes(args[0] && args[0].toLowerCase()) && !powercord.styleManager.isEnabled(theme.entityID))
-        .map(theme => ({
-          command: theme.entityID,
-          description: `Theme - ${theme.manifest.description}`
-        })) ],
-      header: 'powercord plugin list'
+      commands: [ ...plugins.map(plugin => ({
+        command: plugin.entityID,
+        description: `Plugin - ${plugin.manifest.description}`
+      })), ...themes.map(theme => ({
+        command: theme.entityID,
+        description: `Theme - ${theme.manifest.description}`
+      })) ],
+      header: 'powercord entities list'
     };
   }
 };
