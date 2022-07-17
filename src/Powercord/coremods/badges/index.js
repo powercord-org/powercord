@@ -11,7 +11,7 @@ const Badges = require('./Badges');
 const cache = { _guilds: {} };
 
 async function injectUsers () {
-  const UserProfileBadgeList = await getModule((m) => m.default?.displayName === 'UserProfileBadgeList');
+  const UserProfileBadgeList = getAllModules((m) => m.default?.displayName === 'UserProfileBadgeList')[1]; // Discord have two identical components but only 2nd is actually used?
   inject('pc-badges-users', UserProfileBadgeList, 'default', ([ props ], res) => {
     const [ badges, setBadges ] = React.useState(null);
     React.useEffect(() => {
