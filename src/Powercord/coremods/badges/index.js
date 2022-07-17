@@ -1,5 +1,5 @@
 const { join } = require('path');
-const { React, getModule, getModuleByDisplayName } = require('powercord/webpack');
+const { React, getModule, getAllModules, getModuleByDisplayName } = require('powercord/webpack');
 const { forceUpdateElement, getOwnerInstance } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { WEBSITE } = require('powercord/constants');
