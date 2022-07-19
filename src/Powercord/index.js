@@ -31,8 +31,8 @@ let coremods;
 
 /**
  * @typedef GitInfos
- * @property {String} upstream
- * @property {String} branch
+ * @property {String | null} upstream
+ * @property {String | null} branch
  * @property {String} revision
  */
 
