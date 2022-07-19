@@ -83,7 +83,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
         <div className="about">
           <div>
             <span>{Messages.POWERCORD_UPDATES_UPSTREAM}</span>
-            <span>{powercord.gitInfos.upstream.replace(REPO_URL, Messages.POWERCORD_UPDATES_UPSTREAM_OFFICIAL)}</span>
+            <span>{(powercord.gitInfos.upstream || 'none').replace(REPO_URL, Messages.POWERCORD_UPDATES_UPSTREAM_OFFICIAL)}</span>
           </div>
           <div>
             <span>{Messages.POWERCORD_UPDATES_REVISION}</span>
@@ -91,7 +91,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
           </div>
           <div>
             <span>{Messages.POWERCORD_UPDATES_BRANCH}</span>
-            <span>{powercord.gitInfos.branch}</span>
+            <span>{powercord.gitInfos.branch || 'none'}</span>
           </div>
         </div>
       </div>
@@ -397,16 +397,18 @@ module.exports = class UpdaterSettings extends React.PureComponent {
 
           <b>Git </b>
           <div className='row'>
-            <div className='column'>Upstream:&#10;{powercord.gitInfos.upstream.replace(REPO_URL, 'Official')}</div>
+            <div className='column'>Upstream:&#10;{(powercord.gitInfos.upstream || 'none').replace(REPO_URL, 'Official')}</div>
             <div className='column'>Revision:&#10;
-              <a
-                href={`https://github.com/${powercord.gitInfos.upstream}/commit/${powercord.gitInfos.revision}`}
-                target='_blank'
-              >
+              {powercord.gitInfos.upstream
+                ? <a
+                  href={`https://github.com/${powercord.gitInfos.upstream}/commit/${powercord.gitInfos.revision}`}
+                  target='_blank'
+                >
                 [{powercord.gitInfos.revision.substring(0, 7)}]
-              </a>
+                </a>
+                : powercord.gitInfos.revision.substring(0, 7)}
             </div>
-            <div className='column'>Branch:&#10;{powercord.gitInfos.branch}</div>
+            <div className='column'>Branch:&#10;{powercord.gitInfos.branch || 'none'}</div>
             <div className='column'>{`Latest:\n${!this.props.getSetting('updates', []).find(update => update.id === 'powercord')}`}</div>
           </div>
 
