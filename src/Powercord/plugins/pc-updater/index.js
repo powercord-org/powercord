@@ -246,26 +246,26 @@ module.exports = class Updater extends Plugin {
   }
 
   async getGitInfos () {
-    const branch = await exec('git branch', this.cwd)
-      .then(({ stdout }) =>
-        stdout
-          .toString()
-          .split('\n')
-          .find(l => l.startsWith('*'))
-          .slice(2)
-          .trim()
-      );
-
-    const revision = await exec(`git rev-parse ${branch}`, this.cwd)
+    const revision = await exec('git rev-parse HEAD', this.cwd)
       .then(r => r.stdout.toString().trim());
 
-    const upstream = await exec('git remote get-url origin', this.cwd)
-      .then(r => r.stdout.toString().match(/github\.com[:/]([\w-_]+\/[\w-_]+)/)[1]);
+    const branch = await exec('git branch --show-current', this.cwd)
+      .then(r => r.stdout.toString().trim() || null);
+
+    const remote = branch
+      ? await exec(`git config branch.${branch}.remote`, this.cwd)
+        .then(r => r.stdout.toString().trim() || null)
+      : null;
+
+    const upstream = remote
+      ? await exec(`git remote get-url ${remote}`, this.cwd)
+        .then(r => r.stdout.toString().match(/github\.com[:/]([\w-_]+\/[\w-_]+)/)[1])
+      : null;
 
     return {
-      upstream,
+      revision,
       branch,
-      revision
+      upstream
     };
   }
 
