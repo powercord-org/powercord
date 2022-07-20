@@ -1,11 +1,12 @@
 const { CORE_PLUGINS } = require('powercord/constants');
 
-const resp = (success, title) => ({
+const resp = (success, description) => ({
   send: false,
   result: {
     type: 'rich',
     color: success ? 0x1bbb1b : 0xdd2d2d,
-    title: `${success ? 'SUCCESS:' : 'ERROR:'} ${title}`,
+    title: success ? 'Success' : 'Error',
+    description,
   },
 });
 
