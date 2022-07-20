@@ -1,20 +1,10 @@
 const { CORE_PLUGINS } = require('powercord/constants');
-
-const resp = (success, description) => ({
-  send: false,
-  result: {
-    type: 'rich',
-    color: success ? 0x1bbb1b : 0xdd2d2d,
-    title: success ? 'Success' : 'Error',
-    description,
-  },
-});
+const { resp } = require('../util/resp');
 
 module.exports = {
   command: 'disable',
   description: 'Disable a plugin/theme',
   usage: '{c} [ plugin/theme ID ]',
-  resp,
   executor([ id ]) {
     const isPlugin = powercord.pluginManager.plugins.has(id);
     const isTheme = powercord.styleManager.themes.has(id);

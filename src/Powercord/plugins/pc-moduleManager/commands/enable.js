@@ -1,4 +1,4 @@
-const { resp } = require('./disable');
+const { resp } = require('../util/resp');
 
 module.exports = {
   command: 'enable',
