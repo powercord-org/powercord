@@ -5,8 +5,8 @@ module.exports = {
   description: 'Enable a plugin/theme',
   usage: '{c} [ plugin/theme ID ]',
   executor([ id ]) {
-    const isPlugin = powercord.pluginManager.plugins.has(args[0]);
-    const isTheme = powercord.styleManager.themes.has(args[0]);
+    const isPlugin = powercord.pluginManager.plugins.has(id);
+    const isTheme = powercord.styleManager.themes.has(id);
 
     if (!isPlugin && !isTheme) { // No match
       return resp(false, `Could not find plugin or theme matching "${id}".`)
@@ -15,7 +15,7 @@ module.exports = {
     }
 
     const manager = isPlugin ? powercord.pluginManager : powercord.styleManager;
-    if (manager.isEnabled(args[0])) {
+    if (manager.isEnabled(id)) {
       return resp(false, `"${id}" is already enabled.`);
     }
 
