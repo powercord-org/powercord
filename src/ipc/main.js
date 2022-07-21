@@ -3,6 +3,10 @@ const { readFile } = require('fs').promises;
 const { join, dirname } = require('path');
 const { ipcMain, BrowserWindow } = require('electron');
 const sass = require('sass');
+const cp = require('child_process');
+const util = require('util');
+
+const exec = util.promisify(cp.exec);
 
 if (!ipcMain) {
   throw new Error('Don\'t require stuff you shouldn\'t silly.');
@@ -58,9 +62,14 @@ function compileSass (_, file) {
   });
 }
 
+async function execCommand(_, ...params) {
+  return exec(...params)
+}
+
 ipcMain.on('POWERCORD_GET_PRELOAD', e => e.returnValue = e.sender._powercordPreload);
 ipcMain.handle('POWERCORD_OPEN_DEVTOOLS', openDevTools);
 ipcMain.handle('POWERCORD_CLOSE_DEVTOOLS', closeDevTools);
 ipcMain.handle('POWERCORD_CACHE_CLEAR', clearCache);
 ipcMain.handle('POWERCORD_COMPILE_MF_SASS', compileSass);
 ipcMain.handle('POWERCORD_WINDOW_IS_MAXIMIZED', e => BrowserWindow.fromWebContents(e.sender).isMaximized());
+ipcMain.handle('POWERCORD_EXEC_COMMAND', execCommand);
