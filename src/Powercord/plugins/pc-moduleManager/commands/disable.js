@@ -1,5 +1,5 @@
 const { CORE_PLUGINS } = require('powercord/constants');
-const { resp } = require('../util/resp');
+const { resp } = require('../util');
 
 module.exports = {
   command: 'disable',

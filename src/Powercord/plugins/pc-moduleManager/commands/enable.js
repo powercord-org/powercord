@@ -1,4 +1,4 @@
-const { resp } = require('../util/resp');
+const { resp } = require('../util');
 
 module.exports = {
   command: 'enable',
