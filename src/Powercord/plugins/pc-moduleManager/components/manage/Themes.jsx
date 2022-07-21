@@ -92,8 +92,7 @@ class Themes extends Base {
         cancelText={Messages.CANCEL}
         onCancel={closeModal}
         onConfirm={async () => {
-          for (const [ i, theme ] of themes.entries()) {
-            themes.splice(i, 1);
+          for (const theme of themes) {
             try {
               await powercord.styleManager.uninstall(theme);
             } catch (err) {

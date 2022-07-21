@@ -91,8 +91,7 @@ class Plugins extends Base {
         cancelText={Messages.CANCEL}
         onCancel={closeModal}
         onConfirm={async () => {
-          for (const [ i, plugin ] of plugins.entries()) {
-            plugins.splice(i, 1);
+          for (const plugin of plugins) {
             try {
               await powercord.pluginManager.uninstall(plugin);
             } catch (err) {
