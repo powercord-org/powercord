@@ -3,7 +3,7 @@ const { writeFile, readFile } = require('fs').promises;
 const { React, getModule, i18n: { Messages } } = require('powercord/webpack');
 const { PopoutWindow } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
-const { findInReactTree } = require('powercord/util');
+const { findInReactTree, forceUpdateElement } = require('powercord/util');
 const { Plugin } = require('powercord/entities');
 const { SpecialChannels: { CSS_SNIPPETS } } = require('powercord/constants');
 const { join } = require('path');
@@ -119,7 +119,7 @@ module.exports = class ModuleManager extends Plugin {
       const info = getRepoInfo(target.href);
       if (info instanceof Promise) {
         info.then(info => {
-          res = this._addContextMenu(res, info, target.href);
+          this._addContextMenu(res, info, target.href);
         });
       } else {
         this._addContextMenu(res, info, target.href);
@@ -164,7 +164,7 @@ module.exports = class ModuleManager extends Plugin {
       );
     }
 
-    return res;
+    forceUpdateElement('#message');
   }
 
   async _injectSnippets () {
