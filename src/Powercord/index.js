@@ -6,10 +6,6 @@ const Webpack = require('powercord/webpack');
 const { WEBSITE } = require('powercord/constants');
 const { Updatable } = require('powercord/entities');
 
-const { promisify } = require('util');
-const cp = require('child_process');
-const exec = promisify(cp.exec);
-
 const PluginManager = require('./managers/plugins');
 const StyleManager = require('./managers/styles');
 const APIManager = require('./managers/apis');
@@ -225,7 +221,7 @@ class Powercord extends Updatable {
   async _update (force = false) {
     const success = await super._update(force);
     if (success) {
-      await exec('npm install --only=prod', { cwd: this.entityPath });
+      await PowercordNative.exec('npm install --only=prod', { cwd: this.entityPath });
       const updater = this.pluginManager.get('pc-updater');
       if (!document.querySelector('#powercord-updater, .powercord-updater')) {
         powercord.api.notices.sendToast('powercord-updater', {
