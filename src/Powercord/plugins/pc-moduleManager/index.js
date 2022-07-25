@@ -5,7 +5,7 @@ const { PopoutWindow } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
 const { findInReactTree, forceUpdateElement } = require('powercord/util');
 const { Plugin } = require('powercord/entities');
-const { SpecialChannels: { CSS_SNIPPETS } } = require('powercord/constants');
+const { SpecialChannels: { CSS_SNIPPETS, STORE_PLUGINS, STORE_THEMES } } = require('powercord/constants');
 const { join } = require('path');
 const commands = require('./commands');
 const deeplinks = require('./deeplinks');
@@ -94,7 +94,7 @@ module.exports = class ModuleManager extends Plugin {
     const MiniPopover = await getModule(m => m.default && m.default.displayName === 'MiniPopover');
     inject('pc-installer-popover', MiniPopover, 'default', (args, res) => {
       const props = findInReactTree(res, r => r && r.message && r.setPopout);
-      if (!props || ![ '1000955969657917551', '1000955968592552047' ].includes(props.channel?.id)) {
+      if (!props || ![ STORE_THEMES, STORE_PLUGINS ].includes(props.channel?.id)) {
         return res;
       }
       this.log('Popover injected');
@@ -102,7 +102,7 @@ module.exports = class ModuleManager extends Plugin {
         React.createElement(InstallerButton, {
           message: props.message,
           main: this,
-          type: props.channel.id === '1000955969657917551' ? 'theme' : 'plugin'
+          type: props.channel.id === STORE_THEMES ? 'theme' : 'plugin'
         })
       );
       return res;
