@@ -20,7 +20,7 @@ function setAppUserModelId (...args) {
   /*
    * once this has been called, we can assume squirrelUpdate is safe to require
    * as everything that needs to be initialized has been initialized
-   * see: https://github.com/replugged-org/replugged/issues/405
+   * see: https://github.com/powercord-org/powercord/issues/405
    * see: https://github.com/replugged-org/replugged/issues/382
    */
 
