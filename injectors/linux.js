@@ -51,20 +51,19 @@ exports.getAppDir = async (platform) => {
     .split('\n')
     .map(s => s.split(' ').filter(Boolean))
     .find(p => p[4] && (ProcessRegex[platform]).test(p[4]) && p.includes('--type=renderer'));
-
+    const askPath = () => new Promise(resolve => readlineInterface.question('> ', resolve));
+    const readlineInterface = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
   if (!discordProcess) {
-    let discordPath = KnownLinuxPaths[platform].find(path => existsSync(path));
-    if (!discordPath) {
-      const readlineInterface = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-      });
 
-      const askPath = () => new Promise(resolve => readlineInterface.question('> ', resolve));
+    let discordPaths = KnownLinuxPaths[platform].filter(path => existsSync(path));
+   
+    if (!discordPaths[0]) {
       console.log(`${AnsiEscapes.YELLOW}Failed to locate ${PlatformNames[platform]} installation folder.${AnsiEscapes.RESET}`, '\n');
       console.log(`Please provide the path of your ${PlatformNames[platform]} installation folder`);
       discordPath = await askPath();
-      readlineInterface.close();
 
       if (!existsSync(discordPath)) {
         console.log('');
@@ -73,9 +72,16 @@ exports.getAppDir = async (platform) => {
         process.exit(process.argv.includes('--no-exit-codes') ? 0 : 1);
       }
     }
+    if(discordPaths.length > 1) {
+      console.log(`${AnsiEscapes.YELLOW}It seems like you have multiple canary instances. ${AnsiEscapes.RESET}`, '\n');
+      console.log('Please provide the path of your preffered Discord Canary installation folder');
+      discordPaths[0] = await askPath();
 
-    return join(discordPath, 'resources', 'app');
+    }
+    
+    return join(discordPaths[0],'resources','app');
   }
+  readlineInterface.close();
 
   const discordPath = discordProcess[4].split('/');
   discordPath.splice(discordPath.length - 1, 1);
