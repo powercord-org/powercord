@@ -19,7 +19,7 @@ module.exports = ({ spdx, license: { name, url, permissions, conditions, limitat
       <Modal.Content>
         <p className='powercord-product-license-modal-desc'>{Messages[`POWERCORD_PLUGINS_LICENSE_DESC_${spdx}`]}</p>
         <Card className='powercord-product-license-modal-card'>
-          {Messages.POWERCORD_PLUGINS_LICENSE_DISCLAIMER.format({ url })}
+          {Messages.REPLUGGED_PLUGINS_LICENSE_DISCLAIMER.format({ url })}
         </Card>
         {[ 'permissions', 'limitations', 'conditions' ].map(type =>
           <div key={type} className={`powercord-product-license-modal-data ${type}`}>
@@ -28,8 +28,8 @@ module.exports = ({ spdx, license: { name, url, permissions, conditions, limitat
               <span>{Messages[`POWERCORD_PLUGINS_LICENSE_${perm}_NAME`]}</span>
               <div>{perm === 'PATENT_USE'
                 ? type === 'permissions'
-                  ? Messages.POWERCORD_PLUGINS_LICENSE_PATENT_USE_DESC_ALLOWED
-                  : Messages.POWERCORD_PLUGINS_LICENSE_PATENT_USE_DESC_FORBIDDEN
+                  ? Messages.REPLUGGED_PLUGINS_LICENSE_PATENT_USE_DESC_ALLOWED
+                  : Messages.REPLUGGED_PLUGINS_LICENSE_PATENT_USE_DESC_FORBIDDEN
                 : Messages[`POWERCORD_PLUGINS_LICENSE_${perm}_DESC`]}</div>
             </div>)}
           </div>

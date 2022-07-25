@@ -16,7 +16,7 @@ module.exports = class Settings extends Plugin {
   async startPlugin () {
     powercord.api.settings.registerSettings('pc-general', {
       category: 'pc-general',
-      label: () => Messages.POWERCORD_GENERAL_SETTINGS,
+      label: () => Messages.REPLUGGED_GENERAL_SETTINGS,
       render: GeneralSettings
     });
 

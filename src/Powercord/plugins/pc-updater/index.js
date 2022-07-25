@@ -119,16 +119,16 @@ module.exports = class Updater extends Plugin {
         this.doUpdate();
       } else if (!document.querySelector('#powercord-updater, .powercord-updater')) {
         powercord.api.notices.sendToast('powercord-updater', {
-          header: Messages.POWERCORD_UPDATES_TOAST_AVAILABLE_HEADER,
-          content: Messages.POWERCORD_UPDATES_TOAST_AVAILABLE_DESC,
+          header: Messages.REPLUGGED_UPDATES_TOAST_AVAILABLE_HEADER,
+          content: Messages.REPLUGGED_UPDATES_TOAST_AVAILABLE_DESC,
           icon: 'wrench',
           buttons: [ {
-            text: Messages.POWERCORD_UPDATES_UPDATE,
+            text: Messages.REPLUGGED_UPDATES_UPDATE,
             color: 'green',
             look: 'outlined',
             onClick: () => this.doUpdate()
           }, {
-            text: Messages.POWERCORD_UPDATES_OPEN_UPDATER,
+            text: Messages.REPLUGGED_UPDATES_OPEN_UPDATER,
             color: 'blue',
             look: 'ghost',
             onClick: async () => {
@@ -168,10 +168,10 @@ module.exports = class Updater extends Plugin {
       this.settings.set('updates', failed);
       if (!document.querySelector('#powercord-updater, .powercord-updater')) {
         powercord.api.notices.sendToast('powercord-updater', {
-          header: Messages.POWERCORD_UPDATES_TOAST_FAILED,
+          header: Messages.REPLUGGED_UPDATES_TOAST_FAILED,
           type: 'danger',
           buttons: [ {
-            text: Messages.POWERCORD_UPDATES_FORCE,
+            text: Messages.REPLUGGED_UPDATES_FORCE,
             color: 'red',
             look: 'outlined',
             onClick: () => this.askForce()
@@ -180,7 +180,7 @@ module.exports = class Updater extends Plugin {
             look: 'outlined',
             color: 'grey'
           }, {
-            text: Messages.POWERCORD_UPDATES_OPEN_UPDATER,
+            text: Messages.REPLUGGED_UPDATES_OPEN_UPDATER,
             color: 'blue',
             look: 'ghost',
             onClick: async () => {
@@ -199,7 +199,7 @@ module.exports = class Updater extends Plugin {
       React.createElement(Confirm, {
         red: true,
         header: Messages.SUPPRESS_EMBED_TITLE,
-        confirmText: Messages.POWERCORD_UPDATES_FORCE,
+        confirmText: Messages.REPLUGGED_UPDATES_FORCE,
         cancelText: Messages.CANCEL,
         onConfirm: () => {
           if (callback) {
@@ -209,7 +209,7 @@ module.exports = class Updater extends Plugin {
           this.doUpdate(true);
         },
         onCancel: closeModal
-      }, React.createElement('div', { className: 'powercord-text' }, Messages.POWERCORD_UPDATES_FORCE_MODAL))
+      }, React.createElement('div', { className: 'powercord-text' }, Messages.REPLUGGED_UPDATES_FORCE_MODAL))
     );
   }
 

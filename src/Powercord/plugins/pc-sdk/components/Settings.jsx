@@ -7,11 +7,11 @@ class Settings extends React.PureComponent {
       <div id='sdk-settings' className='category'>
         <h2>SDK Settings</h2>
         <SwitchItem
-          note={Messages.POWERCORD_SETTINGS_OVERLAY_DESC}
+          note={Messages.REPLUGGED_SETTINGS_OVERLAY_DESC}
           value={this.props.getSetting('openOverlayDevTools', false)}
           onChange={() => this.props.toggleSetting('openOverlayDevTools')}
         >
-          {Messages.POWERCORD_SETTINGS_OVERLAY}
+          {Messages.REPLUGGED_SETTINGS_OVERLAY}
         </SwitchItem>
         <SwitchItem
           note={<>

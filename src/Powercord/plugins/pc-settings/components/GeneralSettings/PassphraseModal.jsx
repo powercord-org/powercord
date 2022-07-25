@@ -13,7 +13,7 @@ module.exports = class Passphrase extends React.Component {
     return (
       <Confirm
         red={false}
-        header={Messages.POWERCORD_UPDATE_PASSPHRASE}
+        header={Messages.REPLUGGED_UPDATE_PASSPHRASE}
         confirmText={Messages.GAME_ACTION_BUTTON_UPDATE}
         cancelText={Messages.CANCEL}
         onConfirm={() => this.props.onConfirm(this.state.passphrase)}
@@ -21,16 +21,16 @@ module.exports = class Passphrase extends React.Component {
       >
         <div className='powercord-passphrase-modal powercord-text'>
           <div className='powercord-passphrase-desc'>
-            {Messages.POWERCORD_UPDATE_PASSPHRASE_MODAL1}
+            {Messages.REPLUGGED_UPDATE_PASSPHRASE_MODAL1}
             <div className='space'/>
-            {Messages.POWERCORD_UPDATE_PASSPHRASE_MODAL2.format()}
+            {Messages.REPLUGGED_UPDATE_PASSPHRASE_MODAL2.format()}
           </div>
           <TextInput
             type='password'
             defaultValue={this.state.passphrase}
             onChange={passphrase => this.setState({ passphrase })}
           >
-            {Messages.POWERCORD_PASSPHRASE}
+            {Messages.REPLUGGED_PASSPHRASE}
           </TextInput>
         </div>
       </Confirm>

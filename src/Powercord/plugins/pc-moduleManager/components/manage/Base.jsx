@@ -67,7 +67,7 @@ class Base extends React.Component {
         <TextInput
           value={this.state.search}
           onChange={search => this.setState({ search })}
-          placeholder={Messages.POWERCORD_PRODUCT_LOOKING}
+          placeholder={Messages.REPLUGGED_PRODUCT_LOOKING}
         >
           {Messages[`POWERCORD_${this.state.key}_SEARCH`]}
         </TextInput>

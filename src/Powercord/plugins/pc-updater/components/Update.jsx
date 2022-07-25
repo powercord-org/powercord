@@ -20,14 +20,14 @@ module.exports = class Update extends React.PureComponent {
         <div className='actions'>
           {updating
             ? <Button color={Button.Colors.GREEN} disabled>
-              {Messages.POWERCORD_UPDATES_UPDATING_ITEM}
+              {Messages.REPLUGGED_UPDATES_UPDATING_ITEM}
             </Button>
             : <>
               <Button look={Button.Looks.OUTLINED} color={Button.Colors.RED} onClick={onSkip}>
-                {Messages.POWERCORD_UPDATES_SKIP}
+                {Messages.REPLUGGED_UPDATES_SKIP}
               </Button>
               <Button color={Button.Colors.RED} onClick={onDisable}>
-                {Messages.POWERCORD_UPDATES_DISABLE}
+                {Messages.REPLUGGED_UPDATES_DISABLE}
               </Button>
             </>}
         </div>

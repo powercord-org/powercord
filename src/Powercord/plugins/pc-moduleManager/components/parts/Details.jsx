@@ -22,7 +22,7 @@ module.exports = React.memo(
           <span>{author}</span>
         </div>
         <div className='version'>
-          <Tooltip text={Messages.POWERCORD_PLUGINS_VERSION} position='top'>
+          <Tooltip text={Messages.REPLUGGED_PLUGINS_VERSION} position='top'>
             <Tag width={svgSize} height={svgSize}/>
           </Tooltip>
           <span>v{version}</span>
@@ -32,7 +32,7 @@ module.exports = React.memo(
           </Tooltip>}
         </div>
         <div className='license'>
-          <Tooltip text={Messages.POWERCORD_PLUGINS_LICENSE} position='top'>
+          <Tooltip text={Messages.REPLUGGED_PLUGINS_LICENSE} position='top'>
             <Scale width={svgSize} height={svgSize}/>
           </Tooltip>
           <span>{license}</span>

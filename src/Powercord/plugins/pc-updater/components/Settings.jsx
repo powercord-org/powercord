@@ -40,25 +40,25 @@ module.exports = class UpdaterSettings extends React.PureComponent {
       title;
     if (disabled) {
       icon = <Icons.Update color='#f04747'/>;
-      title = Messages.POWERCORD_UPDATES_DISABLED;
+      title = Messages.REPLUGGED_UPDATES_DISABLED;
     } else if (paused) {
       icon = <Icons.Paused/>;
-      title = Messages.POWERCORD_UPDATES_PAUSED;
+      title = Messages.REPLUGGED_UPDATES_PAUSED;
     } else if (checking) {
       icon = <Icons.Update color='#7289da' animated/>;
-      title = Messages.POWERCORD_UPDATES_CHECKING;
+      title = Messages.REPLUGGED_UPDATES_CHECKING;
     } else if (updating) {
       icon = <Icons.Update color='#7289da' animated/>;
-      title = Messages.POWERCORD_UPDATES_UPDATING;
+      title = Messages.REPLUGGED_UPDATES_UPDATING;
     } else if (failed) {
       icon = <Icons.Error/>;
-      title = Messages.POWERCORD_UPDATES_FAILED;
+      title = Messages.REPLUGGED_UPDATES_FAILED;
     } else if (updates.length > 0) {
       icon = <Icons.Update/>;
-      title = Messages.POWERCORD_UPDATES_AVAILABLE;
+      title = Messages.REPLUGGED_UPDATES_AVAILABLE;
     } else {
       icon = <Icons.UpToDate/>;
-      title = Messages.POWERCORD_UPDATES_UP_TO_DATE;
+      title = Messages.REPLUGGED_UPDATES_UP_TO_DATE;
     }
 
     return <div className='powercord-updater powercord-text'>
@@ -71,26 +71,26 @@ module.exports = class UpdaterSettings extends React.PureComponent {
           <h3>{title}</h3>
           {!disabled && !updating && (!checking || checkingProgress[1] > 0) && <div>
             {paused
-              ? Messages.POWERCORD_UPDATES_PAUSED_RESUME
+              ? Messages.REPLUGGED_UPDATES_PAUSED_RESUME
               : checking
-                ? Messages.POWERCORD_UPDATES_CHECKING_STATUS.format({
+                ? Messages.REPLUGGED_UPDATES_CHECKING_STATUS.format({
                   checked: checkingProgress[0],
                   total: checkingProgress[1]
                 })
-                : Messages.POWERCORD_UPDATES_LAST_CHECKED.format({ date: last })}
+                : Messages.REPLUGGED_UPDATES_LAST_CHECKED.format({ date: last })}
           </div>}
         </div>
         <div className="about">
           <div>
-            <span>{Messages.POWERCORD_UPDATES_UPSTREAM}</span>
-            <span>{powercord.gitInfos.upstream.replace(REPO_URL, Messages.POWERCORD_UPDATES_UPSTREAM_OFFICIAL)}</span>
+            <span>{Messages.REPLUGGED_UPDATES_UPSTREAM}</span>
+            <span>{powercord.gitInfos.upstream.replace(REPO_URL, Messages.REPLUGGED_UPDATES_UPSTREAM_OFFICIAL)}</span>
           </div>
           <div>
-            <span>{Messages.POWERCORD_UPDATES_REVISION}</span>
+            <span>{Messages.REPLUGGED_UPDATES_REVISION}</span>
             <span>{powercord.gitInfos.revision.substring(0, 7)}</span>
           </div>
           <div>
-            <span>{Messages.POWERCORD_UPDATES_BRANCH}</span>
+            <span>{Messages.REPLUGGED_UPDATES_BRANCH}</span>
             <span>{powercord.gitInfos.branch}</span>
           </div>
         </div>
@@ -105,7 +105,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
               this.props.updateSetting('disabled', false);
             }}
           >
-            {disabled ? Messages.POWERCORD_UPDATES_ENABLE : Messages.POWERCORD_UPDATES_RESUME}
+            {disabled ? Messages.REPLUGGED_UPDATES_ENABLE : Messages.REPLUGGED_UPDATES_RESUME}
           </Button>
           : (!checking && !updating && <>
             {updates.length > 0 && <Button
@@ -113,27 +113,27 @@ module.exports = class UpdaterSettings extends React.PureComponent {
               color={failed ? Button.Colors.RED : Button.Colors.GREEN}
               onClick={() => failed ? this.plugin.askForce() : this.plugin.doUpdate()}
             >
-              {failed ? Messages.POWERCORD_UPDATES_FORCE : Messages.POWERCORD_UPDATES_UPDATE}
+              {failed ? Messages.REPLUGGED_UPDATES_FORCE : Messages.REPLUGGED_UPDATES_UPDATE}
             </Button>}
             <Button
               size={Button.Sizes.SMALL}
               onClick={() => this.plugin.checkForUpdates(true)}
             >
-              {Messages.POWERCORD_UPDATES_CHECK}
+              {Messages.REPLUGGED_UPDATES_CHECK}
             </Button>
             <Button
               size={Button.Sizes.SMALL}
               color={Button.Colors.YELLOW}
               onClick={() => this.askPauseUpdates()}
             >
-              {Messages.POWERCORD_UPDATES_PAUSE}
+              {Messages.REPLUGGED_UPDATES_PAUSE}
             </Button>
             <Button
               size={Button.Sizes.SMALL}
               color={Button.Colors.RED}
               onClick={() => this.askDisableUpdates(true, () => this.props.updateSetting('disabled', true))}
             >
-              {Messages.POWERCORD_UPDATES_DISABLE}
+              {Messages.REPLUGGED_UPDATES_DISABLE}
             </Button>
           </>)}
       </div>
@@ -148,7 +148,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
       </div>}
 
       {disabledEntities.length > 0 && <Category
-        name={Messages.POWERCORD_UPDATES_DISABLED_SECTION}
+        name={Messages.REPLUGGED_UPDATES_DISABLED_SECTION}
         opened={this.state.opened}
         onChange={() => this.setState({ opened: !this.state.opened })}
       >
@@ -162,7 +162,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
             <div className='name'>{entity.name}</div>
             <div className='actions'>
               <Button color={Button.Colors.GREEN} onClick={() => this.plugin.enableUpdates(entity.id)}>
-                {Messages.POWERCORD_UPDATES_ENABLE}
+                {Messages.REPLUGGED_UPDATES_ENABLE}
               </Button>
             </div>
           </div>
@@ -173,48 +173,48 @@ module.exports = class UpdaterSettings extends React.PureComponent {
         <SwitchItem
           value={this.props.getSetting('automatic', false)}
           onChange={() => this.props.toggleSetting('automatic')}
-          note={Messages.POWERCORD_UPDATES_OPTS_AUTO_DESC}
+          note={Messages.REPLUGGED_UPDATES_OPTS_AUTO_DESC}
         >
-          {Messages.POWERCORD_UPDATES_OPTS_AUTO}
+          {Messages.REPLUGGED_UPDATES_OPTS_AUTO}
         </SwitchItem>
         <TextInput
-          note={Messages.POWERCORD_UPDATES_OPTS_INTERVAL_DESC}
+          note={Messages.REPLUGGED_UPDATES_OPTS_INTERVAL_DESC}
           onChange={val => this.props.updateSetting('interval', (Number(val) && Number(val) >= 10) ? Math.ceil(Number(val)) : 10, 15)}
           defaultValue={this.props.getSetting('interval', 15)}
           required={true}
         >
-          {Messages.POWERCORD_UPDATES_OPTS_INTERVAL}
+          {Messages.REPLUGGED_UPDATES_OPTS_INTERVAL}
         </TextInput>
         <TextInput
-          note={Messages.POWERCORD_UPDATES_OPTS_CONCURRENCY_DESC}
+          note={Messages.REPLUGGED_UPDATES_OPTS_CONCURRENCY_DESC}
           onChange={val => this.props.updateSetting('concurrency', (Number(val) && Number(val) >= 1) ? Math.ceil(Number(val)) : 1, 2)}
           defaultValue={this.props.getSetting('concurrency', 2)}
           required={true}
         >
-          {Messages.POWERCORD_UPDATES_OPTS_CONCURRENCY}
+          {Messages.REPLUGGED_UPDATES_OPTS_CONCURRENCY}
         </TextInput>
         <ButtonItem
-          note={Messages.POWERCORD_UPDATES_OPTS_CHANGE_LOGS_DESC}
-          button={Messages.POWERCORD_UPDATES_OPTS_CHANGE_LOGS}
+          note={Messages.REPLUGGED_UPDATES_OPTS_CHANGE_LOGS_DESC}
+          button={Messages.REPLUGGED_UPDATES_OPTS_CHANGE_LOGS}
           onClick={() => this.plugin.openChangeLogs()}
         >
-          {Messages.POWERCORD_UPDATES_OPTS_CHANGE_LOGS}
+          {Messages.REPLUGGED_UPDATES_OPTS_CHANGE_LOGS}
         </ButtonItem>
         {/* <ButtonItem
-          note={Messages.POWERCORD_UPDATES_OPTS_RELEASE_DESC}
+          note={Messages.REPLUGGED_UPDATES_OPTS_RELEASE_DESC}
           button={powercord.gitInfos.branch === 'v2'
-            ? Messages.POWERCORD_UPDATES_OPTS_RELEASE_DEVELOP_BTN
-            : Messages.POWERCORD_UPDATES_OPTS_RELEASE_STABLE_BTN}
+            ? Messages.REPLUGGED_UPDATES_OPTS_RELEASE_DEVELOP_BTN
+            : Messages.REPLUGGED_UPDATES_OPTS_RELEASE_STABLE_BTN}
           onClick={() => this.askChangeChannel(
             () => this.plugin.changeBranch(powercord.gitInfos.branch === 'v2' ? 'v2-dev' : 'v2')
           )}
         >
-          {Messages.POWERCORD_UPDATES_OPTS_RELEASE}
+          {Messages.REPLUGGED_UPDATES_OPTS_RELEASE}
         </ButtonItem> */}
 
         <Category
-          name={Messages.POWERCORD_UPDATES_OPTS_DEBUG}
-          description={Messages.POWERCORD_UPDATES_OPTS_DEBUG_DESC}
+          name={Messages.REPLUGGED_UPDATES_OPTS_DEBUG}
+          description={Messages.REPLUGGED_UPDATES_OPTS_DEBUG_DESC}
           opened={this.state.debugInfoOpened}
           onChange={() => this.setState({ debugInfoOpened: !this.state.debugInfoOpened })}
         >
@@ -227,7 +227,7 @@ module.exports = class UpdaterSettings extends React.PureComponent {
   // --- PARTS
   renderReload () {
     const body = <>
-      <p>{Messages.POWERCORD_UPDATES_AWAITING_RELOAD_DESC}</p>
+      <p>{Messages.REPLUGGED_UPDATES_AWAITING_RELOAD_DESC}</p>
       <Button
         size={Button.Sizes.SMALL}
         color={Button.Colors.YELLOW}
@@ -237,14 +237,14 @@ module.exports = class UpdaterSettings extends React.PureComponent {
         {Messages.ERRORS_RELOAD}
       </Button>
     </>;
-    return this._renderFormNotice(Messages.POWERCORD_UPDATES_AWAITING_RELOAD_TITLE, body);
+    return this._renderFormNotice(Messages.REPLUGGED_UPDATES_AWAITING_RELOAD_TITLE, body);
   }
 
   renderUnsupported () {
     const body = <p>
-      {Messages.POWERCORD_UPDATES_UNSUPPORTED_DESC.format({ releaseChannel: window.GLOBAL_ENV.RELEASE_CHANNEL })}
+      {Messages.REPLUGGED_UPDATES_UNSUPPORTED_DESC.format({ releaseChannel: window.GLOBAL_ENV.RELEASE_CHANNEL })}
     </p>;
-    return this._renderFormNotice(Messages.POWERCORD_UPDATES_UNSUPPORTED_TITLE, body);
+    return this._renderFormNotice(Messages.REPLUGGED_UPDATES_UNSUPPORTED_TITLE, body);
   }
 
   _renderFormNotice (title, body) {
@@ -263,36 +263,36 @@ module.exports = class UpdaterSettings extends React.PureComponent {
   // --- PROMPTS
   askSkipUpdate (callback) {
     this._ask(
-      Messages.POWERCORD_UPDATES_SKIP_MODAL_TITLE,
-      Messages.POWERCORD_UPDATES_SKIP_MODAL,
-      Messages.POWERCORD_UPDATES_SKIP,
+      Messages.REPLUGGED_UPDATES_SKIP_MODAL_TITLE,
+      Messages.REPLUGGED_UPDATES_SKIP_MODAL,
+      Messages.REPLUGGED_UPDATES_SKIP,
       callback
     );
   }
 
   askPauseUpdates () {
     this._ask(
-      Messages.POWERCORD_UPDATES_PAUSE,
-      Messages.POWERCORD_UPDATES_PAUSE_MODAL,
-      Messages.POWERCORD_UPDATES_PAUSE,
+      Messages.REPLUGGED_UPDATES_PAUSE,
+      Messages.REPLUGGED_UPDATES_PAUSE_MODAL,
+      Messages.REPLUGGED_UPDATES_PAUSE,
       () => this.props.updateSetting('paused', true)
     );
   }
 
   askDisableUpdates (all, callback) {
     this._ask(
-      Messages.POWERCORD_UPDATES_DISABLE,
-      all ? Messages.POWERCORD_UPDATES_DISABLE_MODAL_ALL : Messages.POWERCORD_UPDATES_DISABLE_MODAL,
-      Messages.POWERCORD_UPDATES_DISABLE,
+      Messages.REPLUGGED_UPDATES_DISABLE,
+      all ? Messages.REPLUGGED_UPDATES_DISABLE_MODAL_ALL : Messages.REPLUGGED_UPDATES_DISABLE_MODAL,
+      Messages.REPLUGGED_UPDATES_DISABLE,
       callback
     );
   }
 
   askChangeChannel (callback) {
     this._ask(
-      Messages.POWERCORD_UPDATES_OPTS_RELEASE_MODAL_HEADER,
-      Messages.POWERCORD_UPDATES_OPTS_RELEASE_MODAL,
-      Messages.POWERCORD_UPDATES_OPTS_RELEASE_SWITCH,
+      Messages.REPLUGGED_UPDATES_OPTS_RELEASE_MODAL_HEADER,
+      Messages.REPLUGGED_UPDATES_OPTS_RELEASE_MODAL,
+      Messages.REPLUGGED_UPDATES_OPTS_RELEASE_SWITCH,
       callback
     );
   }
