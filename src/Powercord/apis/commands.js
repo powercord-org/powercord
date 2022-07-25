@@ -12,7 +12,7 @@ const { API } = require('powercord/entities');
  */
 
 /**
- * Powercord chat commands API
+ * Replugged chat commands API
  * @property {Object.<String, PowercordChatCommand>} commands Registered commands
  */
 class CommandsAPI extends API {
@@ -23,7 +23,7 @@ class CommandsAPI extends API {
   }
 
   get prefix () {
-    return powercord.settings.get('prefix', '.');
+    return temp - replugged.settings.get('prefix', '.');
   }
 
   get find () {
@@ -53,7 +53,7 @@ class CommandsAPI extends API {
   registerCommand (command) {
     // @todo: remove this once there's a proper implemention (if any) for fetching the command origin.
     const stackTrace = (new Error()).stack;
-    const [ , origin ] = stackTrace.match(new RegExp(`${global._.escapeRegExp(powercord.pluginManager.pluginDir)}.([-\\w]+)`));
+    const [ , origin ] = stackTrace.match(new RegExp(`${global._.escapeRegExp(temp - replugged.pluginManager.pluginDir)}.([-\\w]+)`));
 
     if (typeof command === 'string') {
       console.error('no');

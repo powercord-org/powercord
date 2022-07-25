@@ -12,7 +12,7 @@ exports.inject = async ({ getAppDir }, platform) => {
      * @todo: prompt to automatically uninject and continue
      */
     console.log('Looks like you already have an injector in place. Try unplugging (`npm run unplug`) and try again.', '\n');
-    console.log(`${AnsiEscapes.YELLOW}NOTE:${AnsiEscapes.RESET} If you already have BetterDiscord or another client mod injected, Powercord cannot run along with it!`);
+    console.log(`${AnsiEscapes.YELLOW}NOTE:${AnsiEscapes.RESET} If you already have BetterDiscord or another client mod injected, Replugged cannot run along with it!`);
     console.log('Read our FAQ for more details: https://powercord.dev/faq#bd-and-pc');
     return false;
   }

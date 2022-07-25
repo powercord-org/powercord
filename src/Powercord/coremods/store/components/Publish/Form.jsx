@@ -7,7 +7,7 @@ module.exports = React.memo(
       <TextInput required>Product name</TextInput>
       <TextInput
         required
-        note={'In order for us to review your product you\'ll need to publish it to a GitHub repository. For plugins, once the review process is complete we\'ll ask you to publish it on the powercord-community GitHub org.'}
+        note={'In order for us to review your product you\'ll need to publish it to a GitHub repository. For plugins, once the review process is complete we\'ll ask you to publish it on the replugged-community GitHub org.'}
         maxLength={256}
       >
         Repository URL
@@ -24,7 +24,7 @@ module.exports = React.memo(
       >
         Notes
       </TextAreaInput>
-      <CheckboxInput>My product complies with <a href='https://powercord.dev/guidelines' target='_blank'>Powercord's Community Guidelines</a></CheckboxInput>
+      <CheckboxInput>My product complies with <a href='https://powercord.dev/guidelines' target='_blank'>Replugged's Community Guidelines</a></CheckboxInput>
     </>
   )
 );

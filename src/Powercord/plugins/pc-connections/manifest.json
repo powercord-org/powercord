@@ -1,7 +1,7 @@
 {
   "name": "Connections",
   "version": "1.0.0",
-  "description": "Powercord's connection renderer",
-  "author": "Powercord Team",
+  "description": "Replugged's connection renderer",
+  "author": "Replugged Team",
   "license": "MIT"
 }

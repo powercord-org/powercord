@@ -48,7 +48,7 @@ module.exports = class StyleManager {
         return this.__settings.disabledThemes || [];
       }
     }
-    return powercord.settings.get('disabledThemes', []);
+    return temp - replugged.settings.get('disabledThemes', []);
   }
 
   // Getters
@@ -73,7 +73,7 @@ module.exports = class StyleManager {
       throw new Error(`Tried to enable a non installed theme (${themeID})`);
     }
 
-    powercord.settings.set('disabledThemes', this.disabledThemes.filter(p => p !== themeID));
+    temp - replugged.settings.set('disabledThemes', this.disabledThemes.filter(p => p !== themeID));
     this.themes.get(themeID).apply();
   }
 
@@ -83,7 +83,7 @@ module.exports = class StyleManager {
       throw new Error(`Tried to disable a non installed theme (${themeID})`);
     }
 
-    powercord.settings.set('disabledThemes', [ ...this.disabledThemes, themeID ]);
+    temp - replugged.settings.set('disabledThemes', [ ...this.disabledThemes, themeID ]);
     this.themes.get(themeID).remove();
   }
 
@@ -105,14 +105,14 @@ module.exports = class StyleManager {
       manifest = require(manifestFile);
     } catch (e) {
       this._logError(ErrorTypes.MANIFEST_LOAD_FAILED, [ themeID ]);
-      console.error('%c[Powercord:StyleManager]', 'color: #7289da', 'Failed to load manifest', e);
+      console.error('%c[Replugged:StyleManager]', 'color: #7289da', 'Failed to load manifest', e);
       return;
     }
 
     const errors = this._validateManifest(manifest);
     if (errors.length > 0) {
       this._logError(ErrorTypes.INVALID_MANIFEST, [ themeID ]);
-      console.error('%c[Powercord:StyleManager]', 'color: #7289da', `Invalid manifest; Detected the following errors:\n\t${errors.join('\n\t')}`);
+      console.error('%c[Replugged:StyleManager]', 'color: #7289da', `Invalid manifest; Detected the following errors:\n\t${errors.join('\n\t')}`);
       return;
     }
 
@@ -123,7 +123,7 @@ module.exports = class StyleManager {
     } else if (!window.__OVERLAY__ && !window.__SPLASH__ && manifest.theme) {
       manifest.effectiveTheme = manifest.theme;
     } else {
-      return console.warn('%c[Powercord:StyleManager]', 'color: #7289da', `Theme "${themeID}" is not meant to run on that environment - Skipping`);
+      return console.warn('%c[Replugged:StyleManager]', 'color: #7289da', `Theme "${themeID}" is not meant to run on that environment - Skipping`);
     }
 
     manifest.effectiveTheme = join(this.themesDir, filename, manifest.effectiveTheme);
@@ -156,7 +156,7 @@ module.exports = class StyleManager {
     const files = readdirSync(this.themesDir);
     for (const filename of files) {
       if (filename.startsWith('.')) {
-        console.debug('%c[Powercord:StyleManager]', 'color: #7289da', 'Ignoring dotfile', filename);
+        console.debug('%c[Replugged:StyleManager]', 'color: #7289da', 'Ignoring dotfile', filename);
         continue;
       }
 
@@ -196,7 +196,7 @@ module.exports = class StyleManager {
 
     switch (errorType) {
       case ErrorTypes.NOT_A_DIRECTORY:
-        powercord.api.notices.sendToast('sm-invalid-theme', {
+        temp - replugged.api.notices.sendToast('sm-invalid-theme', {
           header: `Invalid theme: "${args[0]}" is a file`,
           content: 'This is most likely a mistake. Make sure all your theme files are in a subfolder.',
           type: 'danger',
@@ -217,7 +217,7 @@ module.exports = class StyleManager {
         });
         break;
       case ErrorTypes.MANIFEST_LOAD_FAILED:
-        powercord.api.notices.sendToast('sm-invalid-theme', {
+        temp - replugged.api.notices.sendToast('sm-invalid-theme', {
           header: `Failed to load manifest for "${args[0]}"`,
           content: 'This is probably due to a syntax error in the file. Check console for more details.',
           type: 'danger',
@@ -226,7 +226,7 @@ module.exports = class StyleManager {
               text: 'Open DevTools',
               color: 'green',
               look: 'ghost',
-              onClick: () => PowercordNative.openDevTools()
+              onClick: () => temp - RepluggedNative.openDevTools()
             },
             {
               text: 'Got it',
@@ -236,7 +236,7 @@ module.exports = class StyleManager {
         });
         break;
       case ErrorTypes.INVALID_MANIFEST:
-        powercord.api.notices.sendToast('sm-invalid-theme', {
+        temp - replugged.api.notices.sendToast('sm-invalid-theme', {
           header: `Invalid manifest for "${args[0]}"`,
           content: 'Check the console for more details.',
           type: 'danger',
@@ -245,7 +245,7 @@ module.exports = class StyleManager {
               text: 'Open DevTools',
               color: 'green',
               look: 'ghost',
-              onClick: () => PowercordNative.openDevTools()
+              onClick: () => temp - RepluggedNative.openDevTools()
             },
             {
               text: 'Got it',

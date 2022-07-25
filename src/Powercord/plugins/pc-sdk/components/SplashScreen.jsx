@@ -106,7 +106,7 @@ class SplashScreen extends React.PureComponent {
       }
     };
 
-    // this._window = PowercordNative.openBrowserWindow(windowSettings);
+    // this._window = powercordNative.openBrowserWindow(windowSettings);
     this._window = new BrowserWindow(windowSettings);
     this._window.loadURL(splashIndex);
     this._window.webContents.openDevTools({ mode: 'detach' });

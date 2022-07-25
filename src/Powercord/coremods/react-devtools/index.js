@@ -42,6 +42,6 @@ async function download () {
 let id;
 module.exports = () => {
   return () => void 0;
-  // download().then(() => PowercordNative.installExtension(RDT_PATH)).then(eid => id = eid);
-  // return () => id && PowercordNative.uninstallExtension(id);
+  // download().then(() => powercordNative.installExtension(RDT_PATH)).then(eid => id = eid);
+  // return () => id && powercordNative.uninstallExtension(id);
 };

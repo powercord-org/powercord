@@ -31,7 +31,7 @@ module.exports = class GeneralSettings extends React.Component {
           defaultValue={getSetting('prefix', '.')}
           onChange={p => updateSetting('prefix', !p ? '.' : p.replace(/\s+(?=\S)|(?<=\s)\s+/g, '').toLowerCase())}
           onBlur={({ target }) => target.value = getSetting('prefix', '.')}
-          error={getSetting('prefix', '.') === '/' ? 'Prefix should not be set to `/` as it is already in use by Discord and may disable Powercord autocompletions.' : ''}
+          error={getSetting('prefix', '.') === '/' ? 'Prefix should not be set to `/` as it is already in use by Discord and may disable Replugged autocompletions.' : ''}
         >
           {Messages.REPLUGGED_COMMAND_PREFIX}
         </TextInput>
@@ -64,11 +64,11 @@ module.exports = class GeneralSettings extends React.Component {
           </SwitchItem>
           {powercord.api.labs.isExperimentEnabled('pc-sdk')
             ? <SwitchItem
-              note={'Powercord\'s SDK is a toolkit made to make plugin and theme developer\'s life easier. Once enabled, you can access it through the icon at the top right hand corner of Discord.'}
+              note={'Replugged\'s SDK is a toolkit made to make plugin and theme developer\'s life easier. Once enabled, you can access it through the icon at the top right hand corner of Discord.'}
               value={getSetting('sdkEnabled', false)}
               onChange={() => toggleSetting('sdkEnabled')}
             >
-              Enable Powercord SDK
+              Enable Replugged SDK
             </SwitchItem>
             : <SwitchItem
               note={Messages.REPLUGGED_SETTINGS_OVERLAY_DESC}
@@ -128,12 +128,12 @@ module.exports = class GeneralSettings extends React.Component {
           </TextInput>
         </Category>
         <ButtonItem
-          note={Messages.REPLUGGED_SETTINGS_CACHE_POWERCORD_DESC}
-          button={this.state.powercordCleared ? Messages.REPLUGGED_SETTINGS_CACHE_CLEARED : Messages.REPLUGGED_SETTINGS_CACHE_POWERCORD}
+          note={Messages.REPLUGGED_SETTINGS_CACHE_REPLUGGED_DESC}
+          button={this.state.powercordCleared ? Messages.REPLUGGED_SETTINGS_CACHE_CLEARED : Messages.REPLUGGED_SETTINGS_CACHE_REPLUGGED}
           success={this.state.powercordCleared}
           onClick={() => this.clearPowercordCache()}
         >
-          {Messages.REPLUGGED_SETTINGS_CACHE_POWERCORD}
+          {Messages.REPLUGGED_SETTINGS_CACHE_REPLUGGED}
         </ButtonItem>
         <ButtonItem
           note={Messages.REPLUGGED_SETTINGS_CACHE_DISCORD_DESC}
@@ -162,7 +162,7 @@ module.exports = class GeneralSettings extends React.Component {
 
   clearDiscordCache () {
     this.setState({ discordCleared: true });
-    PowercordNative.clearCache().then(() => {
+    temp - RepluggedNative.clearCache().then(() => {
       setTimeout(() => {
         this.setState({ discordCleared: false });
       }, 2500);

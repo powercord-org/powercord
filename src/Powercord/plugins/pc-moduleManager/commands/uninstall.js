@@ -64,7 +64,7 @@ module.exports = {
     }
 
     return {
-      header: 'powercord entities list',
+      header: 'replugged entities list',
       commands: [
         ...plugins.map(plugin => ({
           command: plugin.entityID,

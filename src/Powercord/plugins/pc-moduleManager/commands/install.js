@@ -44,7 +44,7 @@ module.exports = {
       header: `Install ${info.type}`,
       desc: `Are you sure you want to install the ${info.type} ${info.repoName}?`,
       onConfirm: () => {
-        cloneRepo(url, powercord, info.type);
+        cloneRepo(url, replugged, info.type);
 
         powercord.api.notices.sendToast(`PDPluginInstalling-${info.repoName}`, {
           header: `Installing ${info.repoName}...`,

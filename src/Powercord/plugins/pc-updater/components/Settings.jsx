@@ -13,7 +13,7 @@ const Update = require('./Update');
 module.exports = class UpdaterSettings extends React.PureComponent {
   constructor () {
     super();
-    this.plugin = powercord.pluginManager.get('pc-updater');
+    this.plugin = temp - replugged.pluginManager.get('pc-updater');
     this.state = {
       opened: false,
       copied: false
@@ -83,15 +83,15 @@ module.exports = class UpdaterSettings extends React.PureComponent {
         <div className="about">
           <div>
             <span>{Messages.REPLUGGED_UPDATES_UPSTREAM}</span>
-            <span>{powercord.gitInfos.upstream.replace(REPO_URL, Messages.REPLUGGED_UPDATES_UPSTREAM_OFFICIAL)}</span>
+            <span>{temp - replugged.gitInfos.upstream.replace(REPO_URL, Messages.REPLUGGED_UPDATES_UPSTREAM_OFFICIAL)}</span>
           </div>
           <div>
             <span>{Messages.REPLUGGED_UPDATES_REVISION}</span>
-            <span>{powercord.gitInfos.revision.substring(0, 7)}</span>
+            <span>{temp - replugged.gitInfos.revision.substring(0, 7)}</span>
           </div>
           <div>
             <span>{Messages.REPLUGGED_UPDATES_BRANCH}</span>
-            <span>{powercord.gitInfos.branch}</span>
+            <span>{temp - replugged.gitInfos.branch}</span>
           </div>
         </div>
       </div>
@@ -315,13 +315,13 @@ module.exports = class UpdaterSettings extends React.PureComponent {
     const { getRegisteredExperiments, getExperimentOverrides } = getModule([ 'initialize', 'getExperimentOverrides' ], false);
     const { apiManager: { apis }, api: { commands: { commands }, settings: { store: settingsStore } } } = powercord;
     const superProperties = getModule([ 'getSuperPropertiesBase64' ], false).getSuperProperties();
-    const unauthorizedPlugins = Array.from(powercord.pluginManager.plugins.values()).filter(plugin =>
+    const unauthorizedPlugins = Array.from(temp - replugged.pluginManager.plugins.values()).filter(plugin =>
       plugin.__shortCircuit).map(plugin => plugin.manifest.name);
-    const plugins = powercord.pluginManager.getPlugins().filter(plugin =>
-      !powercord.pluginManager.get(plugin).isInternal && powercord.pluginManager.isEnabled(plugin)
+    const plugins = temp - replugged.pluginManager.getPlugins().filter(plugin =>
+      !temp - replugged.pluginManager.get(plugin).isInternal && temp - replugged.pluginManager.isEnabled(plugin)
     );
 
-    const enabledLabs = powercord.api.labs.experiments.filter(e => powercord.api.labs.isExperimentEnabled(e.id));
+    const enabledLabs = temp - replugged.api.labs.experiments.filter(e => temp - replugged.api.labs.isExperimentEnabled(e.id));
     const experimentOverrides = Object.keys(getExperimentOverrides()).length;
     const availableExperiments = Object.keys(getRegisteredExperiments()).length;
 
@@ -377,42 +377,42 @@ module.exports = class UpdaterSettings extends React.PureComponent {
             )}
           </div>
 
-          <b>Powercord </b>
+          <b>Replugged </b>
           <div className='row'>
             <div className='column'>Commands:&#10;{Object.keys(commands).length}</div>
             <div className='column'>Settings:&#10;{Object.keys(settingsStore.getAllSettings()).length}</div>
-            <div className='column'>Plugins:&#10;{powercord.pluginManager.getPlugins()
-              .filter(plugin => powercord.pluginManager.isEnabled(plugin)).length} / {powercord.pluginManager.plugins.size}
+            <div className='column'>Plugins:&#10;{temp - replugged.pluginManager.getPlugins()
+              .filter(plugin => temp - replugged.pluginManager.isEnabled(plugin)).length} / {temp - replugged.pluginManager.plugins.size}
             </div>
-            <div className='column'>Themes:&#10;{powercord.styleManager.getThemes()
-              .filter(theme => powercord.styleManager.isEnabled(theme)).length} / {powercord.styleManager.themes.size}
+            <div className='column'>Themes:&#10;{temp - replugged.styleManager.getThemes()
+              .filter(theme => temp - replugged.styleManager.isEnabled(theme)).length} / {temp - replugged.styleManager.themes.size}
             </div>
-            <div className='column'>Labs:&#10;{enabledLabs.length} / {powercord.api.labs.experiments.length}
+            <div className='column'>Labs:&#10;{enabledLabs.length} / {temp - replugged.api.labs.experiments.length}
             </div>
-            <div className='column'>{`Settings Sync:\n${powercord.settings.get('settingsSync', false)}`}</div>
+            <div className='column'>{`Settings Sync:\n${temp - replugged.settings.get('settingsSync', false)}`}</div>
             <div className='column'>Cached Files:&#10;{cachedFiles}</div>
-            <div className='column'>{`Account:\n${!!powercord.account}`}</div>
+            <div className='column'>{`Account:\n${!!temp - replugged.account}`}</div>
             <div className='column'>APIs:&#10;{apis.length}</div>
           </div>
 
           <b>Git </b>
           <div className='row'>
-            <div className='column'>Upstream:&#10;{powercord.gitInfos.upstream.replace(REPO_URL, 'Official')}</div>
+            <div className='column'>Upstream:&#10;{temp - replugged.gitInfos.upstream.replace(REPO_URL, 'Official')}</div>
             <div className='column'>Revision:&#10;
               <a
-                href={`https://github.com/${powercord.gitInfos.upstream}/commit/${powercord.gitInfos.revision}`}
+                href={`https://github.com/${temp - replugged.gitInfos.upstream}/commit/${temp - replugged.gitInfos.revision}`}
                 target='_blank'
               >
-                [{powercord.gitInfos.revision.substring(0, 7)}]
+                [{temp - replugged.gitInfos.revision.substring(0, 7)}]
               </a>
             </div>
-            <div className='column'>Branch:&#10;{powercord.gitInfos.branch}</div>
+            <div className='column'>Branch:&#10;{temp - replugged.gitInfos.branch}</div>
             <div className='column'>{`Latest:\n${!this.props.getSetting('updates', []).find(update => update.id === 'powercord')}`}</div>
           </div>
 
           <b>Listings </b>
           <div className='row'>
-            {createPathReveal('Powercord Path', powercord.basePath)}
+            {createPathReveal('Replugged Path', temp - replugged.basePath)}
             {createPathReveal('Discord Path', discordPath)}
             <div className='full-column'>Experiments:&#10;{experimentOverrides > 0 ? Object.keys(getExperimentOverrides()).join(', ') : 'n/a'}</div>
             <div className='full-column'>Labs:&#10;

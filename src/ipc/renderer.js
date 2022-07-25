@@ -6,7 +6,7 @@ if (!ipcRenderer) {
   throw new Error('Don\'t require stuff you shouldn\'t silly.');
 }
 
-global.PowercordNative = {
+global.powercordNative = {
   /**
    * Open DevTools for the current window
    * @param {object} opts Options to pass to Electron
@@ -39,7 +39,7 @@ global.PowercordNative = {
     return ipcRenderer.invoke('POWERCORD_COMPILE_MF_SASS', file);
   },
 
-  exec(...args) {
+  exec (...args) {
     return ipcRenderer.invoke('POWERCORD_EXEC_COMMAND', ...args);
   }
 };

@@ -59,7 +59,7 @@ module.exports = class Notices extends Plugin {
   _welcomeNewUser () {
     powercord.api.notices.sendAnnouncement('pc-first-welcome', {
       color: 'green',
-      message: 'Welcome! Powercord has been successfully injected into your Discord client. Feel free to join our Discord server for announcements, support and more!',
+      message: 'Welcome! Replugged has been successfully injected into your Discord client. Feel free to join our Discord server for announcements, support and more!',
       button: {
         text: 'Join Server',
         onClick: async () => {
@@ -85,7 +85,7 @@ module.exports = class Notices extends Plugin {
   _unsupportedBuild () {
     powercord.api.notices.sendAnnouncement('pc-unsupported-build', {
       color: 'orange',
-      message: `Powercord does not support the ${window.GLOBAL_ENV.RELEASE_CHANNEL} release of Discord. Please use Canary for best results.`
+      message: `Replugged does not support the ${window.GLOBAL_ENV.RELEASE_CHANNEL} release of Discord. Please use Canary for best results.`
     });
   }
 };

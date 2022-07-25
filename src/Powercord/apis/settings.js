@@ -22,7 +22,7 @@ const actions = require('./settingsStore/actions');
  */
 
 /**
- * Powercord Settings API
+ * Replugged Settings API
  * @property {Flux.Store} store Flux store
  * @property {Object.<String, SettingsTab>} tabs Settings tab
  */

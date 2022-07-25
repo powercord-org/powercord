@@ -10,12 +10,12 @@ module.exports = async function monkeypatchMessages () {
   BOT_AVATARS.powercord = 'https://cdn.discordapp.com/attachments/552938674837258242/742181722254475424/powercord.png';
 
   messages.sendMessage = (sendMessage => async (id, message, ...params) => {
-    if (!message.content.startsWith(powercord.api.commands.prefix)) {
+    if (!message.content.startsWith(temp - replugged.api.commands.prefix)) {
       return sendMessage(id, message, ...params).catch(() => void 0);
     }
 
-    const [ cmd, ...args ] = message.content.slice(powercord.api.commands.prefix.length).split(' ');
-    const command = powercord.api.commands.find(c => [ c.command.toLowerCase(), ...(c.aliases?.map(alias => alias.toLowerCase()) || []) ].includes(cmd.toLowerCase()));
+    const [ cmd, ...args ] = message.content.slice(temp - replugged.api.commands.prefix.length).split(' ');
+    const command = temp - replugged.api.commands.find(c => [ c.command.toLowerCase(), ...(c.aliases?.map(alias => alias.toLowerCase()) || []) ].includes(cmd.toLowerCase()));
     if (!command) {
       return sendMessage(id, message, ...params).catch(() => void 0);
     }
@@ -44,11 +44,11 @@ module.exports = async function monkeypatchMessages () {
         content: ''
       });
 
-      if (powercord.settings.get('replaceClyde', true)) {
+      if (temp - replugged.settings.get('replaceClyde', true)) {
         // noinspection JSPrimitiveTypeWrapperUsage
-        receivedMessage.author.username = result.username || 'Powercord';
+        receivedMessage.author.username = result.username || 'Replugged';
         // noinspection JSPrimitiveTypeWrapperUsage
-        receivedMessage.author.avatar = 'powercord';
+        receivedMessage.author.avatar = 'replugged';
 
         if (result.avatar_url) {
           BOT_AVATARS[result.username] = result.avatar_url;

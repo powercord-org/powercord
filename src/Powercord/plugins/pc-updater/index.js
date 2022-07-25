@@ -26,7 +26,7 @@ module.exports = class Updater extends Plugin {
     this.settings.set('checking_progress', null);
 
     this.loadStylesheet('style.scss');
-    powercord.api.settings.registerSettings('pc-updater', {
+    temp - replugged.api.settings.registerSettings('pc-updater', {
       category: this.entityID,
       label: 'Updater', // Note to self: add this string to i18n last :^)
       render: Settings
@@ -50,7 +50,7 @@ module.exports = class Updater extends Plugin {
   }
 
   pluginWillUnload () {
-    powercord.api.settings.unregisterSettings('pc-updater');
+    temp - replugged.api.settings.unregisterSettings('pc-updater');
     clearInterval(this._interval);
   }
 
@@ -68,11 +68,11 @@ module.exports = class Updater extends Plugin {
     this.settings.set('checking_progress', [ 0, 0 ]);
     const disabled = this.settings.get('entities_disabled', []).map(e => e.id);
     const skipped = this.settings.get('entities_skipped', []);
-    const plugins = [ ...powercord.pluginManager.plugins.values() ].filter(p => !p.isInternal);
-    const themes = [ ...powercord.styleManager.themes.values() ];
+    const plugins = [ ...temp - replugged.pluginManager.plugins.values() ].filter(p => !p.isInternal);
+    const themes = [ ...temp - replugged.styleManager.themes.values() ];
 
     const entities = plugins.concat(themes).filter(e => !disabled.includes(e.updateIdentifier) && e.isUpdatable());
-    if (!disabled.includes(powercord.updateIdentifier)) {
+    if (!disabled.includes(temp - replugged.updateIdentifier)) {
       entities.push(powercord);
     }
 
@@ -94,8 +94,8 @@ module.exports = class Updater extends Plugin {
               }
               updates.push({
                 id: entity.updateIdentifier,
-                name: entity.manifest?.name ?? 'Powercord',
-                icon: entity.constructor.name === 'Theme' || entity.constructor.name === 'Powercord'
+                name: entity.manifest?.name ?? 'Replugged',
+                icon: entity.constructor.name === 'Theme' || entity.constructor.name === 'Replugged'
                   ? entity.constructor.name
                   : 'Plugin',
                 commits,
@@ -104,7 +104,7 @@ module.exports = class Updater extends Plugin {
             }
           }
         } catch (e) {
-          console.error('An error occurred while checking for updates for %s', entity.manifest?.name ?? 'Powercord', e);
+          console.error('An error occurred while checking for updates for %s', entity.manifest?.name ?? 'Replugged', e);
         } finally {
           this.settings.set('checking_progress', [ ++done, entitiesLength ]);
         }
@@ -118,7 +118,7 @@ module.exports = class Updater extends Plugin {
       if (this.settings.get('automatic', false)) {
         this.doUpdate();
       } else if (!document.querySelector('#powercord-updater, .powercord-updater')) {
-        powercord.api.notices.sendToast('powercord-updater', {
+        temp - replugged.api.notices.sendToast('powercord-updater', {
           header: Messages.REPLUGGED_UPDATES_TOAST_AVAILABLE_HEADER,
           content: Messages.REPLUGGED_UPDATES_TOAST_AVAILABLE_DESC,
           icon: 'wrench',
@@ -149,9 +149,9 @@ module.exports = class Updater extends Plugin {
     for (const update of [ ...updates ]) {
       let entity = powercord;
       if (update.id.startsWith('plugin')) {
-        entity = powercord.pluginManager.get(update.id.replace('plugins_', ''));
+        entity = temp - replugged.pluginManager.get(update.id.replace('plugins_', ''));
       } else if (update.id.startsWith('theme')) {
-        entity = powercord.styleManager.get(update.id.replace('themes_', ''));
+        entity = temp - replugged.styleManager.get(update.id.replace('themes_', ''));
       }
 
       const success = await entity._update(force);
@@ -167,7 +167,7 @@ module.exports = class Updater extends Plugin {
       this.settings.set('failed', true);
       this.settings.set('updates', failed);
       if (!document.querySelector('#powercord-updater, .powercord-updater')) {
-        powercord.api.notices.sendToast('powercord-updater', {
+        temp - replugged.api.notices.sendToast('powercord-updater', {
           header: Messages.REPLUGGED_UPDATES_TOAST_FAILED,
           type: 'danger',
           buttons: [ {
@@ -243,7 +243,7 @@ module.exports = class Updater extends Plugin {
   }
 
   async getGitInfos () {
-    const branch = await PowercordNative.exec('git branch', this.cwd)
+    const branch = await temp - RepluggedNative.exec('git branch', this.cwd)
       .then(({ stdout }) =>
         stdout
           .toString()
@@ -253,10 +253,10 @@ module.exports = class Updater extends Plugin {
           .trim()
       );
 
-    const revision = await PowercordNative.exec(`git rev-parse ${branch}`, this.cwd)
+    const revision = await temp - RepluggedNative.exec(`git rev-parse ${branch}`, this.cwd)
       .then(r => r.stdout.toString().trim());
 
-    const upstream = await PowercordNative.exec('git remote get-url origin', this.cwd)
+    const upstream = await temp - RepluggedNative.exec('git remote get-url origin', this.cwd)
       .then(r => r.stdout.toString().match(/github\.com[:/]([\w-_]+\/[\w-_]+)/)[1]);
 
     return {
@@ -267,8 +267,8 @@ module.exports = class Updater extends Plugin {
   }
 
   async changeBranch (branch) {
-    await PowercordNative.exec('git fetch origin +v2:v2', this.cwd);
-    await PowercordNative.exec(`git checkout ${branch}`, this.cwd);
+    await temp - RepluggedNative.exec('git fetch origin +v2:v2', this.cwd);
+    await temp - RepluggedNative.exec(`git checkout ${branch}`, this.cwd);
     // location.reload();
   }
 
@@ -299,7 +299,7 @@ module.exports = class Updater extends Plugin {
 
         renderNewHeader () {
           const header = this.oldRenderHeader();
-          header.props.children[0].props.children = `Powercord - ${header.props.children[0].props.children}`;
+          header.props.children[0].props.children = `Replugged - ${header.props.children[0].props.children}`;
           return header;
         }
 

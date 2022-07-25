@@ -12,7 +12,7 @@ const PatchedBrowserWindow = require('./browserWindow');
 
 require('./ipc/main');
 
-console.log('Hello from Powercord!');
+console.log('Hello from Replugged!');
 
 let _patched = false;
 const appSetAppUserModelId = electron.app.setAppUserModelId;

@@ -18,7 +18,7 @@ module.exports = React.memo(
           </>
           : <>
             <div className={`${size16} ${marginBottom20}`}>
-              You're almost ready for next step. Before you can continue, you'll need to link your Powercord account to Discord.
+              You're almost ready for next step. Before you can continue, you'll need to link your Replugged account to Discord.
             </div>
             <Button onClick={() => getModule([ 'open', 'saveAccountChanges' ], false).open('pc-general')}>Go to settings</Button>
           </>}

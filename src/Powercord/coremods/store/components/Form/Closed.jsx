@@ -13,7 +13,7 @@ const Banned = React.memo(
         <GatedContent
           imageClassName={ageGatedImage}
           title={'Sorry not sorry, you\'ve been banned'}
-          description={'Powercord Staff banned you from submitting this form due to abuse. To appeal the ban, please join our support server, and ask for help in #misc-support.'}
+          description={'Replugged Staff banned you from submitting this form due to abuse. To appeal the ban, please join our support server, and ask for help in #misc-support.'}
           onAgree={() => window.history.back()}
           onDisagree={() => gotoOrJoinServer(DISCORD_INVITE, SUPPORT_MISC)}
           disagreement='Support Server'
