@@ -6,8 +6,8 @@ module.exports = async function monkeypatchMessages () {
   const { BOT_AVATARS } = await getModule([ 'BOT_AVATARS' ]);
   const { createBotMessage } = await getModule([ 'createBotMessage' ]);
 
-  // create a new `BOT_AVATARS` key called "powercord" which we'll later use to replace Clyde. >:D
-  BOT_AVATARS.powercord = 'https://cdn.discordapp.com/attachments/552938674837258242/742181722254475424/powercord.png';
+  // create a new `BOT_AVATARS` key called "replugged" which we'll later use to replace Clyde. >:D
+  BOT_AVATARS.replugged = 'https://cdn.discordapp.com/icons/1000926524452647132/97617aed9d2613abd4f32f3f0aef695c.png?size=1024';
 
   messages.sendMessage = (sendMessage => async (id, message, ...params) => {
     if (!message.content.startsWith(powercord.api.commands.prefix)) {
