@@ -28,7 +28,7 @@ class Base extends React.Component {
 
   renderHeader () {
     return (
-      <span>{Messages[`POWERCORD_${this.state.key}_INSTALLED`]}</span>
+      <span>{Messages[`REPLUGGED_${this.state.key}_INSTALLED`]}</span>
     );
   }
 
@@ -36,9 +36,9 @@ class Base extends React.Component {
     return (
       <div className='buttons'>
         {powercord.api.labs.isExperimentEnabled('pc-moduleManager-store')
-          ? <Button onClick={() => this.goToStore()}>{Messages[`POWERCORD_${this.state.key}_EXPLORE`]}</Button>
+          ? <Button onClick={() => this.goToStore()}>{Messages[`REPLUGGED_${this.state.key}_EXPLORE`]}</Button>
           : <Tooltip text={Messages.APPLICATION_STORE_COMING_SOON}>
-            <Button disabled>{Messages[`POWERCORD_${this.state.key}_EXPLORE`]}</Button>
+            <Button disabled>{Messages[`REPLUGGED_${this.state.key}_EXPLORE`]}</Button>
           </Tooltip>}
         <Overflow onClick={e => this.openOverflowMenu(e)} onContextMenu={e => this.openOverflowMenu(e)}/>
       </div>
@@ -67,9 +67,9 @@ class Base extends React.Component {
         <TextInput
           value={this.state.search}
           onChange={search => this.setState({ search })}
-          placeholder={Messages.POWERCORD_PRODUCT_LOOKING}
+          placeholder={Messages.REPLUGGED_PRODUCT_LOOKING}
         >
-          {Messages[`POWERCORD_${this.state.key}_SEARCH`]}
+          {Messages[`REPLUGGED_${this.state.key}_SEARCH`]}
         </TextInput>
       </div>
     );
@@ -90,12 +90,12 @@ class Base extends React.Component {
         itemGroups: [ [
           {
             type: 'button',
-            name: Messages[`POWERCORD_${this.state.key}_OPEN_FOLDER`],
+            name: Messages[`REPLUGGED_${this.state.key}_OPEN_FOLDER`],
             onClick: () => shell.openPath(join(__dirname, '..', '..', '..', '..', this.constructor.name.toLowerCase()))
           },
           {
             type: 'button',
-            name: Messages[`POWERCORD_${this.state.key}_LOAD_MISSING`],
+            name: Messages[`REPLUGGED_${this.state.key}_LOAD_MISSING`],
             onClick: () => this.fetchMissing()
           }
         ] ]

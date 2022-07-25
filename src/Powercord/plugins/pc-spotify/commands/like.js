@@ -9,7 +9,7 @@ module.exports = {
     if (!powercord.account || !powercord.account.accounts.spotify) {
       return {
         send: false,
-        result: 'You need a Powercord account and connected Spotify account to use this feature!'
+        result: 'You need a Replugged account and connected Spotify account to use this feature!'
       };
     }
     const currentTrack = playerStore.getCurrentTrack();

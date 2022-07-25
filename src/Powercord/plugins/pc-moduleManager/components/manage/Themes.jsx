@@ -40,7 +40,7 @@ class Themes extends Base {
               {Messages.MANAGE_USER_SHORTHAND}
             </TabBar.Item>
             <TabBar.Item className={item} selectedItem={this.state.tab} id='QUICK_CSS'>
-              {Messages.POWERCORD_QUICKCSS}
+              {Messages.REPLUGGED_QUICKCSS}
             </TabBar.Item>
           </TabBar>
         </div>
@@ -87,8 +87,8 @@ class Themes extends Base {
     openModal(() => (
       <Confirm
         red
-        header={Messages.POWERCORD_THEMES_UNINSTALL}
-        confirmText={Messages.POWERCORD_THEMES_UNINSTALL}
+        header={Messages.REPLUGGED_THEMES_UNINSTALL}
+        confirmText={Messages.REPLUGGED_THEMES_UNINSTALL}
         cancelText={Messages.CANCEL}
         onCancel={closeModal}
         onConfirm={async () => {
@@ -104,7 +104,7 @@ class Themes extends Base {
         }}
       >
         <div className='powercord-products-modal'>
-          <span>{Messages.POWERCORD_THEMES_UNINSTALL_SURE}</span>
+          <span>{Messages.REPLUGGED_THEMES_UNINSTALL_SURE}</span>
           <ul>
             {themes.map(p => <li key={p}>{powercord.styleManager.get(p)?.manifest?.name}</li>)}
           </ul>

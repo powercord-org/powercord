@@ -33,7 +33,7 @@ let coremods;
  */
 
 /**
- * Main Powercord class
+ * Main Replugged class
  * @type {Powercord}
  * @property {PowercordAPI} api
  * @property {StyleManager} styleManager
@@ -68,7 +68,7 @@ class Powercord extends Updatable {
     }
   }
 
-  // Powercord initialization
+  // Replugged initialization
   async init () {
     const isOverlay = (/overlay/).test(location.pathname);
     if (isOverlay) { // eh
@@ -106,7 +106,7 @@ class Powercord extends Updatable {
     this.emit('loaded');
   }
 
-  // Powercord startup
+  // Replugged startup
   async startup () {
     // APIs
     await this.apiManager.startAPIs();
@@ -124,7 +124,7 @@ class Powercord extends Updatable {
     this.initialized = true;
   }
 
-  // Powercord shutdown
+  // Replugged shutdown
   async shutdown () {
     this.initialized = false;
     // Plugins
@@ -179,7 +179,7 @@ class Powercord extends Updatable {
     const token = this.settings.get('powercordToken', null);
     if (token) {
       const baseUrl = this.settings.get('backendURL', WEBSITE);
-      console.debug('%c[Powercord]', 'color: #7289da', 'Logging in to your account...');
+      console.debug('%c[Replugged]', 'color: #7289da', 'Logging in to your account...');
 
       const resp = await get(`${baseUrl}/api/v2/users/@me`)
         .set('Authorization', token)
@@ -189,7 +189,7 @@ class Powercord extends Updatable {
         if (!resp.body.error && resp.body.error !== 'DISCORD_REVOKED') {
           powercord.api.notices.sendAnnouncement('pc-account-discord-unlinked', {
             color: 'red',
-            message: 'Your Powercord account is no longer linked to your Discord account! Some integrations will be disabled.',
+            message: 'Your Replugged account is no longer linked to your Discord account! Some integrations will be disabled.',
             button: {
               text: 'Link it back',
               onClick: () => openExternal(`${WEBSITE}/api/v2/oauth/discord`)
@@ -202,11 +202,11 @@ class Powercord extends Updatable {
         this.settings.set('powercordToken', null);
         this.account = null;
         this.isLinking = false;
-        return console.error('%c[Powercord]', 'color: #7289da', 'Unable to fetch your account (Invalid token). Removed token from config');
+        return console.error('%c[Replugged]', 'color: #7289da', 'Unable to fetch your account (Invalid token). Removed token from config');
       } else if (resp.statusCode !== 200) {
         this.account = null;
         this.isLinking = false;
-        return console.error('%c[Powercord]', 'color: #7289da', `An error occurred while fetching your account: ${resp.statusCode} - ${resp.statusText}`, resp.body);
+        return console.error('%c[Replugged]', 'color: #7289da', `An error occurred while fetching your account: ${resp.statusCode} - ${resp.statusText}`, resp.body);
       }
 
       this.account = resp.body;
@@ -214,7 +214,7 @@ class Powercord extends Updatable {
     } else {
       this.account = null;
     }
-    console.debug('%c[Powercord]', 'color: #7289da', 'Logged in!');
+    console.debug('%c[Replugged]', 'color: #7289da', 'Logged in!');
     this.isLinking = false;
   }
 
@@ -226,7 +226,7 @@ class Powercord extends Updatable {
       if (!document.querySelector('#powercord-updater, .powercord-updater')) {
         powercord.api.notices.sendToast('powercord-updater', {
           header: 'Update complete!',
-          content: 'Please click "Reload" to complete the final stages of this Powercord update.',
+          content: 'Please click "Reload" to complete the final stages of this Replugged update.',
           type: 'success',
           buttons: [ {
             text: 'Reload',

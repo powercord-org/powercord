@@ -17,7 +17,7 @@ class Labs extends React.Component {
         }}
         type={FormNotice.Types.DANGER}
         title='Experiments ahead!'
-        body={<>Any feature you see here is under development and is likely to be unfinished and/or broken. Powercord
+        body={<>Any feature you see here is under development and is likely to be unfinished and/or broken. Replugged
           Staff will <b>NOT</b> provide any support, explain, or accept any bug report or suggestion for those. They
           are provided as-is and there's a 50% chance devs will yell at you for using them and say your cat is
           fat. <b>Use them at your own risk</b>.</>}

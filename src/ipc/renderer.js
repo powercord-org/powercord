@@ -39,7 +39,7 @@ global.PowercordNative = {
     return ipcRenderer.invoke('POWERCORD_COMPILE_MF_SASS', file);
   },
 
-  exec(...args) {
+  exec (...args) {
     return ipcRenderer.invoke('POWERCORD_EXEC_COMMAND', ...args);
   }
 };

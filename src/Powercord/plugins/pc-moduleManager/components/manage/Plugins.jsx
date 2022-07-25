@@ -53,11 +53,11 @@ class Plugins extends Base {
     }
 
     const title = enabled
-      ? Messages.POWERCORD_PLUGINS_ENABLE
-      : Messages.POWERCORD_PLUGINS_DISABLE;
+      ? Messages.REPLUGGED_PLUGINS_ENABLE
+      : Messages.REPLUGGED_PLUGINS_DISABLE;
     const note = enabled
-      ? Messages.POWERCORD_PLUGINS_ENABLE_NOTE
-      : Messages.POWERCORD_PLUGINS_DISABLE_NOTE;
+      ? Messages.REPLUGGED_PLUGINS_ENABLE_NOTE
+      : Messages.REPLUGGED_PLUGINS_DISABLE_NOTE;
     openModal(() => (
       <Confirm
         red={!enabled}
@@ -86,8 +86,8 @@ class Plugins extends Base {
     openModal(() => (
       <Confirm
         red
-        header={Messages.POWERCORD_PLUGINS_UNINSTALL.format({ pluginCount: plugins.length })}
-        confirmText={Messages.POWERCORD_PLUGINS_UNINSTALL.format({ pluginCount: plugins.length })}
+        header={Messages.REPLUGGED_PLUGINS_UNINSTALL.format({ pluginCount: plugins.length })}
+        confirmText={Messages.REPLUGGED_PLUGINS_UNINSTALL.format({ pluginCount: plugins.length })}
         cancelText={Messages.CANCEL}
         onCancel={closeModal}
         onConfirm={async () => {
@@ -103,7 +103,7 @@ class Plugins extends Base {
         }}
       >
         <div className='powercord-products-modal'>
-          <span>{Messages.POWERCORD_PLUGINS_UNINSTALL_SURE.format({ pluginCount: plugins.length })}</span>
+          <span>{Messages.REPLUGGED_PLUGINS_UNINSTALL_SURE.format({ pluginCount: plugins.length })}</span>
           <ul>
             {plugins.map(p => <li key={p.id}>{powercord.pluginManager.get(p)?.manifest?.name}</li>)}
           </ul>

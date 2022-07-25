@@ -12,7 +12,7 @@ const PatchedBrowserWindow = require('./browserWindow');
 
 require('./ipc/main');
 
-console.log('Hello from Powercord!');
+console.log('Hello from Replugged!');
 
 let _patched = false;
 const appSetAppUserModelId = electron.app.setAppUserModelId;
@@ -21,7 +21,7 @@ function setAppUserModelId (...args) {
    * once this has been called, we can assume squirrelUpdate is safe to require
    * as everything that needs to be initialized has been initialized
    * see: https://github.com/powercord-org/powercord/issues/405
-   * see: https://github.com/powercord-org/powercord/issues/382
+   * see: https://github.com/replugged-org/replugged/issues/382
    */
 
   appSetAppUserModelId.apply(this, args);

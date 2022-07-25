@@ -59,12 +59,12 @@ module.exports = class ModuleManager extends Plugin {
     this.loadStylesheet('scss/style.scss');
     powercord.api.settings.registerSettings('pc-moduleManager-plugins', {
       category: this.entityID,
-      label: () => Messages.POWERCORD_PLUGINS,
+      label: () => Messages.REPLUGGED_PLUGINS,
       render: Plugins
     });
     powercord.api.settings.registerSettings('pc-moduleManager-themes', {
       category: this.entityID,
-      label: () => Messages.POWERCORD_THEMES,
+      label: () => Messages.REPLUGGED_THEMES,
       render: (props) => React.createElement(Themes, {
         openPopout: () => this._openQuickCSSPopout(),
         ...props
@@ -176,8 +176,8 @@ module.exports = class ModuleManager extends Plugin {
 
   async _applySnippet (message) {
     let css = '\n\n/**\n';
-    const line1 = Messages.POWERCORD_SNIPPET_LINE1.format({ date: new Date() });
-    const line2 = Messages.POWERCORD_SNIPPET_LINE2.format({
+    const line1 = Messages.REPLUGGED_SNIPPET_LINE1.format({ date: new Date() });
+    const line2 = Messages.REPLUGGED_SNIPPET_LINE2.format({
       authorTag: message.author.tag,
       authorId: message.author.id
     });

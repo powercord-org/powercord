@@ -28,7 +28,7 @@ module.exports = React.memo(
         <div className={marginBottom20}>
           <div className={`${size20} ${marginBottom8}`}>Be licensed under an <a href='https://opensource.org/licenses' target='_blank'>OSI approved license</a></div>
           <div className={size16}><b>Plugin developers, heads up</b>: you cannot license your plugin under the GPL-3.0 or the AGPL-3.0, except if you write a linking exception clause.</div>
-          <div className={size16}>Those licenses requires reciprocal licensing on linked works, and neither Powercord or Discord is GPL-compatible. In short, applying this license without linking exception clauses forbids the users to use your plugin.</div>
+          <div className={size16}>Those licenses requires reciprocal licensing on linked works, and neither Replugged or Discord is GPL-compatible. In short, applying this license without linking exception clauses forbids the users to use your plugin.</div>
           <div className={size16}>Be careful when choosing your license, and use a license that doesn't have this reciprocal linking clause.</div>
         </div>
       </>

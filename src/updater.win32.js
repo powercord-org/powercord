@@ -15,18 +15,18 @@ if (process.platform === 'win32') { // Should be the only possible case, but we 
     require.cache[autoStartScript].exports.update = async (callback) => {
       const appDir = await injector.getAppDir();
 
-      console.log('[Powercord] Checking for host updates...');
+      console.log('[Replugged] Checking for host updates...');
 
       if (!existsSync(appDir)) {
-        console.log('[Powercord] Host update is available! Injecting into new version...');
+        console.log('[Replugged] Host update is available! Injecting into new version...');
         return inject(injector).then(() => {
-          console.log('[Powercord] Successfully injected into new version!');
+          console.log('[Replugged] Successfully injected into new version!');
 
           update(callback);
         });
       }
 
-      console.log(`[Powercord] Host "${buildInfo.version}" is already injected with Powercord.`);
+      console.log(`[Replugged] Host "${buildInfo.version}" is already injected with Replugged.`);
     };
   } else {
     const hostUpdaterScript = join(require.main.filename, '..', 'hostUpdater.js');
@@ -34,9 +34,9 @@ if (process.platform === 'win32') { // Should be the only possible case, but we 
 
     // Old Updater Injection
     require.cache[hostUpdaterScript].exports.quitAndInstall = () => {
-      console.log('[Powercord] Host update is available! Injecting into new version...');
+      console.log('[Replugged] Host update is available! Injecting into new version...');
       inject(injector).then(() => {
-        console.log('[Powercord] Successfully injected into new version!');
+        console.log('[Replugged] Successfully injected into new version!');
 
         quitAndInstall.call({ updateVersion: require.cache[hostUpdaterScript].exports.updateVersion });
       });

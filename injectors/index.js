@@ -38,7 +38,7 @@ try {
       `Make sure to mention the platform you are on is "${process.platform}" in your issue ticket.`
     );
     console.log(
-      'https://github.com/powercord-org/powercord/issues/new/choose'
+      'https://github.com/replugged-org/replugged/issues/new/choose'
     );
     process.exit(process.argv.includes('--no-exit-codes') ? 0 : 1);
   }
@@ -108,7 +108,7 @@ const VALID_PLATFORMS = [ 'stable', 'ptb', 'canary', 'dev', 'development' ];
       '\n'
     );
     console.log(
-      'Powercord wasn\'t able to inject itself due to missing permissions.',
+      'Replugged wasn\'t able to inject itself due to missing permissions.',
       '\n'
     );
     console.log('Try again with elevated permissions.');

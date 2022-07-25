@@ -9,7 +9,7 @@ const { API } = require('powercord/entities');
  */
 
 /**
- * Powercord Keybinds API
+ * Replugged Keybinds API
  * @property {Object.<String, PowercordKeybind>} keybinds Keybinds
  */
 class KeybindsAPI extends API {

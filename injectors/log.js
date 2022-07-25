@@ -7,10 +7,10 @@ const AnsiEscapes = Object.freeze({
 });
 
 const BasicMessages = Object.freeze({
-  PLUG_FAILED: `${AnsiEscapes.BOLD}${AnsiEscapes.RED}Failed to plug Powercord :(${AnsiEscapes.RESET}`,
-  PLUG_SUCCESS: `${AnsiEscapes.BOLD}${AnsiEscapes.GREEN}Powercord has been successfully plugged :D${AnsiEscapes.RESET}`,
-  UNPLUG_FAILED: `${AnsiEscapes.BOLD}${AnsiEscapes.RED}Failed to unplug Powercord :(${AnsiEscapes.RESET}`,
-  UNPLUG_SUCCESS: `${AnsiEscapes.BOLD}${AnsiEscapes.GREEN}Powercord has been successfully unplugged${AnsiEscapes.RESET}`
+  PLUG_FAILED: `${AnsiEscapes.BOLD}${AnsiEscapes.RED}Failed to plug Replugged :(${AnsiEscapes.RESET}`,
+  PLUG_SUCCESS: `${AnsiEscapes.BOLD}${AnsiEscapes.GREEN}Replugged has been successfully plugged :D${AnsiEscapes.RESET}`,
+  UNPLUG_FAILED: `${AnsiEscapes.BOLD}${AnsiEscapes.RED}Failed to unplug Replugged :(${AnsiEscapes.RESET}`,
+  UNPLUG_SUCCESS: `${AnsiEscapes.BOLD}${AnsiEscapes.GREEN}Replugged has been successfully unplugged${AnsiEscapes.RESET}`
 });
 
 const PlatformNames = Object.freeze({

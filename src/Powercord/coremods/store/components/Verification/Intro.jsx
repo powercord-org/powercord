@@ -10,8 +10,8 @@ module.exports = React.memo(
     return (
       <>
         <p className={size16}>
-          The Powercord Verification Program rewards plugin and theme developers for being part of what makes the
-          Powercord ecosystem what it is today, by making outstanding products and keeping them up to date. Verified
+          The Replugged Verification Program rewards plugin and theme developers for being part of what makes the
+          Replugged ecosystem what it is today, by making outstanding products and keeping them up to date. Verified
           products have a very nice verified checkmark next to their name, as well as a dedicated category.
         </p>
         <h2 className={size32}>What do I need to get verified?</h2>
@@ -28,7 +28,7 @@ module.exports = React.memo(
               <div className={size16}>Your plugin should bring a new and original feature, that stands out of the crowd.</div>
             </div>
             <div className={marginBottom20}>
-              <div className={`${size20} ${marginBottom8}`}>Follow all <a href='#'>Powercord's Best Practices</a></div>
+              <div className={`${size20} ${marginBottom8}`}>Follow all <a href='#'>Replugged's Best Practices</a></div>
               <div className={size16}>Following those will ensure the users will have a smooth experience using your plugin.</div>
             </div>
             <div className={marginBottom20}>

@@ -10,7 +10,7 @@ module.exports = React.memo(
       <GatedContent
         imageClassName='powercord-store-success'
         title={'Success! We received your form.'}
-        description={<>We'll give it the attention it deserved and reach out once this process is complete. You can identify Powercord Staff members thanks to the <Staff width={16} height={16}/> badge on their profile.</>}
+        description={<>We'll give it the attention it deserved and reach out once this process is complete. You can identify Replugged Staff members thanks to the <Staff width={16} height={16}/> badge on their profile.</>}
         onDisagree={() => transitionTo('/_powercord/store/plugins')}
         disagreement='Go back to store'
       />

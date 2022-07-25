@@ -12,7 +12,7 @@ class SnippetButton extends React.Component {
             this.props.main._applySnippet(this.props.message).then(() => this.forceUpdate()); // yes ik its ew
           }
         }}>
-          {applied ? Messages.POWERCORD_SNIPPET_APPLIED : Messages.POWERCORD_SNIPPET_APPLY}
+          {applied ? Messages.REPLUGGED_SNIPPET_APPLIED : Messages.REPLUGGED_SNIPPET_APPLY}
         </Clickable>
       </div>
     );

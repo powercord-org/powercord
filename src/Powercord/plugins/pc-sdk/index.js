@@ -19,7 +19,7 @@ module.exports = class SDK extends Plugin {
       id: 'pc-sdk',
       name: 'Sandbox Development Kit',
       date: 1591011180411,
-      description: 'Powercord\'s sandbox development kit for plugin and theme developers',
+      description: 'Replugged\'s sandbox development kit for plugin and theme developers',
       callback: () => void 0
     });
 
@@ -58,7 +58,7 @@ module.exports = class SDK extends Plugin {
                 itemGroups: [ [
                   {
                     type: 'button',
-                    name: 'Open Powercord SDK',
+                    name: 'Open Replugged SDK',
                     onClick: () => this._openSdk()
                   },
                   {

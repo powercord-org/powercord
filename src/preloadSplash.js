@@ -2,7 +2,7 @@ const { ipcRenderer } = require('electron');
 const { join } = require('path');
 require('./ipc/renderer');
 
-// Add Powercord's modules
+// Add Replugged's modules
 require('module').Module.globalPaths.push(join(__dirname, 'fake_node_modules'));
 
 // Discord's preload

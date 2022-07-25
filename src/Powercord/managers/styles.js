@@ -105,14 +105,14 @@ module.exports = class StyleManager {
       manifest = require(manifestFile);
     } catch (e) {
       this._logError(ErrorTypes.MANIFEST_LOAD_FAILED, [ themeID ]);
-      console.error('%c[Powercord:StyleManager]', 'color: #7289da', 'Failed to load manifest', e);
+      console.error('%c[Replugged:StyleManager]', 'color: #7289da', 'Failed to load manifest', e);
       return;
     }
 
     const errors = this._validateManifest(manifest);
     if (errors.length > 0) {
       this._logError(ErrorTypes.INVALID_MANIFEST, [ themeID ]);
-      console.error('%c[Powercord:StyleManager]', 'color: #7289da', `Invalid manifest; Detected the following errors:\n\t${errors.join('\n\t')}`);
+      console.error('%c[Replugged:StyleManager]', 'color: #7289da', `Invalid manifest; Detected the following errors:\n\t${errors.join('\n\t')}`);
       return;
     }
 
@@ -123,7 +123,7 @@ module.exports = class StyleManager {
     } else if (!window.__OVERLAY__ && !window.__SPLASH__ && manifest.theme) {
       manifest.effectiveTheme = manifest.theme;
     } else {
-      return console.warn('%c[Powercord:StyleManager]', 'color: #7289da', `Theme "${themeID}" is not meant to run on that environment - Skipping`);
+      return console.warn('%c[Replugged:StyleManager]', 'color: #7289da', `Theme "${themeID}" is not meant to run on that environment - Skipping`);
     }
 
     manifest.effectiveTheme = join(this.themesDir, filename, manifest.effectiveTheme);
@@ -156,7 +156,7 @@ module.exports = class StyleManager {
     const files = readdirSync(this.themesDir);
     for (const filename of files) {
       if (filename.startsWith('.')) {
-        console.debug('%c[Powercord:StyleManager]', 'color: #7289da', 'Ignoring dotfile', filename);
+        console.debug('%c[Replugged:StyleManager]', 'color: #7289da', 'Ignoring dotfile', filename);
         continue;
       }
 

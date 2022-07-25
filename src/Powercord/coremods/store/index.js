@@ -24,12 +24,12 @@ async function injectChannels () {
     const data = {
       [STORE_PLUGINS]: {
         icon: PluginIcon,
-        name: Messages.POWERCORD_PLUGINS,
+        name: Messages.REPLUGGED_PLUGINS,
         route: '/_powercord/store/plugins'
       },
       [STORE_THEMES]: {
         icon: Theme,
-        name: Messages.POWERCORD_THEMES,
+        name: Messages.REPLUGGED_THEMES,
         route: '/_powercord/store/themes'
       }
     };

@@ -6,8 +6,8 @@ const { SPOTIFY_BASE_URL, SPOTIFY_PLAYER_URL } = require('./constants');
 const playerStore = require('./playerStore/store');
 
 const revokedMessages = {
-  SCOPES_UPDATED: 'Your Spotify account needs to be relinked to your Powercord account due to new authorizations required.',
-  ACCESS_DENIED: 'Powercord is no longer able to connect to your Spotify account. Therefore, it has been automatically unlinked.'
+  SCOPES_UPDATED: 'Your Spotify account needs to be relinked to your Replugged account due to new authorizations required.',
+  ACCESS_DENIED: 'Replugged is no longer able to connect to your Spotify account. Therefore, it has been automatically unlinked.'
 };
 
 let usedCached = false;
@@ -40,7 +40,7 @@ module.exports = {
       }
     }
 
-    console.debug('%c[SpotifyAPI]', 'color: #1ed860', 'No Spotify account linked to Powercord; Falling back to Discord\'s token');
+    console.debug('%c[SpotifyAPI]', 'color: #1ed860', 'No Spotify account linked to Replugged; Falling back to Discord\'s token');
     if (!usedCached) {
       const spotifyMdl = await getModule([ 'getActiveSocketAndDevice' ]);
       const active = spotifyMdl.getActiveSocketAndDevice();
