@@ -38,7 +38,7 @@ try {
       `Make sure to mention the platform you are on is "${process.platform}" in your issue ticket.`
     );
     console.log(
-      'https://github.com/powercord-org/powercord/issues/new/choose'
+      'https://github.com/replugged-org/replugged/issues/new/choose'
     );
     process.exit(process.argv.includes('--no-exit-codes') ? 0 : 1);
   }

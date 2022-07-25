@@ -92,7 +92,7 @@ class PowercordAccount extends React.Component {
           linking: false,
           server: null,
           message: Messages.REPLUGGED_LINKING_ERRORED.format({
-            newIssueUrl: 'https://github.com/powercord-org/powercord/issues/new?labels=bug&template=bug_report.md&title=Error+while+linking+Powercord+account+to+Discord'
+            newIssueUrl: 'https://github.com/replugged-org/replugged/issues/new?labels=bug&template=bug_report.md&title=Error+while+linking+Powercord+account+to+Discord'
           })
         });
         return console.error(err);

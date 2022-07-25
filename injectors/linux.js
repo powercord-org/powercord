@@ -27,7 +27,7 @@ const KnownLinuxPaths = Object.freeze({
     '/usr/lib64/discord-canary',
     '/opt/discord-canary',
     '/opt/DiscordCanary',
-    `${homedir}/.local/bin/DiscordCanary` // https://github.com/powercord-org/powercord/pull/370
+    `${homedir}/.local/bin/DiscordCanary` // https://github.com/replugged-org/replugged/pull/370
   ],
   dev: [
     '/usr/share/discord-development',

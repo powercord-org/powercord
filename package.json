@@ -12,10 +12,10 @@
     "inject": "node injectors/index.js inject --no-exit-codes",
     "uninject": "node injectors/index.js uninject --no-exit-codes"
   },
-  "repository": "https://github.com/powercord-org/powercord.git",
+  "repository": "https://github.com/replugged-org/replugged.git",
   "author": "aetheryx & Cynthia K. Rey",
   "bugs": {
-    "url": "https://github.com/powercord-org/powercord/issues"
+    "url": "https://github.com/replugged-org/replugged/issues"
   },
   "dependencies": {
     "codemirror": "^5.57.0",
