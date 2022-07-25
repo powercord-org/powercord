@@ -5,9 +5,6 @@ const { inject, uninject } = require('powercord/injector');
 
 module.exports = class RPC extends Plugin {
   async startPlugin () {
-    return; // shhhh
-
-    /* eslint-disable */
     this.handlers = await getModule([ 'INVITE_BROWSER' ]);
     this._patchHTTPServer();
     this._patchWebSocketServer();
@@ -21,14 +18,11 @@ module.exports = class RPC extends Plugin {
   }
 
   pluginWillUnload () {
-    return; // shhhh
-
-    /* eslint-disable */
     uninject('pc-rpc-ws');
     uninject('pc-rpc-ws-promise');
 
-    powercord.rpcServer.removeAllListeners('request');
-    powercord.rpcServer.on('request', this._originalHandler);
+    powercord.api.rpc.removeAllListeners('request');
+    powercord.api.rpc.on('request', this._originalHandler);
 
     powercord.api.rpc.unregisterScope('POWERCORD_PRIVATE');
     powercord.api.rpc.off('eventAdded', this._boundAddEvent);
@@ -36,9 +30,10 @@ module.exports = class RPC extends Plugin {
   }
 
   _patchHTTPServer () {
-    [ this._originalHandler ] = powercord.rpcServer.listeners('request');
-    powercord.rpcServer.removeAllListeners('request');
-    powercord.rpcServer.on('request', (req, res) => {
+    [ this._originalHandler ] = powercord.api.rpc.listeners('request');
+    powercord.api.rpc.removeAllListeners('request');
+    powercord.api.rpc.on('request', (req, res) => {
+      console.log(req);
       if (req.url === '/powercord') {
         const data = JSON.stringify({
           code: 69,

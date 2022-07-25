@@ -12,7 +12,7 @@ const Store = require('./components/Store');
 async function injectChannels () {
   const permissionsModule = await getModule([ 'can' ]);
   inject('pc-store-channels-perms', permissionsModule, 'can', (args, res) => {
-    if (args[1] && (args[1].id === STORE_PLUGINS || args[1].id === STORE_THEMES)) {
+    if (args[1] && ([ ...STORE_PLUGINS, ...STORE_THEMES ].includes(args[1].id))) {
       return args[0].data === Permissions.VIEW_CHANNEL.data;
     }
     return res;
@@ -21,20 +21,25 @@ async function injectChannels () {
   const { transitionTo } = await getModule([ 'transitionTo' ]);
   const ChannelItem = await getModuleByDisplayName('ChannelItem');
   inject('pc-store-channels-props', ChannelItem.prototype, 'render', function (_, res) {
-    const data = {
-      [STORE_PLUGINS]: {
+    const data = {};
+
+    STORE_PLUGINS.forEach(id => {
+      data[id] = {
         icon: PluginIcon,
         name: Messages.POWERCORD_PLUGINS,
-        route: '/_powercord/store/plugins'
-      },
-      [STORE_THEMES]: {
+        route: '/_powercord/store/plugins/'
+      };
+    });
+
+    STORE_THEMES.forEach(id => {
+      data[id] = {
         icon: Theme,
         name: Messages.POWERCORD_THEMES,
-        route: '/_powercord/store/themes'
-      }
-    };
+        route: '/_powercord/store/themes/'
+      };
+    });
 
-    if (this.props.channel.id === STORE_PLUGINS || this.props.channel.id === STORE_THEMES) {
+    if ([ ...STORE_PLUGINS, ...STORE_THEMES ].includes(this.props.channel.id)) {
       res.props.children[1].props.children[0].props.children[1].props.children = data[this.props.channel.id].name;
       res.props.children[1].props.children[0].props.children[0] = React.createElement(data[this.props.channel.id].icon, {
         className: res.props.children[1].props.children[0].props.children[0].props.className,
