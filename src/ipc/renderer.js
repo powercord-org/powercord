@@ -6,7 +6,7 @@ if (!ipcRenderer) {
   throw new Error('Don\'t require stuff you shouldn\'t silly.');
 }
 
-global.powercordNative = {
+global.PowercordNative = {
   /**
    * Open DevTools for the current window
    * @param {object} opts Options to pass to Electron

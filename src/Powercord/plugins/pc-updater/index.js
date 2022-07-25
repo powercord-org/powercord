@@ -243,7 +243,7 @@ module.exports = class Updater extends Plugin {
   }
 
   async getGitInfos () {
-    const branch = await powercordNative.exec('git branch', this.cwd)
+    const branch = await PowercordNative.exec('git branch', this.cwd)
       .then(({ stdout }) =>
         stdout
           .toString()
@@ -253,10 +253,10 @@ module.exports = class Updater extends Plugin {
           .trim()
       );
 
-    const revision = await powercordNative.exec(`git rev-parse ${branch}`, this.cwd)
+    const revision = await PowercordNative.exec(`git rev-parse ${branch}`, this.cwd)
       .then(r => r.stdout.toString().trim());
 
-    const upstream = await powercordNative.exec('git remote get-url origin', this.cwd)
+    const upstream = await PowercordNative.exec('git remote get-url origin', this.cwd)
       .then(r => r.stdout.toString().match(/github\.com[:/]([\w-_]+\/[\w-_]+)/)[1]);
 
     return {
@@ -267,8 +267,8 @@ module.exports = class Updater extends Plugin {
   }
 
   async changeBranch (branch) {
-    await powercordNative.exec('git fetch origin +v2:v2', this.cwd);
-    await powercordNative.exec(`git checkout ${branch}`, this.cwd);
+    await PowercordNative.exec('git fetch origin +v2:v2', this.cwd);
+    await PowercordNative.exec(`git checkout ${branch}`, this.cwd);
     // location.reload();
   }
 

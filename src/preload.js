@@ -353,7 +353,7 @@ if (debugLogs) {
 // Overlay devtools
 powercord.once('loaded', () => {
   if (window.__OVERLAY__ && powercord.api.settings.store.getSetting('pc-general', 'openOverlayDevTools', false)) {
-    powercordNative.openDevTools({}, true);
+    PowercordNative.openDevTools({}, true);
   }
 });
 */

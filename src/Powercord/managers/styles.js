@@ -226,7 +226,7 @@ module.exports = class StyleManager {
               text: 'Open DevTools',
               color: 'green',
               look: 'ghost',
-              onClick: () => powercordNative.openDevTools()
+              onClick: () => PowercordNative.openDevTools()
             },
             {
               text: 'Got it',
@@ -245,7 +245,7 @@ module.exports = class StyleManager {
               text: 'Open DevTools',
               color: 'green',
               look: 'ghost',
-              onClick: () => powercordNative.openDevTools()
+              onClick: () => PowercordNative.openDevTools()
             },
             {
               text: 'Got it',
