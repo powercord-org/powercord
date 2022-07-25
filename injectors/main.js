@@ -17,7 +17,14 @@ exports.inject = async ({ getAppDir }, platform) => {
     return false;
   }
 
-  await mkdir(appDir);
+  try {
+    await mkdir(appDir);
+  } catch (err) {
+    console.log('Your Discord Canary install appears to be broken.', '\n');
+    console.log(`${AnsiEscapes.YELLOW}NOTE:${AnsiEscapes.RESET} This issue has been known to happen using non-official Discord Canary installs. Try using the official installation method if you're not already.`);
+
+    return false;
+  }
   await Promise.all([
     writeFile(
       join(appDir, 'index.js'),
