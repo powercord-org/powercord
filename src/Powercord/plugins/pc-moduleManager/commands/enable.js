@@ -1,15 +1,15 @@
-const { resp } = require('../util/resp');
+const { resp } = require('../util');
 
 module.exports = {
   command: 'enable',
   description: 'Enable a plugin/theme',
   usage: '{c} [ plugin/theme ID ]',
-  executor([ id ]) {
+  executor ([ id ]) {
     const isPlugin = powercord.pluginManager.plugins.has(id);
     const isTheme = powercord.styleManager.themes.has(id);
 
     if (!isPlugin && !isTheme) { // No match
-      return resp(false, `Could not find plugin or theme matching "${id}".`)
+      return resp(false, `Could not find plugin or theme matching "${id}".`);
     } else if (isPlugin && isTheme) { // Duplicate name
       return resp(false, `"${id}" is in use by both a plugin and theme. You will have to disable it from settings.`);
     }
@@ -23,7 +23,7 @@ module.exports = {
     return resp(true, `${isPlugin ? 'Plugin' : 'Theme'} "${id}" enabled!`);
   },
 
-  autocomplete(args) {
+  autocomplete (args) {
     if (args.length > 1) {
       return false;
     }
@@ -51,7 +51,7 @@ module.exports = {
           command: theme.entityID,
           description: `Theme - ${theme.manifest.description}`
         }))
-      ],
+      ]
     };
   }
 };

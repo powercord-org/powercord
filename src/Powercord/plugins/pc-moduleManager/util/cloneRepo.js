@@ -32,7 +32,7 @@ module.exports = async function download (url, powercord, type) {
     console.log(data);
 
     if (data.includes('already exists')) {
-      powercord.api.notices.sendToast(`PDAlreadyInstalled-${Math.floor(Math.random() * 999)}`, {
+      powercord.api.notices.sendToast(`PDAlreadyInstalled-${repoName}`, {
         header: 'Plugin Already Installed',
         content: `${repoName} is already installed.`,
         type: 'info',
@@ -58,10 +58,11 @@ module.exports = async function download (url, powercord, type) {
       }
 
       if (files.includes('powercord_manifest.json') || files.includes('manifest.json')) {
+        powercord.api.notices.closeToast(`PDPluginInstalling-${repoName}`);
         if (type === 'plugin') {
           await powercord.pluginManager.remount(repoName);
           if (powercord.pluginManager.plugins.has(repoName)) {
-            powercord.api.notices.sendToast(`PDPluginInstalled-${Math.floor(Math.random() * 999)}`, {
+            powercord.api.notices.sendToast(`PDPluginInstalled-${repoName}`, {
               header: 'Plugin Installed',
               content: `${repoName} installed`,
               type: 'info',
@@ -79,7 +80,7 @@ module.exports = async function download (url, powercord, type) {
         } else if (type === 'theme') {
           await powercord.styleManager.loadThemes();
           if (powercord.styleManager.themes.has(repoName)) {
-            powercord.api.notices.sendToast(`PDPluginInstalled-${Math.floor(Math.random() * 999)}`, {
+            powercord.api.notices.sendToast(`PDPluginInstalled-${repoName}`, {
               header: 'Theme Installed',
               content: `${repoName} installed`,
               type: 'info',
