@@ -94,7 +94,7 @@ module.exports = class ModuleManager extends Plugin {
     const MiniPopover = await getModule(m => m.default && m.default.displayName === 'MiniPopover');
     inject('pc-installer-popover', MiniPopover, 'default', (args, res) => {
       const props = findInReactTree(res, r => r && r.message && r.setPopout);
-      if (!props || ![ STORE_THEMES, STORE_PLUGINS ].includes(props.channel?.id)) {
+      if (!props || ![ ...STORE_THEMES, ...STORE_PLUGINS ].includes(props.channel?.id)) {
         return res;
       }
       this.log('Popover injected');
@@ -102,7 +102,7 @@ module.exports = class ModuleManager extends Plugin {
         React.createElement(InstallerButton, {
           message: props.message,
           main: this,
-          type: props.channel.id === STORE_THEMES ? 'theme' : 'plugin'
+          type: STORE_THEMES.includes(props.channel.id) ? 'theme' : 'plugin'
         })
       );
       return res;
@@ -159,7 +159,7 @@ module.exports = class ModuleManager extends Plugin {
     const MiniPopover = await getModule(m => m.default && m.default.displayName === 'MiniPopover');
     inject('pc-moduleManager-snippets', MiniPopover, 'default', (args, res) => {
       const props = findInReactTree(res, r => r && r.message && r.setPopout);
-      if (!props || props.channel.id !== CSS_SNIPPETS) {
+      if (!props || !CSS_SNIPPETS.includes(props.channel.id)) {
         return res;
       }
 
