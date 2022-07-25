@@ -30,8 +30,14 @@ module.exports = async function injectAutocomplete () {
     );
   }
 
+  const _this = this;
   function getMatchingCommand (c) {
-    return [ c.command.toLowerCase(), ...(c.aliases?.map((alias) => alias.toLowerCase()) || []) ];
+    try { 
+      return [ c.command.toLowerCase(), ...(c.aliases?.map((alias) => alias.toLowerCase()) || []) ];
+    } catch (e) {
+      _this.warn("Plugin Command is missing key `command`", c, e);
+      return [];
+    }
   }
 
   const { AUTOCOMPLETE_OPTIONS: AutocompleteTypes, AUTOCOMPLETE_PRIORITY: AutocompletePriority } = await getModule([ 'AUTOCOMPLETE_OPTIONS' ]);
@@ -119,7 +125,6 @@ module.exports = async function injectAutocomplete () {
     }
   };
 
-  const _this = this;
   const ChannelEditorContainer = await getModuleByDisplayName('ChannelEditorContainer');
   inject('pc-commands-textarea', ChannelEditorContainer.prototype, 'render', function (_, res) {
     _this.instance = this;
