@@ -94,7 +94,7 @@ module.exports = class ModuleManager extends Plugin {
     const MiniPopover = await getModule(m => m.default && m.default.displayName === 'MiniPopover');
     inject('pc-installer-popover', MiniPopover, 'default', (args, res) => {
       const props = findInReactTree(res, r => r && r.message && r.setPopout);
-      if (!props || ![ '755005710323941386', '755005584322854972' ].includes(props.channel?.id)) {
+      if (!props || ![ '1000955969657917551', '1000955968592552047' ].includes(props.channel?.id)) {
         return res;
       }
       this.log('Popover injected');
@@ -102,7 +102,7 @@ module.exports = class ModuleManager extends Plugin {
         React.createElement(InstallerButton, {
           message: props.message,
           main: this,
-          type: props.channel.id === '755005710323941386' ? 'theme' : 'plugin'
+          type: props.channel.id === '1000955969657917551' ? 'theme' : 'plugin'
         })
       );
       return res;
