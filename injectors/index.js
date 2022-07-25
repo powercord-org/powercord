@@ -108,7 +108,7 @@ const VALID_PLATFORMS = [ 'stable', 'ptb', 'canary', 'dev', 'development' ];
       '\n'
     );
     console.log(
-      'Powercord wasn\'t able to inject itself due to missing permissions.',
+      'Replugged wasn\'t able to inject itself due to missing permissions.',
       '\n'
     );
     console.log('Try again with elevated permissions.');
