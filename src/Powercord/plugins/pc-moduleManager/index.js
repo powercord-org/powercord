@@ -159,7 +159,7 @@ module.exports = class ModuleManager extends Plugin {
     const MiniPopover = await getModule(m => m.default && m.default.displayName === 'MiniPopover');
     inject('pc-moduleManager-snippets', MiniPopover, 'default', (args, res) => {
       const props = findInReactTree(res, r => r && r.message && r.setPopout);
-      if (!props || CSS_SNIPPETS.includes(props.channel.id)) {
+      if (!props || !CSS_SNIPPETS.includes(props.channel.id)) {
         return res;
       }
 
