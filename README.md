@@ -1,5 +1,5 @@
-# READ FIRST
-This project has reached EOL, which means that no new features will be developed. We're only merging bug fixes and/or security pull requests. You can read more about this decision by joining our [official Discord server](https://discord.gg/replugged).
+# Replugged
+Maintained fork of [powercord](https://github.com/powercord-org/powercord) - a lightweight @discord client mod focused on simplicity and performance.
 
 # Installation
 See the [installation page of the Replugged Wiki](https://github.com/replugged-org/replugged/wiki/Installation).
