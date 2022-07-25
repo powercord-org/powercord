@@ -94,7 +94,7 @@ class Powercord extends Updatable {
 
     window.addEventListener('beforeunload', () => {
       if (this.account && this.settings.get('settingsSync', false)) {
-        temp - replugged.api.settings.upload();
+        powercord.api.settings.upload();
       }
     });
 
@@ -110,7 +110,7 @@ class Powercord extends Updatable {
   async startup () {
     // APIs
     await this.apiManager.startAPIs();
-    this.settings = temp - replugged.api.settings.buildCategoryObject('pc-general');
+    this.settings = powercord.api.settings.buildCategoryObject('pc-general');
     this.emit('settingsReady');
 
     // Style Manager
@@ -187,7 +187,7 @@ class Powercord extends Updatable {
 
       if (resp.statusCode === 401) {
         if (!resp.body.error && resp.body.error !== 'DISCORD_REVOKED') {
-          temp - replugged.api.notices.sendAnnouncement('pc-account-discord-unlinked', {
+          powercord.api.notices.sendAnnouncement('pc-account-discord-unlinked', {
             color: 'red',
             message: 'Your Replugged account is no longer linked to your Discord account! Some integrations will be disabled.',
             button: {
@@ -221,10 +221,10 @@ class Powercord extends Updatable {
   async _update (force = false) {
     const success = await super._update(force);
     if (success) {
-      await temp - RepluggedNative.exec('npm install --only=prod', { cwd: this.entityPath });
+      await powercordNative.exec('npm install --only=prod', { cwd: this.entityPath });
       const updater = this.pluginManager.get('pc-updater');
       if (!document.querySelector('#powercord-updater, .powercord-updater')) {
-        temp - replugged.api.notices.sendToast('powercord-updater', {
+        powercord.api.notices.sendToast('powercord-updater', {
           header: 'Update complete!',
           content: 'Please click "Reload" to complete the final stages of this Replugged update.',
           type: 'success',

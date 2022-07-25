@@ -42,11 +42,11 @@ module.exports = async function injectAutocomplete () {
 
   AutocompleteTypes.POWERCORD_AUTOCOMPLETE = {
     get sentinel () {
-      return temp - replugged.api.commands.prefix;
+      return powercord.api.commands.prefix;
     },
-    matches: (_channel, _guild, value, start) => start && value.includes(' ') && temp - replugged.api.commands.find(c => (getMatchingCommand(c)).includes(value.split(' ')[0])),
+    matches: (_channel, _guild, value, start) => start && value.includes(' ') && powercord.api.commands.find(c => (getMatchingCommand(c)).includes(value.split(' ')[0])),
     queryResults: (_channel, _guild, value) => {
-      const currentCommand = temp - replugged.api.commands.find(c => (getMatchingCommand(c)).includes(value.split(' ')[0]));
+      const currentCommand = powercord.api.commands.find(c => (getMatchingCommand(c)).includes(value.split(' ')[0]));
       if (currentCommand.autocomplete) {
         const autocompleteRows = currentCommand.autocomplete(value.split(' ').slice(1));
         if (autocompleteRows) {
@@ -77,7 +77,7 @@ module.exports = async function injectAutocomplete () {
     onSelect: ({ results, index, isEnter, options }) => {
       if (results.commands[index].instruction) {
         if (isEnter) {
-          const msg = `${temp - replugged.api.commands.prefix}${results.value}`;
+          const msg = `${powercord.api.commands.prefix}${results.value}`;
           messages.sendMessage('0', { content: msg });
           this.instance.clearValue();
         } else if (!results.value.endsWith(' ')) {
@@ -94,12 +94,12 @@ module.exports = async function injectAutocomplete () {
 
   AutocompleteTypes.POWERCORD = {
     get sentinel () {
-      return temp - replugged.api.commands.prefix;
+      return powercord.api.commands.prefix;
     },
-    matches: (_channel, _guild, value, start) => start && temp - replugged.api.commands.filter(c => (getMatchingCommand(c)).some(commandName => commandName.includes(value))).length,
+    matches: (_channel, _guild, value, start) => start && powercord.api.commands.filter(c => (getMatchingCommand(c)).some(commandName => commandName.includes(value))).length,
     queryResults: (_channel, _guild, value) => ({
       results: {
-        commands: temp - replugged.api.commands.filter(c => (getMatchingCommand(c)).some(commandName => commandName.includes(value)))
+        commands: powercord.api.commands.filter(c => (getMatchingCommand(c)).some(commandName => commandName.includes(value)))
       }
     }),
     renderResults: ({ results: result, selectedIndex: selected, query: value, onHover: onHover, onClick: onClick }) => {
@@ -110,11 +110,11 @@ module.exports = async function injectAutocomplete () {
             name: c.command,
             ...c
           }
-        }), (value) => `${temp - replugged.api.commands.prefix}${value}`);
+        }), (value) => `${powercord.api.commands.prefix}${value}`);
       }
     },
     onSelect: ({ results, index, options }) => {
-      options.insertText(`${temp - replugged.api.commands.prefix}${results.commands[index].command}`);
+      options.insertText(`${powercord.api.commands.prefix}${results.commands[index].command}`);
       return {};
     }
   };
@@ -130,8 +130,8 @@ module.exports = async function injectAutocomplete () {
   typing.startTyping = (startTyping => (channel) => setImmediate(() => {
     if (this.instance && this.instance.props) {
       const { textValue } = this.instance.props;
-      const currentCommand = temp - replugged.api.commands.find(c => (getMatchingCommand(c)).includes(textValue.slice(temp - replugged.api.commands.prefix.length).split(' ')[0]));
-      if (textValue.startsWith(temp - replugged.api.commands.prefix) && (!currentCommand || (currentCommand && !currentCommand.showTyping))) {
+      const currentCommand = powercord.api.commands.find(c => (getMatchingCommand(c)).includes(textValue.slice(powercord.api.commands.prefix.length).split(' ')[0]));
+      if (textValue.startsWith(powercord.api.commands.prefix) && (!currentCommand || (currentCommand && !currentCommand.showTyping))) {
         return typing.stopTyping(channel);
       }
       startTyping(channel);
@@ -139,7 +139,7 @@ module.exports = async function injectAutocomplete () {
   }))(this.oldStartTyping = typing.startTyping);
 
   inject('pc-commands-slate-autocomplete', ChannelEditorContainer.prototype, 'getCurrentWord', function (_, res) {
-    if (new RegExp(`^\\${temp - replugged.api.commands.prefix}\\S+ `).test(this.props.textValue)) {
+    if (new RegExp(`^\\${powercord.api.commands.prefix}\\S+ `).test(this.props.textValue)) {
       if ((/^@|#|:/).test(res.word)) {
         return res;
       }

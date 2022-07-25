@@ -162,7 +162,7 @@ module.exports = class GeneralSettings extends React.Component {
 
   clearDiscordCache () {
     this.setState({ discordCleared: true });
-    temp - RepluggedNative.clearCache().then(() => {
+    powercordNative.clearCache().then(() => {
       setTimeout(() => {
         this.setState({ discordCleared: false });
       }, 2500);

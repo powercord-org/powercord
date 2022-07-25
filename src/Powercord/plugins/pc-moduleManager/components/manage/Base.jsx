@@ -35,7 +35,7 @@ class Base extends React.Component {
   renderButtons () {
     return (
       <div className='buttons'>
-        {temp - replugged.api.labs.isExperimentEnabled('pc-moduleManager-store')
+        {powercord.api.labs.isExperimentEnabled('pc-moduleManager-store')
           ? <Button onClick={() => this.goToStore()}>{Messages[`REPLUGGED_${this.state.key}_EXPLORE`]}</Button>
           : <Tooltip text={Messages.APPLICATION_STORE_COMING_SOON}>
             <Button disabled>{Messages[`REPLUGGED_${this.state.key}_EXPLORE`]}</Button>

@@ -16,18 +16,18 @@ module.exports = {
   accessToken: null,
 
   async getAccessToken () {
-    if (!temp - replugged.account) {
-      await temp - replugged.fetchAccount();
+    if (!powercord.account) {
+      await powercord.fetchAccount();
     }
 
-    if (temp - replugged.account && temp - replugged.account.accounts.spotify) {
-      const baseUrl = temp - replugged.settings.get('backendURL', WEBSITE);
+    if (powercord.account && powercord.account.accounts.spotify) {
+      const baseUrl = powercord.settings.get('backendURL', WEBSITE);
       const resp = await get(`${baseUrl}/api/v2/users/@me/spotify`)
-        .set('Authorization', temp - replugged.account.token)
+        .set('Authorization', powercord.account.token)
         .then(r => r.body);
 
       if (resp.revoked) {
-        temp - replugged.api.notices.sendAnnouncement('spotify-revoked', {
+        powercord.api.notices.sendAnnouncement('spotify-revoked', {
           color: 'orange',
           message: revokedMessages[resp.revoked],
           button: {
