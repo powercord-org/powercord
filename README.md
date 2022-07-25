@@ -1,6 +1,5 @@
-# Powercord
-Powercord is a lightweight client mod focused on simplicity and performance.  
-As of right now, Powercord is in *very* early stages of development, so feel free to join [this server](https://discord.gg/gs4ZMbBfCh) for any questions.
+# READ FIRST
+This project has reached EOL, which means that no new features will be developed. We're only merging bug fixes and/or security pull requests. You can read more about this decision by joining our [official Discord server](https://discord.gg/powercord).
 
 # Installation
 See the [installation page of the Powercord Wiki](https://github.com/powercord-org/powercord/wiki/Installation).
