@@ -7,7 +7,7 @@ const { join } = require('path');
 
 const Settings = require('./components/Settings.jsx');
 
-const changelog = require('../../../../changelogs.json');
+const [changelog] = require('../../../../changelogs.json');
 
 module.exports = class Updater extends Plugin {
   constructor () {
