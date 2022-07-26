@@ -100,7 +100,6 @@ const VALID_PLATFORMS = [ 'stable', 'ptb', 'canary', 'dev', 'development' ];
   }
 })().catch(e => {
   if (e.code === 'EACCES') {
-    // todo: this was linux only (?) so I assume this is now safe to delete
     console.log(
       process.argv[2] === 'inject'
         ? BasicMessages.PLUG_FAILED

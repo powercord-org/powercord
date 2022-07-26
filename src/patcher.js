@@ -99,7 +99,6 @@ electron.app.name = discordPackage.name;
  * @see https://github.com/electron/electron/issues/19468
  */
 if (process.platform === 'win32') {
-  // todo: define if this is still necessary
   setImmediate(() => { // WTF: the app name doesn't get set instantly?
     const devToolsExtensions = join(electron.app.getPath('userData'), 'DevTools Extensions');
 

@@ -261,8 +261,8 @@ module.exports = class EmojiUtility extends Plugin {
 
         try {
           await this.uploadEmoji({
-            guildId: guild.id, 
-            image: await this.getImageEncoded(emoji.url), 
+            guildId: guild.id,
+            image: await this.getImageEncoded(emoji.url),
             name: emoji.name,
             roles: []
           });
@@ -407,9 +407,9 @@ module.exports = class EmojiUtility extends Plugin {
 
             try {
               await this.uploadEmoji({
-                guildId: guild.id, 
-                image: await this.getImageEncoded(url), 
-                name: name,
+                guildId: guild.id,
+                image: await this.getImageEncoded(url),
+                name,
                 roles: []
               });
 
@@ -751,8 +751,8 @@ module.exports = class EmojiUtility extends Plugin {
             }
 
             await this.uploadEmoji({
-              guildId: guild.id, 
-              image: await this.getImageEncoded(emoji.url), 
+              guildId: guild.id,
+              image: await this.getImageEncoded(emoji.url),
               name: emoji.name,
               roles: []
             });
