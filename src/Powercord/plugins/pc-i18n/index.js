@@ -17,7 +17,7 @@ module.exports = class I18n extends Plugin {
       .type.prototype.render.call({ memoizedGetStateFromStores: () => ({}) });
     const { codeRedemptionRedirect } = await getModule([ 'codeRedemptionRedirect' ]);
     inject('pc-i18n-psst', SettingsLocale.type.prototype, 'render', (_, res) => {
-      if (!Messages.POWERCORD_I18N_CONTRIBUTE) {
+      if (!Messages.REPLUGGED_I18N_CONTRIBUTE) {
         return res;
       }
 
@@ -28,7 +28,7 @@ module.exports = class I18n extends Plugin {
             marginTop: 0,
             marginBottom: 30
           }
-        }, Messages.POWERCORD_I18N_CONTRIBUTE.format({ weblateUrl: I18N_WEBSITE }))
+        }, Messages.REPLUGGED_I18N_CONTRIBUTE.format({ weblateUrl: I18N_WEBSITE }))
       );
 
       const OgList = res.props.children.props.children[2].type;
@@ -60,8 +60,8 @@ module.exports = class I18n extends Plugin {
                       fontSize: 14
                     }
                   },
-                  React.createElement('span', null, Messages.POWERCORD_I18N_TRANSLATED_PERCENTAGE.format({ translated: percentage })),
-                  React.createElement('span', null, overrides > 0 && Messages.POWERCORD_I18N_TRANSLATED_OVERRIDES.format({ overrides })))
+                  React.createElement('span', null, Messages.REPLUGGED_I18N_TRANSLATED_PERCENTAGE.format({ translated: percentage })),
+                  React.createElement('span', null, overrides > 0 && Messages.REPLUGGED_I18N_TRANSLATED_OVERRIDES.format({ overrides })))
                 );
               }
             };

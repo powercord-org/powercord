@@ -3,11 +3,10 @@ const { writeFile, readFile } = require('fs').promises;
 const { React, getModule, i18n: { Messages } } = require('powercord/webpack');
 const { PopoutWindow } = require('powercord/components');
 const { inject, uninject } = require('powercord/injector');
-const { findInReactTree } = require('powercord/util');
+const { findInReactTree, forceUpdateElement } = require('powercord/util');
 const { Plugin } = require('powercord/entities');
-const { SpecialChannels: { CSS_SNIPPETS } } = require('powercord/constants');
+const { SpecialChannels: { CSS_SNIPPETS, STORE_PLUGINS, STORE_THEMES } } = require('powercord/constants');
 const { join } = require('path');
-const { get } = require('powercord/http');
 const commands = require('./commands');
 const deeplinks = require('./deeplinks');
 const i18n = require('./licenses/index');
@@ -17,7 +16,7 @@ const Themes = require('./components/manage/Themes');
 const QuickCSS = require('./components/manage/QuickCSS');
 const SnippetButton = require('./components/SnippetButton');
 const InstallerButton = require('./components/installer/Button');
-const cloneRepo = require('./util/cloneRepo');
+const { cloneRepo, getRepoInfo } = require('./util');
 const { injectContextMenu } = require('powercord/util');
 
 // @todo: give a look to why quickcss.css file shits itself
@@ -25,12 +24,17 @@ module.exports = class ModuleManager extends Plugin {
   async startPlugin () {
     powercord.api.i18n.loadAllStrings(i18n);
     Object.values(commands).forEach(cmd => powercord.api.commands.registerCommand(cmd));
+    this.Menu = getModule([ 'MenuItem' ], false);
 
     powercord.api.labs.registerExperiment({
       id: 'pc-moduleManager-themes2',
       name: 'New themes features',
       date: 1587857509321,
       description: 'New Theme management UI & settings',
+      /* lexisother: Hi developer! Did you fix this experiment? Please remove the `broken` object! Thanks <3 */
+      broken: {
+        reason: 'there is no code related to this experiment'
+      },
       callback: () => {
         // We're supposed to do it properly but reload > all
         setImmediate(() => powercord.pluginManager.remount(this.entityID));
@@ -43,6 +47,10 @@ module.exports = class ModuleManager extends Plugin {
       name: 'Deeplinks',
       date: 1590242558077,
       description: 'Makes some powercord.dev links trigger in-app navigation, as well as some potential embedding if applicable',
+      /* lexisother: Hi developer! Did you fix this experiment? Please remove the `broken` object! Thanks <3 */
+      broken: {
+        reason: 'the deeplinks module is empty'
+      },
       callback: () => {
         // We're supposed to do it properly but reload > all
         setImmediate(() => powercord.pluginManager.remount(this.entityID));
@@ -59,12 +67,12 @@ module.exports = class ModuleManager extends Plugin {
     this.loadStylesheet('scss/style.scss');
     powercord.api.settings.registerSettings('pc-moduleManager-plugins', {
       category: this.entityID,
-      label: () => Messages.POWERCORD_PLUGINS,
+      label: () => Messages.REPLUGGED_PLUGINS,
       render: Plugins
     });
     powercord.api.settings.registerSettings('pc-moduleManager-themes', {
       category: this.entityID,
-      label: () => Messages.POWERCORD_THEMES,
+      label: () => Messages.REPLUGGED_THEMES,
       render: (props) => React.createElement(Themes, {
         openPopout: () => this._openQuickCSSPopout(),
         ...props
@@ -94,7 +102,7 @@ module.exports = class ModuleManager extends Plugin {
     const MiniPopover = await getModule(m => m.default && m.default.displayName === 'MiniPopover');
     inject('pc-installer-popover', MiniPopover, 'default', (args, res) => {
       const props = findInReactTree(res, r => r && r.message && r.setPopout);
-      if (!props || ![ '755005710323941386', '755005584322854972' ].includes(props.channel?.id)) {
+      if (!props || ![ ...STORE_THEMES, ...STORE_PLUGINS ].includes(props.channel?.id)) {
         return res;
       }
       this.log('Popover injected');
@@ -102,7 +110,7 @@ module.exports = class ModuleManager extends Plugin {
         React.createElement(InstallerButton, {
           message: props.message,
           main: this,
-          type: props.channel.id === '755005710323941386' ? 'theme' : 'plugin'
+          type: STORE_THEMES.includes(props.channel.id) ? 'theme' : 'plugin'
         })
       );
       return res;
@@ -111,109 +119,55 @@ module.exports = class ModuleManager extends Plugin {
   }
 
   async _installerInjectCtxMenu () {
-    const menu = await getModule([ 'MenuItem' ]);
-
-    const typeCache = new Map(); // { isTheme: false, isPlugin: false}
-
     injectContextMenu('pc-installer-ctx-menu', 'MessageContextMenu', ([ { target } ], res) => {
       if (!target || !target?.href || !target?.tagName || target.tagName.toLowerCase() !== 'a') {
         return res;
       }
 
-      const parsedUrl = new URL(target.href);
-      const isGithub = parsedUrl.hostname.split('.').slice(-2).join('.') === 'github.com';
-      const [ , username, repoName ] = parsedUrl.pathname.split('/');
+      const info = getRepoInfo(target.href);
+      if (info instanceof Promise) {
+        info.then(() => forceUpdateElement('#message'));
+      } else if (info) {
+        const { type, isInstalled } = info;
 
-      if (isGithub && username && repoName) {
-        if (typeCache.get(`${username}/${repoName}`) !== undefined) {
-          if (typeCache.get(`${username}/${repoName}`).isPlugin) {
-            if (powercord.pluginManager.isInstalled(repoName)) {
-              res.props.children.splice(
-                4,
-                0,
-                React.createElement(menu.MenuItem, {
-                  name: 'Plugin Installed',
-                  seperate: true,
-                  id: 'InstallerContextLink',
-                  label: 'Plugin Installed',
-                  action: () => console.log('lol what it\'s already installed idiot')
-                })
-              );
-            } else {
-              res.props.children.splice(
-                4,
-                0,
-                React.createElement(menu.MenuItem, {
-                  name: 'Install Plugin',
-                  seperate: true,
-                  id: 'InstallerContextLink',
-                  label: 'Install Plugin',
-                  action: () => cloneRepo(target.href, powercord, 'plugin')
-                })
-              );
-            }
-          } else if (typeCache.get(`${username}/${repoName}`).isTheme) {
-            if (powercord.styleManager.isInstalled(repoName)) {
-              res.props.children.splice(4, 0, React.createElement(menu.MenuItem, {
-                name: 'Theme Installed',
-                seperate: true,
-                id: 'DownloaderContextLink',
-                label: 'Theme Installed',
-                action: () => console.log('lol what it\'s already installed idiot')
-              }));
-            } else {
-              res.props.children.splice(4, 0, React.createElement(menu.MenuItem, {
-                name: 'Install Theme',
-                seperate: true,
-                id: 'DownloaderContextLink',
-                label: 'Install Theme',
-                action: () => cloneRepo(target.href, powercord, 'theme')
-              }));
-            }
-          }
+        const label = type === 'plugin' ? 'Plugin' : 'Theme';
+
+        if (isInstalled) {
+          res.props.children.splice(
+            4,
+            0,
+            React.createElement(this.Menu.MenuItem, {
+              name: `${label} Installed`,
+              seperate: true,
+              id: 'InstallerContextLink',
+              label: `${label} Installed`,
+              action: () => console.log('lol what it\'s already installed idiot')
+            })
+          );
         } else {
-          get(`https://github.com/${username}/${repoName}/raw/HEAD/powercord_manifest.json`).then((r) => {
-            if (r?.statusCode === 302) {
-              typeCache.set(`${username}/${repoName}`, { isTheme: true });
-              res.props.children.splice(4, 0, React.createElement(menu.MenuItem, {
-                name: 'Install Theme',
-                seperate: true,
-                id: 'DownloaderContextLink',
-                label: 'Install Theme',
-                action: () => cloneRepo(target.href, powercord, 'theme')
-              }));
-            }
-          }).catch(() => {});
-
-
-          get(`https://github.com/${username}/${repoName}/raw/HEAD/manifest.json`).then((r) => {
-            if (r?.statusCode === 302) {
-              typeCache.set(`${username}/${repoName}`, { isPlugin: true });
-              res.props.children.splice(
-                4,
-                0,
-                React.createElement(menu.MenuItem, {
-                  name: 'Install Plugin',
-                  seperate: true,
-                  id: 'InstallerContextLink',
-                  label: 'Install Plugin',
-                  action: () => cloneRepo(target.href, powercord, 'plugin')
-                })
-              );
-            }
-          }).catch(() => {});
+          res.props.children.splice(
+            4,
+            0,
+            React.createElement(this.Menu.MenuItem, {
+              name: `Install ${label}`,
+              seperate: true,
+              id: 'InstallerContextLink',
+              label: `Install ${label}`,
+              action: () => cloneRepo(target.href, powercord, type)
+            })
+          );
         }
       }
 
       return res;
     });
   }
-  
+
   async _injectSnippets () {
     const MiniPopover = await getModule(m => m.default && m.default.displayName === 'MiniPopover');
     inject('pc-moduleManager-snippets', MiniPopover, 'default', (args, res) => {
       const props = findInReactTree(res, r => r && r.message && r.setPopout);
-      if (!props || props.channel.id !== CSS_SNIPPETS) {
+      if (!props || !CSS_SNIPPETS.includes(props.channel.id)) {
         return res;
       }
 
@@ -230,8 +184,8 @@ module.exports = class ModuleManager extends Plugin {
 
   async _applySnippet (message) {
     let css = '\n\n/**\n';
-    const line1 = Messages.POWERCORD_SNIPPET_LINE1.format({ date: new Date() });
-    const line2 = Messages.POWERCORD_SNIPPET_LINE2.format({
+    const line1 = Messages.REPLUGGED_SNIPPET_LINE1.format({ date: new Date() });
+    const line2 = Messages.REPLUGGED_SNIPPET_LINE2.format({
       authorTag: message.author.tag,
       authorId: message.author.id
     });

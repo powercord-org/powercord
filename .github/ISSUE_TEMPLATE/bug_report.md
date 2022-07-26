@@ -18,10 +18,10 @@ A clear and concise description of what you expected to happen.
 
 **Desktop (please complete the following information):**
  - OS: [e.g. Windows]
- - Powercord version: [You can find it in the Updater tab, available in your settings]
+ - Replugged version: [You can find it in the Updater tab, available in your settings]
 
 **Additional context**
- - [ ] I checked if Discord and/or Powercord are up to date
+ - [ ] I checked if Discord and/or Replugged are up to date
  - [ ] I made sure this is not related to an external plugin or a theme
  
 Add any other context about the problem here.

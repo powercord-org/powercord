@@ -12,7 +12,7 @@ const { API } = require('powercord/entities');
  */
 
 /**
- * Powercord custom router API
+ * Replugged custom router API
  * @property {PowercordRoute[]} routes Registered routes
  */
 class RouterAPI extends API {

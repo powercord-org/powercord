@@ -4,19 +4,19 @@ const { FormTitle, Icons: { Keyboard, PersonShield, Copy, ImportExport } } = req
 const perms = {
   keypresses: {
     icon: ({ svgSize }) => <Keyboard width={svgSize} height={svgSize}/>,
-    text: () => Messages.POWERCORD_PLUGINS_PERMISSIONS_KEYPRESSES
+    text: () => Messages.REPLUGGED_PLUGINS_PERMISSIONS_KEYPRESSES
   },
   use_eud: {
     icon: ({ svgSize }) => <PersonShield width={svgSize} height={svgSize}/>,
-    text: () => Messages.POWERCORD_PLUGINS_PERMISSIONS_USE_EUD
+    text: () => Messages.REPLUGGED_PLUGINS_PERMISSIONS_USE_EUD
   },
   filesystem: {
     icon: ({ svgSize }) => <Copy width={svgSize} height={svgSize}/>,
-    text: () => Messages.POWERCORD_PLUGINS_PERMISSIONS_FS
+    text: () => Messages.REPLUGGED_PLUGINS_PERMISSIONS_FS
   },
   ext_api: {
     icon: ({ svgSize }) => <ImportExport width={svgSize} height={svgSize}/>,
-    text: () => Messages.POWERCORD_PLUGINS_PERMISSIONS_API
+    text: () => Messages.REPLUGGED_PLUGINS_PERMISSIONS_API
   }
 };
 

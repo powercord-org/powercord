@@ -23,7 +23,7 @@ try {
 
 require('./ipc/main');
 
-console.log('Hello from Powercord!');
+console.log('Hello from Replugged!');
 
 let _patched = false;
 const appSetAppUserModelId = electron.app.setAppUserModelId;
@@ -32,7 +32,7 @@ function setAppUserModelId (...args) {
    * once this has been called, we can assume squirrelUpdate is safe to require
    * as everything that needs to be initialized has been initialized
    * see: https://github.com/powercord-org/powercord/issues/405
-   * see: https://github.com/powercord-org/powercord/issues/382
+   * see: https://github.com/replugged-org/replugged/issues/382
    */
 
   appSetAppUserModelId.apply(this, args);
@@ -110,7 +110,6 @@ electron.app.name = discordPackage.name;
  * @see https://github.com/electron/electron/issues/19468
  */
 if (process.platform === 'win32') {
-  // todo: define if this is still necessary
   setImmediate(() => { // WTF: the app name doesn't get set instantly?
     const devToolsExtensions = join(electron.app.getPath('userData'), 'DevTools Extensions');
 

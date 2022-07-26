@@ -23,7 +23,7 @@ class PowercordAccount extends React.Component {
     if (this.props.streamerMode.enabled && this.props.streamerMode.hidePersonalInformation) {
       Component = () => <div>{Messages.NOTICE_STREAMER_MODE_TEXT}</div>;
     } else if (this.state.linking) {
-      Component = () => <div className='linking'><Spinner type='pulsingEllipsis'/> {Messages.POWERCORD_LINKING_WAITING}</div>;
+      Component = () => <div className='linking'><Spinner type='pulsingEllipsis'/> {Messages.REPLUGGED_LINKING_WAITING}</div>;
     } else if (powercord.account) {
       Component = () => <LinkedAccounts
         passphrase={this.props.passphrase.bind(this)}
@@ -32,13 +32,13 @@ class PowercordAccount extends React.Component {
       />;
     } else {
       Component = () => <div>
-        {this.state.message || Messages.POWERCORD_LINKING_UNLINKED}
-        <a href='#' onClick={() => this.linkLegacy()}>{Messages.POWERCORD_LINK_NOW}</a>
+        {this.state.message || Messages.REPLUGGED_LINKING_UNLINKED}
+        <a href='#' onClick={() => this.linkLegacy()}>{Messages.REPLUGGED_LINK_NOW}</a>
       </div>;
     }
 
     return <Card className='powercord-account powercord-text'>
-      <FormTitle>{Messages.POWERCORD_ACCOUNT}</FormTitle>
+      <FormTitle>{Messages.REPLUGGED_ACCOUNT}</FormTitle>
       <Component/>
     </Card>;
   }
@@ -91,8 +91,8 @@ class PowercordAccount extends React.Component {
         this.setState({
           linking: false,
           server: null,
-          message: Messages.POWERCORD_LINKING_ERRORED.format({
-            newIssueUrl: 'https://github.com/powercord-org/powercord/issues/new?labels=bug&template=bug_report.md&title=Error+while+linking+Powercord+account+to+Discord'
+          message: Messages.REPLUGGED_LINKING_ERRORED.format({
+            newIssueUrl: 'https://github.com/replugged-org/replugged/issues/new?labels=bug&template=bug_report.md&title=Error+while+linking+Replugged+account+to+Discord'
           })
         });
         return console.error(err);
@@ -106,7 +106,7 @@ class PowercordAccount extends React.Component {
         this.setState({
           linking: false,
           server: null,
-          message: Messages.POWERCORD_LINKING_TIMED_OUT
+          message: Messages.REPLUGGED_LINKING_TIMED_OUT
         });
       }, 30000);
       this.setState({ timeout });

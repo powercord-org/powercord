@@ -1,5 +1,5 @@
 {
-  "name": "powercord",
+  "name": "replugged",
   "version": "2.0.0",
   "description": "A lightweight @discord client mod focused on simplicity and performance",
   "license": "MIT",
@@ -9,13 +9,14 @@
     "lint": "eslint --ext js --ext jsx src",
     "plug": "node injectors/index.js inject --no-exit-codes",
     "unplug": "node injectors/index.js uninject --no-exit-codes",
+    "repair": "npm run unplug && git pull && npm run plug",
     "inject": "node injectors/index.js inject --no-exit-codes",
     "uninject": "node injectors/index.js uninject --no-exit-codes"
   },
-  "repository": "https://github.com/powercord-org/powercord.git",
-  "author": "aetheryx & Cynthia K. Rey",
+  "repository": "https://github.com/replugged-org/replugged.git",
+  "author": "Replugged",
   "bugs": {
-    "url": "https://github.com/powercord-org/powercord/issues"
+    "url": "https://github.com/replugged-org/replugged/issues"
   },
   "dependencies": {
     "codemirror": "^5.57.0",

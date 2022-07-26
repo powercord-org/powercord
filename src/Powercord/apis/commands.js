@@ -12,7 +12,7 @@ const { API } = require('powercord/entities');
  */
 
 /**
- * Powercord chat commands API
+ * Replugged chat commands API
  * @property {Object.<String, PowercordChatCommand>} commands Registered commands
  */
 class CommandsAPI extends API {

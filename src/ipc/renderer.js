@@ -37,6 +37,10 @@ global.PowercordNative = {
 
   __compileSass (file) {
     return ipcRenderer.invoke('POWERCORD_COMPILE_MF_SASS', file);
+  },
+
+  exec (...args) {
+    return ipcRenderer.invoke('POWERCORD_EXEC_COMMAND', ...args);
   }
 };
 

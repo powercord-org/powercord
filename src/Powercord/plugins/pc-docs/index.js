@@ -11,7 +11,11 @@ module.exports = class Documentation extends Plugin {
       id: 'pc-docs',
       name: 'Documentation',
       date: 1572393600000,
-      description: 'Powercord documentation for making plugin and themes',
+      description: 'Replugged documentation for making plugin and themes',
+      /* lexisother: Hi developer! Did you fix this experiment? Please remove the `broken` object! Thanks <3 */
+      broken: {
+        reason: 'the documentation API endpoint does not exist'
+      },
       callback: enabled => {
         if (enabled) {
           this.addDocsItems();
@@ -45,7 +49,7 @@ module.exports = class Documentation extends Plugin {
               await this._ensureHighlight();
               setImmediate(() => pushLayer(DocsLayer));
             },
-            label: 'Powercord Docs'
+            label: 'Replugged Docs'
           }
         );
       }

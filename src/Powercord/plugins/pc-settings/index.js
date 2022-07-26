@@ -17,7 +17,7 @@ module.exports = class Settings extends Plugin {
   async startPlugin () {
     powercord.api.settings.registerSettings('pc-general', {
       category: 'pc-general',
-      label: () => Messages.POWERCORD_GENERAL_SETTINGS,
+      label: () => Messages.REPLUGGED_GENERAL_SETTINGS,
       render: GeneralSettings
     });
 
@@ -75,7 +75,7 @@ module.exports = class Settings extends Plugin {
           sections.indexOf(changelog), 0,
           {
             section: 'HEADER',
-            label: 'Powercord'
+            label: 'Replugged'
           },
           ...settingsSections,
           { section: 'DIVIDER' }
@@ -90,7 +90,7 @@ module.exports = class Settings extends Plugin {
               Object.assign({}, res.props.children[0], {
                 props: Object.assign({}, res.props.children[0].props, {
                   href: WEBSITE,
-                  title: 'Powercord',
+                  title: 'Replugged',
                   className: `${res.props.children[0].props.className} powercord-pc-icon`
                 })
               })
@@ -109,7 +109,7 @@ module.exports = class Settings extends Plugin {
             res.props.children.push(
               Object.assign({}, res.props.children[0], {
                 props: Object.assign({}, res.props.children[0].props, {
-                  children: [ 'Powercord', ' ', React.createElement('span', {
+                  children: [ 'Replugged', ' ', React.createElement('span', {
                     className: res.props.children[0].props.children[4].props.className,
                     children: [ powercord.gitInfos.branch, ' (', latestCommitHash, ')' ]
                   }) ]
@@ -149,7 +149,7 @@ module.exports = class Settings extends Plugin {
     inject('pc-settings-actions', SettingsContextMenu, 'default', (_, res) => {
       const parent = React.createElement(Menu.MenuItem, {
         id: 'powercord-actions',
-        label: 'Powercord'
+        label: 'Replugged'
       }, Object.keys(powercord.api.settings.tabs).map(tabId => {
         const props = powercord.api.settings.tabs[tabId];
         const label = typeof props.label === 'function' ? props.label() : props.label;
@@ -164,7 +164,7 @@ module.exports = class Settings extends Plugin {
         });
       }));
 
-      parent.key = 'Powercord';
+      parent.key = 'Replugged';
 
       const items = res.props.children.find(child => Array.isArray(child));
       const changelog = items.find(item => item?.props?.id === 'changelog');

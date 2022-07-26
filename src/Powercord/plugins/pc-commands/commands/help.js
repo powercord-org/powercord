@@ -62,7 +62,7 @@ module.exports = {
           commandName.includes(args[0])
         )
       ),
-      header: 'powercord command list'
+      header: 'replugged command list'
     };
   }
 };

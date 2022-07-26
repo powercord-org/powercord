@@ -32,7 +32,7 @@ class QuickCSS extends React.PureComponent {
           ref={this.ref}
         >
           {!this.props.popout && this.props.guestWindow
-            ? <div className='powercord-quickcss-popped'>{Messages.POWERCORD_QUICKCSS_POPPED_OUT}</div>
+            ? <div className='powercord-quickcss-popped'>{Messages.REPLUGGED_QUICKCSS_POPPED_OUT}</div>
             : <>
               <div className='powercord-quickcss-header'>
                 <Tooltip text={Messages.SETTINGS} position='right'>
@@ -77,7 +77,7 @@ class QuickCSS extends React.PureComponent {
                 />
               </div>
               <div className='powercord-quickcss-footer'>
-                <span>{Messages.POWERCORD_QUICKCSS_AUTOCOMPLETE}</span>
+                <span>{Messages.REPLUGGED_QUICKCSS_AUTOCOMPLETE}</span>
                 <span>CodeMirror v{require('codemirror').version}</span>
               </div>
               {!this.props.popout && <div className='powercord-quickcss-resizer' onMouseDown={this._handleResizeBegin}/>}
@@ -93,7 +93,7 @@ class QuickCSS extends React.PureComponent {
 
     return (
       <AdvancedScrollerThin className='powercord-quickcss-editor-settings' theme='themeGhostHairline-DBD-2d' fade>
-        <FormTitle tag='h2'>{Messages.POWERCORD_QUICKCSS_SETTINGS}</FormTitle>
+        <FormTitle tag='h2'>{Messages.REPLUGGED_QUICKCSS_SETTINGS}</FormTitle>
         <div className='close-wrapper'>
           <Tooltip text={Messages.CLOSE} position='left'>
             <Clickable onClick={() => this.setState({ cmSettings: false })} className='close'>
@@ -109,7 +109,7 @@ class QuickCSS extends React.PureComponent {
               this.state.cm.setOption('lineNumbers', v);
             }}
           >
-            {Messages.POWERCORD_QUICKCSS_SETTINGS_LINES}
+            {Messages.REPLUGGED_QUICKCSS_SETTINGS_LINES}
           </SwitchItem>
           <SwitchItem
             value={getSetting('cm-codeFolding', true)}
@@ -121,27 +121,27 @@ class QuickCSS extends React.PureComponent {
               this.state.cm.setOption('foldGutter', v);
             }}
           >
-            {Messages.POWERCORD_QUICKCSS_SETTINGS_FOLDING}
+            {Messages.REPLUGGED_QUICKCSS_SETTINGS_FOLDING}
           </SwitchItem>
           <SwitchItem
             value={getSetting('cm-matchBrackets', true)}
-            note={Messages.POWERCORD_QUICKCSS_SETTINGS_MATCH_BRACKETS_DESC}
+            note={Messages.REPLUGGED_QUICKCSS_SETTINGS_MATCH_BRACKETS_DESC}
             onChange={v => {
               toggleSetting('cm-matchBrackets', true);
               this.state.cm.setOption('matchBrackets', v);
             }}
           >
-            {Messages.POWERCORD_QUICKCSS_SETTINGS_MATCH_BRACKETS}
+            {Messages.REPLUGGED_QUICKCSS_SETTINGS_MATCH_BRACKETS}
           </SwitchItem>
           <SwitchItem
             value={getSetting('cm-closeBrackets', true)}
-            note={Messages.POWERCORD_QUICKCSS_SETTINGS_CLOSE_BRACKETS_DESC}
+            note={Messages.REPLUGGED_QUICKCSS_SETTINGS_CLOSE_BRACKETS_DESC}
             onChange={v => {
               toggleSetting('cm-closeBrackets', true);
               this.state.cm.setOption('autoCloseBrackets', v);
             }}
           >
-            {Messages.POWERCORD_QUICKCSS_SETTINGS_CLOSE_BRACKETS}
+            {Messages.REPLUGGED_QUICKCSS_SETTINGS_CLOSE_BRACKETS}
           </SwitchItem>
           <SwitchItem
             value={getSetting('cm-wrap', false)}
@@ -150,7 +150,7 @@ class QuickCSS extends React.PureComponent {
               this.state.cm.setOption('lineWrapping', v);
             }}
           >
-            {Messages.POWERCORD_QUICKCSS_SETTINGS_WRAP}
+            {Messages.REPLUGGED_QUICKCSS_SETTINGS_WRAP}
           </SwitchItem>
           <SwitchItem
             value={getSetting('cm-tabs', false)}
@@ -159,11 +159,11 @@ class QuickCSS extends React.PureComponent {
               this.state.cm.setOption('indentWithTabs', v);
             }}
           >
-            {Messages.POWERCORD_QUICKCSS_SETTINGS_TABS}
+            {Messages.REPLUGGED_QUICKCSS_SETTINGS_TABS}
           </SwitchItem>
           <SliderInput
             disabled={this.props.popout}
-            note={this.props.popout && Messages.POWERCORD_QUICKCSS_SETTINGS_INDENT_WARNING}
+            note={this.props.popout && Messages.REPLUGGED_QUICKCSS_SETTINGS_INDENT_WARNING}
             stickToMarkers
             initialValue={4}
             markers={[ 2, 4, 8 ]}
@@ -175,7 +175,7 @@ class QuickCSS extends React.PureComponent {
               this.state.cm.setOption('indentUnit', v);
             }}
           >
-            {Messages.POWERCORD_QUICKCSS_SETTINGS_INDENT}
+            {Messages.REPLUGGED_QUICKCSS_SETTINGS_INDENT}
           </SliderInput>
         </div>
       </AdvancedScrollerThin>

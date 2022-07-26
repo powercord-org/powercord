@@ -35,7 +35,7 @@ const Developer = React.memo(({ color }) => (
   <Base
     onClick={() => openExternal(`${WEBSITE}/contributors`)}
     className='powercord-badge-developer'
-    tooltip={Messages.POWERCORD_BADGES_DEVELOPER}
+    tooltip={Messages.REPLUGGED_BADGES_DEVELOPER}
     color={color}
   >
     <BadgeIcons.Developer/>
@@ -46,7 +46,7 @@ const Staff = React.memo(({ color }) => (
   <Base
     onClick={() => gotoOrJoinServer(DISCORD_INVITE)}
     className='powercord-badge-staff'
-    tooltip={Messages.POWERCORD_BADGES_STAFF}
+    tooltip={Messages.REPLUGGED_BADGES_STAFF}
     color={color}
   >
     <BadgeIcons.Staff/>
@@ -57,7 +57,7 @@ const Support = React.memo(({ color }) => (
   <Base
     onClick={() => gotoOrJoinServer(DISCORD_INVITE)}
     className='powercord-badge-support'
-    tooltip={Messages.POWERCORD_BADGES_SUPPORT}
+    tooltip={Messages.REPLUGGED_BADGES_SUPPORT}
     color={color}
   >
     <BadgeIcons.Support/>
@@ -68,7 +68,7 @@ const Contributor = React.memo(({ color }) => (
   <Base
     onClick={() => openExternal(`${WEBSITE}/contributors`)}
     className='powercord-badge-contributor'
-    tooltip={Messages.POWERCORD_BADGES_CONTRIBUTOR}
+    tooltip={Messages.REPLUGGED_BADGES_CONTRIBUTOR}
     color={color}
   >
     <BadgeIcons.Contributor/>
@@ -79,7 +79,7 @@ const Translator = React.memo(({ color }) => ( // @todo: flag
   <Base
     onClick={() => openExternal(I18N_WEBSITE)}
     className='powercord-badge-translator'
-    tooltip={Messages.POWERCORD_BADGES_TRANSLATOR}
+    tooltip={Messages.REPLUGGED_BADGES_TRANSLATOR}
     color={color}
   >
     <BadgeIcons.Translator/>
@@ -90,7 +90,7 @@ const BugHunter = React.memo(({ color }) => (
   <Base
     onClick={() => openExternal(`https://github.com/${REPO_URL}/issues?q=label:bug`)}
     className='powercord-badge-hunter'
-    tooltip={Messages.POWERCORD_BADGES_HUNTER}
+    tooltip={Messages.REPLUGGED_BADGES_HUNTER}
     color={color}
   >
     <BadgeIcons.Hunter/>
@@ -100,7 +100,7 @@ const BugHunter = React.memo(({ color }) => (
 const EarlyUser = React.memo(({ color }) => (
   <Base
     className='powercord-badge-early'
-    tooltip={Messages.POWERCORD_BADGES_EARLY}
+    tooltip={Messages.REPLUGGED_BADGES_EARLY}
     color={color}
   >
     <BadgeIcons.Early/>

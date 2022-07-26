@@ -9,11 +9,11 @@ class Settings extends React.PureComponent {
       <div id='sdk-settings' className='category'>
         <h2>SDK Settings</h2>
         <SwitchItem
-          note={Messages.POWERCORD_SETTINGS_OVERLAY_DESC}
+          note={Messages.REPLUGGED_SETTINGS_OVERLAY_DESC}
           value={this.props.getSetting('openOverlayDevTools', false)}
           onChange={() => this.props.toggleSetting('openOverlayDevTools')}
         >
-          {Messages.POWERCORD_SETTINGS_OVERLAY}
+          {Messages.REPLUGGED_SETTINGS_OVERLAY}
         </SwitchItem>
         <SwitchItem
           note={<>
@@ -30,7 +30,7 @@ class Settings extends React.PureComponent {
             Loads React DevTools extension in Electron, letting you look at the React tree and debug stuff more
             easily. <b>Requires restart</b>.<br/><br/>
             <strong><strong>NOTE:</strong></strong> on <b>Windows</b> installations, enabling this might make Discord
-            unusable without Powercord due to a <a href='https://github.com/electron/electron/issues/19468' target='_blank'>bug in Electron</a>.
+            unusable without Replugged due to a <a href='https://github.com/electron/electron/issues/19468' target='_blank'>bug in Electron</a>.
             More details in our <a href='#'>troubleshooting guide</a>.
           </>}
           value={this.props.getSetting('reactDevTools', false)}

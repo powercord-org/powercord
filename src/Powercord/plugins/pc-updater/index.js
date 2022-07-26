@@ -4,9 +4,6 @@ const { Confirm } = require('powercord/components/modal');
 const { Plugin } = require('powercord/entities');
 
 const { join } = require('path');
-const { promisify } = require('util');
-const cp = require('child_process');
-const exec = promisify(cp.exec);
 
 const Settings = require('./components/Settings.jsx');
 
@@ -97,8 +94,8 @@ module.exports = class Updater extends Plugin {
               }
               updates.push({
                 id: entity.updateIdentifier,
-                name: entity.manifest?.name ?? 'Powercord',
-                icon: entity.constructor.name === 'Theme' || entity.constructor.name === 'Powercord'
+                name: entity.manifest?.name ?? 'Replugged',
+                icon: entity.constructor.name === 'Theme' || entity.constructor.name === 'Replugged'
                   ? entity.constructor.name
                   : 'Plugin',
                 commits,
@@ -107,7 +104,7 @@ module.exports = class Updater extends Plugin {
             }
           }
         } catch (e) {
-          console.error('An error occurred while checking for updates for %s', entity.manifest?.name ?? 'Powercord', e);
+          console.error('An error occurred while checking for updates for %s', entity.manifest?.name ?? 'Replugged', e);
         } finally {
           this.settings.set('checking_progress', [ ++done, entitiesLength ]);
         }
@@ -122,16 +119,16 @@ module.exports = class Updater extends Plugin {
         this.doUpdate();
       } else if (!document.querySelector('#powercord-updater, .powercord-updater')) {
         powercord.api.notices.sendToast('powercord-updater', {
-          header: Messages.POWERCORD_UPDATES_TOAST_AVAILABLE_HEADER,
-          content: Messages.POWERCORD_UPDATES_TOAST_AVAILABLE_DESC,
+          header: Messages.REPLUGGED_UPDATES_TOAST_AVAILABLE_HEADER,
+          content: Messages.REPLUGGED_UPDATES_TOAST_AVAILABLE_DESC,
           icon: 'wrench',
           buttons: [ {
-            text: Messages.POWERCORD_UPDATES_UPDATE,
+            text: Messages.REPLUGGED_UPDATES_UPDATE,
             color: 'green',
             look: 'outlined',
             onClick: () => this.doUpdate()
           }, {
-            text: Messages.POWERCORD_UPDATES_OPEN_UPDATER,
+            text: Messages.REPLUGGED_UPDATES_OPEN_UPDATER,
             color: 'blue',
             look: 'ghost',
             onClick: async () => {
@@ -171,10 +168,10 @@ module.exports = class Updater extends Plugin {
       this.settings.set('updates', failed);
       if (!document.querySelector('#powercord-updater, .powercord-updater')) {
         powercord.api.notices.sendToast('powercord-updater', {
-          header: Messages.POWERCORD_UPDATES_TOAST_FAILED,
+          header: Messages.REPLUGGED_UPDATES_TOAST_FAILED,
           type: 'danger',
           buttons: [ {
-            text: Messages.POWERCORD_UPDATES_FORCE,
+            text: Messages.REPLUGGED_UPDATES_FORCE,
             color: 'red',
             look: 'outlined',
             onClick: () => this.askForce()
@@ -183,7 +180,7 @@ module.exports = class Updater extends Plugin {
             look: 'outlined',
             color: 'grey'
           }, {
-            text: Messages.POWERCORD_UPDATES_OPEN_UPDATER,
+            text: Messages.REPLUGGED_UPDATES_OPEN_UPDATER,
             color: 'blue',
             look: 'ghost',
             onClick: async () => {
@@ -202,7 +199,7 @@ module.exports = class Updater extends Plugin {
       React.createElement(Confirm, {
         red: true,
         header: Messages.SUPPRESS_EMBED_TITLE,
-        confirmText: Messages.POWERCORD_UPDATES_FORCE,
+        confirmText: Messages.REPLUGGED_UPDATES_FORCE,
         cancelText: Messages.CANCEL,
         onConfirm: () => {
           if (callback) {
@@ -212,7 +209,7 @@ module.exports = class Updater extends Plugin {
           this.doUpdate(true);
         },
         onCancel: closeModal
-      }, React.createElement('div', { className: 'powercord-text' }, Messages.POWERCORD_UPDATES_FORCE_MODAL))
+      }, React.createElement('div', { className: 'powercord-text' }, Messages.REPLUGGED_UPDATES_FORCE_MODAL))
     );
   }
 
@@ -246,7 +243,7 @@ module.exports = class Updater extends Plugin {
   }
 
   async getGitInfos () {
-    const branch = await exec('git branch', this.cwd)
+    const branch = await PowercordNative.exec('git branch', this.cwd)
       .then(({ stdout }) =>
         stdout
           .toString()
@@ -256,10 +253,10 @@ module.exports = class Updater extends Plugin {
           .trim()
       );
 
-    const revision = await exec(`git rev-parse ${branch}`, this.cwd)
+    const revision = await PowercordNative.exec(`git rev-parse ${branch}`, this.cwd)
       .then(r => r.stdout.toString().trim());
 
-    const upstream = await exec('git remote get-url origin', this.cwd)
+    const upstream = await PowercordNative.exec('git remote get-url origin', this.cwd)
       .then(r => r.stdout.toString().match(/github\.com[:/]([\w-_]+\/[\w-_]+)/)[1]);
 
     return {
@@ -270,8 +267,8 @@ module.exports = class Updater extends Plugin {
   }
 
   async changeBranch (branch) {
-    await exec('git fetch origin +v2:v2', this.cwd);
-    await exec(`git checkout ${branch}`, this.cwd);
+    await PowercordNative.exec('git fetch origin +v2:v2', this.cwd);
+    await PowercordNative.exec(`git checkout ${branch}`, this.cwd);
     // location.reload();
   }
 
@@ -302,7 +299,7 @@ module.exports = class Updater extends Plugin {
 
         renderNewHeader () {
           const header = this.oldRenderHeader();
-          header.props.children[0].props.children = `Powercord - ${header.props.children[0].props.children}`;
+          header.props.children[0].props.children = `Replugged - ${header.props.children[0].props.children}`;
           return header;
         }
 

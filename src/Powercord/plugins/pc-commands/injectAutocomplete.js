@@ -9,7 +9,7 @@ module.exports = async function injectAutocomplete () {
   const messages = await getModule([ 'sendMessage', 'editMessage' ]);
   function renderHeader (value, formatHeader, customHeader) {
     const title = value.length > 0 ? Messages.COMMANDS_MATCHING.format({ prefix: formatHeader(value) }) : Messages.COMMANDS;
-    return React.createElement(Title, { title: customHeader || [ 'Powercord ', title ] }, 'autocomplete-title-Commands');
+    return React.createElement(Title, { title: customHeader || [ 'Replugged ', title ] }, 'autocomplete-title-Commands');
   }
 
   function renderCommandResults (value, selected, commands, onHover, onClick, formatCommand, formatHeader, customHeader) {

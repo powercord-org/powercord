@@ -1,7 +1,7 @@
 {
-  "name": "Powercord RPC",
+  "name": "Replugged RPC",
   "version": "1.0.0",
-  "description": "Patches RPC to get Powercord-specific features",
-  "author": "Powercord Team",
+  "description": "Patches RPC to get Replugged-specific features",
+  "author": "Replugged Team",
   "license": "MIT"
 }
