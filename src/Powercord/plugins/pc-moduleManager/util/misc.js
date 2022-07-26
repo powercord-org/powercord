@@ -1,3 +1,5 @@
+exports.REPO_URL_REGEX = /https?:\/\/(?:www\.)?github\.com\/([^/\s]+)\/([^/\s]+)(?:\/tree\/(\S+))?/;
+
 exports.resp = (success, description) => ({
   send: false,
   result: {
