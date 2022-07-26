@@ -31,6 +31,10 @@ module.exports = class ModuleManager extends Plugin {
       name: 'New themes features',
       date: 1587857509321,
       description: 'New Theme management UI & settings',
+      /* lexisother: Hi developer! Did you fix this experiment? Please remove the `broken` object! Thanks <3 */
+      broken: {
+        reason: 'there is no code related to this experiment'
+      },
       callback: () => {
         // We're supposed to do it properly but reload > all
         setImmediate(() => powercord.pluginManager.remount(this.entityID));
@@ -43,6 +47,10 @@ module.exports = class ModuleManager extends Plugin {
       name: 'Deeplinks',
       date: 1590242558077,
       description: 'Makes some powercord.dev links trigger in-app navigation, as well as some potential embedding if applicable',
+      /* lexisother: Hi developer! Did you fix this experiment? Please remove the `broken` object! Thanks <3 */
+      broken: {
+        reason: 'the deeplinks module is empty'
+      },
       callback: () => {
         // We're supposed to do it properly but reload > all
         setImmediate(() => powercord.pluginManager.remount(this.entityID));

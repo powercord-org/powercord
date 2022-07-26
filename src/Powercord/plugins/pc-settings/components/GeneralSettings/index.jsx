@@ -8,6 +8,7 @@ const { rmdirRf } = require('powercord/util');
 
 const PassphraseModal = require('./PassphraseModal.jsx');
 const Account = require('./PowercordAccount');
+const Labs = require('./Labs');
 
 module.exports = class GeneralSettings extends React.Component {
   constructor (props) {
@@ -126,6 +127,14 @@ module.exports = class GeneralSettings extends React.Component {
           >
             {Messages.REPLUGGED_SETTINGS_BACKEND}
           </TextInput>
+          <Category
+            name={'Replugged Experiments'}
+            description={'Enable experimental options for Replugged, at your own risk.'}
+            opened={getSetting('labsOpened', false)}
+            onChange={() => toggleSetting('labsOpened')}
+          >
+            <Labs />
+          </Category>
         </Category>
         <ButtonItem
           note={Messages.REPLUGGED_SETTINGS_CACHE_REPLUGGED_DESC}
