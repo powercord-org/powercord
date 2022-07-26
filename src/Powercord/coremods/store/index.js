@@ -94,7 +94,7 @@ module.exports = function () {
     description: 'Powercord Plugin and Theme store',
     /* lexisother: Hi developer! Did you fix this experiment? Please remove the `broken` object! Thanks <3 */
     broken: {
-      reason: "channel injection is broken?"
+      reason: 'channel injection is broken?'
     },
     callback: (enabled) => enabled ? _init() : _shut()
   });
