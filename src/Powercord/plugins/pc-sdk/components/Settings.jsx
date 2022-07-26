@@ -60,7 +60,7 @@ class Settings extends React.PureComponent {
       header={Messages.ERRORS_RESTART_APP}
       confirmText={Messages.BUNDLE_READY_RESTART}
       cancelText={Messages.BUNDLE_READY_LATER}
-      onConfirm={() => DiscordNative.app.relaunch()}
+      onConfirm={() => process.kill(process.pid, 'SIGTERM')} // todo: find an actual relaunch. DiscordNative.app.relaunch() doesn't fully kill the application
       onCancel={closeModal}
     >
       <div className='powercord-text'>
