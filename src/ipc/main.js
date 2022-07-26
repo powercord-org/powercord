@@ -62,8 +62,8 @@ function compileSass (_, file) {
   });
 }
 
-async function execCommand(_, ...params) {
-  return exec(...params)
+async function execCommand (_, ...params) {
+  return exec(...params);
 }
 
 ipcMain.on('POWERCORD_GET_PRELOAD', e => e.returnValue = e.sender._powercordPreload);

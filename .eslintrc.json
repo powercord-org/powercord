@@ -1,4 +1,5 @@
 {
+  "root": true,
   "globals": {
     "powercord": true,
     "webpackChunkdiscord_app": true,
