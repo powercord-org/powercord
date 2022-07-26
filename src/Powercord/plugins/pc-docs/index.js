@@ -12,6 +12,10 @@ module.exports = class Documentation extends Plugin {
       name: 'Documentation',
       date: 1572393600000,
       description: 'Replugged documentation for making plugin and themes',
+      /* lexisother: Hi developer! Did you fix this experiment? Please remove the `broken` object! Thanks <3 */
+      broken: {
+        reason: 'the documentation API endpoint does not exist'
+      },
       callback: enabled => {
         if (enabled) {
           this.addDocsItems();
