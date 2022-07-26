@@ -39,7 +39,7 @@ class LabsAPI extends API {
    * @param {String} experimentId
    * @returns {Boolean} Whether the experiment is enabled or not
    */
-  isExperimentEnabled (experimentId ) {
+  isExperimentEnabled (experimentId) {
     const settings = powercord.settings.get('labs', {});
     return !!settings[experimentId];
   }
