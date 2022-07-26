@@ -17,7 +17,7 @@ module.exports = async function download (url, powercord, type) {
 
   const urlMatch = url.match(REPO_URL_REGEX);
   if (!urlMatch) {
-    console.error('Could not parse URL');
+    console.error(`Could not parse URL: ${url}`);
     return;
   }
   const [ , username, repoName, branch ] = urlMatch;
