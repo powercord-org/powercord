@@ -3,9 +3,6 @@ const { existsSync } = require('fs');
 const { mkdir, writeFile } = require('fs').promises;
 const { join, sep } = require('path');
 const { AnsiEscapes } = require('./log');
-const cp = require('child_process');
-const util = require('util');
-const exec = util.promisify(cp.exec)
 
 exports.inject = async ({ getAppDir }, platform) => {
   const appDir = await getAppDir(platform);
@@ -37,23 +34,6 @@ exports.inject = async ({ getAppDir }, platform) => {
 
   return true;
 };
-
-exports.repair = async () => {
-  try {
-    const { stdout, stderr } = await exec('git pull');
-    
-    if (stderr === '') {
-      console.log(stdout);
-      return true;
-    } else {
-      console.error(stderr); // Can't think of any scenario where this happens
-      return false;
-    }
-  } catch (e) {
-    console.error(stderr);
-    return false
-  }
-}
 
 exports.uninject = async ({ getAppDir }, platform) => {
   const appDir = await getAppDir(platform);

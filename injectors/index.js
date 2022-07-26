@@ -94,26 +94,6 @@ const VALID_PLATFORMS = [ 'stable', 'ptb', 'canary', 'dev', 'development' ];
         'You now have to completely close the Discord client, from the system tray or through the task manager.'
       );
     }
-  } else if (process.argv[2] === 'repair') {
-    if (await main.uninject(platformModule, platform)) {
-      // @todo: prompt to (re)start automatically
-      console.log(BasicMessages.UNPLUG_SUCCESS, '\n');
-      
-      if (await main.repair()) {
-        if (await main.inject(platformModule, platform)) {
-          await writeFile( // Don't show yay plugged on launch
-            join(__dirname, '../src/__injected.txt'),
-            'hey cutie'
-          );
-
-          // @todo: prompt to (re)start automatically
-          console.log(BasicMessages.PLUG_SUCCESS, '\n');
-          console.log(
-            'You now have to completely close the Discord client, from the system tray or through the task manager.'
-          );
-        }
-      }
-    }
   } else {
     console.log(`Unsupported argument "${process.argv[2]}", exiting.`);
     process.exit(process.argv.includes('--no-exit-codes') ? 0 : 1);
