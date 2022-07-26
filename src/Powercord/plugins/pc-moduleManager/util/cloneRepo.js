@@ -1,6 +1,7 @@
 const { join } = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
+const { REPO_URL_REGEX } = require('./misc');
 
 module.exports = async function download (url, powercord, type) {
   // const dir = type === 'plugin' ? join(__dirname, '..', '..') : join(__dirname, '..', '..', 'themes');
@@ -13,12 +14,21 @@ module.exports = async function download (url, powercord, type) {
       dir = join(__dirname, '..', '..', '..', 'themes');
       break;
   }
-  console.log(dir);
-  const repoName = url.match(/([\w-]+)\/?$/)[1];
+
+  const urlMatch = url.match(REPO_URL_REGEX);
+  if (!urlMatch) {
+    console.error('Could not parse URL');
+    return;
+  }
+  const [ , username, repoName, branch ] = urlMatch;
+  const args = [ 'clone', `https://github.com/${username}/${repoName}.git` ];
+  if (branch) {
+    args.push('--branch', branch);
+  }
   let c;
 
   try {
-    c = spawn('git', [ 'clone', url ], {
+    c = spawn('git', args, {
       cwd: dir,
       windowsHide: true
     });
