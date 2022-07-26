@@ -12,6 +12,8 @@ class Announcement extends React.PureComponent {
       button: '',
       dismiss: ''
     };
+
+    this.CloseButton = getModule([ 'NoticeCloseButton' ], false).NoticeCloseButton;
   }
 
   async componentDidMount () {
@@ -43,7 +45,9 @@ class Announcement extends React.PureComponent {
 
     return <div className={`powercord-notice ${notice} ${(types[this.props.color] || types.blurple)}`} id={this.props.id}>
       {this.props.message}
-      <Clickable className={dismiss} onClick={() => this.handleClick(this.props.onClose)}/>
+      <Clickable className={dismiss} onClick={() => this.handleClick(this.props.onClose)}>
+        <this.CloseButton/>
+      </Clickable>
       {this.props.button && <button className={button} onClick={() => this.handleClick(this.props.button.onClick)}>
         {this.props.button.text}
       </button>}
