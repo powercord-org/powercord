@@ -1,9 +1,11 @@
 const getRepoInfo = require('./getInfo');
 const cloneRepo = require('./cloneRepo');
-const { resp } = require('./resp');
+const { resp, REPO_URL_REGEX } = require('./misc');
+
 
 module.exports = {
   getRepoInfo,
   cloneRepo,
-  resp
+  resp,
+  REPO_URL_REGEX
 };
