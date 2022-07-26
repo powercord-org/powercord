@@ -9,6 +9,7 @@
     "lint": "eslint --ext js --ext jsx src",
     "plug": "node injectors/index.js inject --no-exit-codes",
     "unplug": "node injectors/index.js uninject --no-exit-codes",
+    "repair": "node injectors/index.js repair --no-exit-codes",
     "inject": "node injectors/index.js inject --no-exit-codes",
     "uninject": "node injectors/index.js uninject --no-exit-codes"
   },
