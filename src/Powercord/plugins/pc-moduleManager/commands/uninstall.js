@@ -2,7 +2,7 @@ const Modal = require('../components/ConfirmModal');
 const { React } = require('powercord/webpack');
 const { open: openModal, close: closeModal } = require('powercord/modal');
 
-const { resp } = require('../util/resp');
+const { resp } = require('../util');
 
 module.exports = {
   command: 'uninstall',
