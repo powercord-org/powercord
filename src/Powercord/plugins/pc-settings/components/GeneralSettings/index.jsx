@@ -152,7 +152,6 @@ module.exports = class GeneralSettings extends React.Component {
         >
           {Messages.REPLUGGED_SETTINGS_CACHE_DISCORD}
         </ButtonItem>
-        <Labs />
       </div>
     );
   }
