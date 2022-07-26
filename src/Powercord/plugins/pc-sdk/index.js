@@ -5,6 +5,7 @@ const { getOwnerInstance, waitFor } = require('powercord/util');
 const { Plugin } = require('powercord/entities');
 // const SdkWindow = require('./components/SdkWindow');
 
+// TODO(lexisother): RESTORE ITS GLORY!!!
 module.exports = class SDK extends Plugin {
   constructor () {
     super();
