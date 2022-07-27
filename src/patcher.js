@@ -119,7 +119,7 @@ if (process.platform === 'win32') {
   });
 }
 
-if (rdGeneral['pc-sdk'] && rdSDK?.reactDevTools) {
+if (rdGeneral?.labs['pc-sdk'] && rdSDK?.reactDevTools) {
   electron.app.whenReady().then(() => {
     installExtension(REACT_DEVELOPER_TOOLS)
       .then((name) => console.log(`Added Extension:  ${name}`))
